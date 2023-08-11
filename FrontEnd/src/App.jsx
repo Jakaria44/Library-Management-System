@@ -1,11 +1,10 @@
-import MiniDrawer from "./Components/Homepage.jsx";
+import Structure from "./Components/Structure.jsx";
 
 
 const App = () => {
     return (
         <div>
-            <MiniDrawer/>
-            <h1>App</h1>
+          <Structure />
         </div>
     )
 }
