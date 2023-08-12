@@ -1,3 +1,4 @@
+import {List, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import {Home, DensityMedium, Category, FeaturedPlayList} from "@mui/icons-material";
 import {NavLink} from "react-router-dom";
 
@@ -6,17 +7,17 @@ const GeneralNavigation = () => {
     {
       name: "Home",
       icon: <Home/>,
-      page: "/Home"
+      address: "/"
     },
     {
       name: "All Books",
       icon: <DensityMedium/>,
-      page: "/AllBooks"
+      address: "/allBooks"
+
     },
     {
       name: "Categories",
-      icon: <Category/>,
-      page: "/Categories"
+      icon: <Category/>
     },
     {
       name: "Featured",
@@ -25,10 +26,18 @@ const GeneralNavigation = () => {
 
   ]
   return (
-  <>
-
-  </>
-
+    <List>
+      {navigationsAll.map((object, index) => (
+        <ListItem as={NavLink} to={object.address} key={index} disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              {object.icon}
+            </ListItemIcon>
+            <ListItemText primary={object.name}/>
+          </ListItemButton>
+        </ListItem>
+      ))}
+    </List>
   )
 }
 

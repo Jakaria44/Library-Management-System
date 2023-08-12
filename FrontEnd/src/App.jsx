@@ -1,11 +1,11 @@
-// import AllBooks from "./Components/AllBooks.jsx";
-import Homepage from "./Components/Homepage.jsx";
-
+import Structure from "./Components/Structure.jsx";
+import {Outlet} from "react-router-dom";
 
 const App = () => {
     return (
         <div>
-            <Homepage/>
+            <Structure/>
+            <Outlet/>
         </div>
     )
 }

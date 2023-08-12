@@ -7,9 +7,9 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import Homepage from "./Components/Homepage.jsx";
 import ErrorPage from "./Components/ErrorPage.jsx";
 import AllBooks from "./Components/AllBooks.jsx";
+import Homepage from "./Components/Homepage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -18,13 +18,10 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     // loader: <LinearProgress/>,
     children: [
-      {
-        index : true,
-        element: <Homepage />,
-      },
+
       {
         path: "/Home",
-        element: <Homepage />,
+        element:<Homepage/>
         // loader: <LinearProgress/>,
       },
       {
