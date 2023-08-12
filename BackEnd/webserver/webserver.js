@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import Express from 'express';
 import http from 'http';
 import morgan from 'morgan';
-// import Router from '../routes/route.js';
+import Router from '../routes/route.js';
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ export function initialize() {
     httpServer = http.createServer(app);
     app.use(morgan('combined'));
     app.use(cors());
-    // app.use('/DatabaseAPI', Router);
+    app.use('/db-api', Router);
     app.use(bodyParser.urlencoded({extended: true}));
     app.use(bodyParser.json({extended: true}));
 

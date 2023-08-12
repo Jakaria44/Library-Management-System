@@ -14,7 +14,7 @@ export function queryExecute(statement, binds = [], opts = {}) {
     let conn;
     let result = [];
   
-    opts.outFormat = OracleDB.OBJECT;
+    opts.outFormat = OracleDB.OUT_FORMAT_OBJECT;
     opts.autoCommit = true;
     // opts.resultSet = true;
   

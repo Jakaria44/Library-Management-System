@@ -1,5 +1,13 @@
 import { queryExecute } from './database.js';
 
+export async function getAllBookDB()
+{
+    let query = "SELECT * FROM BOOKS";
+
+    const result = await queryExecute(query,[]);
+    return result.rows;
+}
+
 function baseQuery(tableName){
     return "Select * From " + tableName;
 }

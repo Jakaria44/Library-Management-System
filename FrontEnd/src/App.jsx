@@ -1,10 +1,11 @@
-import Structure from "./Components/Structure.jsx";
+// import AllBooks from "./Components/AllBooks.jsx";
+import Homepage from "./Components/Homepage.jsx";
 
 
 const App = () => {
     return (
         <div>
-            Hi there
+            <Homepage/>
         </div>
     )
 }

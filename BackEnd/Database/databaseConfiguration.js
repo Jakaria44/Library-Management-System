@@ -10,5 +10,5 @@ export const config = {
     poolIncrement: 0
 };
 
-// export const secret = 'eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiO3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY0NDA5MDYyNywiaWF0IjoxNjQ0MDkwNjI3fQ';
+export const secret = 'eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiO3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY0NDA5MDYyNywiaWF0IjoxNjQ0MDkwNjI3fQ';
 
