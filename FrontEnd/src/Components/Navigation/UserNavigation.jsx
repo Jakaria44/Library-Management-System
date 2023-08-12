@@ -1,6 +1,4 @@
 import {Beenhere, Favorite, Reviews} from "@mui/icons-material";
-import {List, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
-
 
 const UserNavigation =()=>{
 
@@ -19,18 +17,9 @@ const UserNavigation =()=>{
   ]
   
   return (
-    <List>
-      {userNavigations.map((object, index) => (
-        <ListItem key={index} disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
-              {object.icon}
-            </ListItemIcon>
-            <ListItemText primary={object.name}/>
-          </ListItemButton>
-        </ListItem>
-      ))}
-    </List>
+    <>
+      <div>userNavigations</div>
+    </>
   )
 }
 

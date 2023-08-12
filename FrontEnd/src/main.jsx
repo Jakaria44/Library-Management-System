@@ -9,8 +9,6 @@ import {
 import Structure from "./Components/Structure.jsx";
 import Homepage from "./Components/Homepage.jsx";
 import ErrorPage from "./Components/ErrorPage.jsx";
-import LinearLoader from "./Components/Spinner/LinearLoader.jsx";
-import LinearProgress from "@mui/material/LinearProgress";
 import AllBooks from "./Components/AllBooks.jsx";
 
 const router = createBrowserRouter([

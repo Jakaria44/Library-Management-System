@@ -4,7 +4,7 @@ import Structure from "./Components/Structure.jsx";
 const App = () => {
     return (
         <div>
-          <Structure />
+            Hi there
         </div>
     )
 }
