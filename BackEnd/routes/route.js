@@ -3,10 +3,11 @@ import Express from 'express';
 import { verifyAdminToken, verifyGeneralToken, verifyUserToken } from '../authentication/auth.js';
 import { deleteAllBooksBookshelf, deleteAuthor, deleteBook, deleteBookOfBookshelf, deleteBookshelf, deleteGenre, deletePublisher } from '../controllers/deleteController.js';
 import {
+  getAllBook,
+  getBookByTitle,
   getAllAuthors,
   getAllAwards,
   getAllBinds,
-  getAllBook,
   getAllGenre,
   getAllLanguages,
   getAllPublishers,
@@ -37,7 +38,20 @@ const router = Express.Router();
 
 let urlencodedParser = bodyParser.urlencoded({ extended: true });
 
-router.route('/book').get(verifyGeneralToken, getBook).post(verifyAdminToken, urlencodedParser, postBook);
+
+router.route('/all-books').get( getAllBook);
+router.route('/book/title').get( getBookByTitle );
+router.route('/topBooks').get(getTopBook);
+router.route('/recentBooks').get(getRecentBook);
+router.route('/avg-rating').get(getAvgRating);
+//??
+router.route('/book').get(verifyGeneralToken, getBook).post(verfyAdminToken, urlencodedParser, postBook);
+router.route('/all-authors').get( getAllAuthors);
+router.route('/all-publishers').get( getAllPublishers);
+router.route('/get-all-genre').get(getAllGenre);
+
+///////////////////////
+
 router.route('/complete-book').get(verifyGeneralToken, getCompleteBook);
 router.route('/search-book').post(verifyUserToken, urlencodedParser, searchedBook);
 router.route('/getGenreBook/:name?').get(verifyUserToken, getGenreBook);
@@ -53,8 +67,6 @@ router.route('/create-bookshelf').post(verifyUserToken, urlencodedParser, create
 router.route('/rate').post(verifyUserToken, urlencodedParser, rateBook).get(verifyUserToken, getRating);
 router.route('/review').post(verifyUserToken, urlencodedParser, reviewBook).get(verifyUserToken, getOwnReview);
 router.route('/all-reviews-book').get(verifyUserToken, getAllReviewsOfBook);
-router.route('/avg-rating').get(verifyUserToken, getAvgRating);
-router.route('/get-all-genre').get(verifyGeneralToken, getAllGenre);
 router.route('/get-all-awards').get(verifyGeneralToken, getAllAwards);
 router.route('/get-all-languages').get(verifyUserToken, getAllLanguages);
 router.route('/get-all-binds').get(verifyUserToken, getAllBinds);
@@ -63,8 +75,6 @@ router.route('/del-book-bookshelf').delete(verifyUserToken, deleteBookOfBookshel
 router.route('/del-all-books-bookshelf').delete(verifyUserToken, deleteAllBooksBookshelf);
 router.route('/del-bookshelf').delete(verifyUserToken, deleteBookshelf);
 router.route('/rename-bookshelf').put(verifyUserToken, urlencodedParser, renameBookshelf);
-router.route('/all-authors').get(verifyAdminToken, getAllAuthors);
-router.route('/all-publishers').get(verifyAdminToken, getAllPublishers);
 
 router.route('/addBook').post(verifyAdminToken, urlencodedParser, addBook);
 router.route('/updateBook').put(verifyAdminToken, urlencodedParser, updateBook);
@@ -92,17 +102,12 @@ router.route('/getUserRatedBooks').get(verifyUserToken, getUserRatedBooks);
 router.route('/getUserReviewedBooks').get(verifyUserToken, getUserReviewedBooks);
 
 
-router.route('/topBooks').get(verifyUserToken, getTopBook);
-router.route('/recentBooks').get(verifyUserToken, getRecentBook);
-
-
 
 router.route('/updateUser').put(verifyUserToken, urlencodedParser, updateUser);
 
 router.route('/updateAdmin').put(verifyAdminToken, urlencodedParser, updateAdmin);
 
 
-router.route('/all-books').get( getAllBook);
 
 
 export default router;
