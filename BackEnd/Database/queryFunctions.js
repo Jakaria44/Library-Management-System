@@ -254,7 +254,6 @@ export async function getCompleteBookDB(context) {
 }
 
 
-//////////////////////////////////////
 
 
 export async function rateBookDB(rate) {

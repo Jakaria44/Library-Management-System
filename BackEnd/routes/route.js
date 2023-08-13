@@ -1,7 +1,15 @@
 import bodyParser from 'body-parser';
 import Express from 'express';
-import { verifyAdminToken, verifyGeneralToken, verifyUserToken } from '../authentication/auth.js';
-import { deleteAllBooksBookshelf, deleteAuthor, deleteBook, deleteBookOfBookshelf, deleteBookshelf, deleteGenre, deletePublisher } from '../controllers/deleteController.js';
+import {verifyAdminToken, verifyGeneralToken, verifyUserToken} from '../authentication/auth.js';
+import {
+  deleteAllBooksBookshelf,
+  deleteAuthor,
+  deleteBook,
+  deleteBookOfBookshelf,
+  deleteBookshelf,
+  deleteGenre,
+  deletePublisher
+} from '../controllers/deleteController.js';
 import {
   getAllBook,
   getBookByTitle,
@@ -30,24 +38,44 @@ import {
   getUserRatedBooks,
   getUserReviewedBooks
 } from '../controllers/getController.js';
-import { decodeToken, loginAdmin, loginUser, logout, postAdmin, postUser } from '../controllers/loginController.js';
-import { addAuthor, addBook, addGenre, addPublisher, advanceSearch, bookToBookshelf, createBookshelf, postBook, rateBook, reviewBook, searchedBook } from '../controllers/postController.js';
-import { renameBookshelf, updateAdmin, updateAuthor, updateBook, updateGenre, updatePublisher, updateUser } from '../controllers/putController.js';
+import {decodeToken, loginAdmin, loginUser, logout, postAdmin, postUser} from '../controllers/loginController.js';
+import {
+  addAuthor,
+  addBook,
+  addGenre,
+  addPublisher,
+  advanceSearch,
+  bookToBookshelf,
+
+  postBook,
+  rateBook,
+  reviewBook,
+  searchedBook
+} from '../controllers/postController.js';
+import {
+
+  updateAdmin,
+  updateAuthor,
+  updateBook,
+  updateGenre,
+  updatePublisher,
+  updateUser
+} from '../controllers/putController.js';
 
 const router = Express.Router();
 
-let urlencodedParser = bodyParser.urlencoded({ extended: true });
+let urlencodedParser = bodyParser.urlencoded({extended: true});
 
 
-router.route('/all-books').get( getAllBook);
-router.route('/book/title').get( getBookByTitle );
+router.route('/all-books').get(getAllBook);
+router.route('/book/title').get(getBookByTitle);
 router.route('/topBooks').get(getTopBook);
 router.route('/recentBooks').get(getRecentBook);
 router.route('/avg-rating').get(getAvgRating);
 //??
-router.route('/book').get(verifyGeneralToken, getBook).post(verfyAdminToken, urlencodedParser, postBook);
-router.route('/all-authors').get( getAllAuthors);
-router.route('/all-publishers').get( getAllPublishers);
+router.route('/book').get(verifyGeneralToken, getBook).post(verifyAdminToken, urlencodedParser, postBook);
+router.route('/all-authors').get(getAllAuthors);
+router.route('/all-publishers').get(getAllPublishers);
 router.route('/get-all-genre').get(getAllGenre);
 
 ///////////////////////
@@ -63,7 +91,7 @@ router.route('/decode').get(verifyGeneralToken, decodeToken);
 router.route('/logout').get(verifyGeneralToken, logout);
 router.route('/bookshelves').get(verifyUserToken, getBookshelves);
 router.route('/book-bookshelf').post(verifyUserToken, urlencodedParser, bookToBookshelf).get(verifyUserToken, getBooksFromBookshelf);
-router.route('/create-bookshelf').post(verifyUserToken, urlencodedParser, createBookshelf);
+// router.route('/create-bookshelf').post(verifyUserToken, urlencodedParser, createBookshelf);
 router.route('/rate').post(verifyUserToken, urlencodedParser, rateBook).get(verifyUserToken, getRating);
 router.route('/review').post(verifyUserToken, urlencodedParser, reviewBook).get(verifyUserToken, getOwnReview);
 router.route('/all-reviews-book').get(verifyUserToken, getAllReviewsOfBook);
@@ -74,7 +102,7 @@ router.route('/advance-search').post(verifyUserToken, urlencodedParser, advanceS
 router.route('/del-book-bookshelf').delete(verifyUserToken, deleteBookOfBookshelf);
 router.route('/del-all-books-bookshelf').delete(verifyUserToken, deleteAllBooksBookshelf);
 router.route('/del-bookshelf').delete(verifyUserToken, deleteBookshelf);
-router.route('/rename-bookshelf').put(verifyUserToken, urlencodedParser, renameBookshelf);
+// router.route('/rename-bookshelf').put(verifyUserToken, urlencodedParser, renameBookshelf);
 
 router.route('/addBook').post(verifyAdminToken, urlencodedParser, addBook);
 router.route('/updateBook').put(verifyAdminToken, urlencodedParser, updateBook);
@@ -102,12 +130,9 @@ router.route('/getUserRatedBooks').get(verifyUserToken, getUserRatedBooks);
 router.route('/getUserReviewedBooks').get(verifyUserToken, getUserReviewedBooks);
 
 
-
 router.route('/updateUser').put(verifyUserToken, urlencodedParser, updateUser);
 
 router.route('/updateAdmin').put(verifyAdminToken, urlencodedParser, updateAdmin);
-
-
 
 
 export default router;

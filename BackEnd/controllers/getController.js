@@ -498,120 +498,120 @@ export async function getCompleteBook(req, res, next){
 }
 
 ///////////////////////////
-//
-// export async function getBookshelves(req, res, next){
-//   try {
-//     let token = req.headers['x-access-token'];
-//     jwt.verify(token, secret, async function(err, decoded) {
-//       let bookshelves = {
-//         PERSON_ID: decoded.PERSON_ID
-//       };
-//       if(req.query.BOOKSHELF_ID){
-//         bookshelves.BOOKSHELF_ID = req.query.BOOKSHELF_ID;
-//       }
-//       try {
-//         bookshelves = await getBookshelvesDB(bookshelves);
-//         if (bookshelves.length > 0) {
-//           res.status(201).json(bookshelves);
+
+export async function getBookshelves(req, res, next){
+  try {
+    let token = req.headers['x-access-token'];
+    jwt.verify(token, secret, async function(err, decoded) {
+      let bookshelves = {
+        PERSON_ID: decoded.PERSON_ID
+      };
+      if(req.query.BOOKSHELF_ID){
+        bookshelves.BOOKSHELF_ID = req.query.BOOKSHELF_ID;
+      }
+      try {
+        bookshelves = await getBookshelvesDB(bookshelves);
+        if (bookshelves.length > 0) {
+          res.status(201).json(bookshelves);
+        } else {
+          res.status(404).end();
+        }
+      } catch (error) {
+        res.status(501).json(error);
+      }
+
+    });
+
+    } catch (err) {
+      next(err);
+    }
+}
+
+
+
+export async function getBooksFromBookshelf(req, res, next){
+  try {
+    let token = req.headers['x-access-token'];
+    jwt.verify(token, secret, async function(err, decoded) {
+      let book = {
+        PERSON_ID: decoded.PERSON_ID,
+        BOOKSHELF_ID: req.query.BOOKSHELF_ID
+      };
+
+      try {
+        book = await getBookFromBookshelfDB(book);
+        if (book.length > 0) {
+          res.status(201).json(book);
+        } else {
+          res.status(404).end();
+        }
+      } catch (error) {
+        res.status(501).json(error);
+      }
+
+
+    });
+
+    } catch (err) {
+      next(err);
+    }
+}
+
+
+
+
+
+
+
+export async function getAllAwards(req, res, next){
+  try {
+      const rows = await getAllAwardsDB();
+
+      if (rows.length > 0) {
+        res.status(200).json(rows);
+      } else {
+        res.status(404).end();
+      }
+
+    } catch (err) {
+      next(err);
+    }
+}
+
+export async function getAllBinds(req, res, next){
+  try {
+      const rows = await getAllBindsDB();
+
+      if (rows.length > 0) {
+        res.status(200).json(rows);
+      } else {
+        res.status(404).end();
+      }
+
+    } catch (err) {
+      next(err);
+    }
+}
+
+
+
+// export async function getAuthor(req, res, next){
+//     try {
+//         const context = {};
+//         context.ID = Number(req.query.ID);
+
+//         const rows = await getAuthorDB(context);
+
+//         if (req.query.ID) {
+//           if (rows.length === 1) {
+//             res.status(200).json(rows[0]);
+//           } else {
+//             res.status(404).end();
+//           }
 //         } else {
-//           res.status(404).end();
+//           res.status(200).json(rows);
 //         }
-//       } catch (error) {
-//         res.status(501).json(error);
+//       } catch (err) {
+//         next(err);
 //       }
-//
-//     });
-//
-//     } catch (err) {
-//       next(err);
-//     }
 // }
-//
-
-//
-// export async function getBooksFromBookshelf(req, res, next){
-//   try {
-//     let token = req.headers['x-access-token'];
-//     jwt.verify(token, secret, async function(err, decoded) {
-//       let book = {
-//         PERSON_ID: decoded.PERSON_ID,
-//         BOOKSHELF_ID: req.query.BOOKSHELF_ID
-//       };
-//
-//       try {
-//         book = await getBookFromBookshelfDB(book);
-//         if (book.length > 0) {
-//           res.status(201).json(book);
-//         } else {
-//           res.status(404).end();
-//         }
-//       } catch (error) {
-//         res.status(501).json(error);
-//       }
-//
-//
-//     });
-//
-//     } catch (err) {
-//       next(err);
-//     }
-// }
-//
-//
-
-//
-//
-
-//
-// export async function getAllAwards(req, res, next){
-//   try {
-//       const rows = await getAllAwardsDB();
-//
-//       if (rows.length > 0) {
-//         res.status(200).json(rows);
-//       } else {
-//         res.status(404).end();
-//       }
-//
-//     } catch (err) {
-//       next(err);
-//     }
-// }
-//
-// export async function getAllBinds(req, res, next){
-//   try {
-//       const rows = await getAllBindsDB();
-//
-//       if (rows.length > 0) {
-//         res.status(200).json(rows);
-//       } else {
-//         res.status(404).end();
-//       }
-//
-//     } catch (err) {
-//       next(err);
-//     }
-// }
-//
-
-//
-// // export async function getAuthor(req, res, next){
-// //     try {
-// //         const context = {};
-// //         context.ID = Number(req.query.ID);
-//
-// //         const rows = await getAuthorDB(context);
-//
-// //         if (req.query.ID) {
-// //           if (rows.length === 1) {
-// //             res.status(200).json(rows[0]);
-// //           } else {
-// //             res.status(404).end();
-// //           }
-// //         } else {
-// //           res.status(200).json(rows);
-// //         }
-// //       } catch (err) {
-// //         next(err);
-// //       }
-// // }

@@ -1,31 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { secret } from '../Database/databaseConfiguration.js';
-import { renameBookshelfDB, updateAdminDB, updateAuthorDB, updateBookDB, updateGenreDB, updatePublisherDB, updateUserDB } from '../Database/queryFunctions.js';
-export async function renameBookshelf(req, res, next) {
-    try {
-      var token = req.headers['x-access-token'];
-      jwt.verify(token, secret, async function(err, decoded) {
-      console.log(req.body);
-      let bookshelf = {
-        BOOKSHELF_ID: req.body.BOOKSHELF_ID,
-        BOOKSHELF_NAME: req.body.BOOKSHELF_NAME,                      
-        PERSON_ID: decoded.PERSON_ID           
-      };
+import {  updateAdminDB, updateAuthorDB, updateBookDB, updateGenreDB, updatePublisherDB, updateUserDB } from '../Database/queryFunctions.js';
 
-      try {
-        bookshelf = await renameBookshelfDB(bookshelf);
-        res.status(201).json(bookshelf);
-      } catch (error) {
-        res.status(501).json(error);  
-      }
-      
-    });
-     
-      
-    } catch (err) {
-      next(err);
-    }
-  }
 
 
 
