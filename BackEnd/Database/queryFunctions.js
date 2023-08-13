@@ -16,9 +16,26 @@ export async function getAllBookDB() {
     return result.rows;
 }
 
+export async function getBookDB() {
+    let query = "SELECT ISBN, TIILE, IMAGE FROM BOOK";
+    console.log(query);
+    const result = await queryExecute(query, []);
+    return result.rows;
+}
+
+export async function getAllBookSumDB(context) {
+    let query = "SELECT B.ISBN, B.TITLE, B.IMAGE, B.PUBLISH_YEAR, B.NUMBER_OF_PAGES, B.LANGUAGE, LISTAGG(A.NAME, ', ') WITHIN GROUP (ORDER BY A.AUTHOR_ID) AS AUTHORS, NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, P.NAME AS PUBLISHER";
+    query += "\nFROM BOOK B LEFT JOIN WRITTEN_BY WB ON (B.ISBN = WB.ISBN) LEFT JOIN AUTHOR A ON (WB.AUTHOR_ID = A.AUTHOR_ID) LEFT JOIN REVIEW_RATING R ON (B.ISBN = R.ISBN) LEFT JOIN PUBLISHER P ON(P.PUBLISHER_ID=B.PUBLISHER_ID)";
+    query += "\nGROUP BY B.ISBN, B.TITLE, B.IMAGE, B.PUBLISH_YEAR, B.NUMBER_OF_PAGES, B.LANGUAGE, P.NAME";
+    query += "\nORDER BY B.TITLE ASC, B.PUBLISH_YEAR DESC";
+    console.log(query);
+    const result = await queryExecute(query, []);
+    return result.rows;
+}
+
 export async function getBookByTitleDB(context) {
     let query = "SELECT ISBN, TITLE, IMAGE, NUMBER_OF_PAGES, LANGUAGE, DESCRIPTION, PUBLISHER_ID, TO_CHAR(PUBLISH_DATE,'DD-MM-YYYY') AS PUBLISH_DATE";
-    query += "\nFROM BOOK \n ";
+    query += "\nFROM BOOK ";
 
     const binds = {};
     binds.Title = context.Title.toUpperCase();
@@ -60,24 +77,6 @@ export async function getAvgRatingDB(context) {
         binds.ISBN = context.ISBN;
         query += "\nWhere B.ISBN = :ISBN";
 
-    }
-
-    const result = await queryExecute(query, binds);
-    return result.rows;
-}
-
-export async function getBookDB(context) {
-    let query = "SELECT ISBN, TITLE, IMAGE, NUMBER_OF_PAGES, LANGUAGE, DESCRIPTION, PUBLISHER_ID, TO_CHAR(PUBLISH_DATE,'DD-MM-YYYY') AS PUBLISH_DATE";
-    query += "\nFROM BOOK";
-    const binds = {};
-
-    if (context.ISBN) {
-        binds.ISBN = context.ISBN;
-        query += "\nWhere ISBN = :ISBN";
-
-    } else if (context.Title) {
-        binds.Title = context.Title.toUpperCase();
-        query += "\nWhere UPPER(TITLE) = :Title";
     }
 
     const result = await queryExecute(query, binds);

@@ -26,7 +26,8 @@ import {
     getRecentBookDB,
     getTopBookDB,
     getUserRatedBooksDB,
-    getUserReviewedBooksDB
+    getUserReviewedBooksDB,
+    getAllBookSumDB
 } from '../Database/queryFunctions.js';
 
 
@@ -34,6 +35,22 @@ export async function getAllBook(req, res, next) {
     try {
         console.log("in getControllers.js");
         const rows = await getAllBookDB();
+
+        if (rows.length === 1) {
+            res.status(200).json(rows[0]);
+        } else {
+            res.status(200).json(rows);
+        }
+    } catch (err) {
+        next(err);
+    }
+}
+
+export async function getAllBookSum(req, res, next) {
+    try {
+        console.log("in getControllers.js");
+        const context ={};
+        const rows = await getAllBookSumDB(context);
 
         if (rows.length === 1) {
             res.status(200).json(rows[0]);

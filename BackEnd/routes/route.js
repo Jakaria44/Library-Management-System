@@ -36,7 +36,8 @@ import {
   getRecentBook,
   getTopBook,
   getUserRatedBooks,
-  getUserReviewedBooks
+  getUserReviewedBooks,
+  getAllBookSum
 } from '../controllers/getController.js';
 import {decodeToken, loginAdmin, loginUser, logout, postAdmin, postUser} from '../controllers/loginController.js';
 import {
@@ -68,6 +69,7 @@ let urlencodedParser = bodyParser.urlencoded({extended: true});
 
 
 router.route('/all-books').get(getAllBook);
+router.route('/all-books-sum').get(getAllBookSum);
 router.route('/book/title').get(getBookByTitle);
 router.route('/topBooks').get(getTopBook);
 router.route('/recentBooks').get(getRecentBook);
