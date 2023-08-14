@@ -6,28 +6,23 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-
-import ErrorPage from "./Components/ErrorPage.jsx";
-import AllBooks from "./Components/AllBooks.jsx";
-import Homepage from "./Components/Homepage.jsx";
-import {ChakraProvider} from "@chakra-ui/react";
+import ErrorPage from './Components/ErrorPage.jsx';
+import AllBooks from './Components/AllBooks.jsx';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     errorElement: <ErrorPage />,
-    // loader: <LinearProgress/>,
     children: [
-
       {
-        path: "/Home",
-        element:<Homepage/>
+        path: "/all-books",
+        element:<AllBooks/>
         // loader: <LinearProgress/>,
       },
       {
-        path: "/allbooks",
-        element: <AllBooks />,
+        path: "/search",
+        element: <App />,
         // loader: <LinearProgress/>,
       },
     ]
@@ -36,9 +31,6 @@ const router = createBrowserRouter([
 ]);
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ChakraProvider>
-
     <RouterProvider router = {router}/>
-    </ChakraProvider>
   </React.StrictMode>,
 )

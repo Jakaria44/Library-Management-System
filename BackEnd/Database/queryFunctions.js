@@ -1,4 +1,4 @@
-import {queryExecute} from './database.js';
+import { queryExecute } from './database.js';
 
 
 function baseQuery(tableName) {
