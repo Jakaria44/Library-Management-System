@@ -10,21 +10,22 @@ function runProcedure(procedure) {
 }
 
 export async function getAllBookDB() {
-    let query = "SELECT ISBN, TIILE, IMAGE FROM BOOK";
+    let query = "SELECT ISBN, TITLE, IMAGE FROM BOOK";
     console.log(query);
     const result = await queryExecute(query, []);
     return result.rows;
 }
 
+// TODO: NEED TO FIXES
 export async function getBookDB() {
-    let query = "SELECT ISBN, TIILE, IMAGE FROM BOOK";
+    let query = "SELECT ISBN, TITLE, IMAGE FROM BOOK";
     console.log(query);
     const result = await queryExecute(query, []);
     return result.rows;
 }
 
 export async function getAllBookSumDB(context) {
-    let query = "SELECT B.ISBN, B.TITLE, B.IMAGE, B.PUBLISH_YEAR, B.NUMBER_OF_PAGES, B.LANGUAGE, LISTAGG(A.NAME, ', ') WITHIN GROUP (ORDER BY A.AUTHOR_ID) AS AUTHORS, NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, P.NAME AS PUBLISHER";
+    let query = "SELECT B.ISBN, B.TITLE, B.IMAGE, B.PUBLISH_YEAR, B.NUMBER_OF_PAGES, B.LANGUAGE, LISTAGG(A.NAME, ', ') AS AUTHORS, NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, P.NAME AS PUBLISHER";
     query += "\nFROM BOOK B LEFT JOIN WRITTEN_BY WB ON (B.ISBN = WB.ISBN) LEFT JOIN AUTHOR A ON (WB.AUTHOR_ID = A.AUTHOR_ID) LEFT JOIN REVIEW_RATING R ON (B.ISBN = R.ISBN) LEFT JOIN PUBLISHER P ON(P.PUBLISHER_ID=B.PUBLISHER_ID)";
     query += "\nGROUP BY B.ISBN, B.TITLE, B.IMAGE, B.PUBLISH_YEAR, B.NUMBER_OF_PAGES, B.LANGUAGE, P.NAME";
     query += "\nORDER BY B.TITLE ASC, B.PUBLISH_YEAR DESC";
