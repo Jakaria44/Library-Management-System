@@ -1,1 +1,16 @@
 get http://localhost:3000/db-api/all-books-sum
+
+// output
+[
+  {
+    "ISBN": "9781408855669",
+    "TITLE": "Harry Potter and the Chamber of Secrets ",
+    "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/58c09b4d2824_110120.gif",
+    "PUBLISH_YEAR": 1998,
+    "NUMBER_OF_PAGES": 384,
+    "LANGUAGE": "English",
+    "AUTHORS": "J. K. Rowling",
+    "RATING": 0,
+    "PUBLISHER": "Bloomsbury Publishing"
+  }
+]
