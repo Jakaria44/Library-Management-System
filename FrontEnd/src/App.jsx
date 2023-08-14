@@ -1,30 +1,20 @@
-import { Box, Stack } from "@mui/material";
-import { Outlet } from "react-router-dom";
+import { CssBaseline } from "@mui/material";
+import Routes from "./Routes/Routes";
+import { MenuContextProvider } from "./contexts/MenuContextProvider.jsx";
+import { ThemeContextProvider } from "./contexts/ThemeContextProvider";
+import NavigationScroll from "./layout/NavigationScroll";
 
-import NavBar from "./Components/NavBar";
-import SideBar from "./Components/SideBar";
-
-function App() {
+const App = () => {
   return (
-    <>
-      <NavBar />
-
-      <Stack sx={{ flexDirection: { xs: "column", md: "row" } } }>
-        <Box
-          sx={{
-            height: { xs: "auto", md: "108vh" },
-            background: "#f5f5f5",
-          }}
-          
-        >
-          <SideBar />
-        </Box>
-        <Box p={2} sx={{ height: "90vh", flex: 2 }}>
-          <Outlet />
-        </Box>
-      </Stack>
-    </>
+    <MenuContextProvider>
+      <ThemeContextProvider>
+        <CssBaseline />
+        <NavigationScroll>
+          <Routes />
+        </NavigationScroll>
+      </ThemeContextProvider>
+    </MenuContextProvider>
   );
-}
+};
 
 export default App;
