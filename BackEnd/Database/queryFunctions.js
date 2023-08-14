@@ -1,4 +1,4 @@
-import {queryExecute} from './database.js';
+import { queryExecute } from './database.js';
 
 
 function baseQuery(tableName) {
@@ -10,7 +10,7 @@ function runProcedure(procedure) {
 }
 
 export async function getAllBookDB() {
-    let query = "SELECT ISBN, TIILE, IMAGE FROM BOOK";
+    let query = "SELECT ISBN, TITLE, IMAGE FROM BOOK";
     console.log(query);
     const result = await queryExecute(query, []);
     return result.rows;
