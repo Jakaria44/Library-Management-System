@@ -18,9 +18,11 @@ import Header from "./Header";
 // assets
 import logo from "./../assets/IconChevronRight.svg";
 
+import { Outlet } from "react-router-dom";
 import { useMenu, useMenuDispatch } from "../contexts/MenuContextProvider.jsx";
 import { actions } from "../contexts/actions.jsx";
 import { drawerWidth } from "./../store/constants";
+import Sidebar from "./Sidebar/Sidebar";
 
 const IconChevronRight = logo;
 
@@ -68,7 +70,7 @@ const Structure = () => {
 
   const dispatch = useMenuDispatch();
   const handleLeftDrawerToggle = () => {
-    dispatch({ type: actions.TOGGLE_SIDE_DRAWER });
+    dispatch({ type: actions.TOGGLE_SIDE_DRAWER, id: leftDrawerOpened });
   };
 
   return (
@@ -82,7 +84,7 @@ const Structure = () => {
         elevation={0}
         sx={{
           bgcolor: theme.palette.background.default,
-          transition: leftDrawerOpened
+          transition: leftDrawerOpened.opened
             ? theme.transitions.create("width")
             : "none",
         }}
@@ -93,14 +95,19 @@ const Structure = () => {
       </AppBar>
 
       {/*/!* drawer *!/*/}
-      {/*<Sidebar drawerOpen={!matchDownMd ? leftDrawerOpened : !leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} />*/}
+      <Sidebar
+        drawerOpen={
+          !matchDownMd ? leftDrawerOpened.opened : !leftDrawerOpened.opened
+        }
+        drawerToggle={handleLeftDrawerToggle}
+      />
 
       {/*/!* main content *!/*/}
-      {/*<Main theme={theme} open={leftDrawerOpened}>*/}
-      {/*  /!* breadcrumb *!/*/}
-      {/*  <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />*/}
-      {/*  <Outlet />*/}
-      {/*</Main>*/}
+      <Main theme={theme} open={leftDrawerOpened.opened}>
+        {/*  /!* breadcrumb *!/*/}
+        {/* <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign /> */}
+        <Outlet />
+      </Main>
     </Box>
   );
 };

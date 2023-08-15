@@ -13,13 +13,16 @@ export const DarkTheme = () => {
 
   const themeOption = {
     colors: color,
-    heading: color.secondaryLight,
-    paper: color.darkPaper,
-    backgroundDefault: color.darkBackground,
-    background: color.darkPaper,
-    menuSelected: color.darkprimaryMain,
+    heading: color.grey900,
+    paper: color.paper,
+    backgroundDefault: color.paper,
+    background: color.primaryLight,
+    darkTextPrimary: color.grey700,
+    darkTextSecondary: color.grey500,
+    textDark: color.grey900,
+    menuSelected: color.secondaryDark,
     menuSelectedBack: color.secondaryLight,
-    divider: color.grey900,
+    divider: color.grey200,
   };
 
   const themeOptions = {

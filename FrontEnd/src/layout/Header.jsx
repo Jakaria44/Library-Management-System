@@ -11,9 +11,9 @@ import {
   useMyTheme,
   useMyThemeDispatch,
 } from "../contexts/ThemeContextProvider.jsx";
-import LogoSection from "./LogoSection.jsx";
-import SearchSection from "./Sections/SearchSection.jsx";
+import LogoSection from "./Sections/LogoSection.jsx";
 import ProfileSection from "./Sections/ProfileSection.jsx";
+import SearchSection from "./Sections/SearchSection.jsx";
 // import SearchSection.jsx from './SearchSection.jsx';
 // import ProfileSection from './ProfileSection';
 // import NotificationSection from './NotificationSection';

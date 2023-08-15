@@ -2,10 +2,10 @@
 // import { useDispatch, useSelector } from 'react-redux';
 
 // material-ui
-import { ButtonBase } from '@mui/material';
+import { ButtonBase } from "@mui/material";
 
 // project imports
-import Logo from '../ui-component/Logo';
+import Logo from "../../ui-component/Logo";
 
 // ==============================|| MAIN LOGO ||============================== //
 
