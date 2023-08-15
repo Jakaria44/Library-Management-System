@@ -2,103 +2,34 @@ import { lazy } from "react";
 
 // project imports
 
+import LatestBooks from "../pages/LatestBooks";
 import Loadable from "./../ui-component/Loadable";
 // main routing
 const Structure = Loadable(lazy(() => import("../layout/Structure.jsx")));
 
-
-// dashboard routing
-// const DashboardDefault = Loadable(
-//   lazy(() => import("views/dashboard/Default"))
-// );
-//
-// // utilities routing
-// const UtilsTypography = Loadable(
-//   lazy(() => import("views/utilities/Typography"))
-// );
-// const UtilsColor = Loadable(lazy(() => import("views/utilities/Color")));
-// const UtilsShadow = Loadable(lazy(() => import("views/utilities/Shadow")));
-// const UtilsMaterialIcons = Loadable(
-//   lazy(() => import("views/utilities/MaterialIcons"))
-// );
-// const UtilsTablerIcons = Loadable(
-//   lazy(() => import("views/utilities/TablerIcons"))
-// );
-//
-// // sample page routing
-// const SamplePage = Loadable(lazy(() => import("views/sample-page")));
-
+const AllBooks = Loadable(lazy(() => import("./../pages/allbooks/AllBooks")));
+const HomePage = Loadable(lazy(() => import("./../pages/Home")));
+const ErrorPage = Loadable(lazy(() => import("./../pages/ErrorPage")));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
   path: "/",
   element: <Structure />,
-  /*
+  errorElement: <ErrorPage />,
   children: [
     {
       path: "/",
-      element: <DashboardDefault />,
+      element: <HomePage />,
     },
     {
-      path: "dashboard",
-      children: [
-        {
-          path: "default",
-          element: <DashboardDefault />,
-        },
-      ],
+      path: "/allbooks",
+      element: <AllBooks />,
     },
     {
-      path: "utils",
-      children: [
-        {
-          path: "util-typography",
-          element: <UtilsTypography />,
-        },
-      ],
-    },
-    {
-      path: "utils",
-      children: [
-        {
-          path: "util-color",
-          element: <UtilsColor />,
-        },
-      ],
-    },
-    {
-      path: "utils",
-      children: [
-        {
-          path: "util-shadow",
-          element: <UtilsShadow />,
-        },
-      ],
-    },
-    {
-      path: "icons",
-      children: [
-        {
-          path: "tabler-icons",
-          element: <UtilsTablerIcons />,
-        },
-      ],
-    },
-    {
-      path: "icons",
-      children: [
-        {
-          path: "material-icons",
-          element: <UtilsMaterialIcons />,
-        },
-      ],
-    },
-    {
-      path: "sample-page",
-      element: <SamplePage />,
+      path: "/latestbooks",
+      element: <LatestBooks />,
     },
   ],
-  */
 };
 
 export default MainRoutes;

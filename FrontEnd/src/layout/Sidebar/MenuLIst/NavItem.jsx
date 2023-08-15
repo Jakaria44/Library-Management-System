@@ -1,10 +1,11 @@
-import { forwardRef } from "react";
-import { Link } from "react-router-dom";
+import { forwardRef, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 // material-ui
 import {
   Avatar,
   Chip,
+  Fade,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -29,8 +30,8 @@ const NavItem = ({ item, level }) => {
   const theme = useTheme();
   const menu = useMenu();
   const dispatch = useMenuDispatch();
-  //   const { pathname } = useLocation();
-  const matchesSM = useMediaQuery(theme.breakpoints.down("lg"));
+  const { pathname } = useLocation();
+  const matchesSM = useMediaQuery(theme.breakpoints.down("md"));
 
   //   const itemIcon = item?.icon ? (
   //     <Icon stroke={1.5} size="1.3rem" />
@@ -45,37 +46,31 @@ const NavItem = ({ item, level }) => {
   //   );
   const itemIcon = item?.icon;
 
-  //   let itemTarget = '_self';
-  //   if (item.target) {
-  //     itemTarget = '_blank';
-  //   }
-
   let listItemProps = {
     // eslint-disable-next-line
     component: forwardRef((props, ref) => (
-      <Link ref={ref} {...props} to={item.url} />
+        <Link ref={ref} {...props} to={item.url} />
+      
     )),
   };
-  //   if (item?.external) {
-  //     listItemProps = { component: 'a', href: item.url, target: itemTarget };
-  //   }
 
   const itemHandler = (id) => {
-    dispatch({ type: actions.OPEN_MENU, id });
+    dispatch({ type: actions.OPEN_MENU, opened: id });
     if (matchesSM) dispatch({ type: actions.TOGGLE_SIDE_DRAWER });
   };
 
   // active menu item on page load
-  //   useEffect(() => {
-  //     const currentIndex = document.location.pathname
-  //       .toString()
-  //       .split('/')
-  //       .findIndex((id) => id === item.id);
-  //     if (currentIndex > -1) {
-  //       dispatch({ type: MENU_OPEN, id: item.id });
-  //     }
-  //     // eslint-disable-next-line
-  //   }, [pathname]);
+  useEffect(() => {
+    const currentIndex = document.location.pathname
+      .toString()
+      .split("/")
+      .findIndex((id) => id === item.id);
+    if (currentIndex > -1) {
+      dispatch({ type: actions.OPEN_MENU, id: item.id });
+    }
+
+    // eslint-disable-next-line
+  }, [pathname]);
 
   return (
     <ListItemButton

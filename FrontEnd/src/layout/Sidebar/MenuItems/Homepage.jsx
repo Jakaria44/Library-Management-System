@@ -1,6 +1,6 @@
 // assets
 
-import { Home } from "@mui/icons-material";
+import { AccessTime, DensityMedium, Home } from "@mui/icons-material";
 
 // constant
 
@@ -8,31 +8,31 @@ import { Home } from "@mui/icons-material";
 
 const Homepage = {
   id: "Homepage",
-  title: "Homepage",
+  title: "General",
   type: "group",
   children: [
     {
       id: "default",
       title: "Homepage",
       type: "item",
-      url: "/Homepage/default",
+      url: "/",
       icon: <Home />,
       breadcrumbs: false,
     },
     {
-      id: "default",
-      title: "Homepage",
+      id: "allBooks",
+      title: "All Books",
       type: "item",
-      url: "/Homepage/default",
-      icon: <Home />,
+      url: "/allbooks",
+      icon: <DensityMedium />,
       breadcrumbs: false,
     },
     {
-      id: "default",
-      title: "Homepage",
+      id: "latestBooks",
+      title: "Latest Books",
       type: "item",
-      url: "/Homepage/default",
-      icon: <Home />,
+      url: "/latestbooks",
+      icon: <AccessTime />,
       breadcrumbs: false,
     },
   ],

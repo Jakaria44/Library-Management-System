@@ -6,7 +6,7 @@ const MenuContext = createContext(true);
 const MenuDispatchContext = createContext(null);
 const initialState = {
   opened: true,
-  id: 0,
+  id: 'default',
 };
 export function MenuContextProvider({ children }) {
   const [menuOpened, dispatch] = useReducer(MenuReducer, initialState);
@@ -21,9 +21,9 @@ export function MenuContextProvider({ children }) {
 }
 
 function MenuReducer(state, action) {
+  console.log(action);
   switch (action.type) {
     case actions.TOGGLE_SIDE_DRAWER: {
-      console.log(action.id);
       return {
         ...state,
         opened: !state.opened,
@@ -32,7 +32,7 @@ function MenuReducer(state, action) {
     case actions.OPEN_MENU: {
       return {
         ...state,
-        id: action.id.id,
+        id: action.opened,
       };
     }
     default: {
