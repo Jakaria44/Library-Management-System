@@ -1,11 +1,9 @@
-import { useRoutes } from 'react-router-dom';
+import { createBrowserRouter } from "react-router-dom";
 
 // routes
-import MainRoutes from './MainRoutes';
-import AuthenticationRoutes from './AuthenticationRoutes';
+import AuthenticationRoutes from "./AuthenticationRoutes";
+import MainRoutes from "./MainRoutes";
 
 // ==============================|| ROUTING RENDER ||============================== //
 
-export default function Routes() {
-  return useRoutes([MainRoutes, AuthenticationRoutes]);
-}
+export default createBrowserRouter([MainRoutes, AuthenticationRoutes]);

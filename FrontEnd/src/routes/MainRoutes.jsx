@@ -3,6 +3,7 @@ import { lazy } from "react";
 // project imports
 
 import LatestBooks from "../pages/LatestBooks";
+import { loader as allBooksLoader } from "./../pages/allbooks/AllBooks";
 import Loadable from "./../ui-component/Loadable";
 // main routing
 const Structure = Loadable(lazy(() => import("../layout/Structure.jsx")));
@@ -24,6 +25,7 @@ const MainRoutes = {
     {
       path: "/allbooks",
       element: <AllBooks />,
+      loader: allBooksLoader,
     },
     {
       path: "/latestbooks",
@@ -31,5 +33,4 @@ const MainRoutes = {
     },
   ],
 };
-
 export default MainRoutes;

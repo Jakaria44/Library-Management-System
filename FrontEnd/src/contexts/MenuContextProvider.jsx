@@ -4,9 +4,11 @@ import { actions } from "./actions.jsx";
 // menu opened
 const MenuContext = createContext(true);
 const MenuDispatchContext = createContext(null);
+
+// TODO: add initial id from current location of the url
 const initialState = {
   opened: true,
-  id: 'default',
+  id: "default",
 };
 export function MenuContextProvider({ children }) {
   const [menuOpened, dispatch] = useReducer(MenuReducer, initialState);

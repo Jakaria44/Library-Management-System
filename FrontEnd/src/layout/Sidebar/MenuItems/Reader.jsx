@@ -1,6 +1,6 @@
 // assets
 
-import { LocalLibrary } from "@mui/icons-material";
+import { Favorite, LocalLibrary } from "@mui/icons-material";
 
 // constant
 
@@ -15,34 +15,19 @@ const Reader = {
       id: "default",
       title: "Reader",
       type: "item",
-      url: "/Reader/default",
+      url: "/",
       icon: <LocalLibrary />,
       breadcrumbs: false,
     },
     {
-      id: "default",
-      title: "Reader",
+      id: "favourite",
+      title: "Favourites",
       type: "item",
-      url: "/Reader/default",
-      icon: <LocalLibrary />,
+      url: "/",
+      icon: <Favorite />,
       breadcrumbs: false,
     },
-    {
-      id: "default",
-      title: "Reader",
-      type: "item",
-      url: "/Reader/default",
-      icon: <LocalLibrary />,
-      breadcrumbs: false,
-    },
-    {
-      id: "default",
-      title: "Reader",
-      type: "item",
-      url: "/Reader/default",
-      icon: <LocalLibrary />,
-      breadcrumbs: false,
-    },
+    
   ],
 };
 
