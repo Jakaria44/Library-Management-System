@@ -1,7 +1,7 @@
 import { ThemeProvider } from "@mui/material";
 import { createContext, useContext, useEffect, useReducer } from "react";
-import { DarkTheme } from "../themes/DarkTheme";
-import { LightTheme } from "../themes/LightTheme";
+import { Theme } from "../themes/LightTheme";
+import { actions } from "./actions";
 
 const ThemeContext = createContext("light");
 const ThemeDispatchContext = createContext(null);
@@ -16,9 +16,7 @@ export function ThemeContextProvider({ children }) {
   return (
     <ThemeContext.Provider value={theme}>
       <ThemeDispatchContext.Provider value={dispatch}>
-        <ThemeProvider theme={theme === "light" ? LightTheme : DarkTheme}>
-          {children}
-        </ThemeProvider>
+        <ThemeProvider theme={Theme(theme)}>{children}</ThemeProvider>
       </ThemeDispatchContext.Provider>
     </ThemeContext.Provider>
   );
@@ -26,7 +24,7 @@ export function ThemeContextProvider({ children }) {
 
 function themeReducer(state, action) {
   switch (action.type) {
-    case "toggle": {
+    case actions.TOGGLE_THEME: {
       return state === "light" ? "dark" : "light";
     }
     default: {

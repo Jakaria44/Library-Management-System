@@ -1,11 +1,27 @@
 export default function componentStyleOverrides(theme) {
-  const bgColor = theme.colors?.grey50;
+  const bgColor = theme.background;
   return {
     MuiButton: {
       styleOverrides: {
         root: {
           fontWeight: 500,
           borderRadius: '4px'
+        }
+      }
+    },
+    MuiAvatar:{
+      styleOverrides: {
+        root: {
+          transition: "all .2s ease-in-out",
+          color: theme.textDark,
+          background: theme.background,
+          '&:hover': {
+            color: theme.background,
+            background: theme.heading,
+          }
+        },
+        rounded: {
+          borderRadius: "12px"
         }
       }
     },
@@ -158,14 +174,7 @@ export default function componentStyleOverrides(theme) {
         }
       }
     },
-    MuiAvatar: {
-      styleOverrides: {
-        root: {
-          color: theme.colors?.primaryDark,
-          background: theme.colors?.primary200
-        }
-      }
-    },
+    
     MuiChip: {
       styleOverrides: {
         root: {

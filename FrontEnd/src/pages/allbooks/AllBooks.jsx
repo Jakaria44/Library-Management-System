@@ -16,7 +16,7 @@ const AllBooks = () => {
   // console.log(allBooks.data);
 
   return (
-    <Grid container spacint={2}>
+    <Grid container spacing={2}>
       <Filters />
       <React.Suspense fallback={<p style={{ margin: "auto" }}>AllBooks...</p>}>
         <Await

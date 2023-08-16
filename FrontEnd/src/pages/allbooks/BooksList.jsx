@@ -8,13 +8,16 @@ const BooksList = () => {
     console.log(data);
   }, []);
   return (
-    <Grid item xs={12} lg={3}>
-      <Typography variant="h4">Books List</Typography>
-      {data?.map((books) => (
-        <Typography variant="button" gutterBottom={true} key={books.ISBN}>
-          {books.TITLE}
-        </Typography>
-      ))}
+    <Grid item xs={12} lg={9}>
+      <Grid item container direction="row" xs={12}>
+        {data?.map((books) => (
+          <Grid item xs key={books.ISBN}>
+            <Typography variant="button" gutterBottom={true}>
+              {books.TITLE}
+            </Typography>
+          </Grid>
+        ))}
+      </Grid>
     </Grid>
   );
 };

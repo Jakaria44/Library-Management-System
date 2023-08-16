@@ -30,9 +30,8 @@ const IconChevronRight = logo;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
     ...theme.typography.mainContent,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-    
+    borderRadius: 18,
+
     transition: theme.transitions.create(
       "margin",
       open
@@ -45,7 +44,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
             duration: theme.transitions.duration.leavingScreen,
           }
     ),
-    
+
     [theme.breakpoints.up("md")]: {
       marginLeft: open ? 0 : -(drawerWidth - 20),
       width: `calc(100% - ${drawerWidth}px)`,
@@ -106,8 +105,6 @@ const Structure = () => {
 
       {/*/!* main content *!/*/}
       <Main theme={theme} open={leftDrawerOpened.opened}>
-        {/*  /!* breadcrumb *!/*/}
-        {/* <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign /> */}
         <Outlet />
       </Main>
     </Box>

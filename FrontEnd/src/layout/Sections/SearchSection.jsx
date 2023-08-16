@@ -30,6 +30,7 @@ const PopperStyle = styled(Popper, { shouldForwardProp })(({ theme }) => ({
   width: "99%",
   top: "-55px !important",
   padding: "0 12px",
+
   [theme.breakpoints.down("sm")]: {
     padding: "0 10px",
   },
@@ -38,10 +39,12 @@ const PopperStyle = styled(Popper, { shouldForwardProp })(({ theme }) => ({
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(
   ({ theme }) => ({
     width: 734,
+    // background: {theme.palette.background},
     marginLeft: 16,
     paddingLeft: 16,
     paddingRight: 16,
     transition: "all .2s ease-in-out",
+    color: theme.palette.heading,
     "& input": {
       background: "transparent !important",
       paddingLeft: "4px !important",
@@ -62,12 +65,12 @@ const HeaderAvatarStyle = styled(Avatar, { shouldForwardProp })(
     ...theme.typography.commonAvatar,
     ...theme.typography.mediumAvatar,
     transition: "all .2s ease-in-out",
-    background: theme.palette.secondary.light,
-    color: theme.palette.primary.dark,
-    "&:hover": {
-      background: theme.palette.secondary.dark,
-      color: theme.palette.primary.light,
-    },
+    // background: theme.palette.background,
+    // color: theme.palette.primary.dark,
+    // "&:hover": {
+    //   background: theme.palette.secondary.dark,
+    //   color: theme.palette.primary.light,
+    // },
   })
 );
 
@@ -82,9 +85,10 @@ const MobileSearch = ({ value, setValue, popupState, searchClickHandler }) => {
       value={value}
       onChange={(e) => setValue(e.target.value)}
       placeholder="Search"
+      sx={{ color: theme.palette.background }}
       startAdornment={
         <InputAdornment position="start">
-          <SearchOutlinedIcon />
+          <SearchOutlinedIcon color="theme.palette.heading" />
         </InputAdornment>
       }
       endAdornment={
@@ -104,12 +108,12 @@ const MobileSearch = ({ value, setValue, popupState, searchClickHandler }) => {
                 sx={{
                   ...theme.typography.commonAvatar,
                   ...theme.typography.mediumAvatar,
-                  background: theme.palette.secondary.light,
-                  color: theme.palette.secondary.dark,
-                  "&:hover": {
-                    background: theme.palette.secondary.dark,
-                    color: theme.palette.primary.light,
-                  },
+                  // background: theme.palette.secondary.light,
+                  // color: theme.palette.secondary.dark,
+                  // "&:hover": {
+                  //   background: theme.palette.secondary.dark,
+                  //   color: theme.palette.primary.light,
+                  // },
                 }}
                 {...bindToggle(popupState)}
               >
@@ -148,7 +152,7 @@ const SearchSection = () => {
                   >
                     <SearchOutlinedIcon
                       fontSize="small"
-                      color={theme.palette.grey[500]}
+                      color={theme.background}
                     />
                   </HeaderAvatarStyle>
                 </ButtonBase>
@@ -163,7 +167,6 @@ const SearchSection = () => {
                     >
                       <Card
                         sx={{
-                          background: "#fff",
                           [theme.breakpoints.down("sm")]: {
                             border: 0,
                             boxShadow: "none",
@@ -219,8 +222,6 @@ const SearchSection = () => {
                     sx={{
                       ...theme.typography.commonAvatar,
                       ...theme.typography.mediumAvatar,
-                      background: theme.palette.secondary.light,
-                      color: theme.palette.secondary.dark,
                       "&:hover": {
                         background: theme.palette.error.dark,
                         color: theme.palette.primary.light,
