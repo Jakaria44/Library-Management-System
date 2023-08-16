@@ -5,6 +5,7 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import Routes from "./Routes/Routes.jsx";
 import "./assets/scss/style.scss";
+
 import { MenuContextProvider } from "./contexts/MenuContextProvider.jsx";
 import { ThemeContextProvider } from "./contexts/ThemeContextProvider.jsx";
 ReactDOM.createRoot(document.getElementById("root")).render(
