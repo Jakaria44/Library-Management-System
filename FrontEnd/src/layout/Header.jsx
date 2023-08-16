@@ -1,7 +1,5 @@
-import PropTypes from "prop-types";
-
 // material-ui
-import { Avatar, Box, ButtonBase, IconButton } from "@mui/material";
+import { Avatar, Box, ButtonBase } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 // project imports
@@ -11,15 +9,10 @@ import {
   useMyTheme,
   useMyThemeDispatch,
 } from "../contexts/ThemeContextProvider.jsx";
+import { actions } from "../contexts/actions.jsx";
 import LogoSection from "./Sections/LogoSection.jsx";
 import ProfileSection from "./Sections/ProfileSection.jsx";
 import SearchSection from "./Sections/SearchSection.jsx";
-// import SearchSection.jsx from './SearchSection.jsx';
-// import ProfileSection from './ProfileSection';
-// import NotificationSection from './NotificationSection';
-
-// assets
-// import { IconMenu2 } from '@tabler/icons';
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
@@ -52,18 +45,10 @@ const Header = ({ handleLeftDrawerToggle }) => {
             sx={{
               ...theme.typography.commonAvatar,
               ...theme.typography.mediumAvatar,
-              transition: "all .2s ease-in-out",
-              background: theme.palette.primary.light,
-              color: theme.palette.secondary.dark,
-              "&:hover": {
-                background: theme.palette.secondary.dark,
-                color: theme.palette.primary.light,
-              },
             }}
             onClick={handleLeftDrawerToggle}
-            color="inherit"
           >
-            <MenuRoundedIcon fontSize="small" />
+            <MenuRoundedIcon fontSize="medium" />
           </Avatar>
         </ButtonBase>
       </Box>
@@ -75,24 +60,26 @@ const Header = ({ handleLeftDrawerToggle }) => {
 
       {/* notification & profile */}
       <Box>
-        <IconButton
+        <Avatar
+          variant="rounded"
+          sx={{
+            ...theme.typography.commonAvatar,
+            ...theme.typography.mediumAvatar,
+          }}
           onClick={() => {
             dispatch({
-              type: "toggle",
+              type: actions.TOGGLE_THEME,
             });
           }}
         >
           {mode === "dark" ? <LightModeOutlined /> : <DarkModeOutlined />}
-        </IconButton>
+        </Avatar>
       </Box>
+      <Box sx={{ flexGrow: 1 }} />
 
       <ProfileSection />
     </>
   );
-};
-
-Header.propTypes = {
-  handleLeftDrawerToggle: PropTypes.func,
 };
 
 export default Header;

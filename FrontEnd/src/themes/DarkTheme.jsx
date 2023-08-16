@@ -12,16 +12,15 @@ export const DarkTheme = () => {
   const color = colors;
 
   const themeOption = {
+    mode: "dark",
     colors: color,
-    heading: color.grey900,
-    paper: color.paper,
-    backgroundDefault: color.paper,
-    background: color.primaryLight,
-    darkTextPrimary: color.grey700,
-    darkTextSecondary: color.grey500,
-    textDark: color.grey900,
-    menuSelected: color.secondaryDark,
-    menuSelectedBack: color.secondaryLight,
+    heading: color.darkTextTitle,
+    paper: color.darkPaper,
+    darkTextPrimary: color.grey100,
+    darkTextSecondary: color.grey50,
+    textDark: color.grey300,
+    menuSelected: color.darkSecondaryDark,
+    menuSelectedBack: color.darkSecondaryDark,
     divider: color.grey200,
   };
 
@@ -46,4 +45,4 @@ export const DarkTheme = () => {
   return themes;
 };
 
-export default DarkTheme;
+export default DarkTheme();

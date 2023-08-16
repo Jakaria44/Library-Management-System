@@ -8,26 +8,27 @@ import componentStyleOverrides from "./compStyleOverride";
 import themePalette from "./palette";
 import themeTypography from "./typography";
 
-export const LightTheme = () => {
+export const Theme = (mode) => {
   const color = colors;
 
   const themeOption = {
+    // these customization is only to override the default theme with the typography.
     colors: color,
-    heading: color.grey900,
-    paper: color.paper,
-    backgroundDefault: color.paper,
-    background: color.primaryLight,
-    darkTextPrimary: color.grey700,
-    darkTextSecondary: color.grey500,
-    textDark: color.grey900,
-    menuSelected: color.secondaryDark,
-    menuSelectedBack: color.secondaryLight,
-    divider: color.grey200,
+    heading: mode === "light" ? color.grey900 : color.grey50,
+    paper: mode === "light" ? color.paper : color.darkPaper,
+    backgroundDefault: mode === "light" ? color.paper : color.grey900,
+    background: mode === "light" ? color.primaryLight : color.darkPaper,
+    darkTextPrimary: mode === "light" ? color.grey700 : color.grey50,
+    darkTextSecondary: mode === "light" ? color.grey500 : color.grey100,
+    textDark: mode === "light" ? color.grey900 : color.grey50,
+    menuSelectedBack: mode === "light" ? color.grey900 : color.grey100,
+    menuSelected: mode === "light" ? color.secondaryLight : color.grey900,
+    divider: mode === "light" ? color.grey200 : color.grey800,
   };
 
   const themeOptions = {
     direction: "ltr",
-    palette: themePalette(themeOption),
+    palette: themePalette(themeOption, mode),
     mixins: {
       toolbar: {
         minHeight: "48px",
@@ -46,4 +47,4 @@ export const LightTheme = () => {
   return themes;
 };
 
-export default LightTheme;
+export default Theme;
