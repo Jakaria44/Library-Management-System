@@ -12,7 +12,7 @@ const Reader = {
   type: "group",
   children: [
     {
-      id: "default",
+      id: "reader",
       title: "Reader",
       type: "item",
       url: "/",

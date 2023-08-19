@@ -5,7 +5,14 @@ export default function componentStyleOverrides(theme) {
       styleOverrides: {
         root: {
           fontWeight: 500,
-          borderRadius: '4px'
+          borderRadius: '4px',
+          color: theme.textDark,
+          transition: "all .2s ease-in-out",
+          background: theme.buttonBackground,
+          '&:hover' : {
+            color: theme.background,
+            background: theme.heading
+          }
         }
       }
     },
@@ -35,6 +42,14 @@ export default function componentStyleOverrides(theme) {
         },
         rounded: {
           borderRadius: "12px"
+        }
+      }
+    },
+    MuiCard : {
+      styleOverrides: {
+        root: {
+          borderRadius: "12px",
+          background : theme.backgroundDefault,
         }
       }
     },

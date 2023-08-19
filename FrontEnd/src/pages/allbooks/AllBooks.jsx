@@ -8,7 +8,7 @@ import React from "react";
 
 export async function loader() {
   return defer({
-    allBooks: server.get("/all-books"),
+    allBooks: server.get("/all-books-sum"),
   });
 }
 const AllBooks = () => {

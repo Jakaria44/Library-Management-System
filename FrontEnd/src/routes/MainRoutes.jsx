@@ -2,7 +2,9 @@ import { lazy } from "react";
 
 // project imports
 
+import Details from "../pages/Details";
 import LatestBooks from "../pages/LatestBooks";
+import { loader as bookDetailsLoader } from "./../pages/Details";
 import { loader as allBooksLoader } from "./../pages/allbooks/AllBooks";
 import Loadable from "./../ui-component/Loadable";
 // main routing
@@ -11,7 +13,8 @@ const Structure = Loadable(lazy(() => import("../layout/Structure.jsx")));
 const AllBooks = Loadable(lazy(() => import("./../pages/allbooks/AllBooks")));
 const HomePage = Loadable(lazy(() => import("./../pages/Home")));
 const ErrorPage = Loadable(lazy(() => import("./../pages/ErrorPage")));
-// ==============================|| MAIN ROUTING ||============================== //
+
+// ==============================| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
   path: "/",
@@ -21,6 +24,11 @@ const MainRoutes = {
     {
       path: "/",
       element: <HomePage />,
+    },
+    {
+      path: "/details/:id",
+      element: <Details />,
+      loader: bookDetailsLoader,
     },
     {
       path: "/allbooks",
