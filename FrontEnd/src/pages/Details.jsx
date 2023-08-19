@@ -1,46 +1,38 @@
-import React, { useEffect } from 'react'
-import { Await, defer, useAsyncValue, useLoaderData } from 'react-router-dom'
+import  { useEffect, useState } from 'react'
+import { Grid } from '@mui/material'
+
+
 import server from "./../HTTP/httpCommonParam";
 
-export async function loader() {
-  return defer({
-    // TODO : CHANGE THIS
-    bookDetails: server.get("/all-books-sum"),
-  });
-}
-
 const Details = () => {
-  const { bookDetails } = useLoaderData();
+const [data, setData] = useState(null);
 
+  const loadData = async () => {
+    const response = await server.get(`/book?id=${window.location.pathname.split("/")[2]}`);
+    setData(response.data);
 
+  }
+  useEffect(() => {
+    loadData();
+  },[]);
   return (
     <>
-      <React.Suspense
-        fallback={<p style={{ margin: "auto" }}>Book Details...</p>}
-      >
-        <Await
-          resolve={bookDetails}
-          errorElement={
-            <p style={{ margin: "auto" }}>Error loading books information!</p>
-          }
-        >
-          <BookDetails book={bookDetails} />
-        </Await>
-      </React.Suspense>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6} container   >
+          {data &&  <img src={data.IMAGE} alt={data.TITLE} loading="lazy"/>}
+        </Grid>
+        <Grid item xs={12} sm={6} container>
+          <Grid item xs container direction="column" spacing={2}>
+            <Grid item xs>
+              {data && <h1>{data.TITLE}</h1>}
+              {data && <h5>{data.DESCRIPTION}</h5>}
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
     </>
   );
 };
 
 export default Details;
 
-const BookDetails = ({ book }) => {
-  const { data } = useAsyncValue();
-  useEffect(() => {
-    console.log(data);
-  }, []);
-  return (
-    <>
-      <div>details</div>
-    </>
-  );
-};

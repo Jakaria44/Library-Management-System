@@ -4,7 +4,7 @@ import { lazy } from "react";
 
 import Details from "../pages/Details";
 import LatestBooks from "../pages/LatestBooks";
-import { loader as bookDetailsLoader } from "./../pages/Details";
+
 import { loader as allBooksLoader } from "./../pages/allbooks/AllBooks";
 import Loadable from "./../ui-component/Loadable";
 // main routing
@@ -28,7 +28,6 @@ const MainRoutes = {
     {
       path: "/details/:id",
       element: <Details />,
-      loader: bookDetailsLoader,
     },
     {
       path: "/allbooks",

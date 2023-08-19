@@ -10,6 +10,7 @@ export default function componentStyleOverrides(theme) {
           transition: "all .2s ease-in-out",
           background: theme.buttonBackground,
           '&:hover' : {
+            fontWeight: 'bold',
             color: theme.background,
             background: theme.heading
           }

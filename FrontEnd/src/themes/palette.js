@@ -63,7 +63,7 @@ export default function themePalette(theme, mode) {
           },
           text: {
             primary: theme.colors?.primaryLight,
-            secondary: theme.colors?.primaryLight,
+            secondary: theme.colors?.grey500,
             dark: theme.colors?.primaryLight,
             hint: theme.colors?.primaryLight
           },
@@ -76,12 +76,12 @@ export default function themePalette(theme, mode) {
           itemColor: theme.colors?.primaryLight,
           itemHover: theme.colors?.primaryLight,
         }),
-      text: {
-        primary: theme.darkTextPrimary,
-        secondary: theme.darkTextSecondary,
-        dark: theme.textDark,
-        hint: theme.colors?.grey100,
-      },
+    text: {
+      primary: theme.darkTextPrimary,
+      secondary: theme.darkTextSecondary,
+      dark: theme.textDark,
+      hint: theme.colors?.grey100,
+    },
     orange: {
       light: theme.colors?.orangeLight,
       main: theme.colors?.orangeMain,
