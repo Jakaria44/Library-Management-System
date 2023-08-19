@@ -23,7 +23,7 @@ export function MenuContextProvider({ children }) {
 }
 
 function MenuReducer(state, action) {
-  console.log(action);
+  // console.log(action);
   switch (action.type) {
     case actions.TOGGLE_SIDE_DRAWER: {
       return {

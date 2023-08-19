@@ -115,6 +115,9 @@ export default function themePalette(theme, mode) {
     },
     component: {
       background: theme.backgroundComponent,
+    },
+    heading: {
+      main: theme.heading,
     }
   };
 }

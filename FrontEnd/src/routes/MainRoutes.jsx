@@ -4,7 +4,7 @@ import { lazy } from "react";
 
 import Details from "../pages/Details";
 import LatestBooks from "../pages/LatestBooks";
-
+import { loader as bookDetailsLoader } from "./../pages/Details";
 import { loader as allBooksLoader } from "./../pages/allbooks/AllBooks";
 import Loadable from "./../ui-component/Loadable";
 // main routing
@@ -26,13 +26,15 @@ const MainRoutes = {
       element: <HomePage />,
     },
     {
-      path: "/details/:id",
-      element: <Details />,
-    },
-    {
       path: "/allbooks",
       element: <AllBooks />,
       loader: allBooksLoader,
+    },
+    {
+      path: "/details/:id",
+      element: <Details />,
+      loader: bookDetailsLoader,
+      // errorElement: (<p style={{ margin: "auto" }}>Error loading all books!</p>)
     },
     {
       path: "/latestbooks",
