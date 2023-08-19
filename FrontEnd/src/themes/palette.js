@@ -31,15 +31,10 @@ export default function themePalette(theme, mode) {
             main: theme.colors?.errorMain,
             dark: theme.colors?.errorDark,
           },
-          // text: {
-          //   primary: theme.darkTextPrimary,
-          //   secondary: theme.darkTextSecondary,
-          //   dark: theme.textDark,
-          //   hint: theme.colors?.grey100,
-          // },
+          
           background: {
-            paper: theme.backgroundDefault,
-            default: theme.background,
+            paper: theme.background,
+            default: theme.backgroundDefault,
           },
           itemBackground : theme.colors?.secondaryLight,
           itemBackgroundHover : theme.colors?.secondaryDark,
@@ -73,15 +68,20 @@ export default function themePalette(theme, mode) {
             hint: theme.colors?.primaryLight
           },
           background: {
-            paper: theme.colors?.darkPaper,
-            default: theme.colors?.darkBackground,
+            paper: theme.background,
+            default: theme.backgroundDefault
           },
           itemBackground : theme.colors?.secondaryDark,
           itemBackgroundHover : theme.colors?.darkBackground,
           itemColor: theme.colors?.primaryLight,
           itemHover: theme.colors?.primaryLight,
         }),
-
+      text: {
+        primary: theme.darkTextPrimary,
+        secondary: theme.darkTextSecondary,
+        dark: theme.textDark,
+        hint: theme.colors?.grey100,
+      },
     orange: {
       light: theme.colors?.orangeLight,
       main: theme.colors?.orangeMain,
@@ -113,5 +113,8 @@ export default function themePalette(theme, mode) {
       800: theme.colors?.darkBackground,
       900: theme.colors?.darkPaper,
     },
+    component: {
+      background: theme.backgroundComponent,
+    }
   };
 }
