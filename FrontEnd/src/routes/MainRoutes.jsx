@@ -26,14 +26,15 @@ const MainRoutes = {
       element: <HomePage />,
     },
     {
-      path: "/details/:id",
-      element: <Details />,
-      loader: bookDetailsLoader,
-    },
-    {
       path: "/allbooks",
       element: <AllBooks />,
       loader: allBooksLoader,
+    },
+    {
+      path: "/details/:id",
+      element: <Details />,
+      loader: bookDetailsLoader,
+      // errorElement: (<p style={{ margin: "auto" }}>Error loading all books!</p>)
     },
     {
       path: "/latestbooks",

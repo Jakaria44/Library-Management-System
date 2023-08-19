@@ -26,13 +26,13 @@ const BookCard = ({ book }) => {
         >
           {book.TITLE}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body1" color="text.secondary">
           {book.AUTHORS}
         </Typography>
       </CardContent>
       <CardActions>
         <Link to={`/details/${book.ISBN}`}>
-          <Button center size="small">
+          <Button center size="medium">
             Details
           </Button>
         </Link>

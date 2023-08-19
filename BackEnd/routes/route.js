@@ -37,8 +37,8 @@ import {
   getTopBook,
   getUserRatedBooks,
   getUserReviewedBooks,
-  getAllBookSum
-} from '../controllers/getController.js';
+  getAllBookSum, getBookDetailsByID,
+} from '../controllers/getController.js'
 import {decodeToken, loginAdmin, loginUser, logout, postAdmin, postUser} from '../controllers/loginController.js';
 import {
   addAuthor,
@@ -69,13 +69,15 @@ let urlencodedParser = bodyParser.urlencoded({extended: true});
 
 
 router.route('/all-books').get(getAllBook);
+router.route('/book').get(getBookDetailsByID);
+
 router.route('/all-books-sum').get(getAllBookSum);
 router.route('/book/title').get(getBookByTitle);
 router.route('/topBooks').get(getTopBook);
 router.route('/recentBooks').get(getRecentBook);
 router.route('/avg-rating').get(getAvgRating);
 //??
-router.route('/book').get(verifyGeneralToken, getBook).post(verifyAdminToken, urlencodedParser, postBook);
+// router.route('/book').get(verifyGeneralToken, getBook).post(verifyAdminToken, urlencodedParser, postBook);
 router.route('/all-authors').get(getAllAuthors);
 router.route('/all-publishers').get(getAllPublishers);
 router.route('/get-all-genre').get(getAllGenre);

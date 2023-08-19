@@ -5,6 +5,7 @@ import Filters from "./Filters";
 
 import { Grid } from "@mui/material";
 import React from "react";
+import CircularSpinner from "../../component/CircularSpinner";
 
 export async function loader() {
   return defer({
@@ -18,7 +19,7 @@ const AllBooks = () => {
   return (
     <Grid container spacing={2}>
       <Filters />
-      <React.Suspense fallback={<p style={{ margin: "auto" }}>AllBooks...</p>}>
+      <React.Suspense fallback={<CircularSpinner/>}>
         <Await
           resolve={allBooks}
           errorElement={

@@ -21,7 +21,7 @@ export const Theme = (mode) => {
     backgroundComponent: mode === "light" ? color.grey500 : color.grey600,
     buttonBackground: mode==="light" ? color.primaryLight : color.grey700,
     darkTextPrimary: mode === "light" ? color.grey700 : color.grey50,
-    darkTextSecondary: mode === "light" ? color.grey500 : color.grey100,
+    darkTextSecondary: mode === "light" ? color.grey500 : color.grey500,
     textDark: mode === "light" ? color.grey900 : color.grey50,
     menuSelectedBack: mode === "light" ? color.grey900 : color.grey100,
     menuSelected: mode === "light" ? color.secondaryLight : color.grey900,

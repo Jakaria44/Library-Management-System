@@ -27,9 +27,33 @@ import {
     getTopBookDB,
     getUserRatedBooksDB,
     getUserReviewedBooksDB,
-    getAllBookSumDB
-} from '../Database/queryFunctions.js';
+    getAllBookSumDB, getBookDetailsByIDDB,
+} from '../Database/queryFunctions.js'
 
+
+
+export async function getBookDetailsByID(req, res, next) {
+    try {
+        console.log("in getControllers.js");
+
+        const context = {};
+
+        // localhost:3000/db-api/book?id=9781408855669
+        console.log(req.query.id);
+
+        context.ISBN = req.query.id;
+
+        const rows = await getBookDetailsByIDDB(context);
+
+        if (rows.length === 1) {
+            res.status(200).json(rows[0]);
+        } else {
+            res.status(200).json(rows);
+        }
+    } catch (err) {
+        next(err);
+    }
+}
 
 export async function getAllBook(req, res, next) {
     try {
