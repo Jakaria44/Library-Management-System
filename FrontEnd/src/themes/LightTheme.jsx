@@ -1,7 +1,7 @@
 import { createTheme } from "@mui/material/styles";
 
 // assets
-import colors from "./../assets/scss/_themes-vars.module.scss";
+import colors from "../assets/scss/_themes-vars.module.scss";
 
 // project imports
 import componentStyleOverrides from "./compStyleOverride";
@@ -12,14 +12,13 @@ export const Theme = (mode) => {
   const color = colors;
 
   const themeOption = {
-    // these customization is only to override the default theme with the typography.
     colors: color,
     heading: mode === "light" ? color.grey900 : color.grey50,
     paper: mode === "light" ? color.paper : color.darkPaper,
     backgroundDefault: mode === "light" ? color.paper : colors?.darkBackground,
     background: mode === "light" ? color.primaryLight : colors?.darkPaper,
     backgroundComponent: mode === "light" ? color.grey500 : color.grey600,
-    buttonBackground: mode==="light" ? color.primaryLight : color.grey700,
+    buttonBackground: mode === "light" ? color.primaryLight : color.grey700,
     darkTextPrimary: mode === "light" ? color.grey700 : color.grey50,
     darkTextSecondary: mode === "light" ? color.grey500 : color.grey500,
     textDark: mode === "light" ? color.grey900 : color.grey50,

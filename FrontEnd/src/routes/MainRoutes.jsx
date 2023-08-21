@@ -2,9 +2,9 @@ import { lazy } from "react";
 
 // project imports
 
-import Details from "../pages/Details";
+import Details from "../pages/Details/Details";
 import LatestBooks from "../pages/LatestBooks";
-import { loader as bookDetailsLoader } from "./../pages/Details";
+import { loader as bookDetailsLoader } from "./../pages/Details/Details";
 import { loader as allBooksLoader } from "./../pages/allbooks/AllBooks";
 import Loadable from "./../ui-component/Loadable";
 // main routing

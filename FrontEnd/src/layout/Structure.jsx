@@ -7,15 +7,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
-
-// project imports
-// import Breadcrumbs from './../ui-component/extended/Breadcrumbs';
 import Header from "./Header";
-// import Sidebar from './Sidebar';
-// import Customization from '../Customization';
-// import navigation from 'menu-items';
-// import { SET_MENU } from 'store/actions';
-// assets
 import logo from "./../assets/IconChevronRight.svg";
 
 import { Outlet } from "react-router-dom";
@@ -30,7 +22,7 @@ const IconChevronRight = logo;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
     ...theme.typography.mainContent,
-    borderRadius: 18,
+    borderRadius: 12,
 
     transition: theme.transitions.create(
       "margin",

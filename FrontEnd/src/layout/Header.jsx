@@ -28,17 +28,12 @@ const Header = ({ handleLeftDrawerToggle }) => {
         sx={{
           width: 228,
           display: "flex",
+
           [theme.breakpoints.down("md")]: {
             width: "auto",
           },
         }}
       >
-        <Box
-          component="span"
-          sx={{ display: { xs: "none", md: "block" }, flexGrow: 1 }}
-        >
-          <LogoSection />
-        </Box>
         <ButtonBase sx={{ borderRadius: "12px", overflow: "hidden" }}>
           <Avatar
             variant="rounded"
@@ -51,6 +46,13 @@ const Header = ({ handleLeftDrawerToggle }) => {
             <MenuRoundedIcon fontSize="medium" />
           </Avatar>
         </ButtonBase>
+        <Box
+          component="span"
+          marginLeft="16px"
+          sx={{ display: { xs: "none", md: "block" }, flexGrow: 1 }}
+        >
+          <LogoSection />
+        </Box>
       </Box>
 
       {/* header search */}
