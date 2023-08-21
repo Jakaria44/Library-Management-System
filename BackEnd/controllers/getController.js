@@ -27,7 +27,8 @@ import {
     getTopBookDB,
     getUserRatedBooksDB,
     getUserReviewedBooksDB,
-    getAllBookSumDB, getBookDetailsByIDDB,
+    getAllBookSumDB,
+    getBookDetailsByIDDB,
 } from '../Database/queryFunctions.js'
 
 
@@ -74,6 +75,10 @@ export async function getAllBookSum(req, res, next) {
     try {
         console.log("in getControllers.js");
         const context ={};
+    // console.log(req);
+        context.sort = req.query.sort;
+        context.order = req.query.order;
+
         const rows = await getAllBookSumDB(context);
 
         if (rows.length === 1) {
@@ -176,7 +181,7 @@ export async function getBook(req, res, next) {
         const context = {};
 
         context.ISBN = req.query.ISBN;
-        context.Title = req.query.Title;
+        context.TITLE = req.query.TITLE;
 
         const rows = await getBookDB(context);
 
