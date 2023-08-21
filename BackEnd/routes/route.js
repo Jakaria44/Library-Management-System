@@ -37,7 +37,8 @@ import {
   getTopBook,
   getUserRatedBooks,
   getUserReviewedBooks,
-  getAllBookSum, getBookDetailsByID,
+  getAllBookSum,
+  getBookDetailsByID,
 } from '../controllers/getController.js'
 import {decodeToken, loginAdmin, loginUser, logout, postAdmin, postUser} from '../controllers/loginController.js';
 import {
