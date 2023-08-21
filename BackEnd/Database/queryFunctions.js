@@ -9,6 +9,7 @@ function runProcedure (procedure) {
 }
 
 export async function getBookDetailsByIDDB (context) {
+  
   let query =
     'SELECT B.ISBN,B.TITLE,B.IMAGE,B.NUMBER_OF_PAGES,B.LANGUAGE,B.PUBLISH_YEAR,' +
     'B.DESCRIPTION,B.PUBLISHER_ID,P.NAME AS PUBLISHER_NAME,P.EMAIL AS PUBLISHER_EMAIL,' +
