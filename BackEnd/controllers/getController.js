@@ -39,9 +39,9 @@ export async function getBookDetailsByID(req, res, next) {
         const context = {};
 
         // localhost:3000/db-api/book?id=9781408855669
-        console.log(req.query.id);
 
         context.ISBN = req.query.id;
+        console.log(context)
 
         const rows = await getBookDetailsByIDDB(context);
 
