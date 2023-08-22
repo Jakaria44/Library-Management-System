@@ -1,16 +1,49 @@
-get http://localhost:3000/db-api/all-books-sum
+##### ----GET All Books (sorted) ----
+GET http://localhost:3000/db-api/all-books-sum?sort=PAGE&order=DESC
 
-// output
+#OUTPUT
 [
   {
-    "ISBN": "9781408855669",
-    "TITLE": "Harry Potter and the Chamber of Secrets ",
-    "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/58c09b4d2824_110120.gif",
-    "PUBLISH_YEAR": 1998,
-    "NUMBER_OF_PAGES": 384,
+    "ISBN": "9780747591269",
+    "TITLE": "Harry Potter and the Order of the Phoenix",
+    "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/bc4625241f54_86391.jpg",
+    "PUBLISH_YEAR": null,
+    "PAGE": 901,
+    "LANGUAGE": "English",
+    "AUTHORS": "J. K. Rowling",
+    "RATING": 0,
+    "PUBLISHER": "Bloomsbury Publishing"
+  },
+  {
+    "ISBN": "9780439785969",
+    "TITLE": "Harry Potter and the Half-Blood Prince",
+    "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/127d59aff684_102401.gif",
+    "PUBLISH_YEAR": 2005,
+    "PAGE": 652,
     "LANGUAGE": "English",
     "AUTHORS": "J. K. Rowling",
     "RATING": 0,
     "PUBLISHER": "Bloomsbury Publishing"
   }
 ]
+
+#### ----GET Single Book ----
+GET http://localhost:3000/db-api/book?id=9781408855652
+
+#OUTPUT
+{
+  "ISBN": "9781408855652",
+  "TITLE": "Harry Potter and the Philosophers Stone",
+  "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/4cf25a33d8a4_86392.gif",
+  "NUMBER_OF_PAGES": 352,
+  "LANGUAGE": "English",
+  "PUBLISH_YEAR": 1997,
+  "DESCRIPTION": "Harry Potter discovers he's a wizard on his eleventh birthday and is invited to attend Hogwarts School of Witchcraft and Wizardry. There, he makes friends, learns magic, and uncovers the mystery of the Sorcerer's Stone.",
+  "PUBLISHER_ID": "1",
+  "PUBLISHER_NAME": "Bloomsbury Publishing",
+  "PUBLISHER_EMAIL": "contact@bloomsbury.com",
+  "PUBLISHER_CONTACT_NO": "+44 (0)20 7631 5600",
+  "PUBLISHER_ADDRESS": "WC1B 3DP, London, England",
+  "PUBLISHER_IMAGE": "https://media-exp1.licdn.com/dms/image/C4E0BAQEDkPybVXr47Q/company-logo_200_200/0/1544531682586?e=2159024400&v=beta&t=JjAs9ok_PwgXA9CFsXKm3bt6fjbFI4N7SZRn4ajOUVg",
+  "AUTHOR_NAME": "J. K. Rowling"
+}
