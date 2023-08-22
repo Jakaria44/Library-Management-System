@@ -1,13 +1,17 @@
 import {
+  ArrowForwardIos,
   Badge,
   BadgeOutlined,
   CalendarMonth,
+  CheckCircleOutline,
   Email,
   LocationOn,
   Person,
   Phone,
 } from "@mui/icons-material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import {
+  Box,
   Button,
   Card,
   Dialog,
@@ -19,28 +23,25 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Modal,
   Typography,
   styled,
+  useTheme,
 } from "@mui/material";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useState } from "react";
+import { v4 } from "uuid";
+import { storage } from "../firebaseConfig";
 import EditProfile from "./EditProfile";
 // import server from '../../HTTP/httpCommonParam';
 const ProfilePage = ({ user }) => {
-  const [open, setOpen] = useState(false);
-  const initialProfile = {
-    FIRST_NAME: "Jakaria",
-    LAST_NAME: "Hossain",
-    ADDRESS: "Pabna, Bangladesh",
-    CONTACT_NO: "123-456-7890",
-    GENDER: "M",
-    EMAIL: "abc@gmail.com",
-    IMAGE: "https://placekitten.com/400/400", // Replace with your image URL
-  };
-  // for edit profile,
-  const [profile, setProfile] = useState(initialProfile);
-
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
+  const [profile, setProfile] = useState(user);
+  const [selectedImage, setSelectedImage] = useState(user.IMAGE);
+  const [uploading, setUploading] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const theme = useTheme();
   const InfoList = styled(List)({
-    // Add your desired background color
     borderRadius: "4px",
     padding: "16px",
     marginBottom: "16px",
@@ -49,20 +50,52 @@ const ProfilePage = ({ user }) => {
   const isSaveDisabled = Object.values(profile).some((value) => value === "");
   const editProfileHandler = (event) => {
     event.preventDefault();
-    setOpen(true);
+    setEditProfileOpen(true);
   };
-  const handleClose = () => {
-    setOpen(false);
+  const handleClose = (event, reason = "") => {
+    if (!uploading) setEditProfileOpen(false);
   };
+  const handleSaveChanges = () => {
+    if (!selectedImage) {
+      alert("Please select an image");
+      return;
+    }
+    setUploading(true);
+    const imageRef = ref(storage, `profileImages/${v4()}`);
+
+    uploadBytes(imageRef, selectedImage)
+      .then((snapshot) => {
+        getDownloadURL(snapshot.ref).then((url) => {
+          console.log(url);
+          const updatedProfile = { ...profile, IMAGE: url };
+          setProfile(updatedProfile);
+          console.log(updatedProfile);
+          setUploading(false);
+          setShowSuccessMessage(true);
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        setUploading(false);
+      });
+  };
+  const HandleModalClosed = () => {
+    setShowSuccessMessage(false);
+    handleClose();
+  };
+  const StyledSuccessModal = styled(Modal)`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `;
+
   const ListItemStyled = styled(ListItem)({
     marginBottom: "8px",
   });
-  const ListItemTextStyled = styled(ListItemText)({});
   return (
     <Card sx={{ padding: { md: "16px" } }} elevation={3}>
       <Typography align="center" variant="h1" marginBottom={2}>
-        {" "}
-        Welcome {user.FIRST_NAME}{" "}
+        Welcome {profile.FIRST_NAME}
       </Typography>
       <Grid
         container
@@ -72,90 +105,94 @@ const ProfilePage = ({ user }) => {
         borderRadius="12px"
         sx={{ padding: { md: "16px" }, textAlign: "center" }}
       >
-        {/* Left side: Book Image */}
+        {/* Left side: user Image */}
 
         <Grid item xs={12} md={4}>
           <img
-            src={user.IMAGE}
-            alt={user.FIRST_NAME}
+            src={profile.IMAGE}
+            alt={profile.FIRST_NAME}
             style={{ width: "100%" }}
           />
         </Grid>
 
-        {/* Right side: Book Information */}
+        {/* Right side: user Information */}
         <Grid item xs={12} md={8}>
           <InfoList>
-            {user.FIRST_NAME && (
+            {profile.FIRST_NAME && (
               <ListItemStyled>
                 <ListItemIcon>
                   <Badge />
                 </ListItemIcon>
-                <ListItemText primary={`First Name: ${user.FIRST_NAME}`} />
+                <ListItemText primary={`First Name: ${profile.FIRST_NAME}`} />
               </ListItemStyled>
             )}
-            {user.LAST_NAME && (
+            {profile.LAST_NAME && (
               <ListItemStyled>
                 <ListItemIcon>
                   <BadgeOutlined />
                 </ListItemIcon>
-                <ListItemText primary={`Last Name: ${user.LAST_NAME}`} />
+                <ListItemText primary={`Last Name: ${profile.LAST_NAME}`} />
               </ListItemStyled>
             )}
-            {user.EMPLOYEE_TYPE && (
+            {profile.EMPLOYEE_TYPE && (
               <ListItemStyled>
                 <ListItemIcon>
                   <Badge />
                 </ListItemIcon>
                 <ListItemText
-                  primary={`Employee Type: ${user.EMPLOYEE_TYPE}`}
+                  primary={`Employee Type: ${profile.EMPLOYEE_TYPE}`}
                 />
               </ListItemStyled>
             )}
-            {user.JOIN_DATE && (
+            {profile.JOIN_DATE && (
               <ListItemStyled>
                 <ListItemIcon>
                   <CalendarMonth />
                 </ListItemIcon>
-                <ListItemText primary={`Join Date: ${user.JOIN_DATE}`} />
+                <ListItemText primary={`Join Date: ${profile.JOIN_DATE}`} />
               </ListItemStyled>
             )}
-            {user.ADDRESS && (
+            {profile.ADDRESS && (
               <ListItemStyled>
                 <ListItemIcon>
                   <LocationOn />
                 </ListItemIcon>
-                <ListItemText primary={`Address: ${user.ADDRESS}`} />
+                <ListItemText primary={`Address: ${profile.ADDRESS}`} />
               </ListItemStyled>
             )}
-            {user.CONTACT_NO && (
+            {profile.CONTACT_NO && (
               <ListItemStyled>
                 <ListItemIcon>
                   <Phone />
                 </ListItemIcon>
-                <ListItemText primary={`Contact: ${user.CONTACT_NO}`} />
+                <ListItemText primary={`Contact: ${profile.CONTACT_NO}`} />
               </ListItemStyled>
             )}
-            {user.EMAIL && (
+            {profile.EMAIL && (
               <ListItemStyled>
                 <ListItemIcon>
                   <Email />
                 </ListItemIcon>
-                <ListItemText primary={`Email: ${user.EMAIL}`} />
+                <ListItemText primary={`Email: ${profile.EMAIL}`} />
               </ListItemStyled>
             )}
-            {user.GENDER && (
+            {profile.GENDER && (
               <ListItemStyled>
                 <ListItemIcon>
                   <Person />
                 </ListItemIcon>
                 <ListItemText
-                  primary={`Gender: ${user.GENDER === "M" ? "Male" : "Female"}`}
+                  primary={`Gender: ${
+                    profile.GENDER === "M" ? "Male" : "Female"
+                  }`}
                 />
               </ListItemStyled>
             )}
           </InfoList>
         </Grid>
       </Grid>
+
+      {/* edit options */}
       <div
         style={{
           display: "flex",
@@ -173,32 +210,78 @@ const ProfilePage = ({ user }) => {
           Edit Profile
         </Button>
       </div>
+
+      {/* Editing  */}
+
       <Dialog
         transitionDuration={{ appear: 300, enter: 300, exit: 300 }}
-        open={open}
+        open={editProfileOpen}
         onClose={handleClose}
       >
         <DialogTitle sx={{ margin: "auto", fontSize: "1.6rem" }}>
           Edit Profile
         </DialogTitle>
         <DialogContent>
-          <EditProfile profile={profile} setProfile={setProfile} />
+          <EditProfile
+            profile={profile}
+            setProfile={setProfile}
+            setSelectedImage={setSelectedImage}
+          />
         </DialogContent>
         <DialogActions>
-          <Button variant="text" color="error" onClick={handleClose}>
-            Cancel
-          </Button>
           <Button
+            disabled={uploading}
             variant="text"
-            color="success"
-            type="submit"
-            disabled={isSaveDisabled}
+            color="error"
             onClick={handleClose}
           >
-            Save Changes
+            Cancel
           </Button>
+
+          <LoadingButton
+            onClick={handleSaveChanges}
+            endIcon={<ArrowForwardIos />}
+            loading={uploading}
+            loadingPosition="end"
+            variant="text"
+            color="success"
+            disabled={isSaveDisabled}
+            type="submit"
+          >
+            Save Changes
+          </LoadingButton>
         </DialogActions>
       </Dialog>
+
+      {/* on successfull upload. */}
+      <StyledSuccessModal
+        open={showSuccessMessage}
+        onClose={() => setShowSuccessMessage(false)}
+      >
+        <div
+          className="success-modal-content"
+          style={{
+            backgroundColor: theme.palette.background.default,
+            borderRadius: "12px",
+          }} // Use theme color
+        >
+          <Box p={2} display="flex" flexDirection="column" alignItems="center">
+            <CheckCircleOutline fontSize="large" sx={{ color: "green" }} />
+            <Typography margin={2} variant="h4">
+              Upload Successful!
+            </Typography>
+            <Button
+              margin={2}
+              padding={2}
+              variant="contained"
+              color="primary"
+              onClick={HandleModalClosed}
+            >
+              Close
+            </Button>
+          </Box>
+        </div>
+      </StyledSuccessModal>
     </Card>
   );
 };

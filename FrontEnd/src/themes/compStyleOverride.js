@@ -9,6 +9,30 @@ export default function componentStyleOverrides(theme) {
                 },
             },
         },
+        MuiLoadingButton: {
+            styleOverrides: {
+                root: {
+                    '&.Mui-disabled': {
+                        color: bgColor,
+                        background: theme.colors?.grey300,
+                    },
+                },
+                textSuccess: {
+                    color: theme.colors?.textDark,
+                    background: theme.colors?.successMain,
+                    '&:hover': {
+                        background: theme.colors?.seccessDark,
+                    },
+                },
+                loading: {
+                    color: theme.colors?.textDark,
+                    background: theme.colors?.successMain,
+                    '&:hover': {
+                        background: theme.colors?.seccessDark,
+                    },
+                },
+            },
+        },
 
         MuiButton: {
             styleOverrides: {

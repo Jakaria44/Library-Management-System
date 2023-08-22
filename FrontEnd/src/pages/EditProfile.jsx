@@ -12,8 +12,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 
-const EditProfile = ({ profile, setProfile }) => {
-  const [selectedImage, setSelectedImage] = useState(profile.IMAGE);
+const EditProfile = ({ profile, setProfile, setSelectedImage }) => {
   const [previewUrl, setPreviewUrl] = useState(profile.IMAGE);
 
   const handleImageSelect = (event) => {
@@ -21,6 +20,7 @@ const EditProfile = ({ profile, setProfile }) => {
 
     if (selectedFile) {
       setSelectedImage(selectedFile);
+      // console.log(selectedFile);
 
       const reader = new FileReader();
       reader.onload = () => {
