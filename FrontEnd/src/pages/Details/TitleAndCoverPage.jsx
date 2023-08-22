@@ -79,7 +79,7 @@ const TitleAndCoverPage = ({ book, editions }) => {
     <Grid container spacing={2}>
       {/* Left side: Book Image */}
       <Grid item xs={12} md={4}>
-        <Paper elevation={3} style={{ padding: "16px", textAlign: "center" }}>
+        <Paper elevation={3} sx={{ padding: {md:'16px'} , textAlign: "center" }}>
           <img src={book.IMAGE} alt={book.TITLE} style={{ width: "100%" }} />
           <Typography variant="body2" style={{ marginTop: "16px" }}>
             ISBN: {book.ISBN}
