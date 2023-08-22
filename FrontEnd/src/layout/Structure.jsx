@@ -7,8 +7,8 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
-import Header from "./Header";
 import logo from "./../assets/IconChevronRight.svg";
+import Header from "./Header";
 
 import { Outlet } from "react-router-dom";
 import { useMenu, useMenuDispatch } from "../contexts/MenuContextProvider.jsx";
@@ -57,6 +57,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
 
 const Structure = () => {
   const theme = useTheme();
+
   const matchDownMd = useMediaQuery(theme.breakpoints.down("md"));
   // Handle left drawer
   const leftDrawerOpened = useMenu();

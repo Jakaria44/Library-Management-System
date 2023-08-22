@@ -7,13 +7,16 @@ import LatestBooks from "../pages/LatestBooks";
 import { loader as bookDetailsLoader } from "./../pages/Details/Details";
 import { loader as allBooksLoader } from "./../pages/allbooks/AllBooks";
 import Loadable from "./../ui-component/Loadable";
+import EditProfile from '../pages/EditProfile.jsx'
 // main routing
 const Structure = Loadable(lazy(() => import("../layout/Structure.jsx")));
 
 const AllBooks = Loadable(lazy(() => import("./../pages/allbooks/AllBooks")));
 const HomePage = Loadable(lazy(() => import("./../pages/Home")));
 const ErrorPage = Loadable(lazy(() => import("./../pages/ErrorPage")));
-
+const ReaderProfile = Loadable(
+  lazy(() => import("./../pages/Reader/ReaderProfile"))
+);
 // ==============================| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -40,6 +43,21 @@ const MainRoutes = {
       path: "/latestbooks",
       element: <LatestBooks />,
     },
+    {
+      path: "/reader",
+
+      errorElement: <ErrorPage />,
+      children: [
+        {
+          path: "/reader/profile/:id",
+          element: <ReaderProfile />,
+        },
+      ],
+    },
+    {
+      path:"/editprofile/:id",
+      element: <EditProfile />,
+    }
   ],
 };
 export default MainRoutes;

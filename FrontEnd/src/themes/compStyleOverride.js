@@ -1,6 +1,7 @@
 export default function componentStyleOverrides(theme) {
     const bgColor = theme.background;
     return {
+
         MuiTooltip: {
             styleOverrides: {
                 tooltip: {
