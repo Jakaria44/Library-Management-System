@@ -1,7 +1,6 @@
 export default function componentStyleOverrides(theme) {
     const bgColor = theme.background;
     return {
-
         MuiTooltip: {
             styleOverrides: {
                 tooltip: {
@@ -10,6 +9,7 @@ export default function componentStyleOverrides(theme) {
                 },
             },
         },
+
         MuiButton: {
             styleOverrides: {
                 root: {
@@ -19,9 +19,21 @@ export default function componentStyleOverrides(theme) {
                     transition: 'all .2s ease-in-out',
                     background: theme.colors?.primaryMain,
                     '&:hover': {
-                        fontWeight: 'bold',
                         color: theme.background,
                         background: theme.heading,
+                    },
+                },
+                textError: {
+                    background: theme.colors?.errorMain,
+                    '&:hover': {
+                        background: theme.colors?.errorDark,
+                    },
+                },
+                textSuccess: {
+                    color: theme.colors?.textDark,
+                    background: theme.colors?.successMain,
+                    '&:hover': {
+                        background: theme.colors?.seccessDark,
                     },
                 },
             },

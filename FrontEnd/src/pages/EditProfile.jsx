@@ -1,9 +1,10 @@
+import { CameraAlt } from "@mui/icons-material";
 import {
   Avatar,
-  Button,
   Card,
   FormControl,
   Grid,
+  IconButton,
   InputLabel,
   MenuItem,
   Select,
@@ -11,20 +12,9 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 
-const EditProfile = () => {
-  const initialProfile = {
-    FIRST_NAME: "Jakaria",
-    LAST_NAME: "Hossain",
-    ADDRESS: "Pabna, Bangladesh",
-    CONTACT_NO: "123-456-7890",
-    GENDER: "M",
-    EMAIL: "abc@gmail.com",
-    IMAGE: "https://placekitten.com/400/400", // Replace with your image URL
-  };
-
-  const [profile, setProfile] = useState(initialProfile);
-  const [selectedImage, setSelectedImage] = useState(initialProfile.IMAGE);
-  const [previewUrl, setPreviewUrl] = useState(initialProfile.IMAGE);
+const EditProfile = ({ profile, setProfile }) => {
+  const [selectedImage, setSelectedImage] = useState(profile.IMAGE);
+  const [previewUrl, setPreviewUrl] = useState(profile.IMAGE);
 
   const handleImageSelect = (event) => {
     const selectedFile = event.target.files[0];
@@ -53,8 +43,6 @@ const EditProfile = () => {
     console.log("Profile Updated:", profile);
   };
 
-  const isSaveDisabled = Object.values(profile).some((value) => value === "");
-
   return (
     <Card>
       <form onSubmit={handleSubmit}>
@@ -67,25 +55,29 @@ const EditProfile = () => {
             alignItems="center"
           >
             <Grid item>
-              <Card>
-                {previewUrl && (
-                  <Avatar
-                    alt="Preview"
-                    src={previewUrl}
-                    sx={{ width: 150, height: 150 }}
-                  />
-                )}
-
-                <Button variant="contained" color="primary" component="label">
-                  Update Image
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageSelect}
-                    style={{ display: "none" }}
-                  />
-                </Button>
-              </Card>
+              {previewUrl && (
+                <Avatar
+                  alt="Preview"
+                  src={previewUrl}
+                  sx={{ width: 150, height: 150 }}
+                />
+              )}
+            </Grid>
+            <Grid item mt={17}>
+              <IconButton
+                alignContents="right"
+                variant="contained"
+                color="primary"
+                component="label"
+              >
+                <CameraAlt />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageSelect}
+                  style={{ display: "none" }}
+                />
+              </IconButton>
             </Grid>
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -104,14 +96,7 @@ const EditProfile = () => {
               onChange={(e) => handleChange("LAST_NAME", e.target.value)}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Address"
-              fullWidth
-              value={profile.ADDRESS}
-              onChange={(e) => handleChange("ADDRESS", e.target.value)}
-            />
-          </Grid>
+
           <Grid item xs={12} sm={6}>
             <TextField
               label="Contact Number"
@@ -120,16 +105,7 @@ const EditProfile = () => {
               onChange={(e) => handleChange("CONTACT_NO", e.target.value)}
             />
           </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              label="Email"
-              fullWidth
-              value={profile.EMAIL}
-              onChange={(e) => handleChange("EMAIL", e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">Gender</InputLabel>
               <Select
@@ -144,23 +120,22 @@ const EditProfile = () => {
               </Select>
             </FormControl>
           </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Email"
+              fullWidth
+              value={profile.EMAIL}
+              onChange={(e) => handleChange("EMAIL", e.target.value)}
+            />
+          </Grid>
 
-          <Grid
-            xs={12}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            marginTop={2}
-          >
-            <Button
-              variant="contained"
-              color="secondary"
-              style={{ margin: "8px" }}
-              type="submit"
-              disabled={isSaveDisabled}
-            >
-              Save
-            </Button>
+          <Grid item xs={12}>
+            <TextField
+              label="Address"
+              fullWidth
+              value={profile.ADDRESS}
+              onChange={(e) => handleChange("ADDRESS", e.target.value)}
+            />
           </Grid>
         </Grid>
       </form>

@@ -98,6 +98,11 @@ export default function themePalette(theme, mode) {
             main: theme.colors?.successMain,
             dark: theme.colors?.successDark,
         },
+        error: {
+            light: theme.colors?.errorLight,
+            main: theme.colors?.errorMain,
+            dark: theme.colors?.errorDark,
+        },
         grey: {
             50: theme.colors?.grey50,
             100: theme.colors?.grey100,

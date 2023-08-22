@@ -1,14 +1,19 @@
 import {
-  Badge, BadgeOutlined,
-  CalendarMonth, EditOutlined,
+  Badge,
+  BadgeOutlined,
+  CalendarMonth,
   Email,
   LocationOn,
   Person,
   Phone,
-} from '@mui/icons-material'
+} from "@mui/icons-material";
 import {
   Button,
   Card,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Grid,
   List,
   ListItem,
@@ -17,11 +22,22 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import { Link } from 'react-router-dom'
+import { useState } from "react";
+import EditProfile from "./EditProfile";
 // import server from '../../HTTP/httpCommonParam';
-const ProfilePage = ({user}) => {
-
-
+const ProfilePage = ({ user }) => {
+  const [open, setOpen] = useState(false);
+  const initialProfile = {
+    FIRST_NAME: "Jakaria",
+    LAST_NAME: "Hossain",
+    ADDRESS: "Pabna, Bangladesh",
+    CONTACT_NO: "123-456-7890",
+    GENDER: "M",
+    EMAIL: "abc@gmail.com",
+    IMAGE: "https://placekitten.com/400/400", // Replace with your image URL
+  };
+  // for edit profile,
+  const [profile, setProfile] = useState(initialProfile);
 
   const InfoList = styled(List)({
     // Add your desired background color
@@ -30,6 +46,14 @@ const ProfilePage = ({user}) => {
     marginBottom: "16px",
   });
 
+  const isSaveDisabled = Object.values(profile).some((value) => value === "");
+  const editProfileHandler = (event) => {
+    event.preventDefault();
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
   const ListItemStyled = styled(ListItem)({
     marginBottom: "8px",
   });
@@ -82,7 +106,9 @@ const ProfilePage = ({user}) => {
                 <ListItemIcon>
                   <Badge />
                 </ListItemIcon>
-                <ListItemText primary={`Employee Type: ${user.EMPLOYEE_TYPE}`} />
+                <ListItemText
+                  primary={`Employee Type: ${user.EMPLOYEE_TYPE}`}
+                />
               </ListItemStyled>
             )}
             {user.JOIN_DATE && (
@@ -117,12 +143,14 @@ const ProfilePage = ({user}) => {
                 <ListItemText primary={`Email: ${user.EMAIL}`} />
               </ListItemStyled>
             )}
-            {user.GENDER &&                (
+            {user.GENDER && (
               <ListItemStyled>
                 <ListItemIcon>
                   <Person />
                 </ListItemIcon>
-                <ListItemText primary={`Gender: ${user.GENDER === 'M'? 'Male': 'Female'}`} />
+                <ListItemText
+                  primary={`Gender: ${user.GENDER === "M" ? "Male" : "Female"}`}
+                />
               </ListItemStyled>
             )}
           </InfoList>
@@ -136,16 +164,41 @@ const ProfilePage = ({user}) => {
           marginTop: "16px",
         }}
       >
-        <Link to={`/editprofile/${user.ID}`}>
-          <Button
-            variant="contained"
-            color="secondary"
-            style={{ margin: "8px" }}
-          >
-            Edit Profile
-          </Button>
-        </Link>
+        <Button
+          variant="contained"
+          color="secondary"
+          style={{ margin: "8px" }}
+          onClick={editProfileHandler}
+        >
+          Edit Profile
+        </Button>
       </div>
+      <Dialog
+        transitionDuration={{ appear: 300, enter: 300, exit: 300 }}
+        open={open}
+        onClose={handleClose}
+      >
+        <DialogTitle sx={{ margin: "auto", fontSize: "1.6rem" }}>
+          Edit Profile
+        </DialogTitle>
+        <DialogContent>
+          <EditProfile profile={profile} setProfile={setProfile} />
+        </DialogContent>
+        <DialogActions>
+          <Button variant="text" color="error" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button
+            variant="text"
+            color="success"
+            type="submit"
+            disabled={isSaveDisabled}
+            onClick={handleClose}
+          >
+            Save Changes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 };
