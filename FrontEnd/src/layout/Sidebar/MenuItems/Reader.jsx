@@ -1,22 +1,22 @@
 // assets
 
-import { Favorite, LocalLibrary } from "@mui/icons-material";
+import { Favorite, LocalLibrary, AccountCircle } from "@mui/icons-material";
 
 // constant
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
 
 const Reader = {
-  id: "Reader",
+  id: "reader",
   title: "Reader",
   type: "group",
   children: [
     {
-      id: "reader",
-      title: "Reader",
+      id: "profile",
+      title: "Profile",
       type: "item",
-      url: "/",
-      icon: <LocalLibrary />,
+      url: `/reader/profile/${localStorage.getItem("userId")}`,
+      icon: <AccountCircle />,
       breadcrumbs: false,
     },
     {
@@ -27,7 +27,6 @@ const Reader = {
       icon: <Favorite />,
       breadcrumbs: false,
     },
-    
   ],
 };
 
