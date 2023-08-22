@@ -2,6 +2,7 @@ import { Book, Business, Person } from "@mui/icons-material";
 import { Grid, Tab, Tabs, Typography } from "@mui/material";
 import React, { useState } from "react";
 import AuthorComponent from "./AuthorComponent";
+import PublicationComponent from "./PublicationComponent";
 
 const Description = ({ book }) => {
   const [tabValue, setTabValue] = useState(0);
@@ -16,7 +17,16 @@ const Description = ({ book }) => {
     NAME: "J.K. Rowling",
     BIO: "Joanne Rowling CH, OBE, HonFRSE, FRCPE, FRSL, better known by her pen name J. K. Rowling, is a British author and philanthropist. She is best known for writing the Harry Potter fantasy series, which has won multiple awards and sold more than 500 million copies, becoming the best-selling book series in history. The books are the basis of a popular film series, over which Rowling had overall approval on the scripts and was a producer on the final films. She also writes crime fiction under the pen name Robert Galbraith.",
   };
-
+  const publisher = {
+    NAME: "Bloomsbury Publishing",
+    CITY: "London",
+    COUNTRY: "United Kingdom",
+    POSTAL_CODE: "WC1H 9HE",
+    CONTACT_NO: "020 7631 5600",
+    EMAIL: "abc@gmail.com",
+    IMAGE:
+      "https://images.unsplash.com/photo-1531384441138-2736e62e0919?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MTF8fHxlbnwwfHx8fHw%3D&auto=format&fit=crop&w=500&q=60",
+  };
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
@@ -38,9 +48,7 @@ const Description = ({ book }) => {
         </Tabs>
         {tabValue === 0 && <BookDescription book={book} />}
         {tabValue === 1 && <AuthorDetails author={author} />}
-        {tabValue === 2 && (
-          <PublicationDetails publication={book.PUBLISHER_ID} />
-        )}
+        {tabValue === 2 && <PublicationDetails publisher={publisher} />}
       </Grid>
     </Grid>
   );
@@ -48,11 +56,11 @@ const Description = ({ book }) => {
 
 export default Description;
 
-const BookDescription = (book) => {
+const BookDescription = ({ book }) => {
   return (
     <Grid container direction="column" item xs={12} padding={2}>
-      <Typography variant="h1">Description</Typography>
-      <Typography variant="body1">{book.PUBLISHER_ID}</Typography>
+      <Typography variant="h2">{book.TITLE}</Typography>
+      <Typography variant="h5">{book.DESCRIPTION}</Typography>
     </Grid>
   );
 };
@@ -68,7 +76,7 @@ const AuthorDetails = ({ author }) => {
 const PublicationDetails = ({ publisher }) => {
   return (
     <Grid container direction="column" item xs={12} padding={2}>
-      <Typography variant="h1">this is publisher</Typography>
+      <PublicationComponent publication={publisher} />
     </Grid>
   );
 };

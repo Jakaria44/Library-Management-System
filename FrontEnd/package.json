@@ -13,10 +13,13 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.3",
+    "@mui/joy": "^5.0.0-beta.2",
+    "@mui/lab": "^5.0.0-alpha.140",
     "@mui/material": "^5.14.4",
     "@mui/system": "^5.14.5",
     "axios": "^1.4.0",
     "config": "^3.3.9",
+    "firebase": "^10.2.0",
     "framer-motion": "^10.15.1",
     "material-ui-popup-state": "^5.0.9",
     "prop-types": "^15.8.1",
@@ -27,7 +30,8 @@
     "react-icons": "^4.10.1",
     "react-perfect-scrollbar": "^1.5.8",
     "react-router-dom": "^6.15.0",
-    "tss-react": "^4.8.8"
+    "tss-react": "^4.8.8",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
