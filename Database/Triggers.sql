@@ -208,7 +208,10 @@ CREATE TABLE MESSAGE
     PRIMARY KEY (MESSAGE_ID),
     FOREIGN KEY (USER_ID) REFERENCES "USER" (USER_ID)
 );
------------
+-----------------------------------------------------------
+
+
+
 create sequence user_seq;
 
 create
@@ -238,6 +241,23 @@ BEGIN
         :NEW.PUBLISHER_ID IS NULL
     THEN
         :NEW.PUBLISHER_ID := publisher_seq.nextval;
+    END IF;
+END;
+/
+
+
+create sequence author_seq;
+
+CREATE
+    OR REPLACE TRIGGER AUTHOR_INSERT_TRIG
+    BEFORE INSERT
+    ON AUTHOR
+    FOR EACH ROW
+BEGIN
+    IF
+        :NEW.AUTHOR_ID IS NULL
+    THEN
+        :NEW.AUTHOR_ID := author_seq.nextval;
     END IF;
 END;
 /
@@ -327,6 +347,22 @@ BEGIN
 END;
 /
 
+CREATE OR REPLACE FUNCTION IS_PUBLISHER(P_ID VARCHAR2) RETURN BOOLEAN IS
+    COUNTER NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM PUBLISHER
+    WHERE PUBLISHER_ID = P_ID;
+    IF
+        COUNTER = 0 THEN
+        RETURN FALSE;
+    ELSE
+        RETURN TRUE;
+    END IF;
+END;
+/
+
 
 
 CREATE OR REPLACE FUNCTION IS_VALID_GENRE(G_NAME IN VARCHAR2) RETURN BOOLEAN IS
@@ -355,10 +391,10 @@ BEGIN
     INTO F_ISBN
     FROM BOOK
     WHERE ISBN = GIVEN_ISBN;
-    RETURN FALSE;
+    RETURN TRUE;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
-        RETURN TRUE;
+        RETURN FALSE;
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('SOME ERROR OCCURED');
         RETURN FALSE;
@@ -391,7 +427,7 @@ BEGIN
     SELECT COUNT(*)
     INTO COUNTER
     FROM WRITTEN_BY
-    WHERE USER_ID = A_ID;
+    WHERE AUTHOR_ID = A_ID;
     IF
         COUNTER = 0 THEN
         RETURN TRUE;
@@ -600,20 +636,28 @@ END;
 /
 
 -- procedures
-CREATE OR REPLACE PROCEDURE UPDATE_USER(A_ID IN VARCHAR2, A_FIRST_NAME IN VARCHAR2, A_LAST_NAME IN VARCHAR2,
-                                        A_ADDRESS IN VARCHAR2, A_EMAIL IN VARCHAR2, A_PHONE_NUMBER IN VARCHAR2,
-                                        A_DETAILS IN VARCHAR2) IS
+CREATE OR REPLACE PROCEDURE UPDATE_USER(A_ID IN VARCHAR2,
+                                        A_FIRST_NAME IN VARCHAR2,
+                                        A_LAST_NAME VARCHAR2,
+                                        A_IMAGE VARCHAR2,
+                                        A_ADDRESS VARCHAR2,
+                                        A_EMAIL VARCHAR2,
+                                        A_PASSWORD VARCHAR2,
+                                        A_CONTACT_NO VARCHAR2,
+                                        A_GENDER CHAR) IS
 BEGIN
     IF
         (IS_VALID_UPDATE_USER(A_ID, A_EMAIL)) THEN
-        UPDATE PERSON
-        SET FIRST_NAME   = A_FIRST_NAME,
-            LAST_NAME    = A_LAST_NAME,
-            ADDRESS      = A_ADDRESS,
-            EMAIL        = A_EMAIL,
-            PHONE_NUMBER = A_PHONE_NUMBER,
-            DETAILS      = A_DETAILS
-        WHERE PERSON_ID = A_ID;
+        UPDATE "USER"
+        SET FIRST_NAME = A_FIRST_NAME,
+            LAST_NAME  = A_LAST_NAME,
+            ADDRESS    = A_ADDRESS,
+            EMAIL      = A_EMAIL,
+            CONTACT_NO = A_CONTACT_NO,
+            GENDER     = A_GENDER,
+            PASSWORD   = A_PASSWORD,
+            IMAGE      = A_IMAGE
+        WHERE USER_ID = A_ID;
     ELSE
         raise_application_error(-20111, 'USER CANNOT BE UPDATED');
     END IF;
@@ -622,20 +666,28 @@ END;
 
 
 
-CREATE OR REPLACE PROCEDURE UPDATE_ADMIN(A_ID IN VARCHAR2, A_FIRST_NAME IN VARCHAR2, A_LAST_NAME IN VARCHAR2,
-                                         A_ADDRESS IN VARCHAR2, A_EMAIL IN VARCHAR2, A_PHONE_NUMBER IN VARCHAR2,
-                                         A_DETAILS IN VARCHAR2) IS
+CREATE OR REPLACE PROCEDURE UPDATE_ADMIN(A_ID IN VARCHAR2,
+                                         A_FIRST_NAME IN VARCHAR2,
+                                         A_LAST_NAME VARCHAR2,
+                                         A_IMAGE VARCHAR2,
+                                         A_ADDRESS VARCHAR2,
+                                         A_EMAIL VARCHAR2,
+                                         A_PASSWORD VARCHAR2,
+                                         A_CONTACT_NO VARCHAR2,
+                                         A_GENDER CHAR) IS
 BEGIN
     IF
         (IS_VALID_UPDATE_ADMIN(A_ID, A_EMAIL)) THEN
-        UPDATE PERSON
-        SET FIRST_NAME   = A_FIRST_NAME,
-            LAST_NAME    = A_LAST_NAME,
-            ADDRESS      = A_ADDRESS,
-            EMAIL        = A_EMAIL,
-            PHONE_NUMBER = A_PHONE_NUMBER,
-            DETAILS      = A_DETAILS
-        WHERE PERSON_ID = A_ID;
+        UPDATE "USER"
+        SET FIRST_NAME = A_FIRST_NAME,
+            LAST_NAME  = A_LAST_NAME,
+            ADDRESS    = A_ADDRESS,
+            EMAIL      = A_EMAIL,
+            CONTACT_NO = A_CONTACT_NO,
+            GENDER     = A_GENDER,
+            PASSWORD   = A_PASSWORD,
+            IMAGE      = A_IMAGE
+        WHERE USER_ID = A_ID;
     ELSE
         raise_application_error(-20111, 'ADMIN CANNOT BE UPDATED');
     END IF;
@@ -644,63 +696,24 @@ END;
 
 
 
-CREATE OR REPLACE PROCEDURE INSERT_USER(FN IN VARCHAR2, LN IN VARCHAR2, AD IN VARCHAR2, EM IN VARCHAR2,
-                                        PH_NUM IN VARCHAR2, DET IN VARCHAR2, UN IN VARCHAR2, PW IN VARCHAR2)
+CREATE OR REPLACE PROCEDURE INSERT_USER(A_FIRST_NAME IN VARCHAR2,
+                                        A_LAST_NAME VARCHAR2,
+                                        A_IMAGE VARCHAR2,
+                                        A_ADDRESS VARCHAR2,
+                                        A_EMAIL VARCHAR2,
+                                        A_PASSWORD VARCHAR2,
+                                        A_CONTACT_NO VARCHAR2,
+                                        A_GENDER CHAR)
     IS
     ID NUMBER;
 BEGIN
     IF
-        IS_VALID_USER_INSERT(UN, EM) THEN
-        INSERT INTO "PERSON" ("FIRST_NAME", "LAST_NAME", "ADDRESS", "EMAIL", "PHONE_NUMBER", "DETAILS")
-        VALUES (FN, LN, AD, EM, PH_NUM, DET);
+        IS_VALID_USER_INSERT(A_EMAIL) THEN
+        INSERT INTO "USER" ("FIRST_NAME", "LAST_NAME", "IMAGE", "ADDRESS", "EMAIL", "PASSWORD", "CONTACT_NO", "GENDER")
+        VALUES (A_FIRST_NAME, A_LAST_NAME, A_IMAGE, A_ADDRESS, A_EMAIL, A_PASSWORD, A_CONTACT_NO, A_GENDER);
         select user_seq.currval
         into ID
         from DUAL;
-        INSERT INTO "USER" ("PERSON_ID", "USER_NAME", "PASSWORD")
-        VALUES (ID, UN, PW);
-    ELSE
-        raise_application_error(-20111, 'USERNAME OR EMAIL IS NOT UNIQUE');
-    END IF;
-END ;
-/
-
-
-
-CREATE OR REPLACE PROCEDURE INSERT_ADMIN(FN IN VARCHAR2, LN IN VARCHAR2, AD IN VARCHAR2, EM IN VARCHAR2,
-                                         PH_NUM IN VARCHAR2, DET IN VARCHAR2, AN IN VARCHAR2, PW IN VARCHAR2)
-    IS
-    ID NUMBER;
-BEGIN
-    IF
-        IS_VALID_ADMIN_INSERT(AN, EM) THEN
-        INSERT INTO "PERSON" ("FIRST_NAME", "LAST_NAME", "ADDRESS", "EMAIL", "PHONE_NUMBER", "DETAILS")
-        VALUES (FN, LN, AD, EM, PH_NUM, DET);
-        select user_seq.currval
-        into ID
-        from DUAL;
-        INSERT INTO "ADMIN" ("PERSON_ID", "ADMIN_NAME", "PASSWORD")
-        VALUES (ID, AN, PW);
-    ELSE
-        raise_application_error(-20111, 'ADMIN_NAME OR EMAIL IS NOT UNIQUE');
-    END IF;
-END ;
-/
-
-
-CREATE OR REPLACE PROCEDURE INSERT_AUTHOR(FN IN VARCHAR2, LN IN VARCHAR2, AD IN VARCHAR2, EM IN VARCHAR2,
-                                          PH_NUM IN VARCHAR2, DET IN VARCHAR2, WA IN VARCHAR2)
-    IS
-    ID NUMBER;
-BEGIN
-    IF
-        (IS_VALID_AUTHOR_INSERT(EM)) THEN
-        INSERT INTO "PERSON" ("FIRST_NAME", "LAST_NAME", "ADDRESS", "EMAIL", "PHONE_NUMBER", "DETAILS")
-        VALUES (FN, LN, AD, EM, PH_NUM, DET);
-        select user_seq.currval
-        into ID
-        from DUAL;
-        INSERT INTO "AUTHOR" ("PERSON_ID", "WEB_ADDRESS")
-        VALUES (ID, WA);
     ELSE
         raise_application_error(-20111, 'EMAIL IS NOT UNIQUE');
     END IF;
@@ -708,50 +721,81 @@ END ;
 /
 
 
-CREATE OR REPLACE PROCEDURE REVIEW_POST(ID IN VARCHAR2, ISB IN VARCHAR2, VAL IN VARCHAR2) IS
+CREATE OR REPLACE PROCEDURE INSERT_ADMIN(A_FIRST_NAME IN VARCHAR2,
+                                         A_LAST_NAME VARCHAR2,
+                                         A_IMAGE VARCHAR2,
+                                         A_ADDRESS VARCHAR2,
+                                         A_EMAIL VARCHAR2,
+                                         A_PASSWORD VARCHAR2,
+                                         A_CONTACT_NO VARCHAR2,
+                                         A_GENDER CHAR)
+    IS
+    ID NUMBER;
+BEGIN
+    IF
+        IS_VALID_ADMIN_INSERT(A_EMAIL) THEN
+        INSERT INTO "USER" ("FIRST_NAME", "LAST_NAME", "IMAGE", "ADDRESS", "EMAIL", "PASSWORD", "CONTACT_NO", "GENDER")
+        VALUES (A_FIRST_NAME, A_LAST_NAME, A_IMAGE, A_ADDRESS, A_EMAIL, A_PASSWORD, A_CONTACT_NO, A_GENDER);
+        select user_seq.currval
+        into ID
+        from DUAL;
+        INSERT INTO "ADMIN" ("USER_ID")
+        VALUES (ID);
+    ELSE
+        raise_application_error(-20111, 'EMAIL IS NOT UNIQUE');
+    END IF;
+END ;
+/
+
+
+CREATE OR REPLACE PROCEDURE INSERT_AUTHOR(A_NAME VARCHAR2,
+                                          A_DoB DATE,
+                                          A_DoD DATE,
+                                          A_NATIONALITY VARCHAR2,
+                                          A_BIO VARCHAR2,
+                                          A_IMAGE VARCHAR2)
+    IS
+    ID NUMBER;
+BEGIN
+    IF
+        (IS_VALID_AUTHOR_INSERT(A_NAME, A_DOB)) THEN
+        INSERT INTO "AUTHOR" (NAME, DoB, DoD, NATIONALITY, BIO, IMAGE)
+        VALUES (A_NAME, A_DoB, A_DoD, A_NATIONALITY, A_BIO, A_IMAGE);
+        select author_seq.currval
+        into ID
+        from DUAL;
+    ELSE
+        raise_application_error(-20111, 'NAME AND DOB IS NOT UNIQUE');
+    END IF;
+END ;
+/
+
+
+CREATE OR REPLACE PROCEDURE REVIEW_RATING_POST(A_ISBN VARCHAR2,
+                                               A_USER_ID VARCHAR2,
+                                               A_RATING NUMBER,
+                                               A_REVIEW VARCHAR2) IS
     RVAL VARCHAR2(2000);
 BEGIN
-    SELECT REVIEW_CONTENT
+    SELECT RATING
     INTO RVAL
-    FROM REVIEW
-    WHERE ISBN = ISB
-      AND PERSON_ID = ID;
-    UPDATE REVIEW
-    SET REVIEW_CONTENT = VAL,
-        REVIEW_DATE    = SYSDATE
-    WHERE ISBN = ISB
-      AND PERSON_ID = ID;
+    FROM REVIEW_RATING
+    WHERE ISBN = A_ISBN
+      AND USER_ID = A_USER_ID;
+    UPDATE REVIEW_RATING
+    SET RATING    = NVL(A_RATING, 0),
+        REVIEW    = A_REVIEW,
+        EDIT_DATE = SYSDATE
+    WHERE ISBN = A_ISBN
+      AND USER_ID = A_USER_ID;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
-        INSERT INTO REVIEW(ISBN, PERSON_ID, REVIEW_CONTENT, REVIEW_DATE) VALUES (ISB, ID, VAL, SYSDATE);
+        INSERT INTO REVIEW_RATING(ISBN, USER_ID, RATING, REVIEW, EDIT_DATE)
+        VALUES (A_ISBN, A_USER_ID, NVL(A_RATING, 0), A_REVIEW, SYSDATE);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Some Error Occured');
 END ;
 /
-
-
-CREATE OR REPLACE PROCEDURE RATE(ID IN VARCHAR2, ISB IN VARCHAR2, VAL IN NUMBER) IS
-    RVAL NUMBER(1);
-BEGIN
-    SELECT VALUE
-    INTO RVAL
-    FROM RATING
-    WHERE ISBN = ISB
-      AND PERSON_ID = ID;
-    UPDATE RATING
-    SET VALUE       = VAL,
-        RATING_DATE = SYSDATE
-    WHERE ISBN = ISB
-      AND PERSON_ID = ID;
-EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-        INSERT INTO RATING(ISBN, PERSON_ID, VALUE, RATING_DATE) VALUES (ISB, ID, VAL, SYSDATE);
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Some Error Occured');
-END ;
-/
-
-
 
 CREATE OR REPLACE PROCEDURE INSERT_BOOK_GENRE(B_ISBN IN VARCHAR2, G_ID IN VARCHAR2) IS
     P VARCHAR2(20);
@@ -760,32 +804,10 @@ BEGIN
     INTO P
     FROM BOOK_GENRE
     WHERE (ISBN = B_ISBN AND GENRE_ID = G_ID);
-    DBMS_OUTPUT
-        .
-        PUT_LINE
-        ('ALREADY EXISTS');
+    DBMS_OUTPUT.PUT_LINE('ALREADY EXISTS');
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
-        INSERT INTO BOOK_GENRE VALUES (B_ISBN, G_ID);
-    WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('SOME ERROR OCCURED');
-END;
-/
-
-CREATE OR REPLACE PROCEDURE INSERT_BOOK_AWARD(B_ISBN IN VARCHAR2, A IN VARCHAR2) IS
-    P VARCHAR2(20);
-BEGIN
-    SELECT ISBN
-    INTO P
-    FROM BOOK_AWARD
-    WHERE (ISBN = B_ISBN AND UPPER(AWARDS) = UPPER(A));
-    DBMS_OUTPUT
-        .
-        PUT_LINE
-        ('ALREADY EXISTS');
-EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-        INSERT INTO BOOK_AWARD VALUES (B_ISBN, A);
+        INSERT INTO BOOK_GENRE(ISBN, GENRE_ID) VALUES (B_ISBN, G_ID);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('SOME ERROR OCCURED');
 END;
@@ -797,32 +819,30 @@ BEGIN
     SELECT ISBN
     INTO P
     FROM WRITTEN_BY
-    WHERE (ISBN = B_ISBN AND PERSON_ID = P_ID);
-    DBMS_OUTPUT
-        .
-        PUT_LINE
-        ('ALREADY EXISTS');
+    WHERE (ISBN = B_ISBN AND AUTHOR_ID = P_ID);
+    DBMS_OUTPUT.PUT_LINE('ALREADY EXISTS');
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
-        INSERT INTO WRITTEN_BY VALUES (B_ISBN, P_ID);
+        INSERT INTO WRITTEN_BY(ISBN, AUTHOR_ID) VALUES (B_ISBN, P_ID);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('SOME ERROR OCCURED');
 END;
 /
 
 
-CREATE OR REPLACE PROCEDURE INSERT_BOOK(ISBN IN VARCHAR2, TITLE IN VARCHAR2, COVER_IMAGE IN VARCHAR2,
-                                        BINDING IN VARCHAR2, NUMBER_OF_PAGES IN NUMBER,
-                                        ORIGINAL_PUBLICATION_YEAR IN NUMBER, LANGUAGE IN VARCHAR2,
-                                        DESCRIPTION IN VARCHAR2, SUMMARY IN VARCHAR2, PUBLISHER_ID IN VARCHAR2,
-                                        PUBLICATION_DATE IN DATE) IS
+CREATE OR REPLACE PROCEDURE INSERT_BOOK(A_ISBN VARCHAR2,
+                                        A_TITLE VARCHAR2,
+                                        A_IMAGE VARCHAR2,
+                                        A_NUMBER_OF_PAGES NUMBER,
+                                        A_LANGUAGE VARCHAR2,
+                                        A_DESCRIPTION VARCHAR2,
+                                        A_PUBLISHER_ID VARCHAR2,
+                                        A_PUBLISH_YEAR NUMBER) IS
 BEGIN
     IF
-        (IS_VALID_TITLE(TITLE) AND IS_VALID_ISBN(ISBN)) THEN
-        INSERT INTO BOOK("ISBN", "TITLE", "BINDING", "NUMBER_OF_PAGES", "COVER_IMAGE", "ORIGINAL_PUBLICATION_YEAR",
-                         "LANGUAGE", "DESCRIPTION", "SUMMARY", "PUBLISHER_ID", "PUBLICATION_DATE")
-        VALUES (ISBN, TITLE, BINDING, NUMBER_OF_PAGES, COVER_IMAGE, ORIGINAL_PUBLICATION_YEAR, LANGUAGE, DESCRIPTION,
-                SUMMARY, PUBLISHER_ID, PUBLICATION_DATE);
+        (IS_VALID_TITLE(A_TITLE) AND IS_VALID_ISBN(A_ISBN)) THEN
+        INSERT INTO BOOK(ISBN, TITLE, IMAGE, NUMBER_OF_PAGES, LANGUAGE, DESCRIPTION, PUBLISHER_ID, PUBLISH_YEAR)
+        VALUES (A_ISBN, A_TITLE, A_IMAGE, A_NUMBER_OF_PAGES, A_LANGUAGE, A_DESCRIPTION, A_PUBLISHER_ID, A_PUBLISH_YEAR);
     ELSE
         raise_application_error(-20111, 'TITLE OR ISBN NOT UNIQUE');
     END IF;
@@ -831,12 +851,13 @@ END;
 
 
 
-CREATE OR REPLACE PROCEDURE INSERT_GENRE(GENRE_NAME IN VARCHAR2) IS
+CREATE OR REPLACE PROCEDURE INSERT_GENRE(G_NAME IN VARCHAR2) IS
+    ID NUMBER;
 BEGIN
     IF
-        (IS_VALID_GENRE(GENRE_NAME)) THEN
-        --select genre_seq.currval into ID from DUAL;
-        INSERT INTO GENRE("GENRE_NAME") VALUES (GENRE_NAME);
+        (IS_VALID_GENRE(G_NAME)) THEN
+        select genre_seq.currval into ID from DUAL;
+        INSERT INTO GENRE("GENRE_ID", "GENRE_NAME") VALUES (ID, G_NAME);
     ELSE
         raise_application_error(-20111, 'GENRE NAME IS ALREADY USED');
     END IF;
@@ -845,13 +866,22 @@ END;
 
 
 
-CREATE OR REPLACE PROCEDURE INSERT_PUBLISHER(NAME IN VARCHAR2, ADDRESS IN VARCHAR2, EMAIL_ID IN VARCHAR2,
-                                             WEB_ADDRESS IN VARCHAR2) IS
+CREATE OR REPLACE PROCEDURE INSERT_PUBLISHER(A_NAME VARCHAR2,
+                                             A_IMAGE VARCHAR2,
+                                             A_CITY VARCHAR2,
+                                             A_COUNTRY VARCHAR2,
+                                             A_POSTAL_CODE VARCHAR2,
+                                             A_CONTACT_NO VARCHAR2,
+                                             A_EMAIL VARCHAR2) IS
+    ID NUMBER;
 BEGIN
     IF
-        (IS_VALID_PUBLISHER(NAME, EMAIL_ID)) THEN
-        INSERT INTO PUBLISHER("NAME", "ADDRESS", "EMAIL_ID", "WEB_ADDRESS")
-        VALUES (NAME, ADDRESS, EMAIL_ID, WEB_ADDRESS);
+        (IS_VALID_PUBLISHER(A_NAME, A_EMAIL)) THEN
+        INSERT INTO PUBLISHER(NAME, IMAGE, CITY, COUNTRY, POSTAL_CODE, CONTACT_NO, EMAIL)
+        VALUES (A_NAME, A_IMAGE, A_CITY, A_COUNTRY, A_POSTAL_CODE, A_CONTACT_NO, A_EMAIL);
+        select publisher_seq.currval
+        into ID
+        from DUAL;
     ELSE
         raise_application_error(-20111, 'PUBLISHER NAME OR EMAIL NOT UNIQUE');
     END IF;
@@ -900,35 +930,31 @@ BEGIN
         (IS_VALID_DELETE_AUTHOR(A_ID)) THEN
         DELETE
         FROM AUTHOR
-        WHERE PERSON_ID = A_ID;
-        DELETE
-        FROM PERSON
-        WHERE PERSON_ID = A_ID;
+        WHERE AUTHOR_ID = A_ID;
     ELSE
         raise_application_error(-20111, 'AUTHOR CANNOT BE DELETED');
     END IF;
 END;
 /
 
-
-
-CREATE OR REPLACE PROCEDURE UPDATE_AUTHOR(A_ID IN VARCHAR2, A_FIRST_NAME IN VARCHAR2, A_LAST_NAME IN VARCHAR2,
-                                          A_ADDRESS IN VARCHAR2, A_EMAIL IN VARCHAR2, A_PHONE_NUMBER IN VARCHAR2,
-                                          A_DETAILS IN VARCHAR2, A_WEB_ADDRESS IN VARCHAR2) IS
+CREATE OR REPLACE PROCEDURE UPDATE_AUTHOR(A_AUTHOR_ID VARCHAR2,
+                                          A_NAME VARCHAR2,
+                                          A_DoB DATE,
+                                          A_DoD DATE,
+                                          A_NATIONALITY VARCHAR2,
+                                          A_BIO VARCHAR2,
+                                          A_IMAGE VARCHAR2) IS
 BEGIN
     IF
-        (IS_VALID_UPDATE_AUTHOR(A_ID, A_EMAIL)) THEN
-        UPDATE PERSON
-        SET FIRST_NAME   = A_FIRST_NAME,
-            LAST_NAME    = A_LAST_NAME,
-            ADDRESS      = A_ADDRESS,
-            EMAIL        = A_EMAIL,
-            PHONE_NUMBER = A_PHONE_NUMBER,
-            DETAILS      = A_DETAILS
-        WHERE PERSON_ID = A_ID;
+        (IS_VALID_UPDATE_AUTHOR(A_AUTHOR_ID, A_NAME, A_DoB)) THEN
         UPDATE AUTHOR
-        SET WEB_ADDRESS = A_WEB_ADDRESS
-        WHERE PERSON_ID = A_ID;
+        SET NAME=A_NAME,
+            DoB=A_DoB,
+            DoD=A_DoD,
+            NATIONALITY=A_NATIONALITY,
+            BIO=A_BIO,
+            IMAGE=A_IMAGE
+        WHERE AUTHOR_ID = A_AUTHOR_ID;
     ELSE
         raise_application_error(-20111, 'AUTHOR CANNOT BE UPDATED');
     END IF;
@@ -936,18 +962,26 @@ END;
 /
 
 
-
-CREATE OR REPLACE PROCEDURE UPDATE_PUBLISHER(P_ID IN VARCHAR2, P_NAME IN VARCHAR2, P_ADDRESS IN VARCHAR2,
-                                             P_EMAIL_ID IN VARCHAR2, P_WEB_ADDRESS IN VARCHAR2) IS
+CREATE OR REPLACE PROCEDURE UPDATE_PUBLISHER(A_PUBLISHER_ID VARCHAR2,
+                                             A_NAME VARCHAR2,
+                                             A_IMAGE VARCHAR2,
+                                             A_CITY VARCHAR2,
+                                             A_COUNTRY VARCHAR2,
+                                             A_POSTAL_CODE VARCHAR2,
+                                             A_CONTACT_NO VARCHAR2,
+                                             A_EMAIL VARCHAR2) IS
 BEGIN
     IF
-        (IS_VALID_UPDATE_PUBLISHER(P_ID, P_EMAIL_ID, P_NAME)) THEN
+        (IS_VALID_UPDATE_PUBLISHER(A_PUBLISHER_ID, A_EMAIL, A_NAME)) THEN
         UPDATE PUBLISHER
-        SET NAME        = P_NAME,
-            ADDRESS     = P_ADDRESS,
-            EMAIL_ID    = P_EMAIL_ID,
-            WEB_ADDRESS = P_WEB_ADDRESS
-        WHERE PUBLISHER_ID = P_ID;
+        SET NAME=A_NAME,
+            IMAGE=A_IMAGE,
+            CITY=A_CITY,
+            COUNTRY=A_COUNTRY,
+            POSTAL_CODE=A_POSTAL_CODE,
+            CONTACT_NO=A_CONTACT_NO,
+            EMAIL=A_EMAIL
+        WHERE PUBLISHER_ID = A_PUBLISHER_ID;
     ELSE
         raise_application_error(-20111, 'PUBLISHER CANNOT BE UPDATED');
     END IF;
@@ -983,30 +1017,34 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE PROCEDURE UPDATE_BOOK(B_ISBN IN VARCHAR2, B_TITLE IN VARCHAR2, B_COVER_IMAGE IN VARCHAR2,
-                                        B_BINDING IN VARCHAR2, B_NUMBER_OF_PAGES IN NUMBER,
-                                        B_ORIGINAL_PUBLICATION_YEAR IN NUMBER, B_LANGUAGE IN VARCHAR2,
-                                        B_DESCRIPTION IN VARCHAR2, B_SUMMARY IN VARCHAR2, B_PUBLICATION_DATE IN DATE) IS
+
+CREATE OR REPLACE PROCEDURE UPDATE_BOOK(A_ISBN VARCHAR2,
+                                        A_TITLE VARCHAR2,
+                                        A_IMAGE VARCHAR2,
+                                        A_NUMBER_OF_PAGES NUMBER,
+                                        A_LANGUAGE VARCHAR2,
+                                        A_DESCRIPTION VARCHAR2,
+                                        A_PUBLISHER_ID VARCHAR2,
+                                        A_PUBLISH_YEAR NUMBER) IS
 BEGIN
     IF
-        (IS_VALID_ISBN(B_ISBN)) THEN
-        raise_application_error(-20111, 'DOES NOT EXIST');
-    ELSE
+        (IS_VALID_ISBN(A_ISBN) AND IS_PUBLISHER(A_PUBLISHER_ID)) THEN
         UPDATE BOOK
-        SET TITLE                     = B_TITLE,
-            BINDING                   = B_BINDING,
-            NUMBER_OF_PAGES           = B_NUMBER_OF_PAGES,
-            ORIGINAL_PUBLICATION_YEAR = B_ORIGINAL_PUBLICATION_YEAR,
-            LANGUAGE                  = B_LANGUAGE,
-            DESCRIPTION               = B_DESCRIPTION,
-            SUMMARY                   = B_SUMMARY,
-            PUBLICATION_DATE          = B_PUBLICATION_DATE
-        WHERE ISBN = B_ISBN;
+        SET TITLE=A_TITLE,
+            IMAGE=A_IMAGE,
+            NUMBER_OF_PAGES=A_NUMBER_OF_PAGES,
+            LANGUAGE=A_LANGUAGE,
+            DESCRIPTION=A_DESCRIPTION,
+            PUBLISHER_ID=A_PUBLISHER_ID,
+            PUBLISH_YEAR=A_PUBLISH_YEAR
+        WHERE ISBN = A_ISBN;
+    ELSE
+        raise_application_error(-20111, 'DOES NOT EXIST');
     END IF;
 END;
 /
 
-
+-- TODO: NEED TO CORRECT THIS
 CREATE OR REPLACE PROCEDURE DELETE_BOOK(B_ISBN IN VARCHAR2) IS
     P NUMBER;
 BEGIN
@@ -1022,17 +1060,14 @@ BEGIN
         INTO P
         FROM BOOK
         WHERE ISBN = B_ISBN;
+--         DELETE
+--         FROM EDITION
+--         WHERE ISBN = B_ISBN;
         DELETE
-        FROM BOOK_AWARD
+        FROM FAVOURITE
         WHERE ISBN = B_ISBN;
         DELETE
-        FROM REVIEW
-        WHERE ISBN = B_ISBN;
-        DELETE
-        FROM BOOKSHELF_CONTENT
-        WHERE ISBN = B_ISBN;
-        DELETE
-        FROM RATING
+        FROM REVIEW_RATING
         WHERE ISBN = B_ISBN;
         DELETE
         FROM WRITTEN_BY
