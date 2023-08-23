@@ -113,7 +113,12 @@ const EditProfile = ({ profile, setProfile, setSelectedImage }) => {
                 id="demo-simple-select"
                 value={profile.GENDER}
                 label="Gender"
-                onChange={handleChange}
+                onChange={(e) => {
+                  setProfile((prevProfile) => ({
+                    ...prevProfile,
+                    GENDER: e.target.value,
+                  }));
+                }}
               >
                 <MenuItem value="F">Female</MenuItem>
                 <MenuItem value="M">Male</MenuItem>

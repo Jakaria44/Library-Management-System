@@ -132,6 +132,7 @@ export default function componentStyleOverrides(theme) {
                     color: theme.darkTextPrimary,
                     paddingTop: '10px',
                     paddingBottom: '10px',
+                    borderRadius: '12px',
                     '&.Mui-selected': {
                         color: theme.menuSelected,
                         backgroundColor: theme.menuSelectedBack,

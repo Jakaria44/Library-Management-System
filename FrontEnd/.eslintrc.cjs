@@ -1,5 +1,5 @@
 module.exports = {
-    extends: ['prettier', 'airbnb-base'],
+    extends: ['airbnb-base'],
     parserOptions: {
         ecmaVersion: 12,
     },

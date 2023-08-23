@@ -1,6 +1,13 @@
 // assets
 
-import { Favorite, LocalLibrary, AccountCircle } from "@mui/icons-material";
+import {
+  AccountCircle,
+  AutoStories,
+  Description,
+  Favorite,
+  ReceiptLongSharp,
+  Reviews,
+} from "@mui/icons-material";
 
 // constant
 
@@ -15,16 +22,48 @@ const Reader = {
       id: "profile",
       title: "Profile",
       type: "item",
-      url: `/reader/profile/${localStorage.getItem("userId")}`,
+      url: "/profile",
       icon: <AccountCircle />,
       breadcrumbs: false,
     },
     {
-      id: "favourite",
+      id: "favourites",
       title: "Favourites",
       type: "item",
-      url: "/",
+      url: "/favourites",
       icon: <Favorite />,
+      breadcrumbs: false,
+    },
+    {
+      id: "reviews",
+      title: "My Reviews",
+      type: "item",
+      url: "/reviews",
+      icon: <Reviews />,
+      breadcrumbs: false,
+    },
+    {
+      id: "applications",
+      title: "My Applications",
+      type: "item",
+      url: "/applications",
+      icon: <Description />,
+      breadcrumbs: false,
+    },
+    {
+      id: "collections",
+      title: "My Collections",
+      type: "item",
+      url: "/collections",
+      icon: <AutoStories />,
+      breadcrumbs: false,
+    },
+    {
+      id: "duelist",
+      title: "My Due List",
+      type: "item",
+      url: "/duelist",
+      icon: <ReceiptLongSharp />,
       breadcrumbs: false,
     },
   ],

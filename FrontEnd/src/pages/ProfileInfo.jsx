@@ -34,7 +34,7 @@ import { v4 } from "uuid";
 import { storage } from "../firebaseConfig";
 import EditProfile from "./EditProfile";
 // import server from '../../HTTP/httpCommonParam';
-const ProfilePage = ({ user }) => {
+const ProfileInfo = ({ user }) => {
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const [profile, setProfile] = useState(user);
   const [selectedImage, setSelectedImage] = useState(user.IMAGE);
@@ -286,4 +286,4 @@ const ProfilePage = ({ user }) => {
   );
 };
 
-export default ProfilePage;
+export default ProfileInfo;

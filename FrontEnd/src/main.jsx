@@ -16,7 +16,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <CssBaseline />
 
           <RouterProvider router={Routes} />
-          {/* <NavigationScroll /> */}
           {/* </RouterProvider> */}
         </ThemeContextProvider>
       </MenuContextProvider>

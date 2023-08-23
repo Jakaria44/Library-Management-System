@@ -7,9 +7,20 @@ import LatestBooks from "../pages/LatestBooks";
 import { loader as bookDetailsLoader } from "./../pages/Details/Details";
 import { loader as allBooksLoader } from "./../pages/allbooks/AllBooks";
 import Loadable from "./../ui-component/Loadable";
-import EditProfile from '../pages/EditProfile.jsx'
 // main routing
 const Structure = Loadable(lazy(() => import("../layout/Structure.jsx")));
+
+const MyFavourites = Loadable(
+  lazy(() => import("../pages/Reader/MyFavourites"))
+);
+const MyReviews = Loadable(lazy(() => import("../pages/Reader/MyReviews")));
+const MyDueList = Loadable(lazy(() => import("../pages/Reader/MyDueList")));
+const MyCollections = Loadable(
+  lazy(() => import("../pages/Reader/MyCollections"))
+);
+const MyApplications = Loadable(
+  lazy(() => import("../pages/Reader/MyApplications"))
+);
 
 const AllBooks = Loadable(lazy(() => import("./../pages/allbooks/AllBooks")));
 const HomePage = Loadable(lazy(() => import("./../pages/Home")));
@@ -44,20 +55,29 @@ const MainRoutes = {
       element: <LatestBooks />,
     },
     {
-      path: "/reader",
-
-      errorElement: <ErrorPage />,
-      children: [
-        {
-          path: "/reader/profile/:id",
-          element: <ReaderProfile />,
-        },
-      ],
+      path: "/profile",
+      element: <ReaderProfile />,
     },
     {
-      path:"/editprofile/:id",
-      element: <EditProfile />,
-    }
+      path: "/favourites",
+      element: <MyFavourites />,
+    },
+    {
+      path: "/reviews",
+      element: <MyReviews />,
+    },
+    {
+      path: "/applications",
+      element: <MyApplications />,
+    },
+    {
+      path: "/collections",
+      element: <MyCollections />,
+    },
+    {
+      path: "/duelist",
+      element: <MyDueList />,
+    },
   ],
 };
 export default MainRoutes;

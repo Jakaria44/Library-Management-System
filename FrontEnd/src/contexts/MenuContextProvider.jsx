@@ -8,7 +8,7 @@ const MenuDispatchContext = createContext(null);
 // TODO: add initial id from current location of the url
 const initialState = {
   opened: true,
-  id: "default",
+  id: document.location.pathname.toString().split("/")[1],
 };
 export function MenuContextProvider({ children }) {
   const [menuOpened, dispatch] = useReducer(MenuReducer, initialState);
@@ -32,6 +32,7 @@ function MenuReducer(state, action) {
       };
     }
     case actions.OPEN_MENU: {
+      console.log(action.opened);
       return {
         ...state,
         id: action.opened,

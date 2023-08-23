@@ -5,7 +5,6 @@ import { Link, useLocation } from "react-router-dom";
 import {
   Avatar,
   Chip,
-  Fade,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -49,8 +48,7 @@ const NavItem = ({ item, level }) => {
   let listItemProps = {
     // eslint-disable-next-line
     component: forwardRef((props, ref) => (
-        <Link ref={ref} {...props} to={item.url} />
-      
+      <Link ref={ref} {...props} to={item.url} />
     )),
   };
 
@@ -61,16 +59,14 @@ const NavItem = ({ item, level }) => {
 
   // active menu item on page load
   useEffect(() => {
-    const currentIndex = document.location.pathname
-      .toString()
-      .split("/")
-      .findIndex((id) => id === item.id);
-    if (currentIndex > -1) {
-      dispatch({ type: actions.OPEN_MENU, id: item.id });
+    const currentPath = document.location.pathname.toString().split("/");
+    if (currentPath[1] === item.id) {
+      console.log(document.location.pathname.toString().split("/"), item.id);
+      dispatch({ type: actions.OPEN_MENU, opened: item.id });
     }
 
     // eslint-disable-next-line
-  }, [pathname]);
+  }, []);
 
   return (
     <ListItemButton
