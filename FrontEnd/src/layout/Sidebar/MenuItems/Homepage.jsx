@@ -7,12 +7,12 @@ import { AccessTime, DensityMedium, Home } from "@mui/icons-material";
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
 
 const Homepage = {
-  id: "Homepage",
+  id: "",
   title: "General",
   type: "group",
   children: [
     {
-      id: "default",
+      id: "",
       title: "Homepage",
       type: "item",
       url: "/",

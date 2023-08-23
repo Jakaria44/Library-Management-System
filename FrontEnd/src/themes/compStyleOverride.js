@@ -9,6 +9,31 @@ export default function componentStyleOverrides(theme) {
                 },
             },
         },
+        MuiLoadingButton: {
+            styleOverrides: {
+                root: {
+                    '&.Mui-disabled': {
+                        color: bgColor,
+                        background: theme.colors?.grey300,
+                    },
+                },
+                textSuccess: {
+                    color: theme.colors?.textDark,
+                    background: theme.colors?.successMain,
+                    '&:hover': {
+                        background: theme.colors?.seccessDark,
+                    },
+                },
+                loading: {
+                    color: theme.colors?.textDark,
+                    background: theme.colors?.successMain,
+                    '&:hover': {
+                        background: theme.colors?.seccessDark,
+                    },
+                },
+            },
+        },
+
         MuiButton: {
             styleOverrides: {
                 root: {
@@ -18,9 +43,21 @@ export default function componentStyleOverrides(theme) {
                     transition: 'all .2s ease-in-out',
                     background: theme.colors?.primaryMain,
                     '&:hover': {
-                        fontWeight: 'bold',
                         color: theme.background,
                         background: theme.heading,
+                    },
+                },
+                textError: {
+                    background: theme.colors?.errorMain,
+                    '&:hover': {
+                        background: theme.colors?.errorDark,
+                    },
+                },
+                textSuccess: {
+                    color: theme.colors?.textDark,
+                    background: theme.colors?.successMain,
+                    '&:hover': {
+                        background: theme.colors?.seccessDark,
                     },
                 },
             },
@@ -95,6 +132,7 @@ export default function componentStyleOverrides(theme) {
                     color: theme.darkTextPrimary,
                     paddingTop: '10px',
                     paddingBottom: '10px',
+                    borderRadius: '12px',
                     '&.Mui-selected': {
                         color: theme.menuSelected,
                         backgroundColor: theme.menuSelectedBack,

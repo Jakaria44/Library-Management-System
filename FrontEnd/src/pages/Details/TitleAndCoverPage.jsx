@@ -1,3 +1,5 @@
+// need to add genre
+
 import { useTheme } from "@emotion/react";
 import { CalendarMonth, Language } from "@mui/icons-material";
 import BookIcon from "@mui/icons-material/Book";
@@ -45,6 +47,8 @@ const TitleAndCoverPage = ({ book, editions }) => {
       selectedEdition.EDITION
     );
   };
+
+  const handleAddToFavourite = () => {};
   const bookInfoList = [
     { icon: <BookIcon />, label: book.TITLE, variant: "h1" },
     {
@@ -79,7 +83,10 @@ const TitleAndCoverPage = ({ book, editions }) => {
     <Grid container spacing={2}>
       {/* Left side: Book Image */}
       <Grid item xs={12} md={4}>
-        <Paper elevation={3} style={{ padding: "16px", textAlign: "center" }}>
+        <Paper
+          elevation={3}
+          sx={{ padding: { md: "16px" }, textAlign: "center" }}
+        >
           <img src={book.IMAGE} alt={book.TITLE} style={{ width: "100%" }} />
           <Typography variant="body2" style={{ marginTop: "16px" }}>
             ISBN: {book.ISBN}
@@ -123,14 +130,29 @@ const TitleAndCoverPage = ({ book, editions }) => {
             </Select>
           </Typography>
 
-          <div style={{ textAlign: "center", marginTop: "16px" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: "16px",
+            }}
+          >
             <Button
               variant="contained"
               color="primary"
               onClick={handleAddToCart}
-              style={{ margin: "16px" }}
+              style={{ margin: "8px" }}
             >
-              Add to Cart
+              GET
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleAddToFavourite}
+              style={{ margin: "8px" }}
+            >
+              Add To Favourite
             </Button>
           </div>
         </Paper>

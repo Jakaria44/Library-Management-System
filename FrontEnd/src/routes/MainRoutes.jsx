@@ -10,10 +10,24 @@ import Loadable from "./../ui-component/Loadable";
 // main routing
 const Structure = Loadable(lazy(() => import("../layout/Structure.jsx")));
 
+const MyFavourites = Loadable(
+  lazy(() => import("../pages/Reader/MyFavourites"))
+);
+const MyReviews = Loadable(lazy(() => import("../pages/Reader/MyReviews")));
+const MyDueList = Loadable(lazy(() => import("../pages/Reader/MyDueList")));
+const MyCollections = Loadable(
+  lazy(() => import("../pages/Reader/MyCollections"))
+);
+const MyApplications = Loadable(
+  lazy(() => import("../pages/Reader/MyApplications"))
+);
+
 const AllBooks = Loadable(lazy(() => import("./../pages/allbooks/AllBooks")));
 const HomePage = Loadable(lazy(() => import("./../pages/Home")));
 const ErrorPage = Loadable(lazy(() => import("./../pages/ErrorPage")));
-
+const ReaderProfile = Loadable(
+  lazy(() => import("./../pages/Reader/ReaderProfile"))
+);
 // ==============================| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -39,6 +53,30 @@ const MainRoutes = {
     {
       path: "/latestbooks",
       element: <LatestBooks />,
+    },
+    {
+      path: "/profile",
+      element: <ReaderProfile />,
+    },
+    {
+      path: "/favourites",
+      element: <MyFavourites />,
+    },
+    {
+      path: "/reviews",
+      element: <MyReviews />,
+    },
+    {
+      path: "/applications",
+      element: <MyApplications />,
+    },
+    {
+      path: "/collections",
+      element: <MyCollections />,
+    },
+    {
+      path: "/duelist",
+      element: <MyDueList />,
     },
   ],
 };

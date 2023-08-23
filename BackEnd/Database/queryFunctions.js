@@ -8,6 +8,8 @@ function runProcedure(procedure) {
     return 'Begin\n' + procedure + ';\nEnd;'
 }
 
+
+
 export async function getBookDetailsByIDDB(context) {
     let query =
         'SELECT B.ISBN,B.TITLE,B.IMAGE,B.NUMBER_OF_PAGES,B.LANGUAGE,B.PUBLISH_YEAR,' +
@@ -17,6 +19,7 @@ export async function getBookDetailsByIDDB(context) {
         'P.IMAGE AS PUBLISHER_IMAGE,LISTAGG(A.NAME, \', \') WITHIN GROUP (ORDER BY A.NAME) ' +
         'AS AUTHOR_NAME FROM BOOK B JOIN PUBLISHER P ON (B.PUBLISHER_ID = P.PUBLISHER_ID)' +
         ' JOIN WRITTEN_BY WB ON (B.ISBN = WB.ISBN) JOIN AUTHOR A ON (WB.AUTHOR_ID = A.AUTHOR_ID)' +
+
 
         ' where B.ISBN = :ISBN \n' +
 

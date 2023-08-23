@@ -37,7 +37,7 @@ export default function themePalette(theme, mode) {
                       default: theme.backgroundDefault,
                   },
                   itemBackground: theme.colors?.secondaryLight,
-                  itemBackgroundHover: theme.colors?.secondaryDark,
+                  itemBackgroundHover: theme.colors?.darkTextPrimary,
                   itemColor: theme.colors?.primaryDark,
                   itemHover: theme.colors?.primaryLight,
               }
@@ -71,8 +71,8 @@ export default function themePalette(theme, mode) {
                       paper: theme.background,
                       default: theme.backgroundDefault,
                   },
-                  itemBackground: theme.colors?.secondaryDark,
-                  itemBackgroundHover: theme.colors?.darkBackground,
+                  itemBackground: theme.background,
+                  itemBackgroundHover: theme.colors?.grey600,
                   itemColor: theme.colors?.primaryLight,
                   itemHover: theme.colors?.primaryLight,
               }),
@@ -97,6 +97,11 @@ export default function themePalette(theme, mode) {
             200: theme.colors?.success200,
             main: theme.colors?.successMain,
             dark: theme.colors?.successDark,
+        },
+        error: {
+            light: theme.colors?.errorLight,
+            main: theme.colors?.errorMain,
+            dark: theme.colors?.errorDark,
         },
         grey: {
             50: theme.colors?.grey50,
