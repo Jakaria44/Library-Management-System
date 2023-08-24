@@ -1,7 +1,7 @@
 ##### ----GET All Books (sorted) ----
 GET http://localhost:3000/db-api/all-books-sum?sort=PAGE&order=DESC
 
-#OUTPUT
+###OUTPUT
 [
   {
     "ISBN": "9780747591269",
@@ -30,7 +30,8 @@ GET http://localhost:3000/db-api/all-books-sum?sort=PAGE&order=DESC
 #### ----GET Single Book ----
 GET http://localhost:3000/db-api/book?id=9781408855652
 
-#OUTPUT
+###OUTPUT
+
 {
   "ISBN": "9781408855652",
   "TITLE": "Harry Potter and the Philosophers Stone",
@@ -46,4 +47,69 @@ GET http://localhost:3000/db-api/book?id=9781408855652
   "PUBLISHER_ADDRESS": "WC1B 3DP, London, England",
   "PUBLISHER_IMAGE": "https://media-exp1.licdn.com/dms/image/C4E0BAQEDkPybVXr47Q/company-logo_200_200/0/1544531682586?e=2159024400&v=beta&t=JjAs9ok_PwgXA9CFsXKm3bt6fjbFI4N7SZRn4ajOUVg",
   "AUTHOR_NAME": "J. K. Rowling"
+}
+
+#### ----POST user ----
+POST http://localhost:3000/db-api/user/signup
+Content-Type: application/json
+
+{
+  "FIRST_NAME": "Ahmmad Nur",
+  "LAST_NAME": "Swapnil",
+  "IMAGE": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
+  "ADDRESS": "Senbag, Noakhali",
+  "EMAIL": "a.n.swapnil2003@gmail.com",
+  "PASSWORD": "Ans2003",
+  "CONTACT_NO": "01750-320621",
+  "GENDER": "M"
+}
+
+### OUTPUT
+{
+  "auth": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMiIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkyODk5MDExLCJleHAiOjE2OTI5ODU0MTF9.cyk5wunxaQCVIql_BQVKxjTJLb7VR6I7OoWrHA1vhZE",
+  "rule": "user"
+}
+
+#### ----LOGIN user ----
+POST http://localhost:3000/db-api/general/login
+Content-Type: application/json
+
+{
+  "EMAIL": "mdjakaria442020@gmail.com",
+  "PASSWORD": "Jakaria63"
+}
+
+# {
+#   "EMAIL": "a.n.swapnil2003@gmail.com",
+#   "PASSWORD": "Ans2003"
+# }
+
+###OUTPUT
+{
+  "auth": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkyOTAyMjc3LCJleHAiOjE2OTI5ODg2Nzd9.2heH3mdS22r7NZSFud5viNBWjyP5WDF3iyrRLwSp3pw",
+  "rule": "user"
+}
+
+#### ----POST admin ----
+POST http://localhost:3000/db-api/admin/signup
+Content-Type: application/json
+
+{
+  "FIRST_NAME": "Jakaria",
+  "LAST_NAME": "Hossain",
+  "IMAGE": "https://drive.google.com/file/d/1VzQYM8sLT1EtWOVk1w-pUGeQuIR-44DY/view?usp=sharing",
+  "ADDRESS": "Pabna, Bangladesh",
+  "EMAIL": "mdjakaria442020@gmail.com",
+  "PASSWORD": "Jakaria63",
+  "CONTACT_NO": "01790-715232",
+  "GENDER": "M"
+}
+
+###OUTPUT
+{
+  "auth": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiNiIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5MjkwNTIyMSwiZXhwIjoxNjkyOTkxNjIxfQ.R3SLG83aPG1U7RYSRX5FNmpjZd_nRHP3J_onXxRkYyY",
+  "rule": "admin"
 }

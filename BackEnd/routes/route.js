@@ -40,7 +40,7 @@ import {
   getAllBookSum,
   getBookDetailsByID,
 } from '../controllers/getController.js'
-import {decodeToken, loginAdmin, loginUser, logout, postAdmin, postUser} from '../controllers/loginController.js';
+import {decodeToken, loginGeneral, logout, postAdmin, postUser} from '../controllers/loginController.js';
 import {
   addAuthor,
   addBook,
@@ -65,14 +65,18 @@ import {
 } from '../controllers/putController.js';
 
 const router = Express.Router();
-
+router.use(Express.json());
 let urlencodedParser = bodyParser.urlencoded({extended: true});
 
 
-router.route('/all-books').get(getAllBook);
-router.route('/book').get(getBookDetailsByID);
+router.route('/all-books').get(verifyGeneralToken,getAllBook);
+router.route('/book').get(verifyGeneralToken,getBookDetailsByID);
+router.route('/all-books-sum').get(verifyGeneralToken,getAllBookSum);
+router.route('/user/signup').post(urlencodedParser,postUser);
+router.route('/general/login').post(urlencodedParser, loginGeneral);
+router.route('/admin/signup').post(urlencodedParser, postAdmin);
 
-router.route('/all-books-sum').get(getAllBookSum);
+
 router.route('/book/title').get(getBookByTitle);
 router.route('/topBooks').get(getTopBook);
 router.route('/recentBooks').get(getRecentBook);
@@ -88,10 +92,13 @@ router.route('/get-all-genre').get(getAllGenre);
 router.route('/complete-book').get(verifyGeneralToken, getCompleteBook);
 router.route('/search-book').post(verifyUserToken, urlencodedParser, searchedBook);
 router.route('/getGenreBook/:name?').get(verifyUserToken, getGenreBook);
-router.route('/user/signup').post(urlencodedParser, postUser);
-router.route('/admin/signup').post(urlencodedParser, postAdmin);
-router.route('/user/login').post(urlencodedParser, loginUser);
-router.route('/admin/login').post(urlencodedParser, loginAdmin);
+// router.route('/user/signup').post(urlencodedParser, postUser);
+// router.route('/employee/signup').post(urlencodedParser, postEmployee);
+// router.route('/general/login').post(urlencodedParser, loginGeneral);
+// router.route('/user/login').post(urlencodedParser, loginUser);
+// router.route('/admin/login').post(urlencodedParser, loginAdmin);
+// router.route('/employee/login').post(urlencodedParser, loginEmployee);
+
 router.route('/decode').get(verifyGeneralToken, decodeToken);
 router.route('/logout').get(verifyGeneralToken, logout);
 router.route('/bookshelves').get(verifyUserToken, getBookshelves);
