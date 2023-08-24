@@ -1,0 +1,27 @@
+filter for all books
+
+my favourites -> boolean
+my rated -> boolean
+language -> option type
+number of page -> range
+publisher -> text
+author -> text
+publish year-> range
+genre -> option
+
+
+sorting: 
+most favourite.
+most rated
+publish year
+num of pages
+
+
+
+ar top search bar e rakhlam search by title, or isbn. 
+
+
+
+arekta jinish rakha jay,
+
+ekta particular publisher er sobgulo boi ek jaygay, author er jonno o. 

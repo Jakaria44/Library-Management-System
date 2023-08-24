@@ -21,6 +21,7 @@
     "config": "^3.3.9",
     "firebase": "^10.2.0",
     "framer-motion": "^10.15.1",
+    "material-ui-confirm": "^3.0.9",
     "material-ui-popup-state": "^5.0.9",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",

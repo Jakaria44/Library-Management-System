@@ -20,7 +20,7 @@ const Homepage = {
       breadcrumbs: false,
     },
     {
-      id: "allBooks",
+      id: "allbooks",
       title: "All Books",
       type: "item",
       url: "/allbooks",
@@ -28,7 +28,7 @@ const Homepage = {
       breadcrumbs: false,
     },
     {
-      id: "latestBooks",
+      id: "latestbooks",
       title: "Latest Books",
       type: "item",
       url: "/latestbooks",

@@ -60,7 +60,7 @@ const Reader = {
     },
     {
       id: "duelist",
-      title: "My Due List",
+      title: "My Fine History",
       type: "item",
       url: "/duelist",
       icon: <ReceiptLongSharp />,

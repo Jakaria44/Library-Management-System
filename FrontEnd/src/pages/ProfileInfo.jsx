@@ -3,7 +3,6 @@ import {
   Badge,
   BadgeOutlined,
   CalendarMonth,
-  CheckCircleOutline,
   Email,
   LocationOn,
   Person,
@@ -11,7 +10,6 @@ import {
 } from "@mui/icons-material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
-  Box,
   Button,
   Card,
   Dialog,
@@ -23,24 +21,25 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Modal,
   Typography,
   styled,
-  useTheme,
 } from "@mui/material";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { useConfirm } from "material-ui-confirm";
 import { useState } from "react";
 import { v4 } from "uuid";
+import SuccessfulModal from "../component/SuccessfulModal";
 import { storage } from "../firebaseConfig";
 import EditProfile from "./EditProfile";
 // import server from '../../HTTP/httpCommonParam';
 const ProfileInfo = ({ user }) => {
+  const confirm = useConfirm();
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const [profile, setProfile] = useState(user);
   const [selectedImage, setSelectedImage] = useState(user.IMAGE);
   const [uploading, setUploading] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const theme = useTheme();
+
   const InfoList = styled(List)({
     borderRadius: "4px",
     padding: "16px",
@@ -55,11 +54,8 @@ const ProfileInfo = ({ user }) => {
   const handleClose = (event, reason = "") => {
     if (!uploading) setEditProfileOpen(false);
   };
-  const handleSaveChanges = () => {
-    if (!selectedImage) {
-      alert("Please select an image");
-      return;
-    }
+
+  const uploadImage = () => {
     setUploading(true);
     const imageRef = ref(storage, `profileImages/${v4()}`);
 
@@ -79,15 +75,26 @@ const ProfileInfo = ({ user }) => {
         setUploading(false);
       });
   };
+  const handleSaveChanges = () => {
+    if (!selectedImage) {
+      alert("Please select an image");
+      return;
+    }
+    confirm({
+      title: <Typography variant="h4">Save Changes</Typography>,
+      description: "Are you sure you want to save changes?",
+    })
+      .then(() => {
+        uploadImage();
+      })
+      .catch(() => {
+        console.log("canceled");
+      });
+  };
   const HandleModalClosed = () => {
     setShowSuccessMessage(false);
     handleClose();
   };
-  const StyledSuccessModal = styled(Modal)`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  `;
 
   const ListItemStyled = styled(ListItem)({
     marginBottom: "8px",
@@ -253,35 +260,13 @@ const ProfileInfo = ({ user }) => {
         </DialogActions>
       </Dialog>
 
+      <SuccessfulModal
+        showSuccessMessage={showSuccessMessage}
+        setShowSuccessMessage={setShowSuccessMessage}
+        successMessage="Profile Updated Successfully!"
+        HandleModalClosed={HandleModalClosed}
+      />
       {/* on successfull upload. */}
-      <StyledSuccessModal
-        open={showSuccessMessage}
-        onClose={() => setShowSuccessMessage(false)}
-      >
-        <div
-          className="success-modal-content"
-          style={{
-            backgroundColor: theme.palette.background.default,
-            borderRadius: "12px",
-          }} // Use theme color
-        >
-          <Box p={2} display="flex" flexDirection="column" alignItems="center">
-            <CheckCircleOutline fontSize="large" sx={{ color: "green" }} />
-            <Typography margin={2} variant="h4">
-              Upload Successful!
-            </Typography>
-            <Button
-              margin={2}
-              padding={2}
-              variant="contained"
-              color="primary"
-              onClick={HandleModalClosed}
-            >
-              Close
-            </Button>
-          </Box>
-        </div>
-      </StyledSuccessModal>
     </Card>
   );
 };

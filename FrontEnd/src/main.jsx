@@ -6,6 +6,7 @@ import { RouterProvider } from "react-router-dom";
 import Routes from "./Routes/Routes.jsx";
 import "./assets/scss/style.scss";
 
+import { ConfirmProvider } from "material-ui-confirm";
 import { MenuContextProvider } from "./contexts/MenuContextProvider.jsx";
 import { ThemeContextProvider } from "./contexts/ThemeContextProvider.jsx";
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -13,10 +14,16 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <StyledEngineProvider injectFirst>
       <MenuContextProvider>
         <ThemeContextProvider>
-          <CssBaseline />
+          <ConfirmProvider
+            defaultOptions={{
+              confirmationButtonProps: { color: "success", autoFocus: true },
+              cancellationButtonProps: { color: "error" },
+            }}
+          >
+            <CssBaseline />
 
-          <RouterProvider router={Routes} />
-          {/* </RouterProvider> */}
+            <RouterProvider router={Routes} />
+          </ConfirmProvider>
         </ThemeContextProvider>
       </MenuContextProvider>
     </StyledEngineProvider>

@@ -25,6 +25,9 @@ export const Theme = (mode) => {
     menuSelectedBack: mode === "light" ? color.grey900 : color.grey100,
     menuSelected: mode === "light" ? color.secondaryLight : color.grey900,
     divider: mode === "light" ? color.grey200 : color.grey800,
+    itemBackgroundHover:
+      mode === "light" ? color.darkTextPrimary : color.grey600,
+    itemBackground: mode === "light" ? color.secondaryLight : color.darkPaper,
   };
 
   const themeOptions = {

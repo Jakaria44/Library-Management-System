@@ -39,9 +39,9 @@ export default function componentStyleOverrides(theme) {
                 root: {
                     fontWeight: 500,
                     borderRadius: '4px',
-                    color: bgColor,
+                    color: theme.textDark,
                     transition: 'all .2s ease-in-out',
-                    background: theme.colors?.primaryMain,
+                    background: theme.itemBackground,
                     '&:hover': {
                         color: theme.background,
                         background: theme.heading,
@@ -85,10 +85,10 @@ export default function componentStyleOverrides(theme) {
             styleOverrides: {
                 root: {
                     backgroundImage: 'none',
-                    background: theme.backgroundDefault,
+                    background: theme.background,
                 },
                 rounded: {
-                    borderRadius: '12px',
+                    borderRadius: '8px',
                 },
             },
         },
@@ -96,7 +96,7 @@ export default function componentStyleOverrides(theme) {
             styleOverrides: {
                 root: {
                     borderRadius: '12px',
-                    padding: '16px',
+                    padding: '12px',
                     background: theme.backgroundDefault,
                 },
             },
@@ -105,7 +105,7 @@ export default function componentStyleOverrides(theme) {
             styleOverrides: {
                 root: {
                     color: theme.colors?.textDark,
-                    padding: '24px',
+                    padding: '12px',
                 },
                 title: {
                     fontSize: '1.125rem',
@@ -115,14 +115,15 @@ export default function componentStyleOverrides(theme) {
         MuiCardContent: {
             styleOverrides: {
                 root: {
-                    padding: '24px',
+                    padding: '12px 12px 4px 12px',
                 },
             },
         },
         MuiCardActions: {
             styleOverrides: {
                 root: {
-                    padding: '24px',
+                    marginTop: 'auto',
+                    padding: '12px',
                 },
             },
         },

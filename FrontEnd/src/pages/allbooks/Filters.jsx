@@ -27,8 +27,8 @@ const Filters = () => {
     },
   };
   return (
-    <Grid item xs={12} lg={3}>
-      <Card sx={{ paddingX: { xs: 2, md: 0 } }}>
+    <Grid item xs={12} md={3}>
+      <Card sx={{ paddingX: { xs: 2, md: 0 } }} elevation={5}>
         <CardHeader title="Filters" />
         <CardContent sx={{ pt: 0 }}>
           <Box
@@ -78,9 +78,7 @@ const Filters = () => {
               /> */}
 
             <br />
-            <Button type="submit" variant="contained">
-              Submit
-            </Button>
+            <Button variant="contained">Submit</Button>
           </Box>
         </CardContent>
       </Card>
