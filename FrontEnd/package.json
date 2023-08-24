@@ -23,6 +23,7 @@
     "framer-motion": "^10.15.1",
     "material-ui-confirm": "^3.0.9",
     "material-ui-popup-state": "^5.0.9",
+    "nom": "^0.0.3",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-device-detect": "^2.2.3",
