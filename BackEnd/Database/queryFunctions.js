@@ -8,7 +8,51 @@ function runProcedure(procedure) {
     return 'Begin\n' + procedure + ';\nEnd;'
 }
 
+export async function postUserDB(user) {
+    const procedure = 'INSERT_USER(:FIRST_NAME,:LAST_NAME,:IMAGE,:ADDRESS,:EMAIL,:PASSWORD,:CONTACT_NO,:GENDER)'
+    // 'INSERT_USER(:FIRST_NAME, :LAST_NAME, :ADDRESS, :EMAIL, :PHONE_NUMBER, :DETAILS, :USER_NAME, :PASSWORD)'
+    let query = runProcedure(procedure)
+    const result = await queryExecute(query, user)
+    return user
+}
 
+
+export async function findUserDB(user) {
+    let query = baseQuery('"USER"')
+    const binds = {}
+    binds.EMAIL = user.EMAIL
+    query += '\nWhere EMAIL = :EMAIL'
+    const result = await queryExecute(query, binds)
+    return result.rows
+}
+
+export async function postAdminDB(admin) {
+    const procedure = 'INSERT_ADMIN(:FIRST_NAME,:LAST_NAME,:IMAGE,:ADDRESS,:EMAIL,:PASSWORD,:CONTACT_NO,:GENDER)'
+    let query = runProcedure(procedure)
+    const result = await queryExecute(query, admin)
+    return admin
+}
+
+
+export async function findAdminDB(admin) {
+    let query = baseQuery('ADMIN')
+    const binds = {}
+    binds.USER_ID = admin.USER_ID
+    // console.log(admin);
+    query += '\nWhere USER_ID = :USER_ID'
+    const result = await queryExecute(query, binds)
+    return result.rows
+}
+
+export async function findEmployeeDB(employee) {
+    let query = baseQuery('EMPLOYEE')
+    const binds = {}
+    binds.USER_ID = employee.USER_ID
+
+    query += '\nWhere USER_ID = :USER_ID'
+    const result = await queryExecute(query, binds)
+    return result.rows
+}
 
 export async function getBookDetailsByIDDB(context) {
     let query =
@@ -175,9 +219,8 @@ export async function getPublisherDB(context) {
     const binds = {}
     if (context.PUBLISHER_ID) {
         binds.PUBLISHER_ID = context.PUBLISHER_ID
-        query +=
-            'SELECT PUBLISHER_ID, NAME, (POSTAL_CODE || \', \' || CITY || \', \' || COUNTRY) AS ADDRESS, CONTACT_NO, EMAIL, IMAGE FROM PUBLISHER'
-        query += '\nWhere PUBLISHER_ID = :PUBLISHER_ID'
+        query += 'SELECT PUBLISHER_ID, NAME, (POSTAL_CODE || \', \' || CITY || \', \' || COUNTRY) AS ADDRESS, CONTACT_NO, EMAIL, IMAGE FROM PUBLISHER';
+        query += '\nWhere PUBLISHER_ID = :PUBLISHER_ID';
     }
     const result = await queryExecute(query, binds)
     return result.rows
@@ -370,42 +413,6 @@ export async function findPersonDB(P_ID) {
     return result.rows
 }
 
-export async function postUserDB(user) {
-    console.log('hey')
-    const procedure =
-        'INSERT_USER(:FIRST_NAME, :LAST_NAME, :ADDRESS, :EMAIL, :PHONE_NUMBER, :DETAILS, :USER_NAME, :PASSWORD)'
-    let query = runProcedure(procedure)
-    const result = await queryExecute(query, user)
-    return user
-}
-
-export async function findUserDB(user) {
-    let query = baseQuery('"USER"')
-    const binds = {}
-    binds.USER_NAME = user.USER_NAME
-
-    query += '\nWhere USER_NAME = :USER_NAME'
-    const result = await queryExecute(query, binds)
-    return result.rows
-}
-
-export async function postAdminDB(admin) {
-    const procedure =
-        'INSERT_ADMIN(:FIRST_NAME, :LAST_NAME, :ADDRESS, :EMAIL, :PHONE_NUMBER, :DETAILS, :ADMIN_NAME, :PASSWORD)'
-    let query = runProcedure(procedure)
-    const result = await queryExecute(query, admin)
-    return admin
-}
-
-export async function findAdminDB(admin) {
-    let query = baseQuery('"ADMIN"')
-    const binds = {}
-    binds.ADMIN_NAME = admin.ADMIN_NAME
-
-    query += '\nWhere ADMIN_NAME = :ADMIN_NAME'
-    const result = await queryExecute(query, binds)
-    return result.rows
-}
 
 export async function getAdvancedSearchedBookDB(context) {
     let query01 =
