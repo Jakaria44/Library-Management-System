@@ -1,5 +1,6 @@
 ##### ----GET All Books (sorted) ----
-GET http://localhost:3000/db-api/all-books-sum?sort=PAGE&order=DESC
+GET http://localhost:3000/db-api/all-books-sum?sort=FAVOURITE&order=DESC
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5Mjk2ODU3NCwiZXhwIjoxNjkzMDU0OTc0fQ.9SiASZrIMKpC6YGDPaDjKtRwzX5w5kLraJKIV7mLcE0
 
 ###OUTPUT
 [
@@ -76,9 +77,14 @@ POST http://localhost:3000/db-api/general/login
 Content-Type: application/json
 
 {
-  "EMAIL": "mdjakaria442020@gmail.com",
-  "PASSWORD": "Jakaria63"
+  "EMAIL": "ryangeorge@gmail.com",
+  "PASSWORD": "ryanMonster300"
 }
+
+# {
+#   "EMAIL": "mdjakaria442020@gmail.com",
+#   "PASSWORD": "Jakaria63"
+# }
 
 # {
 #   "EMAIL": "a.n.swapnil2003@gmail.com",

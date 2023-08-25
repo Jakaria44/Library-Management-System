@@ -101,20 +101,27 @@ export async function getBookDB() {
 }
 
 export async function getAllBookSumDB(context) {
+  console.log(context);
   let query =
-    "SELECT B.ISBN, B.TITLE AS TITLE, B.IMAGE, B.PUBLISH_YEAR AS PUBLISH_YEAR, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE, LISTAGG(A.NAME, ', ') AS AUTHORS, NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, P.NAME AS PUBLISHER";
+    "SELECT B.ISBN, B.TITLE AS TITLE, B.IMAGE, B.PUBLISH_YEAR AS PUBLISH_YEAR, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE, LISTAGG(A.NAME, ', ') AS AUTHORS, NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, P.NAME AS PUBLISHER, NVL(COUNT(F.USER_ID),0) AS FAVOURITE";
+  if(context.USER_ID){
+    query += `, CASE WHEN B.ISBN IN (SELECT F.ISBN FROM FAVOURITE F WHERE F.USER_ID = ${context.USER_ID}) THEN 1 ELSE 0 END AS IS_FAVOURITE`
+  }
   query +=
-    '\nFROM BOOK B LEFT JOIN WRITTEN_BY WB ON (B.ISBN = WB.ISBN) LEFT JOIN AUTHOR A ON (WB.AUTHOR_ID = A.AUTHOR_ID) LEFT JOIN REVIEW_RATING R ON (B.ISBN = R.ISBN) LEFT JOIN PUBLISHER P ON(P.PUBLISHER_ID=B.PUBLISHER_ID)';
+    '\nFROM BOOK B LEFT JOIN WRITTEN_BY WB ON (B.ISBN = WB.ISBN) LEFT JOIN AUTHOR A ON (WB.AUTHOR_ID = A.AUTHOR_ID) LEFT JOIN REVIEW_RATING R ON (B.ISBN = R.ISBN) LEFT JOIN PUBLISHER P ON(P.PUBLISHER_ID=B.PUBLISHER_ID) LEFT JOIN FAVOURITE F ON(B.ISBN = F.ISBN)';
   query +=
     '\nGROUP BY B.ISBN, B.TITLE, B.IMAGE, B.PUBLISH_YEAR, B.NUMBER_OF_PAGES, B.LANGUAGE, P.NAME';
 
   // Check for sorting and ordering options
   if (context.sort && context.order) {
-    const validColumns = ['TITLE', 'PUBLISH_YEAR', 'PAGE', 'LANGUAGE', 'RATING'];
+    const validColumns = ['TITLE', 'PUBLISH_YEAR', 'PAGE', 'LANGUAGE', 'RATING','FAVOURITE'];
     const validOrders = ['ASC', 'DESC'];
 
     if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
       query += `\nORDER BY ${context.sort} ${context.order}`;
+      if(context.sort !== 'TITLE'){
+          query += ', B.TITLE ASC';
+      }
     } else {
       query += '\nORDER BY B.TITLE ASC, B.PUBLISH_YEAR DESC';
     }
