@@ -1,6 +1,6 @@
 import bodyParser from 'body-parser';
 import Express from 'express';
-import {verifyAdminToken, verifyGeneralToken, verifyUserToken} from '../authentication/auth.js';
+import { verifyAdminToken, verifyGeneralToken, verifyUserToken } from '../authentication/auth.js';
 import {
   deleteAllBooksBookshelf,
   deleteAuthor,
@@ -11,11 +11,11 @@ import {
   deletePublisher
 } from '../controllers/deleteController.js';
 import {
-  getAllBook,
-  getBookByTitle,
   getAllAuthors,
   getAllAwards,
   getAllBinds,
+  getAllBook,
+  getAllBookSum,
   getAllGenre,
   getAllLanguages,
   getAllPublishers,
@@ -23,7 +23,8 @@ import {
   getAuthor,
   getAuthorBooks,
   getAvgRating,
-  getBook,
+  getBookByTitle,
+  getBookDetailsByID,
   getBooksFromBookshelf,
   getBookshelves,
   getCompleteBook,
@@ -36,11 +37,9 @@ import {
   getRecentBook,
   getTopBook,
   getUserRatedBooks,
-  getUserReviewedBooks,
-  getAllBookSum,
-  getBookDetailsByID,
-} from '../controllers/getController.js'
-import {decodeToken, loginGeneral, logout, postAdmin, postUser} from '../controllers/loginController.js';
+  getUserReviewedBooks
+} from '../controllers/getController.js';
+import { decodeToken, loginGeneral, logout, postAdmin, postUser } from '../controllers/loginController.js';
 import {
   addAuthor,
   addBook,
@@ -48,14 +47,11 @@ import {
   addPublisher,
   advanceSearch,
   bookToBookshelf,
-
-  postBook,
   rateBook,
   reviewBook,
   searchedBook
 } from '../controllers/postController.js';
 import {
-
   updateAdmin,
   updateAuthor,
   updateBook,
