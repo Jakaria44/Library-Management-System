@@ -1,7 +1,10 @@
-import { lazy } from 'react';
+import { lazy } from "react";
 
 // project imports
-import Loadable from './../ui-component/Loadable';
+import AuthStructure from "../pages/AuthStructure";
+import SignIn from "../pages/SignIn";
+import SignUp from "../pages/SignUp";
+import Loadable from "./../ui-component/Loadable";
 
 // login option 3 routing
 // const AuthLogin3 = Loadable(lazy(() => import('views/pages/authentication/authentication3/Login3')));
@@ -12,21 +15,18 @@ const Structure = Loadable(lazy(() => import("../layout/Structure.jsx")));
 // ==============================|| AUTHENTICATION ROUTING ||============================== //
 
 const AuthenticationRoutes = {
-  path: '/',
-  element: <Structure />,
-  /*
+  path: "/",
+  element: <AuthStructure />,
   children: [
     {
-      path: '/pages/login/login3',
-      element: <AuthLogin3 />
+      path: "/signin",
+      element: <SignIn />,
     },
     {
-      path: '/pages/register/register3',
-      element: <AuthRegister3 />
-    }
-  ]
-
-   */
+      path: "/signup",
+      element: <SignUp />,
+    },
+  ],
 };
 
 export default AuthenticationRoutes;
