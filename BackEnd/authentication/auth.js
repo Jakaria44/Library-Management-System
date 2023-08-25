@@ -83,4 +83,5 @@ export function verifyGeneralToken(req, res, next) {
       }
     });
   }
+  else next();
 }

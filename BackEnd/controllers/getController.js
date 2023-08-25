@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
-import { secret } from '../Database/databaseConfiguration.js';
+import jwt from "jsonwebtoken";
+import { secret } from "../Database/databaseConfiguration.js";
 import {
     getAllAuthorsDB,
     getAllAwardsDB,
@@ -29,18 +29,18 @@ import {
     getTopBookDB,
     getUserRatedBooksDB,
     getUserReviewedBooksDB,
-} from '../Database/queryFunctions.js';
+} from "../Database/queryFunctions.js";
 
 export async function getBookDetailsByID(req, res, next) {
     try {
-        console.log('in getControllers.js');
+        console.log("in getControllers.js");
 
         const context = {};
 
         // localhost:3000/db-api/book?id=9781408855669
 
         context.ISBN = req.query.id;
-        console.log(context);
+        // console.log(context);
 
         const rows = await getBookDetailsByIDDB(context);
 
@@ -56,7 +56,7 @@ export async function getBookDetailsByID(req, res, next) {
 
 export async function getAllBook(req, res, next) {
     try {
-        console.log('in getControllers.js');
+        console.log("in getControllers.js");
         const rows = await getAllBookDB();
 
         if (rows.length === 1) {
@@ -71,9 +71,9 @@ export async function getAllBook(req, res, next) {
 
 export async function getAllBookSum(req, res, next) {
     try {
-        console.log('in getControllers.js');
+        console.log("in getControllers.js");
         const context = {};
-    // console.log(req);
+        // console.log(req);
         context.sort = req.query.sort;
         context.order = req.query.order;
 
@@ -258,7 +258,7 @@ export async function getAuthor(req, res, next) {
         const context = {};
         // context.ID = Number(req.query.ID);
         context.AUTHOR_ID = req.query.AUTHOR_ID;
-        console.log('Hello');
+        console.log("Hello");
         // console.log(context.ID);
 
         const rows = await getAuthorDB(context);
@@ -447,8 +447,7 @@ export async function getRating(req, res, next) {
             res.status(501).json(error);
         }
         // });
-    } catch
-        (err) {
+    } catch (err) {
         next(err);
     }
 }
@@ -464,16 +463,16 @@ export async function getOwnReview(req, res, next) {
         let review = {};
         review.USER_ID = req.query.USER_ID;
         review.ISBN = req.query.ISBN;
-            try {
-                review = await getOwnReviewDB(review);
-                if (review.length > 0) {
-                    res.status(201).json(review);
-                } else {
-                    res.status(404).end();
-                }
-            } catch (error) {
-                res.status(501).json(error);
+        try {
+            review = await getOwnReviewDB(review);
+            if (review.length > 0) {
+                res.status(201).json(review);
+            } else {
+                res.status(404).end();
             }
+        } catch (error) {
+            res.status(501).json(error);
+        }
 
         // });
     } catch (err) {
@@ -482,120 +481,120 @@ export async function getOwnReview(req, res, next) {
 }
 
 export async function getAllReviewsOfBook(req, res, next) {
-  try {
-      const context = {};
+    try {
+        const context = {};
 
-      context.ISBN = req.query.ISBN;
+        context.ISBN = req.query.ISBN;
 
-      const rows = await getAllReviewsOfBookDB(context);
+        const rows = await getAllReviewsOfBookDB(context);
 
-      if (rows.length > 0) {
-        res.status(200).json(rows);
-      } else {
-        res.status(404).end();
-      }
+        if (rows.length > 0) {
+            res.status(200).json(rows);
+        } else {
+            res.status(404).end();
+        }
     } catch (err) {
-      next(err);
+        next(err);
     }
 }
 
 export async function getCompleteBook(req, res, next) {
-  try {
-      const context = {};
+    try {
+        const context = {};
 
-      context.ISBN = req.query.ISBN;
-      context.Title = req.query.Title;
+        context.ISBN = req.query.ISBN;
+        context.Title = req.query.Title;
 
-      const rows = await getCompleteBookDB(context);
+        const rows = await getCompleteBookDB(context);
 
-      if (rows.length >= 1) {
-        res.status(200).json(rows);
-      } else {
-        res.status(404).end();
-      }
+        if (rows.length >= 1) {
+            res.status(200).json(rows);
+        } else {
+            res.status(404).end();
+        }
     } catch (err) {
-      next(err);
+        next(err);
     }
 }
 
 /// ////////////////////////
 
 export async function getBookshelves(req, res, next) {
-  try {
-    const token = req.headers['x-access-token'];
-    jwt.verify(token, secret, async (err, decoded) => {
-      let bookshelves = {
-        PERSON_ID: decoded.PERSON_ID,
-      };
-      if (req.query.BOOKSHELF_ID) {
-        bookshelves.BOOKSHELF_ID = req.query.BOOKSHELF_ID;
-      }
-      try {
-        bookshelves = await getBookshelvesDB(bookshelves);
-        if (bookshelves.length > 0) {
-          res.status(201).json(bookshelves);
-        } else {
-          res.status(404).end();
-        }
-      } catch (error) {
-        res.status(501).json(error);
-      }
-    });
+    try {
+        const token = req.headers["x-access-token"];
+        jwt.verify(token, secret, async (err, decoded) => {
+            let bookshelves = {
+                PERSON_ID: decoded.PERSON_ID,
+            };
+            if (req.query.BOOKSHELF_ID) {
+                bookshelves.BOOKSHELF_ID = req.query.BOOKSHELF_ID;
+            }
+            try {
+                bookshelves = await getBookshelvesDB(bookshelves);
+                if (bookshelves.length > 0) {
+                    res.status(201).json(bookshelves);
+                } else {
+                    res.status(404).end();
+                }
+            } catch (error) {
+                res.status(501).json(error);
+            }
+        });
     } catch (err) {
-      next(err);
+        next(err);
     }
 }
 
 export async function getBooksFromBookshelf(req, res, next) {
-  try {
-    const token = req.headers['x-access-token'];
-    jwt.verify(token, secret, async (err, decoded) => {
-      let book = {
-        PERSON_ID: decoded.PERSON_ID,
-        BOOKSHELF_ID: req.query.BOOKSHELF_ID,
-      };
+    try {
+        const token = req.headers["x-access-token"];
+        jwt.verify(token, secret, async (err, decoded) => {
+            let book = {
+                PERSON_ID: decoded.PERSON_ID,
+                BOOKSHELF_ID: req.query.BOOKSHELF_ID,
+            };
 
-      try {
-        book = await getBookFromBookshelfDB(book);
-        if (book.length > 0) {
-          res.status(201).json(book);
-        } else {
-          res.status(404).end();
-        }
-      } catch (error) {
-        res.status(501).json(error);
-      }
-    });
+            try {
+                book = await getBookFromBookshelfDB(book);
+                if (book.length > 0) {
+                    res.status(201).json(book);
+                } else {
+                    res.status(404).end();
+                }
+            } catch (error) {
+                res.status(501).json(error);
+            }
+        });
     } catch (err) {
-      next(err);
+        next(err);
     }
 }
 
 export async function getAllAwards(req, res, next) {
-  try {
-      const rows = await getAllAwardsDB();
+    try {
+        const rows = await getAllAwardsDB();
 
-      if (rows.length > 0) {
-        res.status(200).json(rows);
-      } else {
-        res.status(404).end();
-      }
+        if (rows.length > 0) {
+            res.status(200).json(rows);
+        } else {
+            res.status(404).end();
+        }
     } catch (err) {
-      next(err);
+        next(err);
     }
 }
 
 export async function getAllBinds(req, res, next) {
-  try {
-      const rows = await getAllBindsDB();
+    try {
+        const rows = await getAllBindsDB();
 
-      if (rows.length > 0) {
-        res.status(200).json(rows);
-      } else {
-        res.status(404).end();
-      }
+        if (rows.length > 0) {
+            res.status(200).json(rows);
+        } else {
+            res.status(404).end();
+        }
     } catch (err) {
-      next(err);
+        next(err);
     }
 }
 

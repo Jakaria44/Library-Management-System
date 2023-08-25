@@ -345,6 +345,48 @@ END;
 /
 
 
+CREATE OR REPLACE TRIGGER trg_publisher_default_image
+BEFORE INSERT ON PUBLISHER
+FOR EACH ROW
+BEGIN
+    IF :NEW.Image IS NULL THEN
+        :NEW.Image := 'https://ds.rokomari.store/rokomari110/company/publisher.png';
+    END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_author_default_image
+BEFORE INSERT ON AUTHOR
+FOR EACH ROW
+BEGIN
+    IF :NEW.Image IS NULL THEN
+        :NEW.Image := 'https://previews.123rf.com/images/anatolir/anatolir1712/anatolir171201476/91832679-man-avatar-icon-flat-illustration-of-man-avatar-vector-icon-isolated-on-white-background.jpg';
+    END IF;
+END;
+/
+
+
+CREATE OR REPLACE TRIGGER trg_user_default_image
+BEFORE INSERT ON "USER"
+FOR EACH ROW
+BEGIN
+    IF :NEW.Image IS NULL THEN
+        :NEW.Image := 'https://img.freepik.com/free-icon/user_318-159711.jpg';
+    END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_book_default_image
+BEFORE INSERT ON BOOK
+FOR EACH ROW
+BEGIN
+    IF :NEW.Image IS NULL THEN
+        :NEW.Image := 'https://st2.depositphotos.com/5703046/12114/i/950/depositphotos_121142344-stock-photo-white-book-on-white-background.jpg';
+    END IF;
+END;
+/
+
+
 create or replace FUNCTION IS_VALID_USER_INSERT(UEMAIL IN VARCHAR2)
     return BOOLEAN IS
     COUNTER NUMBER;
