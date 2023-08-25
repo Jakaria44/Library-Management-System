@@ -9,7 +9,7 @@ import {
     getAllGenreDB,
     getAllLanguagesDB,
     getAllPublishersDB,
-    getAllReviewsOfBookDB,
+    getAllRatRevOfBookDB,
     getAuthorBooksDB,
     getAuthorDB,
     getAvgRatingDB,
@@ -59,6 +59,8 @@ export async function getBookDetailsByID(req, res, next) {
         // localhost:3000/db-api/book?id=9781408855669
 
         context.ISBN = req.query.id;
+        context.USER_ID = req.USER_ID;
+
         // console.log(context);
 
         const rows = await getBookDetailsByIDDB(context);
@@ -276,21 +278,17 @@ export async function getAllLanguages(req, res, next) {
 export async function getAuthor(req, res, next) {
     try {
         const context = {};
-        // context.ID = Number(req.query.ID);
-        context.AUTHOR_ID = req.query.AUTHOR_ID;
-        console.log("Hello");
-        // console.log(context.ID);
+        context.AUTHOR_ID = req.query.aid;
+        console.log(context);
 
         const rows = await getAuthorDB(context);
 
-        if (req.query.ID) {
-            if (rows.length === 1) {
-                res.status(200).json(rows[0]);
-            } else {
-                res.status(404).end();
-            }
-        } else {
+        if (rows.length === 1) {
+            res.status(200).json(rows[0]);
+        } else if(rows.length > 1){
             res.status(200).json(rows);
+        } else {
+            res.status(404).end();
         }
     } catch (err) {
         next(err);
@@ -301,11 +299,13 @@ export async function getPublisher(req, res, next) {
     try {
         const context = {};
 
-        context.PUBLISHER_ID = req.query.PUBLISHER_ID;
+        context.PUBLISHER_ID = req.query.pid;
 
         const rows = await getPublisherDB(context);
 
-        if (rows.length >= 1) {
+        if (rows.length === 1) {
+            res.status(200).json(rows[0]);
+        } else if(rows.length > 1){
             res.status(200).json(rows);
         } else {
             res.status(404).end();
@@ -500,13 +500,14 @@ export async function getOwnReview(req, res, next) {
     }
 }
 
-export async function getAllReviewsOfBook(req, res, next) {
+export async function getAllRatRevOfBook(req, res, next) {
     try {
         const context = {};
 
-        context.ISBN = req.query.ISBN;
-
-        const rows = await getAllReviewsOfBookDB(context);
+        context.ISBN = req.query.id;
+        context.USER_ID = req.USER_ID;
+        // console.log(context);
+        const rows = await getAllRatRevOfBookDB(context);
 
         if (rows.length > 0) {
             res.status(200).json(rows);

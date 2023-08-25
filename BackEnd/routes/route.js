@@ -18,7 +18,7 @@ import {
   getAllGenre,
   getAllLanguages,
   getAllPublishers,
-  getAllReviewsOfBook,
+  getAllRatRevOfBook,
   getAuthor,
   getAuthorBooks,
   getAvgRating,
@@ -50,6 +50,7 @@ import {
   rateBook,
   reviewBook,
   searchedBook,
+  postFavBook,
   updateUserDetails
 } from '../controllers/postController.js';
 import {
@@ -73,6 +74,10 @@ router.route('/user/login').post(urlencodedParser, loginGeneral);
 router.route('/user/update').put(verifyUserToken, urlencodedParser, updateUser);
 
 router.route('/admin/signup').post(urlencodedParser, postAdmin);
+router.route('/all-rat-rev').get(verifyGeneralToken, getAllRatRevOfBook);
+router.route('/edit-favourite').post(verifyGeneralToken, urlencodedParser, postFavBook);
+router.route('/getPublisher').get(getPublisher);
+router.route('/getAuthor').get(getAuthor);
 
 
 router.route('/book/title').get(getBookByTitle);
@@ -89,7 +94,7 @@ router.route('/all-publishers').get(getAllPublishers);
 router.route('/get-all-genre').get(getAllGenre);
 
 ///////////////////////
-
+router.route('/getGenre').get(verifyGeneralToken, getGenre);
 router.route('/complete-book').get(verifyGeneralToken, getCompleteBook);
 router.route('/search-book').post(verifyUserToken, urlencodedParser, searchedBook);
 router.route('/getGenreBook/:name?').get(verifyUserToken, getGenreBook);
@@ -107,7 +112,6 @@ router.route('/book-bookshelf').post(verifyUserToken, urlencodedParser, bookToBo
 // router.route('/create-bookshelf').post(verifyUserToken, urlencodedParser, createBookshelf);
 router.route('/rate').post(verifyUserToken, urlencodedParser, rateBook).get(verifyUserToken, getRating);
 router.route('/review').post(verifyUserToken, urlencodedParser, reviewBook).get(verifyUserToken, getOwnReview);
-router.route('/all-reviews-book').get(verifyUserToken, getAllReviewsOfBook);
 router.route('/get-all-awards').get(verifyGeneralToken, getAllAwards);
 router.route('/get-all-languages').get(verifyUserToken, getAllLanguages);
 router.route('/get-all-binds').get(verifyUserToken, getAllBinds);
@@ -121,9 +125,6 @@ router.route('/addBook').post(verifyAdminToken, urlencodedParser, addBook);
 router.route('/updateBook').put(verifyAdminToken, urlencodedParser, updateBook);
 router.route('/deleteBook').delete(verifyAdminToken, deleteBook);
 
-router.route('/getPublisher').get(verifyGeneralToken, getPublisher);
-router.route('/getGenre').get(verifyGeneralToken, getGenre);
-router.route('/getAuthor').get(verifyGeneralToken, getAuthor);
 
 router.route('/addAuthor').post(verifyAdminToken, urlencodedParser, addAuthor);
 router.route('/addPublisher').post(verifyAdminToken, urlencodedParser, addPublisher);

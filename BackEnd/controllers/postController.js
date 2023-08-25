@@ -8,8 +8,9 @@ import {
   addGenreDB,
   addPublisherDB,
   addWrittenByDB,
+    postFavouriteDB,
   createBookDB,
-
+  getFavouriteDB,
   getAdvancedSearchedBookDB,
   getSearchedBookDB,
   rateBookDB,
@@ -34,6 +35,26 @@ export async function updateUserDetails(req, res, next) {
     res.status(201).json(user);
   } catch (err) {
     next(err);
+  }
+}
+
+export async function postFavBook(req, res, next) {
+
+  if(req.USER_ID) {
+    let fav = {
+      ISBN: req.query.id,
+      USER_ID: req.USER_ID
+    };
+    console.log(fav);
+    try {
+      const favBook = await getFavouriteDB(fav);
+      await postFavouriteDB(fav);
+      res.status(201).json({IS_FAVOURITE: favBook.length === 0});
+    } catch (error) {
+      res.status(501).json(error);
+    }
+  }else{
+    res.status(501).json('Not an User/Employee');
   }
 }
 
