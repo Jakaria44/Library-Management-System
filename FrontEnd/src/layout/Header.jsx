@@ -3,8 +3,8 @@ import { Avatar, Box, ButtonBase } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 // project imports
-import { DarkModeOutlined, LightModeOutlined } from "@mui/icons-material";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import DarkModeSwitch from "../component/DarkModeSwitch.jsx";
 import {
   useMyTheme,
   useMyThemeDispatch,
@@ -19,7 +19,6 @@ import SearchSection from "./Sections/SearchSection.jsx";
 const Header = ({ handleLeftDrawerToggle }) => {
   const theme = useTheme();
   const mode = useMyTheme();
-  const dispatch = useMyThemeDispatch();
 
   return (
     <>
@@ -62,7 +61,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
 
       {/* notification & profile */}
       <Box>
-        <Avatar
+        {/* <Avatar
           variant="rounded"
           sx={{
             ...theme.typography.commonAvatar,
@@ -75,7 +74,8 @@ const Header = ({ handleLeftDrawerToggle }) => {
           }}
         >
           {mode === "dark" ? <LightModeOutlined /> : <DarkModeOutlined />}
-        </Avatar>
+        </Avatar> */}
+        <DarkModeSwitch />
       </Box>
       <Box sx={{ flexGrow: 1 }} />
 
