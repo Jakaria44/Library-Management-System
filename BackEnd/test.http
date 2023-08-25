@@ -54,21 +54,21 @@ POST http://localhost:3000/db-api/user/signup
 Content-Type: application/json
 
 {
-  "FIRST_NAME": "Ahmmad Nur",
-  "LAST_NAME": "Swapnil",
-  "IMAGE": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
-  "ADDRESS": "Senbag, Noakhali",
-  "EMAIL": "a.n.swapnil2003@gmail.com",
-  "PASSWORD": "Ans2003",
-  "CONTACT_NO": "01750-320621",
-  "GENDER": "M"
+  "firstName": "jakaria",
+  "lastName": "hossain",
+  "image": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
+  "address": "pabna, bangladesh",
+  "email": "abcd@gmail.com",
+  "password": "1234",
+  "contactNo": "01712345678",
+  "gender": "M"
 }
 
 ### OUTPUT
 {
   "auth": true,
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMiIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkyODk5MDExLCJleHAiOjE2OTI5ODU0MTF9.cyk5wunxaQCVIql_BQVKxjTJLb7VR6I7OoWrHA1vhZE",
-  "rule": "user"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMTAiLCJST0xFIjoidXNlciIsImlhdCI6MTY5Mjk1NTMxMSwiZXhwIjoxNjkzMDQxNzExfQ._LVML8OMQEVJBL-vVSWI3SilxOP16M-HT57gHRZrQEI",
+  "role": "user"
 }
 
 #### ----LOGIN user ----
