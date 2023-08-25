@@ -66,7 +66,8 @@ export async function findEmployeeDB(employee) {
 }
 
 export async function getBookDetailsByIDDB(context) {
-  const query = 'SELECT B.ISBN,B.TITLE,B.IMAGE,B.NUMBER_OF_PAGES,B.LANGUAGE,B.PUBLISH_YEAR,';
+  console.log(context);
+  const query = 'SELECT B.ISBN,B.TITLE,B.IMAGE,B.NUMBER_OF_PAGES,B.LANGUAGE,B.PUBLISH_YEAR,'+
   'B.DESCRIPTION,B.PUBLISHER_ID,P.NAME AS PUBLISHER_NAME,P.EMAIL AS PUBLISHER_EMAIL,' +
     'P.CONTACT_NO AS PUBLISHER_CONTACT_NO,' +
     "(P.POSTAL_CODE || ', ' || P.CITY || ', ' || P.COUNTRY) AS PUBLISHER_ADDRESS," +
@@ -77,6 +78,7 @@ export async function getBookDetailsByIDDB(context) {
     'GROUP BY B.ISBN,B.TITLE,B.IMAGE,B.NUMBER_OF_PAGES,B.LANGUAGE,B.PUBLISH_YEAR,' +
     'B.DESCRIPTION,B.PUBLISHER_ID,P.NAME,P.EMAIL,P.CONTACT_NO,' +
     "(P.POSTAL_CODE || ', ' || P.CITY || ', ' || P.COUNTRY),P.IMAGE\n";
+  console.log(query);
   const binds = {};
   binds.ISBN = context.ISBN;
   const result = await queryExecute(query, binds);
@@ -90,7 +92,7 @@ export async function getAllBookDB() {
   return result.rows;
 }
 
-// TODO: NEED TO FIXES
+
 export async function getBookDB() {
   const query = 'SELECT ISBN, TITLE, IMAGE FROM BOOK';
   console.log(query);
