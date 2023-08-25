@@ -76,6 +76,7 @@ export async function getAllBookSum(req, res, next) {
         // console.log(req);
         context.sort = req.query.sort;
         context.order = req.query.order;
+        context.USER_ID = req.USER_ID;
 
         const rows = await getAllBookSumDB(context);
 
