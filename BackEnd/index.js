@@ -3,8 +3,7 @@ import { config } from './Database/databaseConfiguration.js';
 import { close, initialize } from './webserver/webserver.js';
 
 const defaultThreadPoolSize = 4;
-process.env.UV_THREADPOOL_SIZE = config.poolMax + defaultThreadPoolSize + "";
-
+process.env.UV_THREADPOOL_SIZE = `${config.poolMax + defaultThreadPoolSize}`;
 
 async function startup() {
   try {
@@ -64,23 +63,23 @@ async function shutdown(e) {
   }
 }
 
-startup().then(r => console.log('Startup complete'));
+startup().then((r) => console.log('Startup complete'));
 
 process.on('SIGTERM', () => {
   console.log('Received SIGTERM');
 
-  shutdown().then(r => console.log('Shutdown complete'));
+  shutdown().then((r) => console.log('Shutdown complete'));
 });
 
 process.on('SIGINT', () => {
   console.log('Received SIGINT');
 
-  shutdown().then(r => console.log('Shutdown complete'));
+  shutdown().then((r) => console.log('Shutdown complete'));
 });
 
-process.on('uncaughtException', err => {
+process.on('uncaughtException', (err) => {
   console.log('Uncaught exception');
   console.error(err);
 
-  shutdown(err).then(r => console.log('Shutdown complete'));
+  shutdown(err).then((r) => console.log('Shutdown complete'));
 });

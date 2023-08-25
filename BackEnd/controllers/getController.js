@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken';
-import {secret} from '../Database/databaseConfiguration.js';
+import { secret } from '../Database/databaseConfiguration.js';
 import {
-    getAllBookDB,
-    getBookByTitleDB,
     getAllAuthorsDB,
     getAllAwardsDB,
     getAllBindsDB,
+    getAllBookDB,
+    getAllBookSumDB,
     getAllGenreDB,
     getAllLanguagesDB,
     getAllPublishersDB,
@@ -13,7 +13,9 @@ import {
     getAuthorBooksDB,
     getAuthorDB,
     getAvgRatingDB,
+    getBookByTitleDB,
     getBookDB,
+    getBookDetailsByIDDB,
     getBookFromBookshelfDB,
     getBookshelvesDB,
     getCompleteBookDB,
@@ -27,22 +29,18 @@ import {
     getTopBookDB,
     getUserRatedBooksDB,
     getUserReviewedBooksDB,
-    getAllBookSumDB,
-    getBookDetailsByIDDB,
-} from '../Database/queryFunctions.js'
-
-
+} from '../Database/queryFunctions.js';
 
 export async function getBookDetailsByID(req, res, next) {
     try {
-        console.log("in getControllers.js");
+        console.log('in getControllers.js');
 
         const context = {};
 
         // localhost:3000/db-api/book?id=9781408855669
 
         context.ISBN = req.query.id;
-        console.log(context)
+        console.log(context);
 
         const rows = await getBookDetailsByIDDB(context);
 
@@ -58,7 +56,7 @@ export async function getBookDetailsByID(req, res, next) {
 
 export async function getAllBook(req, res, next) {
     try {
-        console.log("in getControllers.js");
+        console.log('in getControllers.js');
         const rows = await getAllBookDB();
 
         if (rows.length === 1) {
@@ -73,8 +71,8 @@ export async function getAllBook(req, res, next) {
 
 export async function getAllBookSum(req, res, next) {
     try {
-        console.log("in getControllers.js");
-        const context ={};
+        console.log('in getControllers.js');
+        const context = {};
     // console.log(req);
         context.sort = req.query.sort;
         context.order = req.query.order;
@@ -208,7 +206,6 @@ export async function getAllAuthors(req, res, next) {
         } else {
             res.status(404).end();
         }
-
     } catch (err) {
         next(err);
     }
@@ -223,12 +220,10 @@ export async function getAllPublishers(req, res, next) {
         } else {
             res.status(404).end();
         }
-
     } catch (err) {
         next(err);
     }
 }
-
 
 export async function getAllGenre(req, res, next) {
     try {
@@ -239,12 +234,10 @@ export async function getAllGenre(req, res, next) {
         } else {
             res.status(404).end();
         }
-
     } catch (err) {
         next(err);
     }
 }
-
 
 export async function getAllLanguages(req, res, next) {
     try {
@@ -255,20 +248,18 @@ export async function getAllLanguages(req, res, next) {
         } else {
             res.status(404).end();
         }
-
     } catch (err) {
         next(err);
     }
 }
 
-
 export async function getAuthor(req, res, next) {
     try {
         const context = {};
-        //context.ID = Number(req.query.ID);
+        // context.ID = Number(req.query.ID);
         context.AUTHOR_ID = req.query.AUTHOR_ID;
-        console.log('Hello')
-        //console.log(context.ID);
+        console.log('Hello');
+        // console.log(context.ID);
 
         const rows = await getAuthorDB(context);
 
@@ -335,7 +326,6 @@ export async function getAuthorBooks(req, res, next) {
         } else {
             res.status(404).end();
         }
-
     } catch (err) {
         next(err);
     }
@@ -355,7 +345,6 @@ export async function getPublisherBooks(req, res, next) {
         } else {
             res.status(404).end();
         }
-
     } catch (err) {
         next(err);
     }
@@ -365,14 +354,11 @@ export async function getUserRatedBooks(req, res, next) {
     try {
         //   let token = req.headers['x-access-token'];
         //   jwt.verify(token, secret, async function(err, decoded) {
-        //     let context = {
-        //       USER_ID: decoded.USER_ID,
-        //     };
-        context.USER_ID = req.query.USER_ID;
-
+        const context = {
+            USER_ID: req.query.USER_ID,
+        };
 
         try {
-
             const rows = await getUserRatedBooksDB(context);
 
             if (rows.length > 0) {
@@ -380,11 +366,9 @@ export async function getUserRatedBooks(req, res, next) {
             } else {
                 res.status(404).end();
             }
-
         } catch (err) {
             next(err);
         }
-
 
         // });
         //
@@ -403,7 +387,6 @@ export async function getUserReviewedBooks(req, res, next) {
         context.USER_ID = req.query.USER_ID;
 
         try {
-
             const rows = await getUserReviewedBooksDB(context);
 
             if (rows.length > 0) {
@@ -411,11 +394,9 @@ export async function getUserReviewedBooks(req, res, next) {
             } else {
                 res.status(404).end();
             }
-
         } catch (err) {
             next(err);
         }
-
 
         // });
         //
@@ -438,7 +419,6 @@ export async function getGenreBook(req, res, next) {
         } else {
             res.status(404).end();
         }
-
     } catch (err) {
         next(err);
     }
@@ -467,13 +447,11 @@ export async function getRating(req, res, next) {
             res.status(501).json(error);
         }
         // });
-
     } catch
         (err) {
         next(err);
     }
 }
-
 
 export async function getOwnReview(req, res, next) {
     try {
@@ -483,9 +461,9 @@ export async function getOwnReview(req, res, next) {
         //         USER_ID: decoded.USER_ID,
         //         ISBN: req.query.ISBN
         //     };
-        let review={};
-        review.USER_ID=req.query.USER_ID;
-        review.ISBN=req.query.ISBN;
+        let review = {};
+        review.USER_ID = req.query.USER_ID;
+        review.ISBN = req.query.ISBN;
             try {
                 review = await getOwnReviewDB(review);
                 if (review.length > 0) {
@@ -497,15 +475,13 @@ export async function getOwnReview(req, res, next) {
                 res.status(501).json(error);
             }
 
-
         // });
-
     } catch (err) {
         next(err);
     }
 }
 
-export async function getAllReviewsOfBook(req, res, next){
+export async function getAllReviewsOfBook(req, res, next) {
   try {
       const context = {};
 
@@ -518,13 +494,12 @@ export async function getAllReviewsOfBook(req, res, next){
       } else {
         res.status(404).end();
       }
-
     } catch (err) {
       next(err);
     }
 }
 
-export async function getCompleteBook(req, res, next){
+export async function getCompleteBook(req, res, next) {
   try {
       const context = {};
 
@@ -543,16 +518,16 @@ export async function getCompleteBook(req, res, next){
     }
 }
 
-///////////////////////////
+/// ////////////////////////
 
-export async function getBookshelves(req, res, next){
+export async function getBookshelves(req, res, next) {
   try {
-    let token = req.headers['x-access-token'];
-    jwt.verify(token, secret, async function(err, decoded) {
+    const token = req.headers['x-access-token'];
+    jwt.verify(token, secret, async (err, decoded) => {
       let bookshelves = {
-        PERSON_ID: decoded.PERSON_ID
+        PERSON_ID: decoded.PERSON_ID,
       };
-      if(req.query.BOOKSHELF_ID){
+      if (req.query.BOOKSHELF_ID) {
         bookshelves.BOOKSHELF_ID = req.query.BOOKSHELF_ID;
       }
       try {
@@ -565,23 +540,19 @@ export async function getBookshelves(req, res, next){
       } catch (error) {
         res.status(501).json(error);
       }
-
     });
-
     } catch (err) {
       next(err);
     }
 }
 
-
-
-export async function getBooksFromBookshelf(req, res, next){
+export async function getBooksFromBookshelf(req, res, next) {
   try {
-    let token = req.headers['x-access-token'];
-    jwt.verify(token, secret, async function(err, decoded) {
+    const token = req.headers['x-access-token'];
+    jwt.verify(token, secret, async (err, decoded) => {
       let book = {
         PERSON_ID: decoded.PERSON_ID,
-        BOOKSHELF_ID: req.query.BOOKSHELF_ID
+        BOOKSHELF_ID: req.query.BOOKSHELF_ID,
       };
 
       try {
@@ -594,22 +565,13 @@ export async function getBooksFromBookshelf(req, res, next){
       } catch (error) {
         res.status(501).json(error);
       }
-
-
     });
-
     } catch (err) {
       next(err);
     }
 }
 
-
-
-
-
-
-
-export async function getAllAwards(req, res, next){
+export async function getAllAwards(req, res, next) {
   try {
       const rows = await getAllAwardsDB();
 
@@ -618,13 +580,12 @@ export async function getAllAwards(req, res, next){
       } else {
         res.status(404).end();
       }
-
     } catch (err) {
       next(err);
     }
 }
 
-export async function getAllBinds(req, res, next){
+export async function getAllBinds(req, res, next) {
   try {
       const rows = await getAllBindsDB();
 
@@ -633,13 +594,10 @@ export async function getAllBinds(req, res, next){
       } else {
         res.status(404).end();
       }
-
     } catch (err) {
       next(err);
     }
 }
-
-
 
 // export async function getAuthor(req, res, next){
 //     try {

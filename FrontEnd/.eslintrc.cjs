@@ -1,11 +1,11 @@
 module.exports = {
-    extends: ['airbnb-base'],
+    extends: ['prettier', 'airbnb-base'],
     parserOptions: {
         ecmaVersion: 12,
     },
     env: {
-        commonjs: true,
         node: true,
+        jsx: true,
     },
     rules: {
         'no-console': 0,
