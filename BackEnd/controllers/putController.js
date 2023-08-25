@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { secret } from '../Database/databaseConfiguration.js';
-import {  updateAdminDB, updateAuthorDB, updateBookDB, updateGenreDB, updatePublisherDB, updateUserDB } from '../Database/queryFunctions.js';
+import { updateAdminDB, updateAuthorDB, updateBookDB, updateGenreDB, updatePublisherDB, updateUserDB } from '../Database/queryFunctions.js';
 
 
 

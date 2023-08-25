@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import {secret} from '../Database/databaseConfiguration.js';
+import { secret } from '../Database/databaseConfiguration.js';
 import {
   addAuthorDB,
   addBookAwardDB,
