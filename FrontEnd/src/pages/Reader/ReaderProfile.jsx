@@ -9,24 +9,19 @@ import {
 import { Card, Grid, Typography } from "@mui/material";
 import React, { cloneElement, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import server from "../../HTTP/httpCommonParam";
 import ProfileInfo from "../ProfileInfo.jsx";
-// import server from '../../HTTP/httpCommonParam';
 const ReaderProfile = () => {
-  const [user, setUser] = useState({
-    ID: "1",
-    FIRST_NAME: "Jakaria",
-    LAST_NAME: "Hossain",
-    ADDRESS: "Pabna, Bangladesh",
-    CONTACT_NO: "123-456-7890",
-    GENDER: "M",
-    EMAIL: "abc@gmail.com",
-    IMAGE: "https://placekitten.com/400/400", // Replace with your image URL
-  });
+  const [user, setUser] = useState();
 
-  useEffect(() => {
-    // server.get('/ge')
-    // const id = localStorage.getItem("userId");
+  const getUserDetails = async () => {
+    const response = await server.get("/user/details");
+    console.log(response.data);
+    setUser(response.data);
     // setUser();
+  };
+  useEffect(() => {
+    getUserDetails();
   }, []);
   const pageList = [
     {
@@ -57,75 +52,87 @@ const ReaderProfile = () => {
   ];
   return (
     <>
-      <ProfileInfo user={user} />
-      <Card sx={{ marginTop: "3vh", padding: { md: "26px" } }} elevation={3}>
-        <Grid container spacing={2} alignItems="center" justifyContent="center">
-          {pageList.map((page, index) => (
+      {user && (
+        <>
+          <ProfileInfo user={user} />
+          <Card
+            sx={{ marginTop: "3vh", padding: { md: "26px" } }}
+            elevation={3}
+          >
             <Grid
-              key={index}
-              item
               container
-              xs={12}
+              spacing={2}
               alignItems="center"
               justifyContent="center"
             >
-              <Grid
-                component={Link}
-                to={page.url}
-                container
-                alignItems="center"
-                justifyContent="center"
-                sx={{
-                  width: "80%",
-                  height: "100px",
-                  backgroundColor: "itemBackground",
-                  borderRadius: "12px",
-                  padding: "16px",
-                  cursor: "pointer",
-                  textDecoration: "none",
-                  transition: "background-color 0.3s, opacity 0.3s",
-                  "&:hover": {
-                    backgroundColor: "itemBackgroundHover",
-                    opacity: 1,
-                  },
-                }}
-              >
+              {pageList.map((page, index) => (
                 <Grid
+                  key={index}
                   item
-                  xs={2}
                   container
+                  xs={12}
                   alignItems="center"
                   justifyContent="center"
                 >
-                  {cloneElement(page.icon, {
-                    color: "primary",
-                    fontSize: "large",
-                  })}
+                  <Grid
+                    component={Link}
+                    to={page.url}
+                    container
+                    alignItems="center"
+                    justifyContent="center"
+                    sx={{
+                      width: "80%",
+                      height: "100px",
+                      backgroundColor: "itemBackground",
+                      borderRadius: "12px",
+                      padding: "16px",
+                      cursor: "pointer",
+                      textDecoration: "none",
+                      transition: "background-color 0.3s, opacity 0.3s",
+                      "&:hover": {
+                        backgroundColor: "itemBackgroundHover",
+                        opacity: 1,
+                      },
+                    }}
+                  >
+                    <Grid
+                      item
+                      xs={2}
+                      container
+                      alignItems="center"
+                      justifyContent="center"
+                    >
+                      {cloneElement(page.icon, {
+                        color: "primary",
+                        fontSize: "large",
+                      })}
+                    </Grid>
+                    <Grid
+                      item
+                      xs={8}
+                      container
+                      alignItems="center"
+                      justifyContent="center"
+                      sx={{ paddingLeft: "16px", paddingRight: "16px" }}
+                    >
+                      <Typography variant="h2">{page.text} </Typography>
+                    </Grid>
+                    <Grid
+                      xs={2}
+                      item
+                      container
+                      alignItems="center"
+                      justifyContent="center"
+                    >
+                      <ArrowForwardIos fontSize="large" color="primary" />
+                    </Grid>
+                  </Grid>
                 </Grid>
-                <Grid
-                  item
-                  xs={8}
-                  container
-                  alignItems="center"
-                  justifyContent="center"
-                  sx={{ paddingLeft: "16px", paddingRight: "16px" }}
-                >
-                  <Typography variant="h2">{page.text} </Typography>
-                </Grid>
-                <Grid
-                  xs={2}
-                  item
-                  container
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <ArrowForwardIos fontSize="large" color="primary" />
-                </Grid>
-              </Grid>
+              ))}
             </Grid>
-          ))}
-        </Grid>
-      </Card>
+          </Card>
+        </>
+      )}
     </>
   );
 };

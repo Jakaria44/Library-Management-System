@@ -14,20 +14,21 @@ export async function loginGeneral(req, res, next) {
   try {
     console.log(req.body);
     const user = {
-      EMAIL: req.body.EMAIL,
-      PASSWORD: req.body.PASSWORD,
+      EMAIL: req.body.email,
+      PASSWORD: req.body.password,
     };
 
     const foundUser = await findUserDB(user);
+    if (foundUser.length === 0) {
+      return res.status(404).json({ message: 'Cannot find user', auth: false, token: null, role: null });
+    }
     const foundAdmin = await findAdminDB(foundUser[0]);
     const foundEmployee = await findEmployeeDB(foundUser[0]);
     console.log(foundAdmin);
-    if (foundUser.length === 0) {
-      return res.status(400).send('Cannot find user');
-    }
     try {
-      const passwordIsValid = bcrypt.compareSync(req.body.PASSWORD, foundUser[0].PASSWORD);
+      const passwordIsValid = bcrypt.compareSync(req.body.password, foundUser[0].PASSWORD);
 
+      console.log(passwordIsValid)
       if (passwordIsValid) {
         const temp = {};
         temp.USER_ID = foundUser[0].USER_ID;
@@ -37,10 +38,12 @@ export async function loginGeneral(req, res, next) {
         const token = jwt.sign(temp, secret, { expiresIn: '24h' }); // expires in 24 hours
         res.status(200).json({ auth: true, token, role: temp.ROLE });
       } else {
-        res.status(401).json({ auth: false, token: null, role: null });
+        
+        res.status(401).json({ message: "Wrong Password",auth: false, token: null, role: null });
       }
     } catch (err) {
-      res.status(500).send(err.message);
+      res.status(401).json({ message: "Wrong Password",auth: false, token: null, role: null });
+      // res.status(500).send(err.message);
     }
   } catch (err) {
     res.status(500).send(err.message);

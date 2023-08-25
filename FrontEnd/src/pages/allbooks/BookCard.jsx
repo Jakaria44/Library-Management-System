@@ -1,4 +1,4 @@
-import { FavoriteBorder, RemoveRedEye } from "@mui/icons-material";
+import { Favorite, FavoriteBorder, RemoveRedEye } from "@mui/icons-material";
 import {
   Card,
   CardContent,
@@ -9,6 +9,19 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 
+/*
+"ISBN": "9781408894743",
+    "TITLE": "Harry Potter and the Deathly Hallows",
+    "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/Harry_Potter_and_the_Deathly_Hallows_(Se-J.K_Rowling-699a7-122325.jpg",
+    "PUBLISH_YEAR": 2007,
+    "PAGE": 608,
+    "LANGUAGE": "English",
+    "AUTHORS": "J. K. Rowling",
+    "RATING": 5,
+    "PUBLISHER": "Bloomsbury Publishing",
+    "FAVOURITE": 1,
+    "IS_FAVOURITE": 1
+*/
 const BookCard = ({ book }) => {
   const handleAddToFavourite = () => {
     // Implement your add to favourite functionality here
@@ -58,14 +71,19 @@ const BookCard = ({ book }) => {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="Add To Favourite" placement="top">
+        <Tooltip
+          title={
+            book.FAVOURITE ? "Remove from Favourites" : "Add to Favourites"
+          }
+          placement="top"
+        >
           <IconButton
             onClick={handleAddToFavourite}
             center
             size="large"
             color="primary"
           >
-            <FavoriteBorder />
+            {book.FAVOURITE ? <Favorite /> : <FavoriteBorder />}
           </IconButton>
         </Tooltip>
       </div>

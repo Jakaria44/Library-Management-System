@@ -1,33 +1,29 @@
 import styled from "@emotion/styled";
-import { CheckCircleOutline } from "@mui/icons-material";
+import { ErrorOutline } from "@mui/icons-material";
 import { Button, Modal, Typography, useTheme } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 
-const SuccessfulModal = ({
-  showSuccessMessage,
-  successMessage,
-  HandleModalClosed,
-}) => {
+const ErrorModal = ({ showErrorMessage, errorMessage, HandleModalClosed }) => {
   const theme = useTheme();
-  const StyledSuccessModal = styled(Modal)`
+  const StyledErrorModal = styled(Modal)`
     display: flex;
     align-items: center;
     justify-content: center;
   `;
   return (
-    <StyledSuccessModal open={showSuccessMessage} onClose={HandleModalClosed}>
+    <StyledErrorModal open={showErrorMessage} onClose={HandleModalClosed}>
       <div
-        className="success-modal-content"
+        className="error-modal-content"
         style={{
           backgroundColor: theme.palette.background.default,
           borderRadius: "12px",
-        }} // Use theme color
+        }}
       >
         <Box p={2} display="flex" flexDirection="column" alignItems="center">
-          <CheckCircleOutline fontSize="large" sx={{ color: "green" }} />
+          <ErrorOutline fontSize="large" sx={{ color: "red" }} />
           <Typography margin={2} variant="h4">
-            {successMessage}
+            {errorMessage}
           </Typography>
           <Button
             margin={2}
@@ -40,8 +36,8 @@ const SuccessfulModal = ({
           </Button>
         </Box>
       </div>
-    </StyledSuccessModal>
+    </StyledErrorModal>
   );
 };
 
-export default SuccessfulModal;
+export default ErrorModal;

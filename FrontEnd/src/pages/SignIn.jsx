@@ -11,6 +11,9 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import ErrorModal from "../component/ErrorModal";
+import SpinnerWithBackdrop from "../component/SpinnerWithBackdrop";
+import server from "./../HTTP/httpCommonParam";
 
 function Copyright(props) {
   return (
@@ -29,22 +32,48 @@ function Copyright(props) {
     </Typography>
   );
 }
-
+const emailRegex =
+  /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 export default function SignIn() {
+  // const navigate = useNavigate();
   const [showPassword, setShowPassword] = React.useState(false);
+  const [signingIn, setSigningIn] = React.useState(false);
+  const [showErrorMessage, setShowErrorMessage] = React.useState(false);
+  const [email, setEmail] = React.useState("");
+  const [errorMessage, setErrorMessage] = React.useState(
+    "Something went wrong. Pleae try again"
+  );
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
+  };
+  const signin = async (user) => {
+    try {
+      console.log(user);
+      const response = await server.post("/user/login", user);
+      console.log(response);
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      setSigningIn(false);
+      window.location.replace("/profile");
+    } catch (err) {
+      setErrorMessage(err?.response?.data?.message || "Something went wrong");
+      setShowErrorMessage(true);
+      console.log(err);
+    }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setSigningIn(true);
     const data = new FormData(event.currentTarget);
-    console.log({
+    const user = {
       email: data.get("email"),
       password: data.get("password"),
-    });
+    };
+    signin(user);
   };
 
+  const isEmailValid = emailRegex.test(email);
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -77,6 +106,11 @@ export default function SignIn() {
             name="email"
             autoComplete="email"
             autoFocus
+            error={!isEmailValid}
+            onChange={(e) => setEmail(e.target.value)}
+            helperText={
+              isEmailValid ? "" : "Please enter a valid email address"
+            }
           />
           <Box sx={{ mb: 1 }} />
           <TextField
@@ -122,6 +156,18 @@ export default function SignIn() {
           </Grid>
         </Box>
       </Box>
+      <SpinnerWithBackdrop
+        backdropOpen={signingIn}
+        helperText="Please wait while we signing you in"
+      />
+      <ErrorModal
+        showErrorMessage={showErrorMessage}
+        errorMessage={errorMessage}
+        HandleModalClosed={() => {
+          setShowErrorMessage(false), setSigningIn(false);
+        }}
+      />
+      ;
       <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>
   );

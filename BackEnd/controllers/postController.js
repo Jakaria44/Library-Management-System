@@ -17,6 +17,25 @@ import {
 } from '../Database/queryFunctions.js';
 
 
+export async function updateUserDetails(req, res, next) {
+  try {
+    let user = {
+      PERSON_ID: req.body.PERSON_ID,
+      FIRST_NAME: req.body.FIRST_NAME,
+      LAST_NAME: req.body.LAST_NAME,
+      ADDRESS: req.body.ADDRESS,
+      EMAIL: req.body.EMAIL,
+      PHONE_NUMBER: req.body.PHONE_NUMBER,
+      DETAILS: req.body.DETAILS,
+      WEB_ADDRESS: req.body.WEB_ADDRESS
+    };
+
+    user = await updateUserDB(user);
+    res.status(201).json(user);
+  } catch (err) {
+    next(err);
+  }
+}
 
 export async function advanceSearch(req, res, next) {
   try {
