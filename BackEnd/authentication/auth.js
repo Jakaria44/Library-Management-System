@@ -69,14 +69,10 @@ export function verifyGeneralToken(req, res, next) {
         return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
       }
 
-      if (decoded.ROLE === 'user') {
+      if (decoded.ROLE === 'user' || decoded.ROLE === 'employee') {
         req.USER_ID = decoded.USER_ID;
         next();
       } else if (decoded.ROLE === 'admin') {
-        req.USER_ID = decoded.USER_ID;
-        next();
-      } else if (decoded.ROLE === 'employee') {
-        req.USER_ID = decoded.USER_ID;
         next();
       } else {
         return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
