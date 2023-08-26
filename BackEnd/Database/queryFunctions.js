@@ -69,21 +69,20 @@ export async function findEmployeeDB(employee) {
 export async function getBookDetailsByIDDB(context) {
     console.log(context);
     let query =
-        "SELECT B.ISBN, JSON_ARRAYAGG(JSON_OBJECT('NAME' VALUE A.NAME, 'ID' VALUE A.AUTHOR_ID)) AS AUTHOR, " +
-        "JSON_ARRAYAGG(JSON_OBJECT('ID' VALUE E.EDITION_ID, 'NUM' VALUE E.EDITION_NUM, 'COUNT' VALUE E.NUM_OF_COPIES, 'YEAR' VALUE E.PUBLISH_YEAR)) AS EDITION," +
-        "P.PUBLISHER_ID, P.NAME AS PUBLISHER_NAME, B.TITLE, B.IMAGE, B.PUBLISH_YEAR, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE," +
-        "NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, NVL(COUNT(F.USER_ID), 0) AS FAVOURITE, SUM(E.NUM_OF_COPIES) AS TOTAL_COPIES";
+        "SELECT B.ISBN, " +
+        "(SELECT JSON_ARRAYAGG(DISTINCT JSON_OBJECT('NAME' VALUE A.NAME, 'ID' VALUE A.AUTHOR_ID)) FROM WRITTEN_BY WB JOIN AUTHOR A ON WB.AUTHOR_ID = A.AUTHOR_ID WHERE WB.ISBN = B.ISBN) AS AUTHOR, " +
+        "(SELECT JSON_ARRAYAGG(DISTINCT JSON_OBJECT('NAME' VALUE G.GENRE_NAME, 'ID' VALUE G.GENRE_ID)) FROM BOOK_GENRE BG JOIN GENRE G ON BG.GENRE_ID = G.GENRE_ID WHERE BG.ISBN = B.ISBN) AS GENRE, " +
+        "(SELECT JSON_ARRAYAGG(DISTINCT JSON_OBJECT('ID' VALUE E.EDITION_ID, 'NUM' VALUE E.EDITION_NUM, 'COUNT' VALUE E.NUM_OF_COPIES, 'YEAR' VALUE E.PUBLISH_YEAR)) FROM EDITION E WHERE E.ISBN = B.ISBN) AS EDITION, " +
+        "P.PUBLISHER_ID, P.NAME AS PUBLISHER_NAME, B.TITLE, B.IMAGE, B.PUBLISH_YEAR, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE, " +
+        "NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, NVL(COUNT(F.USER_ID), 0) AS FAVOURITE";
     if (context.USER_ID) {
         query += `, CASE WHEN B.ISBN = ANY(SELECT F.ISBN FROM FAVOURITE F WHERE F.USER_ID = ${context.USER_ID}) THEN 1 ELSE 0 END AS IS_FAVOURITE`;
     }
     query +=
         "\nFROM BOOK B " +
-        "LEFT JOIN WRITTEN_BY WB ON (B.ISBN = WB.ISBN) " +
-        "LEFT JOIN AUTHOR A ON (WB.AUTHOR_ID = A.AUTHOR_ID) " +
+        "LEFT JOIN PUBLISHER P ON (B.PUBLISHER_ID = P.PUBLISHER_ID) " +
         "LEFT JOIN REVIEW_RATING R ON (B.ISBN = R.ISBN) " +
-        "LEFT JOIN FAVOURITE F ON(B.ISBN = F.ISBN) " +
-        "LEFT JOIN PUBLISHER P ON(P.PUBLISHER_ID = B.PUBLISHER_ID) " +
-        "LEFT JOIN EDITION E ON(B.ISBN = E.ISBN)";
+        "LEFT JOIN FAVOURITE F ON (B.ISBN = F.ISBN)";
     query += `\nWHERE B.ISBN = '${context.ISBN}'`;
     query +=
         "\nGROUP BY B.ISBN, B.TITLE, B.IMAGE, P.PUBLISHER_ID, P.NAME, B.PUBLISH_YEAR, B.NUMBER_OF_PAGES, B.LANGUAGE";
@@ -91,7 +90,6 @@ export async function getBookDetailsByIDDB(context) {
     const result = await queryExecute(query, []);
     return result.rows;
 }
-
 
 // export async function getBookDetailsByIDDB(context) {
 //   console.log(context);
@@ -364,6 +362,7 @@ export async function getAllRatRevOfBookDB(context) {
         query += `SELECT *
                   FROM (SELECT U.USER_ID,
                                (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME,
+                               U.IMAGE,
                                R.RATING,
                                R.REVIEW,
                                TO_CHAR(R.EDIT_DATE, 'DD-MM-YYYY')   AS EDIT_DATE` +
@@ -371,7 +370,7 @@ export async function getAllRatRevOfBookDB(context) {
             `\nWHERE R.ISBN = ${context.ISBN} AND U.USER_ID = ${context.USER_ID}) UNION SELECT * FROM (`;
     }
     query +=
-        "SELECT U.USER_ID, (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, R.RATING, R.REVIEW, TO_CHAR(R.EDIT_DATE, 'DD-MM-YYYY') AS EDIT_DATE" +
+        "SELECT U.USER_ID, (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, U.IMAGE, R.RATING, R.REVIEW, TO_CHAR(R.EDIT_DATE, 'DD-MM-YYYY') AS EDIT_DATE" +
         `\nFROM REVIEW_RATING R JOIN "USER" U ON (U.USER_ID = R.USER_ID)` +
         `\nWHERE R.ISBN = ${context.ISBN}`;
     if (context.USER_ID) {

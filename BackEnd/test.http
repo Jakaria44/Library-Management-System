@@ -36,22 +36,21 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEU
 GET http://localhost:3000/db-api/book?id=9781408855652
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5Mjk3NDg1MywiZXhwIjoxNjkzMDYxMjUzfQ.YNQH72Vn7quu9w3C3T3CuC89GBEtjZ_7qb9tp31Wrfg
 ###OUTPUT
-
 {
   "ISBN": "9781408855652",
-  "TITLE": "Harry Potter and the Philosophers Stone",
-  "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/4cf25a33d8a4_86392.gif",
-  "NUMBER_OF_PAGES": 352,
-  "LANGUAGE": "English",
-  "PUBLISH_YEAR": 1997,
-  "DESCRIPTION": "Harry Potter discovers he's a wizard on his eleventh birthday and is invited to attend Hogwarts School of Witchcraft and Wizardry. There, he makes friends, learns magic, and uncovers the mystery of the Sorcerer's Stone.",
+  "AUTHOR": "[{\"NAME\":\"J. K. Rowling\",\"ID\":\"1\"}]",
+  "GENRE": "[{\"NAME\":\"Fantasy\",\"ID\":\"1\"}]",
+  "EDITION": "[{\"ID\":\"1\",\"NUM\":1,\"COUNT\":3,\"YEAR\":1997},{\"ID\":\"2\",\"NUM\":2,\"COUNT\":3,\"YEAR\":1999}]",
   "PUBLISHER_ID": "1",
   "PUBLISHER_NAME": "Bloomsbury Publishing",
-  "PUBLISHER_EMAIL": "contact@bloomsbury.com",
-  "PUBLISHER_CONTACT_NO": "+44 (0)20 7631 5600",
-  "PUBLISHER_ADDRESS": "WC1B 3DP, London, England",
-  "PUBLISHER_IMAGE": "https://media-exp1.licdn.com/dms/image/C4E0BAQEDkPybVXr47Q/company-logo_200_200/0/1544531682586?e=2159024400&v=beta&t=JjAs9ok_PwgXA9CFsXKm3bt6fjbFI4N7SZRn4ajOUVg",
-  "AUTHOR_NAME": "J. K. Rowling"
+  "TITLE": "Harry Potter and the Philosophers Stone",
+  "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/4cf25a33d8a4_86392.gif",
+  "PUBLISH_YEAR": 1997,
+  "PAGE": 352,
+  "LANGUAGE": "English",
+  "RATING": 4.5,
+  "FAVOURITE": 0,
+  "IS_FAVOURITE": 0
 }
 
 #### ----POST user ----
@@ -127,6 +126,8 @@ Content-Type: application/json
 #### ----GET ALL-RAT-REV of BOOK----
 GET http://localhost:3000/db-api/all-rat-rev?id=9781408855652
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5Mjk3NDg1MywiZXhwIjoxNjkzMDYxMjUzfQ.YNQH72Vn7quu9w3C3T3CuC89GBEtjZ_7qb9tp31Wrfg
+
+###output
 [
   {
     "USER_ID": "1",
