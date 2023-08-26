@@ -3,8 +3,6 @@ import { secret } from '../Database/databaseConfiguration.js';
 import { updateAdminDB, updateAuthorDB, updateBookDB, updateGenreDB, updatePublisherDB, updateUserDB } from '../Database/queryFunctions.js';
 
 
-
-
   export async function updateBook(req, res, next) {
     try {
       var book = {
@@ -29,7 +27,6 @@ import { updateAdminDB, updateAuthorDB, updateBookDB, updateGenreDB, updatePubli
       next(err);
     }
   }
-
 
   export async function updateAuthor(req, res, next) {
     try {
