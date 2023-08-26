@@ -508,8 +508,8 @@ export async function getAllRatRevOfBook(req, res, next) {
         context.USER_ID = req.USER_ID;
         // console.log(context);
         const rows = await getAllRatRevOfBookDB(context);
-
-        if (rows.length > 0) {
+        // console.log(rows);
+        if (rows.allRatRev.length >0 || rows.myRatRev.length >0) {
             res.status(200).json(rows);
         } else {
             res.status(404).end();
