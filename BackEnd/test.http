@@ -132,16 +132,18 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
   {
     "USER_ID": "1",
     "NAME": "Ryan George",
+    "IMAGE": "https://img.freepik.com/free-icon/user_318-159711.jpg",
     "RATING": 5,
     "REVIEW": "My most favourite book ever",
-    "EDIT_DATE": "24-08-2023"
+    "EDIT_DATE": "2023-08-24T10:07:28.000Z"
   },
   {
     "USER_ID": "3",
     "NAME": "Ahmmad Nur Swapnil",
+    "IMAGE": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
     "RATING": 4,
     "REVIEW": "I like this one",
-    "EDIT_DATE": "25-08-2023"
+    "EDIT_DATE": "2023-08-25T16:47:18.000Z"
   }
 ]
 
@@ -160,8 +162,8 @@ GET http://localhost:3000/db-api/getAuthor?aid=1
 ###OUTPUT
 {
   "NAME": "J. K. Rowling",
-  "DOB": "31-07-1965",
-  "DOD": "30-12-1990",
+  "DOB": "1965-07-30T18:00:00.000Z",
+  "DOD": "1990-12-29T18:00:00.000Z",
   "NATIONALITY": "British",
   "BIO": "Joan Rowling, author of the popular Harry Potter series, K. Known as Rowling, she was born on July 31, 1985, in Yate, Gloucestershire, England. Ever since he was a child, she started dreaming of becoming a great writer. He spent his childhood in a rural environment. After graduating from the University of Exeter, he began his career as an English teacher, but had to move to Portugal. Later when she came to Edinburgh from Portugal, she was the mother of one child, single mother. When he arrived in Edinburgh, he read financially. Originally he had to hold a pen in his hand in search of money, the result of which is the world famous fiction 'Harry Potter'. Joan Rowling became one of the most well-known literary figures in today's literary world, as an orphaned simple boy discovered the existence of magic in himself and gradually wrote strange and unimaginable stories that happened in his life. K. Rowling '. The commercially successful series brought back its fortunes and forced bookworms of all ages to wander into that world of magical fairy tales. J. K. Rowling's books include a total of six books in the Harry Potter series. These 6 books have earned the title of bestseller worldwide and have sold more than 450 million copies so far. J. K. Rowling's books include Harry Potter and the Philosopher's Stone, Harry Potter and the Chamber of Secrets, Harry Potter and the Prisoner of Azkaban, Harry Potter and the Goblet of Fire, and Harry. 'The Order of the Phoenix', 'Harry Potter and the Half-Blood Prince', 'Harry Potter and the Deathly Hallows',' The Casual Vacancy ',' Cuckoo's Calling ',' The Silkworm ',' Career of Evil ',' Lethal White 'etc. He also co-wrote the play Harry Potter and the Cursed Child with Jack Thorne and John Tiffany. English language as well as J. K. Rowling's translation books are equally popular. The author of this billionaire has also been contributing to the society through donations to various charities.",
   "IMAGE": "https://ds.rokomari.store/rokomari110/people/6ed601ea2b54_2559.png"
