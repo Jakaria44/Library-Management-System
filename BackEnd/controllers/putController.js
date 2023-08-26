@@ -91,22 +91,29 @@ import { updateAdminDB, updateAuthorDB, updateBookDB, updateGenreDB, updatePubli
       var token = req.headers['x-access-token'];
       jwt.verify(token, secret, async function(err, decoded) {
         let user = {
-          PERSON_ID: decoded.PERSON_ID,
+// ADDRESS, CONTACT_NO, EMAIL, FIRST_NAME, GENDER, IMAGE, LAST_NAME, PASSWORD, USER_ID, 
+
+          USER_ID: decoded.USER_ID,
           FIRST_NAME: req.body.FIRST_NAME,
           LAST_NAME: req.body.LAST_NAME,
           ADDRESS: req.body.ADDRESS,
           EMAIL:req.body.EMAIL,
-          PHONE_NUMBER: req.body.PHONE_NUMBER,
-          DETAILS: req.body.DETAILS
+          CONTACT_NO: req.body.CONTACT_NO,
+          IMAGE: req.body.IMAGE, 
+          GENDER : req.body.GENDER,
+          PASSWORD: req.body.PASSWORD,
+
+          
         };
   
         try {
          
           user = await updateUserDB(user);
-          res.status(201).json(user);
         } catch (error) {
           res.status(501).json(error);  
         }  
+        if(user)  res.status(201).json(user);
+        else res.status(409).json({message: "Email already exists"});
       });
   
       } catch (err) {

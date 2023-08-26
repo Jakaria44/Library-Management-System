@@ -27,9 +27,28 @@ import {
     getRatingDB,
     getRecentBookDB,
     getTopBookDB,
+    getUserDetailsDB,
     getUserRatedBooksDB,
     getUserReviewedBooksDB,
 } from "../Database/queryFunctions.js";
+
+
+export async function getUserDetails(req, res, next){
+    try {
+        const context = {};
+        context.USER_ID = req.USER_ID;
+
+        const rows = await getUserDetailsDB(context);
+
+        if (rows.length === 1) {
+            res.status(200).json(rows[0]);
+        } else {
+            res.status(200).json(rows);
+        }
+    } catch (err) {
+        next(err);
+    }
+}
 
 export async function getBookDetailsByID(req, res, next) {
     try {

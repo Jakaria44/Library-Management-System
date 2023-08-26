@@ -5,11 +5,15 @@ import {
   FormControl,
   Grid,
   IconButton,
+  InputLabel,
   MenuItem,
   Select,
   TextField,
 } from "@mui/material";
 import React, { useState } from "react";
+
+// FIELDS:
+// ADDRESS, CONTACT_NO, EMAIL, FIRST_NAME, GENDER, IMAGE, LAST_NAME, PASSWORD, USER_ID,
 
 const EditProfile = ({ profile, setProfile, setSelectedImage }) => {
   const [previewUrl, setPreviewUrl] = useState(profile.IMAGE);

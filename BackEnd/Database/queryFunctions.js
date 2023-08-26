@@ -9,6 +9,29 @@ function runProcedure(procedure) {
   return `Begin\n${procedure};\nEnd;`;
 }
 
+
+export async function updateUserDB(context) {
+  const query = runProcedure(  'UPDATE_USER(:USER_ID, :FIRST_NAME, :LAST_NAME, :ADDRESS, :EMAIL, :CONTACT_NO, :IMAGE, :GENDER, :PASSWORD)'  );
+  let result =  null;
+  try {
+
+    result = await queryExecute(query, context);
+  } catch (err) {
+    return null;
+  }
+  return result;
+}
+
+export async function getUserDetailsDB(context) {
+  let query = baseQuery('"USER"');
+  const binds = {};
+  binds.USER_ID = context.USER_ID;
+
+  query += '\nWhere USER_ID = :USER_ID';
+  const result = await queryExecute(query, binds);
+  return result?.rows;
+}
+
 export async function postUserDB(user) {
   console.log('postUserDB');
   const procedure =
@@ -921,11 +944,14 @@ export async function deleteGenreDB(context) {
 }
 
 export async function updateUserDB(context) {
-  const query = runProcedure(
-    'UPDATE_USER(:PERSON_ID, :FIRST_NAME, :LAST_NAME, :ADDRESS, :EMAIL, :PHONE_NUMBER, :DETAILS)'
-  );
+  const query = runProcedure(  'UPDATE_USER(:USER_ID, :FIRST_NAME, :LAST_NAME, :ADDRESS, :EMAIL, :CONTACT_NO, :IMAGE, :GENDER, :PASSWORD)'  );
+  let result =  null;
+  try {
 
-  const result = await queryExecute(query, context);
+    result = await queryExecute(query, context);
+  } catch (err) {
+    return null;
+  }
   return result;
 }
 

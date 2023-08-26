@@ -48,7 +48,6 @@ const MainRoutes = {
       path: "/details/:id",
       element: <Details />,
       loader: bookDetailsLoader,
-      // errorElement: (<p style={{ margin: "auto" }}>Error loading all books!</p>)
     },
     {
       path: "/latestbooks",
@@ -57,6 +56,9 @@ const MainRoutes = {
     {
       path: "/profile",
       element: <ReaderProfile />,
+      errorElement: (
+        <p style={{ margin: "auto" }}>Error loading user Details!</p>
+      ),
     },
     {
       path: "/favourites",

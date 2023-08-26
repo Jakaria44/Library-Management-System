@@ -19,7 +19,7 @@ const AllBooks = () => {
   return (
     <Grid container spacing={2}>
       <Filters />
-      <React.Suspense fallback={<CircularSpinner/>}>
+      <React.Suspense fallback={<CircularSpinner />}>
         <Await
           resolve={allBooks}
           errorElement={

@@ -14,7 +14,6 @@ import {
   getAllAuthors,
   getAllAwards,
   getAllBinds,
-  getAllBook,
   getAllBookSum,
   getAllGenre,
   getAllLanguages,
@@ -36,6 +35,7 @@ import {
   getRating,
   getRecentBook,
   getTopBook,
+  getUserDetails,
   getUserRatedBooks,
   getUserReviewedBooks
 } from '../controllers/getController.js';
@@ -50,7 +50,8 @@ import {
   rateBook,
   reviewBook,
   searchedBook,
-  postFavBook
+  postFavBook,
+  updateUserDetails
 } from '../controllers/postController.js';
 import {
   updateAdmin,
@@ -66,11 +67,12 @@ router.use(Express.json());
 let urlencodedParser = bodyParser.urlencoded({extended: true});
 
 
-router.route('/all-books').get(verifyGeneralToken,getAllBook);
 router.route('/book').get(verifyGeneralToken,getBookDetailsByID);
 router.route('/all-books-sum').get(verifyGeneralToken,getAllBookSum);
 router.route('/user/signup').post(urlencodedParser,postUser);
-router.route('/general/login').post(urlencodedParser, loginGeneral);
+router.route('/user/login').post(urlencodedParser, loginGeneral);
+router.route('/user/update').put(verifyUserToken, urlencodedParser, updateUser);
+
 router.route('/admin/signup').post(urlencodedParser, postAdmin);
 router.route('/all-rat-rev').get(verifyGeneralToken, getAllRatRevOfBook);
 router.route('/edit-favourite').post(verifyGeneralToken, urlencodedParser, postFavBook);
@@ -82,6 +84,9 @@ router.route('/book/title').get(getBookByTitle);
 router.route('/topBooks').get(getTopBook);
 router.route('/recentBooks').get(getRecentBook);
 router.route('/avg-rating').get(getAvgRating);
+
+
+router.route('/user/details').get(verifyUserToken, getUserDetails).post(verifyUserToken, urlencodedParser, updateUserDetails);
 //??
 // router.route('/book').get(verifyGeneralToken, getBook).post(verifyAdminToken, urlencodedParser, postBook);
 router.route('/all-authors').get(getAllAuthors);

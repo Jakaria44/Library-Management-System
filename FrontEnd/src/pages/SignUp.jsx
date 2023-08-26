@@ -1,11 +1,5 @@
 import { CameraAlt, Visibility, VisibilityOff } from "@mui/icons-material";
-import {
-  Backdrop,
-  CircularProgress,
-  IconButton,
-  InputAdornment,
-  MenuItem,
-} from "@mui/material";
+import { IconButton, InputAdornment, MenuItem } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -17,9 +11,11 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { v4 } from "uuid";
+import server from "../HTTP/httpCommonURL";
+import SpinnerWithBackdrop from "../component/SpinnerWithBackdrop";
 import { storage } from "../firebaseConfig";
+
 const defaultImage = "https://img.freepik.com/free-icon/user_318-159711.jpg";
 
 function Copyright(props) {
@@ -41,12 +37,11 @@ function Copyright(props) {
 }
 
 export default function SignUp() {
-  const navigate = useNavigate();
-
   const [showPassword, setShowPassword] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(defaultImage);
   const [selectedImage, setSelectedImage] = useState(null);
   const [signingUp, setSigningUp] = useState(false);
+  const [gender, setGender] = useState("M");
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
@@ -84,23 +79,38 @@ export default function SignUp() {
         alert("Error uploading image");
       });
   };
-
+  const postUser = async (fields) => {
+    const response = await server.post("/user/signup", fields);
+    localStorage.setItem("token", response.data.token);
+    localStorage.setItem("role", response.data.role);
+    console.log(response);
+  };
   const getFormData = (data, url) => {
     const fields = {
       image: url,
       firstName: data.get("firstName"),
       lastName: data.get("lastName"),
-      phone: data.get("phone"),
+      contactNo: data.get("phone"),
       address: data.get("address"),
       email: data.get("email"),
       password: data.get("password"),
+      gender: gender,
     };
     console.log(fields);
 
-    setTimeout(() => {
-      setSigningUp(false);
-      navigate("/profile");
-    }, 3000);
+    postUser(fields)
+      .then((res) => {
+        setSigningUp(false);
+        window.location.replace("/profile");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    // setTimeout(() => {
+    //   setSigningUp(false);
+    //   navigate("/profile");
+    // }, 3000);
   };
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -221,7 +231,13 @@ export default function SignUp() {
                 defaultValue="M"
               >
                 {genders.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
+                  <MenuItem
+                    key={option.value}
+                    onChange={() => {
+                      setGender(option.value);
+                    }}
+                    value={option.value}
+                  >
                     {option.label}
                   </MenuItem>
                 ))}
@@ -279,23 +295,7 @@ export default function SignUp() {
         </Box>
       </Box>
 
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={signingUp}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <CircularProgress color="inherit" />
-          <Typography variant="body2" color="inherit" mt={2}>
-            Signing up...
-          </Typography>
-        </Box>
-      </Backdrop>
+      <SpinnerWithBackdrop backdropOpen={signingUp} helperText="Signing Up" />
       <Copyright sx={{ mt: 3 }} />
     </Container>
   );
