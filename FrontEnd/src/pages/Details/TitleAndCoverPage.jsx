@@ -53,7 +53,9 @@ const TitleAndCoverPage = ({ book, editions }) => {
     { icon: <BookIcon />, label: book.TITLE, variant: "h1" },
     {
       icon: <PersonIcon />,
-      label: `Author: ${book.AUTHOR_NAME}`,
+      label: `Author: ${JSON.parse(book.AUTHOR)
+        .map((author) => author.NAME)
+        .join(", ")}`,
       variant: "h3",
     },
     {

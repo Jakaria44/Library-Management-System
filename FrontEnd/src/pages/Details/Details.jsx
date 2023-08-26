@@ -36,7 +36,6 @@ const Details = () => {
 };
 
 export default Details;
-
 const BookDetails = () => {
   const { data } = useAsyncValue();
   const book = data;

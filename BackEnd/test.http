@@ -128,28 +128,24 @@ GET http://localhost:3000/db-api/all-rat-rev?id=9781408855652
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5Mjk3NDg1MywiZXhwIjoxNjkzMDYxMjUzfQ.YNQH72Vn7quu9w3C3T3CuC89GBEtjZ_7qb9tp31Wrfg
 
 ###output
-{
-  "allRatRev": [
-    {
-      "USER_ID": "3",
-      "NAME": "Ahmmad Nur Swapnil",
-      "IMAGE": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
-      "RATING": 4,
-      "REVIEW": "I like this one",
-      "EDIT_DATE": "2023-08-25T16:47:18.000Z"
-    }
-  ],
-  "myRatRev": [
-    {
-      "USER_ID": "1",
-      "NAME": "Ryan George",
-      "IMAGE": "https://img.freepik.com/free-icon/user_318-159711.jpg",
-      "RATING": 5,
-      "REVIEW": "My most favourite book ever",
-      "EDIT_DATE": "2023-08-24T10:07:28.000Z"
-    }
-  ]
-}
+[
+  {
+    "USER_ID": "1",
+    "NAME": "Ryan George",
+    "IMAGE": "https://img.freepik.com/free-icon/user_318-159711.jpg",
+    "RATING": 5,
+    "REVIEW": "My most favourite book ever",
+    "EDIT_DATE": "2023-08-24T10:07:28.000Z"
+  },
+  {
+    "USER_ID": "3",
+    "NAME": "Ahmmad Nur Swapnil",
+    "IMAGE": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
+    "RATING": 4,
+    "REVIEW": "I like this one",
+    "EDIT_DATE": "2023-08-25T16:47:18.000Z"
+  }
+]
 
 #### --- Edit Favourite -----
 POST http://localhost:3000/db-api/edit-favourite?id=9781408855652

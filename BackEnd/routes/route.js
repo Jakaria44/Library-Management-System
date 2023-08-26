@@ -50,7 +50,8 @@ import {
   rateBook,
   reviewBook,
   searchedBook,
-  postFavBook
+  postFavBook,
+  updateUserDetails
 } from '../controllers/postController.js';
 import {
   updateAdmin,
@@ -85,7 +86,7 @@ router.route('/recentBooks').get(getRecentBook);
 router.route('/avg-rating').get(getAvgRating);
 
 
-router.route('/user/details').get(verifyUserToken, getUserDetails).put(verifyUserToken, urlencodedParser, updateUser);
+router.route('/user/details').get(verifyUserToken, getUserDetails).post(verifyUserToken, urlencodedParser, updateUserDetails);
 //??
 // router.route('/book').get(verifyGeneralToken, getBook).post(verifyAdminToken, urlencodedParser, postBook);
 router.route('/all-authors').get(getAllAuthors);
