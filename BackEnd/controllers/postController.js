@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { secret } from '../Database/databaseConfiguration.js';
+import {secret} from '../Database/databaseConfiguration.js';
 import {
   addAuthorDB,
   addBookAwardDB,
@@ -8,14 +8,15 @@ import {
   addGenreDB,
   addPublisherDB,
   addWrittenByDB,
-    postFavouriteDB,
+  postFavouriteDB,
   createBookDB,
   getFavouriteDB,
   getAdvancedSearchedBookDB,
   getSearchedBookDB,
   rateBookDB,
   ratrevBookDB,
-  getAvgRatingDB
+  getAvgRatingDB,
+  addRequestDB
 } from '../Database/queryFunctions.js';
 
 
@@ -41,7 +42,7 @@ export async function updateUserDetails(req, res, next) {
 
 export async function postFavBook(req, res, next) {
 
-  if(req.USER_ID) {
+  if (req.USER_ID) {
     let fav = {
       ISBN: req.query.id,
       USER_ID: req.USER_ID
@@ -54,7 +55,7 @@ export async function postFavBook(req, res, next) {
     } catch (error) {
       res.status(501).json(error);
     }
-  }else{
+  } else {
     res.status(501).json('Not an User/Employee');
   }
 }
@@ -172,25 +173,42 @@ export async function rateBook(req, res, next) {
 
 export async function ratrevBook(req, res, next) {
   try {
-      let ratrev = {
-        ISBN: req.query.id,
-        USER_ID: req.USER_ID,
-        RATING: req.body.RATING,
-        REVIEW: req.body.REVIEW,
-      };
+    let ratrev = {
+      ISBN: req.query.id,
+      USER_ID: req.USER_ID,
+      RATING: req.body.RATING,
+      REVIEW: req.body.REVIEW,
+    };
 
-      try {
-        const my = await ratrevBookDB(ratrev);
-        console.log(my);
-        const avg = await getAvgRatingDB(ratrev);
-        console.log(avg);
-        res.status(201).json({my, avg});
-      } catch (error) {
-        res.status(501).json(error);
-      }
+    try {
+      const my = await ratrevBookDB(ratrev);
+      console.log(my);
+      const avg = await getAvgRatingDB(ratrev);
+      console.log(avg);
+      res.status(201).json({my, avg});
+    } catch (error) {
+      res.status(501).json(error);
+    }
 
   } catch (err) {
     res.status(501).json(err);
+  }
+}
+
+export async function addRequest(req, res, next) {
+  try {
+    let request = {
+      USER_ID: req.USER_ID,
+      EDITION_ID: req.body.EDITION_ID
+    };
+    request = await addRequestDB(request);
+    if (request!==null) {
+      res.status(200).json({message: "Successful"})
+    } else {
+      res.status(404).json({message: "Already Exists"})
+    }
+  } catch (e) {
+    next(e);
   }
 }
 
@@ -363,7 +381,7 @@ export async function reviewRateBook(req, res, next) {
       let review = {
         ISBN: req.body.id,
         USER_ID: decoded.USER_ID,
-        REVIEW: req.body.review, 
+        REVIEW: req.body.review,
         RATING: req.body.rating
       };
 
