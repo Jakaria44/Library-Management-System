@@ -1,9 +1,9 @@
 import { Button, Grid, Rating, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 
-const WriteReview = () => {
-  const [rating, setRating] = useState(0);
-  const [review, setReview] = useState("");
+const WriteReview = ({ text, value, onSubmit }) => {
+  const [rating, setRating] = useState(value);
+  const [review, setReview] = useState(text);
 
   const handleRatingChange = (event, newValue) => {
     setRating(newValue);
@@ -17,6 +17,15 @@ const WriteReview = () => {
     // Implement your submit logic here
     console.log("Rating:", rating);
     console.log("Review:", review);
+    if (rating === 0 || review === "") return;
+    if (
+      localStorage.getItem("role") !== "user" &&
+      localStorage.getItem("role") !== "employee"
+    ) {
+      alert("You must login to give review!");
+      return;
+    }
+    onSubmit(rating, review);
   };
 
   return (

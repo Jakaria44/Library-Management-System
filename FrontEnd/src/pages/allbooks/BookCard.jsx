@@ -32,6 +32,7 @@ const BookCard = ({ book }) => {
     ) {
       changeFavouriteStatus();
     }
+    console.log(localStorage.getItem("role"));
   };
   const changeFavouriteStatus = async () => {
     // remove from favourite
@@ -40,7 +41,7 @@ const BookCard = ({ book }) => {
     setIsFavourite(response.data.IS_FAVOURITE);
   };
   return (
-    <Card sx={{ width: 200, height: 370 }} elevation={12}>
+    <Card sx={{ width: { sm: 200, xs: "100%" }, height: 370 }} elevation={12}>
       <CardMedia
         component="img"
         sx={{ height: 220, maxWidth: 140, margin: "auto" }}
@@ -57,7 +58,7 @@ const BookCard = ({ book }) => {
         >
           {book.TITLE}
         </Typography>
-        <Typography variant="body1" color="text.secondary">
+        <Typography variant="body1" noWrap color="text.secondary">
           {book.AUTHORS}
         </Typography>
       </CardContent>

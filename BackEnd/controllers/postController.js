@@ -354,3 +354,28 @@ export async function addGenre(req, res, next) {
     next(err);
   }
 }
+
+export async function reviewRateBook(req, res, next) {
+  try {
+    var token = req.headers['x-access-token'];
+    jwt.verify(token, secret, async function (err, decoded) {
+      let review = {
+        ISBN: req.body.id,
+        USER_ID: decoded.USER_ID,
+        REVIEW: req.body.review, 
+        RATING: req.body.rating
+      };
+
+      try {
+        review = await reviewBookDB(review);
+        res.status(201).json(review);
+      } catch (error) {
+        res.status(501).json(error);
+      }
+
+    });
+
+  } catch (err) {
+    res.status(501).json(err);
+  }
+}

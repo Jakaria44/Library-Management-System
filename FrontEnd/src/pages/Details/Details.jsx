@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Await, defer, useAsyncValue, useLoaderData } from "react-router-dom";
 import server from "../../HTTP/httpCommonParam";
 import CircularSpinner from "../../component/CircularSpinner";
@@ -38,19 +38,48 @@ const Details = () => {
 export default Details;
 const BookDetails = () => {
   const { data } = useAsyncValue();
-  const book = data;
+
+  const [othersReviews, setOthersReviews] = useState([]);
+  const [myRating, setMyRating] = useState(null);
+  const [myReview, setMyReview] = useState({});
+  const [ratings, setRatings] = useState([]);
+
+  const getAllReviews = async ({ id }) => {
+    try {
+      const response = await server.get(`/all-rat-rev?id=${id}`);
+      // Create an object to store the counts for each rating
+      const ratingCounts = {};
+      const array = [...response.data.myRatRev, ...response.data.allRatRev];
+      // Count the occurrences of each rating
+      array.forEach((review) => {
+        const rating = review.RATING;
+        if (ratingCounts[rating] === undefined) {
+          ratingCounts[rating] = 1;
+        } else {
+          ratingCounts[rating]++;
+        }
+      });
+
+      const ratings = [];
+      for (let rating = 5; rating >= 1; rating--) {
+        const count = ratingCounts[rating] || 0;
+        ratings.push({ label: rating, count });
+      }
+      setMyReview(response.data.myRatRev[0]);
+
+      // return response.data;
+      setMyRating(response.data.myRatRev[0]?.RATING);
+      setOthersReviews(response.data.allRatRev);
+      setRatings(ratings);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
-    console.log(book);
+    getAllReviews({ id: data.ISBN });
   }, []);
 
-  const ratings = [
-    { label: 5, count: 15 },
-    { label: 4, count: 10 },
-    { label: 3, count: 8 },
-    { label: 2, count: 4 },
-    { label: 1, count: 2 },
-  ];
   const editions = [
     {
       EDITION: 2,
@@ -61,10 +90,10 @@ const BookDetails = () => {
   return (
     <>
       <Grid container spacing={2} padding={3} direction="row">
-        <TitleAndCoverPage book={book} editions={editions} />
-        <Description book={book} />
-        <GiveReview ratings={ratings} />
-        <ReviewsOfBook />
+        <TitleAndCoverPage book={data} editions={editions} />
+        <Description book={data} />
+        <GiveReview myRating={myRating} myReview={myReview} ratings={ratings} />
+        <ReviewsOfBook othersReviews={othersReviews} />
       </Grid>
     </>
   );

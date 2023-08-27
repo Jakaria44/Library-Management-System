@@ -41,7 +41,7 @@ export async function postUserDB(user) {
   console.log('procedure postUserDB');
   try {
     const result = await queryExecute(query, user);
-    console.log('exec postUserDB');
+    console.log('exec postUserDB ',result);
     return user;
   } catch (err) {
     return err;
@@ -382,6 +382,7 @@ export async function getAllRatRevOfBookDB(context) {
     console.log(context);
     let query = '';
     let query1 = '';
+    let result, result1;
     if (context.USER_ID) {
       query1 = `SELECT U.USER_ID,
                              (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME,
@@ -402,11 +403,11 @@ export async function getAllRatRevOfBookDB(context) {
     } else {
       query += '\nORDER BY R.EDIT_DATE DESC';
     }
-    console.log(query);
-    console.log(query1);
-    const result = await queryExecute(query, []);
-    const result1 = await queryExecute(query1, []);
-    return {allRatRev: result.rows, myRatRev: result1.rows};
+    // console.log(query);
+    // console.log(query1);
+     result = await queryExecute(query, []);
+     if(context.USER_ID) result1 = await queryExecute(query1, []);
+    return {allRatRev: result.rows, myRatRev: result1?.rows || []};
   }
   
 
@@ -953,4 +954,13 @@ export async function updateAdminDB(context) {
 
   const result = await queryExecute(query, context);
   return result;
+}
+
+export async function reviewRateBookDB(review) {
+  const reviewDB = {...review};
+  const query = runProcedure('REVIEW_POST(:USER_ID, :ISBN, :REVIEW, :RATING)');
+
+  const result = await queryExecute(query, reviewDB);
+
+  return reviewDB;
 }

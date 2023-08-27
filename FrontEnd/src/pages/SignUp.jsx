@@ -36,12 +36,18 @@ function Copyright(props) {
   );
 }
 
+const emailRegex =
+  /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(defaultImage);
   const [selectedImage, setSelectedImage] = useState(null);
   const [signingUp, setSigningUp] = useState(false);
   const [gender, setGender] = useState("M");
+  const [email, setEmail] = useState("");
+
+  const isEmailValid = email ? emailRegex.test(email) : true;
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
@@ -80,10 +86,20 @@ export default function SignUp() {
       });
   };
   const postUser = async (fields) => {
-    const response = await server.post("/user/signup", fields);
-    localStorage.setItem("token", response.data.token);
-    localStorage.setItem("role", response.data.role);
-    console.log(response);
+    let response;
+    try {
+      response = await server.post("/user/signup", fields);
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", response.data.role);
+      console.log(response);
+
+      setSigningUp(false);
+      window.location.replace("/profile");
+    } catch (err) {
+      alert(err?.response?.data?.message || "Something went wrong");
+      setSigningUp(false);
+      console.log(err);
+    }
   };
   const getFormData = (data, url) => {
     const fields = {
@@ -98,14 +114,7 @@ export default function SignUp() {
     };
     console.log(fields);
 
-    postUser(fields)
-      .then((res) => {
-        setSigningUp(false);
-        window.location.replace("/profile");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    postUser(fields);
 
     // setTimeout(() => {
     //   setSigningUp(false);
@@ -210,6 +219,11 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                error={!isEmailValid}
+                onChange={(e) => setEmail(e.target.value)}
+                helperText={
+                  isEmailValid ? "" : "Please enter a valid email address"
+                }
               />
             </Grid>
             <Grid item xs={12} sm={8}>

@@ -15,10 +15,14 @@ const ReaderProfile = () => {
   const [user, setUser] = useState();
 
   const getUserDetails = async () => {
-    const response = await server.get("/user/details");
-    console.log(response.data);
-    setUser(response.data);
-    // setUser();
+    try {
+      const response = await server.get("/user/details");
+      console.log(response.data);
+      setUser(response.data);
+      // setUser();
+    } catch (err) {
+      console.log(err);
+    }
   };
   useEffect(() => {
     getUserDetails();

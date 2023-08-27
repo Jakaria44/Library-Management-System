@@ -298,6 +298,7 @@ const ProfileInfo = ({ user }) => {
             errorMessage={errorMessage}
             HandleModalClosed={() => {
               setShowErrorMessage(false);
+              setUploading(false);
             }}
           />
 
