@@ -6,7 +6,8 @@ import {
   deleteBookshelfDB,
   deleteGenreDB,
   deletePublisherDB,
-  deleteRatRevBookDB
+  deleteRatRevBookDB,
+  deleteRequestsDB
 } from "../Database/queryFunctions.js";
 
 export async function deleteBookOfBookshelf(req, res, next) {
@@ -31,13 +32,44 @@ export async function deleteRatRevBook(req, res, next) {
   context.USER_ID = req.USER_ID;
   try {
     const deleted = await deleteRatRevBookDB(context);
-    if (deleted)
-      res.status(201).json({message:'Successful'});
-    else res.status(404).json({message:"Does not Exist"});
+    if (deleted) {
+      res.status(201).json({message: 'Successful'});
+    } else {
+      res.status(404).json({message: "Does not Exist"});
+    }
   } catch (err) {
     next(err);
   }
 }
+
+export async function deleteRequests(req, res, next) {
+  const context = {};
+  context.USER_ID = req.USER_ID;
+  let success = true; // Flag to track success of all deletions
+
+  for (const EID of req.body.Editions) {
+    console.log('Processing EID:', EID);
+    context.EDITION_ID = EID;
+
+    try {
+      const deleted = await deleteRequestsDB(context);
+      if (!deleted) {
+        success = false;
+        break;
+      }
+    } catch (err) {
+      next(err);
+      return;
+    }
+  }
+
+  if (success) {
+    res.status(201).json({ message: 'Successful' });
+  } else {
+    res.status(404).json({ message: 'Does not Exist' });
+  }
+}
+
 
 export async function deleteAllBooksBookshelf(req, res, next) {
   try {

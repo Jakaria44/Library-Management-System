@@ -30,6 +30,7 @@ import {
   getUserDetailsDB,
   getUserRatedBooksDB,
   getUserReviewedBooksDB,
+  getMyRequestsDB
 } from "../Database/queryFunctions.js";
 
 
@@ -483,6 +484,24 @@ export async function getOwnRatRev(req, res, next) {
       res.status(201).json(ratrev[0]);
     } else {
       res.status(404).json('User is not allowed');
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getMyRequests(req, res, next) {
+  try {
+    const context = {};
+    context.USER_ID = req.USER_ID;
+    context.sort = req.query.sort;
+    context.order = req.query.order;
+    const rows = await getMyRequestsDB(context);
+
+    if (rows.length > 0) {
+      res.status(200).json(rows);
+    } else {
+      res.status(200).json(rows);
     }
   } catch (err) {
     next(err);

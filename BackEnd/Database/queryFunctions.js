@@ -98,7 +98,7 @@ export async function getBookDetailsByIDDB(context) {
     "(SELECT JSON_ARRAYAGG(DISTINCT JSON_OBJECT('NAME' VALUE G.GENRE_NAME, 'ID' VALUE G.GENRE_ID)) FROM BOOK_GENRE BG JOIN GENRE G ON BG.GENRE_ID = G.GENRE_ID WHERE BG.ISBN = B.ISBN) AS GENRE, " +
     "(SELECT JSON_ARRAYAGG(DISTINCT JSON_OBJECT('ID' VALUE E.EDITION_ID, 'NUM' VALUE E.EDITION_NUM, 'COUNT' VALUE E.NUM_OF_COPIES, 'YEAR' VALUE E.PUBLISH_YEAR)) FROM EDITION E WHERE E.ISBN = B.ISBN) AS EDITION, " +
     "P.PUBLISHER_ID, P.NAME AS PUBLISHER_NAME, B.TITLE, B.IMAGE, B.PUBLISH_YEAR, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE, " +
-    "NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, NVL(COUNT(F.USER_ID), 0) AS FAVOURITE, B.DESCRIPTION";
+    "NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, NVL(COUNT(DISTINCT F.USER_ID), 0) AS FAVOURITE, B.DESCRIPTION";
   if (context.USER_ID) {
     query += `, CASE WHEN B.ISBN = ANY(SELECT F.ISBN FROM FAVOURITE F WHERE F.USER_ID = ${context.USER_ID}) THEN 1 ELSE 0 END AS IS_FAVOURITE`;
   }
@@ -153,12 +153,16 @@ export async function getBookDB() {
 export async function getAllBookSumDB(context) {
   console.log(context);
   let query =
-    "SELECT B.ISBN, B.TITLE, B.IMAGE, B.PUBLISH_YEAR, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE, LISTAGG(A.NAME, ', ') AS AUTHORS, NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, NVL(COUNT(F.USER_ID),0) AS FAVOURITE";
+    "SELECT B.ISBN, B.TITLE, B.IMAGE, B.PUBLISH_YEAR, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE, " +
+    "(SELECT LISTAGG(A.NAME, ', ') FROM WRITTEN_BY WB JOIN AUTHOR A ON WB.AUTHOR_ID = A.AUTHOR_ID WHERE WB.ISBN = B.ISBN) AS AUTHORS, " +
+    "NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, NVL(COUNT(DISTINCT F.USER_ID),0) AS FAVOURITE";
   if (context.USER_ID) {
     query += `, CASE WHEN B.ISBN = ANY(SELECT F.ISBN FROM FAVOURITE F WHERE F.USER_ID = ${context.USER_ID}) THEN 1 ELSE 0 END AS IS_FAVOURITE`
   }
   query +=
-    '\nFROM BOOK B LEFT JOIN WRITTEN_BY WB ON (B.ISBN = WB.ISBN) LEFT JOIN AUTHOR A ON (WB.AUTHOR_ID = A.AUTHOR_ID) LEFT JOIN REVIEW_RATING R ON (B.ISBN = R.ISBN) LEFT JOIN FAVOURITE F ON(B.ISBN = F.ISBN)';
+    '\nFROM BOOK B ' +
+    'LEFT JOIN REVIEW_RATING R ON (B.ISBN = R.ISBN) ' +
+    'LEFT JOIN FAVOURITE F ON(B.ISBN = F.ISBN)';
   query +=
     '\nGROUP BY B.ISBN, B.TITLE, B.IMAGE, B.PUBLISH_YEAR, B.NUMBER_OF_PAGES, B.LANGUAGE';
 
@@ -285,6 +289,43 @@ export async function getPublisherDB(context) {
   const result = await queryExecute(query, context);
   return result.rows;
 }
+
+export async function getMyRequestsDB(context) {
+  let query = 'SELECT B.ISBN, B.TITLE, R.EDITION_ID, E.EDITION_NUM, R.REQUEST_DATE ' +
+    '\nFROM REQUEST R JOIN EDITION E ON(R.EDITION_ID = E.EDITION_ID) JOIN BOOK B ON(E.ISBN = B.ISBN)' +
+    `\nWHERE R.USER_ID = ${context.USER_ID}`;
+  let flag = 1;
+  if (context.sort && context.order) {
+    const validColumns = ['TITLE', 'EDITION_NUM', 'REQUEST_DATE'];
+    const validOrders = ['ASC', 'DESC'];
+
+    if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
+      query += `\nORDER BY ${context.sort} ${context.order}`;
+      if (context.sort !== 'TITLE') {
+        query += ', TITLE ASC';
+      }
+      flag = 0;
+    }
+  }
+  if (flag) {
+    query += '\nORDER BY TITLE ASC';
+  }
+
+  const result = await queryExecute(query, []);
+  return result.rows;
+}
+
+export async function addRequestDB(context) {
+  let query = runProcedure('INSERT_REQUEST(:EDITION_ID, :USER_ID)');
+  let result = null;
+  try {
+    result = await queryExecute(query, context);
+  } catch (e) {
+    return null;
+  }
+  return context;
+}
+
 
 export async function getUserRatedBooksDB(context) {
   let query = baseQuery('BOOK B JOIN RATING R ON(B.ISBN=R.ISBN)');
@@ -472,9 +513,12 @@ export async function postFavouriteDB(review) {
   console.log(review);
   const reviewDB = {...review};
   const query = runProcedure('POST_FAVOURITE(:ISBN, :USER_ID)');
-
-  const result = await queryExecute(query, reviewDB);
-
+  try {
+    const result = await queryExecute(query, reviewDB);
+  }
+  catch (e) {
+    return null;
+  }
   return reviewDB;
 }
 
@@ -785,13 +829,25 @@ export async function deleteBookOfBookshelfDB(context) {
 export async function deleteRatRevBookDB(context) {
   let query = runProcedure('DELETE_REVIEW_RATING(:ISBN, :USER_ID)');
   console.log(context);
-  let result ;
+  let result;
   try {
     result = await queryExecute(query, context);
   } catch (e) {
     return null
   }
   return result;
+}
+
+export async function deleteRequestsDB(context) {
+  let query = runProcedure('DELETE_REQUEST(:EDITION_ID, :USER_ID)');
+  console.log(context);
+  let result;
+  try {
+    result = await queryExecute(query, context);
+  } catch (e) {
+    return null
+  }
+  return context;
 }
 
 export async function deleteAllBooksBookshelfDB(context) {

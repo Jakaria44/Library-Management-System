@@ -32,8 +32,8 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 ]
 
 #### ----GET Single Book ----
-GET http://localhost:3000/db-api/book?id=9781408855652
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njg0OSwiZXhwIjoxNjkzMjMzMjQ5fQ.dwqT-i_0vWtGOlqHdDnSM5oJaK5PUk1NdC9Xegb-zRg
+GET http://localhost:3000/db-api/book?id=9781408894743
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzMTY5Nzk2LCJleHAiOjE2OTMyNTYxOTZ9.Fql8neO8fVLw7dsjh-0aWrkzqBTPzkFK1_Rh8eCMuSE
 ###OUTPUT
 {
   "ISBN": "9781408855652",
@@ -264,3 +264,57 @@ Content-Type: application/json
 #### ----Delete review rating---
 DELETE http://localhost:3000/db-api/del-rate-review?id=9781408855652
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzMTU3MjE5LCJleHAiOjE2OTMyNDM2MTl9.anI3tZRe9gWgxLVcuR5EAAp--GVYB3g2iWtmJiiinD8
+###OUTPUT
+{
+  "message": "Does not Exist"
+}
+
+#### ----GET ALL MY REQUESTS----
+GET http://localhost:3000/db-api/my-requests?sort=EDITION_NUM&order=ASC
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
+###OUTPUT
+[
+  {
+    "ISBN": "9780439785969",
+    "TITLE": "Harry Potter and the Half-Blood Prince",
+    "EDITION_ID": "9",
+    "EDITION_NUM": 1,
+    "REQUEST_DATE": "2023-08-24T10:07:28.000Z"
+  },
+  {
+    "ISBN": "9781408894743",
+    "TITLE": "Harry Potter and the Deathly Hallows",
+    "EDITION_ID": "11",
+    "EDITION_NUM": 2,
+    "REQUEST_DATE": "2023-08-27T10:07:28.000Z"
+  }
+]
+
+#### ---ADD REQUEST----
+POST http://localhost:3000/db-api/request
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
+Content-Type: application/json
+
+{
+  "EDITION_ID": "11"
+}
+
+###OUTPUT
+{
+  "message": "Successful"
+}
+
+#### ---DELETE REQUEST----
+DELETE http://localhost:3000/db-api/del-requests
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
+Content-Type: application/json
+
+{
+  "Editions" : ["5", "8", "11"]
+}
+
+###OUTPUT
+# 5 and 11 exist. 8 does not exist. only 5 deleted
+{
+  "message": "Does not Exist"
+}

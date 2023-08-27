@@ -9,7 +9,8 @@ import {
   deleteBookshelf,
   deleteGenre,
   deletePublisher,
-  deleteRatRevBook
+  deleteRatRevBook,
+  deleteRequests
 } from '../controllers/deleteController.js';
 import {
   getAllAuthors,
@@ -38,7 +39,8 @@ import {
   getTopBook,
   getUserDetails,
   getUserRatedBooks,
-  getUserReviewedBooks
+  getUserReviewedBooks,
+  getMyRequests
 } from '../controllers/getController.js';
 import { decodeToken, loginGeneral, logout, postAdmin, postUser } from '../controllers/loginController.js';
 import {
@@ -52,7 +54,8 @@ import {
   ratrevBook,
   searchedBook,
   postFavBook,
-  updateUserDetails
+  updateUserDetails,
+  addRequest
 } from '../controllers/postController.js';
 import {
   updateAdmin,
@@ -81,6 +84,9 @@ router.route('/getPublisher').get(getPublisher);
 router.route('/getAuthor').get(getAuthor);
 router.route('/rate-review').post(verifyGeneralToken, urlencodedParser, ratrevBook).get(verifyGeneralToken, getOwnRatRev);
 router.route('/del-rate-review').delete(verifyGeneralToken, deleteRatRevBook)
+router.route('/my-requests').get(verifyGeneralToken, getMyRequests);
+router.route('/request').post(verifyGeneralToken, urlencodedParser, addRequest);
+router.route('/del-requests').delete(verifyGeneralToken, deleteRequests);
 
 router.route('/book/title').get(getBookByTitle);
 router.route('/topBooks').get(getTopBook);
@@ -89,7 +95,7 @@ router.route('/avg-rating').get(getAvgRating);
 
 
 router.route('/user/details').get(verifyUserToken, getUserDetails).post(verifyUserToken, urlencodedParser, updateUserDetails);
-//??
+
 // router.route('/book').get(verifyGeneralToken, getBook).post(verifyAdminToken, urlencodedParser, postBook);
 router.route('/all-authors').get(getAllAuthors);
 router.route('/all-publishers').get(getAllPublishers);
