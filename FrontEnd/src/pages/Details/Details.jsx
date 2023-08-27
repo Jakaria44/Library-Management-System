@@ -43,6 +43,7 @@ const BookDetails = () => {
   const [myRating, setMyRating] = useState(null);
   const [myReview, setMyReview] = useState({});
   const [ratings, setRatings] = useState([]);
+  // const [editions, setEditions] = useState([]);
 
   const getAllReviews = async ({ id }) => {
     try {
@@ -76,17 +77,16 @@ const BookDetails = () => {
     }
   };
 
+  const editions = JSON.parse(data?.EDITION).map((edition) => ({
+    EDITION: edition.NUM,
+    AVAILABLE_COPIES: edition.COUNT,
+    YEAR: edition.YEAR,
+    label: `Edition ${edition.NUM}`,
+  }));
   useEffect(() => {
     getAllReviews({ id: data.ISBN });
+    console.log(data);
   }, []);
-
-  const editions = [
-    {
-      EDITION: 2,
-      NUMBER_OF_PAGES: 200,
-      AVAILABLE_COPIES: 100,
-    },
-  ];
   return (
     <>
       <Grid container spacing={2} padding={3} direction="row">

@@ -24,7 +24,6 @@ const GiveReview = ({ myRating, myReview, ratings }) => {
     }
   };
   const MyReviewEdit = () => {
-    console.log(myReview.REVIEW);
     if (reviewEditing) {
       return (
         <WriteReview

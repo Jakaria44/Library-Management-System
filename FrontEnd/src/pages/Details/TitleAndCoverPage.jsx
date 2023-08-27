@@ -1,12 +1,15 @@
 // need to add genre
 
 import { useTheme } from "@emotion/react";
-import { CalendarMonth, Language } from "@mui/icons-material";
-import BookIcon from "@mui/icons-material/Book";
-import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
-import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
-import PageviewIcon from "@mui/icons-material/Pageview";
-import PersonIcon from "@mui/icons-material/Person";
+import {
+  Book,
+  CalendarMonth,
+  ConfirmationNumber,
+  Language,
+  LocalLibrary,
+  Pageview,
+  Person,
+} from "@mui/icons-material";
 import {
   Button,
   Grid,
@@ -18,22 +21,20 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
-
+import { useEffect, useState } from "react";
+import server from "./../../HTTP/httpCommonParam";
 const TitleAndCoverPage = ({ book, editions }) => {
+  const [isFavourite, setIsFavourite] = useState(book.IS_FAVOURITE);
   const [selectedEdition, setSelectedEdition] = useState(editions[0]);
   const theme = useTheme();
 
-  const editionOptions = editions.map((edition) => ({
-    label: `Edition ${edition.EDITION}`,
-    value: edition.EDITION,
-    pages: edition.NUMBER_OF_PAGES,
-    availableCopies: edition.AVAILABLE_COPIES,
-  }));
-
+  useEffect(() => {
+    console.log(editions);
+  }, []);
   const handleEditionChange = (event) => {
+    console.log(editions);
     const selectedValue = event.target.value;
-    const selectedEdition = book.editions.find(
+    const selectedEdition = editions.find(
       (edition) => edition.EDITION === selectedValue
     );
     setSelectedEdition(selectedEdition);
@@ -48,35 +49,51 @@ const TitleAndCoverPage = ({ book, editions }) => {
     );
   };
 
-  const handleAddToFavourite = () => {};
+  const handleAddToFavourite = () => {
+    if (
+      localStorage.getItem("role") === "user" ||
+      localStorage.getItem("role") === "employee"
+    ) {
+      changeFavouriteStatus();
+    } else {
+      alert("please log in to add ");
+      return;
+    }
+  };
+  const changeFavouriteStatus = async () => {
+    // remove from favourite
+    const response = await server.post(`/edit-favourite?id=${book.ISBN}`);
+    console.log(response);
+    setIsFavourite(response.data.IS_FAVOURITE);
+  };
   const bookInfoList = [
-    { icon: <BookIcon />, label: book.TITLE, variant: "h1" },
+    { icon: <Book />, label: book.TITLE, variant: "h1" },
     {
-      icon: <PersonIcon />,
+      icon: <Person />,
       label: `Author: ${JSON.parse(book.AUTHOR)
         .map((author) => author.NAME)
         .join(", ")}`,
       variant: "h3",
     },
     {
-      icon: <LocalLibraryIcon />,
+      icon: <LocalLibrary />,
       label: `Publisher: ${book.PUBLISHER_NAME}`,
       variant: "h3",
     },
     {
-      icon: <PageviewIcon />,
-      label: `Pages: ${selectedEdition.NUMBER_OF_PAGES}`,
+      icon: <Pageview />,
+      label: `Pages: ${book.PAGE}`,
       variant: "h3",
     },
     {
-      icon: <ConfirmationNumberIcon />,
-      label: `Available Copies: ${selectedEdition.AVAILABLE_COPIES}`,
+      icon: <ConfirmationNumber />,
+      label: `Available Copies: ${selectedEdition?.AVAILABLE_COPIES}`,
       variant: "h3",
     },
     { icon: <Language />, label: `Language: ${book.LANGUAGE}`, variant: "h3" },
     {
       icon: <CalendarMonth />,
-      label: `Publish Year: ${book.PUBLISH_YEAR}`,
+      label: `Publish Year: ${selectedEdition?.YEAR}`,
       variant: "h3",
     },
   ];
@@ -124,8 +141,8 @@ const TitleAndCoverPage = ({ book, editions }) => {
               onChange={handleEditionChange}
               style={{ marginLeft: "8px" }}
             >
-              {editionOptions.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
+              {editions.map((option) => (
+                <MenuItem key={option.EDITION} value={option.EDITION}>
                   {option.label}
                 </MenuItem>
               ))}
@@ -154,7 +171,7 @@ const TitleAndCoverPage = ({ book, editions }) => {
               onClick={handleAddToFavourite}
               style={{ margin: "8px" }}
             >
-              Add To Favourite
+              {isFavourite ? "Remove from Favourite" : "Add to Favourite"}
             </Button>
           </div>
         </Paper>

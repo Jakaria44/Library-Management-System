@@ -7,6 +7,7 @@ import {
   styled,
 } from "@mui/material";
 import React from "react";
+import { TimeFormat2 } from "../../utils/TimeFormat";
 
 const AuthorCard = styled(Card)(({ theme }) => ({
   display: "flex",
@@ -39,11 +40,11 @@ const AuthorComponent = ({ author }) => {
             <div>
               <Typography variant="h3">{author.NAME}</Typography>
               <Typography variant="subtitle1">
-                Date of Birth: {author.DOB}
+                Date of Birth: {TimeFormat2(author.DOB)}
               </Typography>
               {author.DOD && (
                 <Typography variant="subtitle1">
-                  Date of Death: {author.DOD}
+                  Date of Death: {TimeFormat2(author.DOD)}
                 </Typography>
               )}
             </div>

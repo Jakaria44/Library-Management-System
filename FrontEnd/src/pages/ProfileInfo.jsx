@@ -59,6 +59,7 @@ const ProfileInfo = ({ user }) => {
   };
   const handleClose = (event, reason = "") => {
     setEditProfileOpen(false);
+    window.location.reload();
   };
 
   const uploadImage = () => {

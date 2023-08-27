@@ -13,7 +13,7 @@ const Structure = Loadable(lazy(() => import("../layout/Structure.jsx")));
 const MyFavourites = Loadable(
   lazy(() => import("../pages/Reader/MyFavourites"))
 );
-const MyReviews = Loadable(lazy(() => import("../pages/Reader/MyReviews")));
+
 const MyDueList = Loadable(lazy(() => import("../pages/Reader/MyDueList")));
 const MyCollections = Loadable(
   lazy(() => import("../pages/Reader/MyCollections"))
@@ -64,10 +64,7 @@ const MainRoutes = {
       path: "/favourites",
       element: <MyFavourites />,
     },
-    {
-      path: "/reviews",
-      element: <MyReviews />,
-    },
+
     {
       path: "/applications",
       element: <MyApplications />,
