@@ -14,7 +14,8 @@ import {
   getAdvancedSearchedBookDB,
   getSearchedBookDB,
   rateBookDB,
-  reviewBookDB
+  ratrevBookDB,
+  getAvgRatingDB
 } from '../Database/queryFunctions.js';
 
 
@@ -169,24 +170,24 @@ export async function rateBook(req, res, next) {
   }
 }
 
-export async function reviewBook(req, res, next) {
+export async function ratrevBook(req, res, next) {
   try {
-    var token = req.headers['x-access-token'];
-    jwt.verify(token, secret, async function (err, decoded) {
-      let review = {
-        ISBN: req.body.ISBN,
-        PERSON_ID: decoded.PERSON_ID,
-        REVIEW_CONTENT: req.body.REVIEW
+      let ratrev = {
+        ISBN: req.query.id,
+        USER_ID: req.USER_ID,
+        RATING: req.body.RATING,
+        REVIEW: req.body.REVIEW,
       };
 
       try {
-        review = await reviewBookDB(review);
-        res.status(201).json(review);
+        const my = await ratrevBookDB(ratrev);
+        console.log(my);
+        const avg = await getAvgRatingDB(ratrev);
+        console.log(avg);
+        res.status(201).json({my, avg});
       } catch (error) {
         res.status(501).json(error);
       }
-
-    });
 
   } catch (err) {
     res.status(501).json(err);

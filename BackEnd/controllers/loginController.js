@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { secret } from '../Database/databaseConfiguration.js';
+import {secret} from '../Database/databaseConfiguration.js';
 import {
   findAdminDB,
   findEmployeeDB,
@@ -17,26 +17,29 @@ export async function loginGeneral(req, res, next) {
       EMAIL: req.body.email,
       PASSWORD: req.body.password,
     };
+    // console.log(user);
+
     let foundAdmin, foundEmployee;
     const foundUser = await findUserDB(user);
+    console.log(foundUser);
     if (foundUser.length === 0) {
-      return res.status(404).json({ message: 'Cannot find user', auth: false, token: null, role: null });
+      return res.status(404).json({message: 'Cannot find user', auth: false, token: null, role: null});
     }
-    if(foundUser.length){
-      try{
+    if (foundUser.length) {
+      try {
         foundAdmin = await findAdminDB(foundUser[0]);
         foundEmployee = await findEmployeeDB(foundUser[0]);
 
-      }catch(err){
+      } catch (err) {
         res.status(500).send(err.message);
       }
-    } 
+    }
     let passwordIsValid = false;
     console.log(foundAdmin);
-    try{
+    try {
 
       passwordIsValid = await bcrypt.compare(user.PASSWORD, foundUser[0].PASSWORD);
-    }catch(err){
+    } catch (err) {
       res.status(500).send(err.message);
     }
 
@@ -47,14 +50,14 @@ export async function loginGeneral(req, res, next) {
       temp.ROLE = 'user';
       if (foundEmployee.length > 0) temp.ROLE = 'employee';
       if (foundAdmin.length > 0) temp.ROLE = 'admin';
-      const token = jwt.sign(temp, secret, { expiresIn: '24h' }); // expires in 24 hours
-      console.log("in login",  temp.USER_ID , temp.ROLE, token);
-      res.status(200).json({ auth: true, token: token, role: temp.ROLE });
+      const token = jwt.sign(temp, secret, {expiresIn: '24h'}); // expires in 24 hours
+      console.log("in login", temp.USER_ID, temp.ROLE, token);
+      res.status(200).json({auth: true, token: token, role: temp.ROLE});
     } else {
-      
-      res.status(401).json({ message: "Wrong Password",auth: false, token: null, role: null });
+
+      res.status(401).json({message: "Wrong Password", auth: false, token: null, role: null});
     }
-    
+
   } catch (err) {
     res.status(500).send(err.message);
   }
@@ -160,9 +163,9 @@ export async function postUser(req, res, next) {
     };
     let foundUser = null;
 
-    try{
+    try {
 
-    }catch(err){
+    } catch (err) {
       res.status(500).send(err.message);
     }
     const result = await postUserDB(user);
@@ -182,7 +185,7 @@ export async function postUser(req, res, next) {
         expiresIn: 86400, // expires in 24 hours
       },
     );
-    res.status(200).json({ auth: true, token, role: 'user' });
+    res.status(200).json({auth: true, token, role: 'user'});
   } catch (err) {
     res.status(500).json({
       message: 'Email already Exists.',
@@ -195,27 +198,25 @@ export async function postUser(req, res, next) {
 
 export async function postAdmin(req, res, next) {
   try {
-    console.log(1);
-    console.log(req.body);
     let emailToLow = null;
-    if (req.body.EMAIL) {
-      emailToLow = req.body.EMAIL.toLowerCase();
+    if (req.body.email) {
+      emailToLow = req.body.email.toLowerCase();
     }
-    const hashedPassword = await bcrypt.hashSync(req.body.PASSWORD, 10);
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
     // :FIRST_NAME,:LAST_NAME,:IMAGE,:ADDRESS,:EMAIL,:PASSWORD,:CONTACT_NO,:GENDER
-    let user = {
-      FIRST_NAME: req.body.FIRST_NAME,
-      LAST_NAME: req.body.LAST_NAME,
-      IMAGE: req.body.IMAGE,
-      ADDRESS: req.body.ADDRESS,
+    const user = {
+      FIRST_NAME: req.body.firstName,
+      LAST_NAME: req.body.lastName,
+      IMAGE: req.body.image,
+      ADDRESS: req.body.address,
       EMAIL: emailToLow,
       PASSWORD: hashedPassword,
-      CONTACT_NO: req.body.CONTACT_NO,
-      GENDER: req.body.GENDER,
+      CONTACT_NO: req.body.contactNo,
+      GENDER: req.body.gender,
     };
 
-    user = await postAdminDB(user);
-    const foundUser = await findUserDB(user);
+    const admin = await postAdminDB(user);
+    const foundUser = await findUserDB(admin);
     const foundAdmin = await findAdminDB(foundUser[0]);
 
     const token = jwt.sign(
@@ -228,25 +229,25 @@ export async function postAdmin(req, res, next) {
         expiresIn: 86400, // expires in 24 hours
       },
     );
-    res.status(200).json({
-      msg: 'Email already Exists.',
-      auth: true,
-      token,
-      role: 'admin',
-    });
+    res.status(200).json({auth: true, token, role: 'admin'});
   } catch (err) {
-    res.status(500).send(err.message);
+    res.status(500).json({
+      message: 'Email already Exists.',
+      auth: false,
+      token: null,
+      role: null,
+    });
   }
 }
 
 export async function decodeToken(req, res) {
   try {
     const token = req.headers['x-access-token'];
-    if (!token) return res.status(401).json({ auth: false, message: 'No token provided.' });
+    if (!token) return res.status(401).json({auth: false, message: 'No token provided.'});
 
     jwt.verify(token, secret, async (err, decoded) => {
       if (err) {
-        return res.status(500).json({ auth: false, message: 'Failed to authenticate token.' });
+        return res.status(500).json({auth: false, message: 'Failed to authenticate token.'});
       }
       if (decoded.ROLE === 'user') {
         const user = {
@@ -298,5 +299,5 @@ export async function decodeToken(req, res) {
 }
 
 export function logout(req, res) {
-  res.status(200).json({ auth: false, token: null });
+  res.status(200).json({auth: false, token: null});
 }

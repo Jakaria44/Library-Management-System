@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { secret } from '../Database/databaseConfiguration.js';
 import { updateAdminDB, updateAuthorDB, updateBookDB, updateGenreDB, updatePublisherDB, updateUserDB } from '../Database/queryFunctions.js';
+import bcrypt from "bcrypt";
 
 
 
@@ -88,26 +89,27 @@ import { updateAdminDB, updateAuthorDB, updateBookDB, updateGenreDB, updatePubli
 
   export async function updateUser(req, res, next){
     try {
+      let emailToLow = null;
+      if (req.body.EMAIL) {
+        emailToLow = req.body.EMAIL.toLowerCase();
+      }
       var token = req.headers['x-access-token'];
       jwt.verify(token, secret, async function(err, decoded) {
         let user = {
-// ADDRESS, CONTACT_NO, EMAIL, FIRST_NAME, GENDER, IMAGE, LAST_NAME, PASSWORD, USER_ID, 
-
+// ADDRESS, CONTACT_NO, EMAIL, FIRST_NAME, GENDER, IMAGE, LAST_NAME, PASSWORD, USER_ID,
           USER_ID: decoded.USER_ID,
           FIRST_NAME: req.body.FIRST_NAME,
           LAST_NAME: req.body.LAST_NAME,
           ADDRESS: req.body.ADDRESS,
-          EMAIL:req.body.EMAIL,
+          EMAIL:emailToLow,
           CONTACT_NO: req.body.CONTACT_NO,
-          IMAGE: req.body.IMAGE, 
+          IMAGE: req.body.IMAGE,
           GENDER : req.body.GENDER,
           PASSWORD: req.body.PASSWORD,
-
-          
         };
-  
+      console.log(user);
         try {
-         
+
           user = await updateUserDB(user);
         } catch (error) {
           res.status(501).json(error);  
@@ -115,7 +117,7 @@ import { updateAdminDB, updateAuthorDB, updateBookDB, updateGenreDB, updatePubli
         if(user)  res.status(201).json(user);
         else res.status(409).json({message: "Email already exists"});
       });
-  
+
       } catch (err) {
         next(err);
       }

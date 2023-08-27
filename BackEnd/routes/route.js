@@ -8,7 +8,8 @@ import {
   deleteBookOfBookshelf,
   deleteBookshelf,
   deleteGenre,
-  deletePublisher
+  deletePublisher,
+  deleteRatRevBook
 } from '../controllers/deleteController.js';
 import {
   getAllAuthors,
@@ -29,7 +30,7 @@ import {
   getCompleteBook,
   getGenre,
   getGenreBook,
-  getOwnReview,
+  getOwnRatRev,
   getPublisher,
   getPublisherBooks,
   getRating,
@@ -48,7 +49,7 @@ import {
   advanceSearch,
   bookToBookshelf,
   rateBook,
-  reviewBook,
+  ratrevBook,
   searchedBook,
   postFavBook,
   updateUserDetails
@@ -78,7 +79,8 @@ router.route('/all-rat-rev').get(verifyGeneralToken, getAllRatRevOfBook);
 router.route('/edit-favourite').post(verifyGeneralToken, urlencodedParser, postFavBook);
 router.route('/getPublisher').get(getPublisher);
 router.route('/getAuthor').get(getAuthor);
-
+router.route('/rate-review').post(verifyGeneralToken, urlencodedParser, ratrevBook).get(verifyGeneralToken, getOwnRatRev);
+router.route('/del-rate-review').delete(verifyGeneralToken, deleteRatRevBook)
 
 router.route('/book/title').get(getBookByTitle);
 router.route('/topBooks').get(getTopBook);
@@ -111,7 +113,7 @@ router.route('/bookshelves').get(verifyUserToken, getBookshelves);
 router.route('/book-bookshelf').post(verifyUserToken, urlencodedParser, bookToBookshelf).get(verifyUserToken, getBooksFromBookshelf);
 // router.route('/create-bookshelf').post(verifyUserToken, urlencodedParser, createBookshelf);
 router.route('/rate').post(verifyUserToken, urlencodedParser, rateBook).get(verifyUserToken, getRating);
-router.route('/review').post(verifyUserToken, urlencodedParser, reviewBook).get(verifyUserToken, getOwnReview);
+// router.route('/review').post(verifyUserToken, urlencodedParser, reviewBook).get(verifyUserToken, getOwnReview);
 router.route('/get-all-awards').get(verifyGeneralToken, getAllAwards);
 router.route('/get-all-languages').get(verifyUserToken, getAllLanguages);
 router.route('/get-all-binds').get(verifyUserToken, getAllBinds);

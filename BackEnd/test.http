@@ -1,7 +1,6 @@
 ##### ----GET All Books (sorted) ----
 GET http://localhost:3000/db-api/all-books-sum?sort=TITLE&order=DESC
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5Mjk2ODU3NCwiZXhwIjoxNjkzMDU0OTc0fQ.9SiASZrIMKpC6YGDPaDjKtRwzX5w5kLraJKIV7mLcE0
-
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
 ###OUTPUT
 [
   {
@@ -34,7 +33,7 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEU
 
 #### ----GET Single Book ----
 GET http://localhost:3000/db-api/book?id=9781408855652
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5Mjk3NDg1MywiZXhwIjoxNjkzMDYxMjUzfQ.YNQH72Vn7quu9w3C3T3CuC89GBEtjZ_7qb9tp31Wrfg
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njg0OSwiZXhwIjoxNjkzMjMzMjQ5fQ.dwqT-i_0vWtGOlqHdDnSM5oJaK5PUk1NdC9Xegb-zRg
 ###OUTPUT
 {
   "ISBN": "9781408855652",
@@ -50,6 +49,7 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
   "LANGUAGE": "English",
   "RATING": 4.5,
   "FAVOURITE": 0,
+  "DESCRIPTION": "Harry Potter discovers he's a wizard on his eleventh birthday and is invited to attend Hogwarts School of Witchcraft and Wizardry. There, he makes friends, learns magic, and uncovers the mystery of the Sorcerer's Stone.",
   "IS_FAVOURITE": 0
 }
 
@@ -58,12 +58,12 @@ POST http://localhost:3000/db-api/user/signup
 Content-Type: application/json
 
 {
-  "firstName": "jakaria",
-  "lastName": "hossain",
+  "firstName": "jake",
+  "lastName": "paul",
   "image": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
-  "address": "pabna, bangladesh",
+  "address": "Ney York, USA",
   "email": "abcd@gmail.com",
-  "password": "1234",
+  "password": "abcd",
   "contactNo": "01712345678",
   "gender": "M"
 }
@@ -71,28 +71,33 @@ Content-Type: application/json
 ### OUTPUT
 {
   "auth": true,
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMTAiLCJST0xFIjoidXNlciIsImlhdCI6MTY5Mjk1NTMxMSwiZXhwIjoxNjkzMDQxNzExfQ._LVML8OMQEVJBL-vVSWI3SilxOP16M-HT57gHRZrQEI",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMjMiLCJST0xFIjoiYWRtaW4iLCJpYXQiOjE2OTMxNDc3ODIsImV4cCI6MTY5MzIzNDE4Mn0.ukuIJVJYITXw5m7JRuiI2mVc5S66qdCYFAR8Srn_mq4",
   "role": "user"
 }
 
 #### ----LOGIN user ----
-POST http://localhost:3000/db-api/general/login
+POST http://localhost:3000/db-api/user/login
 Content-Type: application/json
 
+# {
+#   "email": "abcd@gmail.com",
+#   "password": "abcd"
+# }
+
+# {
+#   "email": "ryangeorge@gmail.com",
+#   "password": "ryanMonster300"
+# }
+
+# {
+#   "email": "mdjakaria442020@gmail.com",
+#   "password": "Jakaria63"
+# }
+
 {
-  "EMAIL": "ryangeorge@gmail.com",
-  "PASSWORD": "ryanMonster300"
+  "email": "a.n.swapnil2003@gmail.com",
+  "password": "Ans2003"
 }
-
-# {
-#   "EMAIL": "mdjakaria442020@gmail.com",
-#   "PASSWORD": "Jakaria63"
-# }
-
-# {
-#   "EMAIL": "a.n.swapnil2003@gmail.com",
-#   "PASSWORD": "Ans2003"
-# }
 
 ###OUTPUT
 {
@@ -106,26 +111,26 @@ POST http://localhost:3000/db-api/admin/signup
 Content-Type: application/json
 
 {
-  "FIRST_NAME": "Jakaria",
-  "LAST_NAME": "Hossain",
-  "IMAGE": "https://drive.google.com/file/d/1VzQYM8sLT1EtWOVk1w-pUGeQuIR-44DY/view?usp=sharing",
-  "ADDRESS": "Pabna, Bangladesh",
-  "EMAIL": "mdjakaria442020@gmail.com",
-  "PASSWORD": "Jakaria63",
-  "CONTACT_NO": "01790-715232",
-  "GENDER": "M"
+  "firstName": "jake",
+  "lastName": "paul",
+  "image": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
+  "address": "Ney York, USA",
+  "email": "abcd@gmail.com",
+  "password": "abcd",
+  "contactNo": "01712345678",
+  "gender": "M"
 }
 
 ###OUTPUT
 {
   "auth": true,
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiNiIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5MjkwNTIyMSwiZXhwIjoxNjkyOTkxNjIxfQ.R3SLG83aPG1U7RYSRX5FNmpjZd_nRHP3J_onXxRkYyY",
-  "rule": "admin"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMjMiLCJST0xFIjoiYWRtaW4iLCJpYXQiOjE2OTMxNDc3ODIsImV4cCI6MTY5MzIzNDE4Mn0.ukuIJVJYITXw5m7JRuiI2mVc5S66qdCYFAR8Srn_mq4",
+  "role": "admin"
 }
 
 #### ----GET ALL-RAT-REV of BOOK----
 GET http://localhost:3000/db-api/all-rat-rev?id=9781408855652
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5Mjk3NDg1MywiZXhwIjoxNjkzMDYxMjUzfQ.YNQH72Vn7quu9w3C3T3CuC89GBEtjZ_7qb9tp31Wrfg
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
 
 ###output
 {
@@ -153,7 +158,7 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 
 #### --- Edit Favourite -----
 POST http://localhost:3000/db-api/edit-favourite?id=9781408855652
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5Mjk3NDg1MywiZXhwIjoxNjkzMDYxMjUzfQ.YNQH72Vn7quu9w3C3T3CuC89GBEtjZ_7qb9tp31Wrfg
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
 
 ###OUTPUT
 {
@@ -186,3 +191,76 @@ GET http://localhost:3000/db-api/getPublisher?pid=1
   "EMAIL": "contact@bloomsbury.com",
   "IMAGE": "https://media-exp1.licdn.com/dms/image/C4E0BAQEDkPybVXr47Q/company-logo_200_200/0/1544531682586?e=2159024400&v=beta&t=JjAs9ok_PwgXA9CFsXKm3bt6fjbFI4N7SZRn4ajOUVg"
 }
+
+#### --- Update User ---
+PUT http://localhost:3000/db-api/user/update
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMjMiLCJST0xFIjoiYWRtaW4iLCJpYXQiOjE2OTMxNDk2MzMsImV4cCI6MTY5MzIzNjAzM30.Cefp7PW8JbtR2jzKGqD7vMhIEodwoWjACxLUGgIAqBo
+Content-Type: application/json
+
+{
+  "FIRST_NAME": "jake",
+  "LAST_NAME": "paul",
+  "IMAGE": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
+  "ADDRESS": "New York, USA",
+  "EMAIL": "abcd@gmail.com",
+  "PASSWORD": "$2b$10$tlCyz5LiC8FkOIXAFwlfhORBQGTo8zYGin5eZ1V2skvr2C.vtcMca",
+  "CONTACT_NO": "01712345678",
+  "GENDER": "M"
+}
+
+###OUTPUT
+{
+  "USER_ID": "23",
+  "FIRST_NAME": "jake",
+  "LAST_NAME": "paul",
+  "IMAGE": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
+  "ADDRESS": "New York, USA",
+  "EMAIL": "abcd@gmail.com",
+  "PASSWORD": "$2b$10$tlCyz5LiC8FkOIXAFwlfhORBQGTo8zYGin5eZ1V2skvr2C.vtcMca",
+  "CONTACT_NO": "01712345678",
+  "GENDER": "M"
+}
+
+####--- GET user details----
+GET http://localhost:3000/db-api/user/details
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
+
+###OUTPUT
+{
+  "USER_ID": "1",
+  "FIRST_NAME": "Ryan",
+  "LAST_NAME": "George",
+  "IMAGE": "https://img.freepik.com/free-icon/user_318-159711.jpg",
+  "ADDRESS": "England",
+  "EMAIL": "ryangeorge@gmail.com",
+  "PASSWORD": "$2b$10$gpiJBsGDG5vK/xDfFWav4uSVpv1ASuBOK5PXyyT9/8YRz2S0bAavG",
+  "CONTACT_NO": "854 526 8852",
+  "GENDER": "M"
+}
+
+#### ---- edit Review Rating ---
+POST http://localhost:3000/db-api/rate-review?id=9781408855652
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzMTU3MjE5LCJleHAiOjE2OTMyNDM2MTl9.anI3tZRe9gWgxLVcuR5EAAp--GVYB3g2iWtmJiiinD8
+Content-Type: application/json
+
+{
+  "RATING": 3,
+  "REVIEW": "Not bad"
+}
+
+###OUTPUT
+{
+  "my": {
+    "ISBN": "9781408855652",
+    "USER_ID": "3",
+    "RATING": 3,
+    "REVIEW": "Not bad"
+  },
+  "avg": {
+    "AVG_RATING": 3.5
+  }
+}
+
+#### ----Delete review rating---
+DELETE http://localhost:3000/db-api/del-rate-review?id=9781408855652
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzMTU3MjE5LCJleHAiOjE2OTMyNDM2MTl9.anI3tZRe9gWgxLVcuR5EAAp--GVYB3g2iWtmJiiinD8

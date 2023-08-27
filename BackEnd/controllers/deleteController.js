@@ -6,6 +6,7 @@ import {
   deleteBookshelfDB,
   deleteGenreDB,
   deletePublisherDB,
+  deleteRatRevBookDB
 } from "../Database/queryFunctions.js";
 
 export async function deleteBookOfBookshelf(req, res, next) {
@@ -18,6 +19,21 @@ export async function deleteBookOfBookshelf(req, res, next) {
     const deleted = await deleteBookOfBookshelfDB(context);
 
     res.status(201).json(deleted);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function deleteRatRevBook(req, res, next) {
+  const context = {};
+
+  context.ISBN = req.query.id;
+  context.USER_ID = req.USER_ID;
+  try {
+    const deleted = await deleteRatRevBookDB(context);
+    if (deleted)
+      res.status(201).json({message:'Successful'});
+    else res.status(404).json({message:"Does not Exist"});
   } catch (err) {
     next(err);
   }
@@ -36,6 +52,7 @@ export async function deleteAllBooksBookshelf(req, res, next) {
     next(err);
   }
 }
+
 export async function deleteBookshelf(req, res, next) {
   try {
     const context = {};
