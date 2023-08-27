@@ -52,7 +52,7 @@ export default function SignIn() {
       const response = await server.post("/user/login", user);
       console.log(response);
       localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+      localStorage.setItem("role", response.data.role);
       setSigningIn(false);
       window.location.replace("/profile");
     } catch (err) {
@@ -73,7 +73,7 @@ export default function SignIn() {
     signin(user);
   };
 
-  const isEmailValid = emailRegex.test(email);
+  const isEmailValid = email ? emailRegex.test(email) : true;
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -167,7 +167,6 @@ export default function SignIn() {
           setShowErrorMessage(false), setSigningIn(false);
         }}
       />
-      ;
       <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>
   );

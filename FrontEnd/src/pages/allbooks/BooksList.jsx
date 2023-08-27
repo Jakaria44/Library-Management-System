@@ -16,7 +16,14 @@ const BooksList = () => {
   }, []);
   return (
     <Grid item xs={12} md={9}>
-      <Grid item container direction="row" xs spacing={2}>
+      <Grid
+        item
+        container
+        direction="row"
+        xs
+        spacing={2}
+        justifyContent="space-evenly"
+      >
         {data?.map((books) => (
           <GridForCard
             padding={2}

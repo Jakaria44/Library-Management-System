@@ -38,6 +38,7 @@ export async function getUserDetails(req, res, next){
         const context = {};
         context.USER_ID = req.USER_ID;
 
+        console.log(context);
         const rows = await getUserDetailsDB(context);
 
         if (rows.length === 1) {

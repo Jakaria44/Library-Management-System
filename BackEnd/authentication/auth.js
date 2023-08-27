@@ -12,7 +12,7 @@ export function verifyUserToken(req, res, next) {
       return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
     }
     console.log(decoded.ROLE)
-    if (decoded.ROLE === 'user') {
+    if (["user", 'employee' , 'admin'].includes( decoded.ROLE)) {
       req.USER_ID = decoded.USER_ID;
       console.log(req.USER_ID);
       next();

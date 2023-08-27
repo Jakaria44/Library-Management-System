@@ -7,9 +7,10 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-
-/*
+import server from "./../../HTTP/httpCommonParam";
+/*  
 "ISBN": "9781408894743",
     "TITLE": "Harry Potter and the Deathly Hallows",
     "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/Harry_Potter_and_the_Deathly_Hallows_(Se-J.K_Rowling-699a7-122325.jpg",
@@ -19,18 +20,28 @@ import { Link } from "react-router-dom";
     "AUTHORS": "J. K. Rowling",
     "RATING": 5,
     "PUBLISHER": "Bloomsbury Publishing",
-    "FAVOURITE": 1,
-    "IS_FAVOURITE": 1
+    "IS_FAVOURITE": 1,
+    "IS_IS_FAVOURITE": 1
 */
 const BookCard = ({ book }) => {
+  const [isFavourite, setIsFavourite] = useState(book.IS_FAVOURITE);
   const handleAddToFavourite = () => {
-    // Implement your add to favourite functionality here
-    console.log("Added to favourite:", book.TITLE);
-    // setSnackbarOpen(true);
+    if (
+      localStorage.getItem("role") === "user" ||
+      localStorage.getItem("role") === "employee"
+    ) {
+      changeFavouriteStatus();
+    }
+    console.log(localStorage.getItem("role"));
   };
-
+  const changeFavouriteStatus = async () => {
+    // remove from favourite
+    const response = await server.post(`/edit-favourite?id=${book.ISBN}`);
+    console.log(response);
+    setIsFavourite(response.data.IS_FAVOURITE);
+  };
   return (
-    <Card sx={{ width: 200, height: 370 }} elevation={12}>
+    <Card sx={{ width: { sm: 200, xs: "100%" }, height: 370 }} elevation={12}>
       <CardMedia
         component="img"
         sx={{ height: 220, maxWidth: 140, margin: "auto" }}
@@ -47,7 +58,7 @@ const BookCard = ({ book }) => {
         >
           {book.TITLE}
         </Typography>
-        <Typography variant="body1" color="text.secondary">
+        <Typography variant="body1" noWrap color="text.secondary">
           {book.AUTHORS}
         </Typography>
       </CardContent>
@@ -72,9 +83,7 @@ const BookCard = ({ book }) => {
         </Tooltip>
 
         <Tooltip
-          title={
-            book.FAVOURITE ? "Remove from Favourites" : "Add to Favourites"
-          }
+          title={isFavourite ? "Remove from Favourites" : "Add to Favourites"}
           placement="top"
         >
           <IconButton
@@ -83,7 +92,7 @@ const BookCard = ({ book }) => {
             size="large"
             color="primary"
           >
-            {book.FAVOURITE ? <Favorite /> : <FavoriteBorder />}
+            {isFavourite ? <Favorite /> : <FavoriteBorder />}
           </IconButton>
         </Tooltip>
       </div>

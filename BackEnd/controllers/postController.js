@@ -18,25 +18,25 @@ import {
 } from '../Database/queryFunctions.js';
 
 
-// export async function updateUserDetails(req, res, next) {
-//   try {
-//     let user = {
-//       PERSON_ID: req.body.PERSON_ID,
-//       FIRST_NAME: req.body.FIRST_NAME,
-//       LAST_NAME: req.body.LAST_NAME,
-//       ADDRESS: req.body.ADDRESS,
-//       EMAIL: req.body.EMAIL,
-//       PHONE_NUMBER: req.body.PHONE_NUMBER,
-//       DETAILS: req.body.DETAILS,
-//       WEB_ADDRESS: req.body.WEB_ADDRESS
-//     };
-//
-//     user = await updateUserDB(user);
-//     res.status(201).json(user);
-//   } catch (err) {
-//     next(err);
-//   }
-// }
+export async function updateUserDetails(req, res, next) {
+  try {
+    let user = {
+      PERSON_ID: req.body.PERSON_ID,
+      FIRST_NAME: req.body.FIRST_NAME,
+      LAST_NAME: req.body.LAST_NAME,
+      ADDRESS: req.body.ADDRESS,
+      EMAIL: req.body.EMAIL,
+      PHONE_NUMBER: req.body.PHONE_NUMBER,
+      DETAILS: req.body.DETAILS,
+      WEB_ADDRESS: req.body.WEB_ADDRESS
+    };
+
+    user = await updateUserDB(user);
+    res.status(201).json(user);
+  } catch (err) {
+    next(err);
+  }
+}
 
 export async function postFavBook(req, res, next) {
 
@@ -352,5 +352,30 @@ export async function addGenre(req, res, next) {
   } catch (err) {
     res.status(501).json(err);
     next(err);
+  }
+}
+
+export async function reviewRateBook(req, res, next) {
+  try {
+    var token = req.headers['x-access-token'];
+    jwt.verify(token, secret, async function (err, decoded) {
+      let review = {
+        ISBN: req.body.id,
+        USER_ID: decoded.USER_ID,
+        REVIEW: req.body.review, 
+        RATING: req.body.rating
+      };
+
+      try {
+        review = await reviewBookDB(review);
+        res.status(201).json(review);
+      } catch (error) {
+        res.status(501).json(error);
+      }
+
+    });
+
+  } catch (err) {
+    res.status(501).json(err);
   }
 }
