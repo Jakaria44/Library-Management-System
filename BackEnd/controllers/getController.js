@@ -539,7 +539,7 @@ export async function getAllRatRevOfBook(req, res, next) {
     if (rows.allRatRev.length > 0 || rows.myRatRev.length > 0) {
       res.status(200).json(rows);
     } else {
-      res.status(404).end();
+      res.status(404).json({message: "Not Found"});
     }
   } catch (err) {
     next(err);
