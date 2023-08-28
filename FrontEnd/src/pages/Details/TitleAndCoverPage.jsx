@@ -48,7 +48,8 @@ const TitleAndCoverPage = ({ book, editions }) => {
     );
     setSelectedEdition(selectedEdition);
   };
-  const handleApplyToGet = async () => {
+
+  const apply = async () => {
     console.log("id ", selectedEdition.id);
     try {
       const response = await server.post(`/request`, {
@@ -63,6 +64,17 @@ const TitleAndCoverPage = ({ book, editions }) => {
       } else if (err.response.status === 404) {
         setErrorMessage("You have already requested this book");
       }
+    }
+  };
+  const handleApplyToGet = () => {
+    if (
+      localStorage.getItem("role") === "user" ||
+      localStorage.getItem("role") === "employee"
+    ) {
+      apply();
+    } else {
+      // do some pop up;
+      setShowMessage(true);
     }
   };
 
