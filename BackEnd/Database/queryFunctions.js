@@ -301,14 +301,14 @@ export async function getMyRequestsDB(context) {
 
     if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
       query += `\nORDER BY ${context.sort} ${context.order}`;
-      if (context.sort !== 'TITLE') {
-        query += ', TITLE ASC';
+      if (context.sort !== 'REQUEST_DATE') {
+        query += ', REQUEST_DATE ASC';
       }
       flag = 0;
     }
   }
   if (flag) {
-    query += '\nORDER BY TITLE ASC';
+    query += '\nORDER BY REQUEST_DATE ASC';
   }
 
   const result = await queryExecute(query, []);
@@ -349,7 +349,7 @@ export async function getMyFineHistoryDB(context) {
   let query = 'SELECT F.RENT_HISTORY_ID, B.ISBN, B.TITLE, R.EDITION_ID, E.EDITION_NUM, START_DATE, PAYMENT_DATE, FEE_AMOUNT' +
     '\nFROM FINE_HISTORY F LEFT JOIN RENT_HISTORY R ON(R.RENT_HISTORY_ID = F.RENT_HISTORY_ID) LEFT JOIN EDITION E ON(R.EDITION_ID = E.EDITION_ID) JOIN BOOK B ON(E.ISBN = B.ISBN)' +
     `\nWHERE R.USER_ID = ${context.USER_ID}`;
-  if(context.CHECK){
+  if (context.CHECK) {
     query += ' AND F.PAYMENT_DATE IS NULL';
   }
   let flag = 1;
@@ -383,6 +383,47 @@ export async function addRequestDB(context) {
   let result = null;
   try {
     result = await queryExecute(query, []);
+  } catch (e) {
+    return null;
+  }
+  return context;
+}
+
+export async function getAllRequestsDB(context) {
+  let query = 'SELECT R.USER_ID, U.EMAIL, B.ISBN, B.TITLE, R.EDITION_ID, E.EDITION_NUM, E.NUM_OF_COPIES, R.REQUEST_DATE ' +
+    '\nFROM REQUEST R JOIN EDITION E ON(R.EDITION_ID = E.EDITION_ID) JOIN BOOK B ON(E.ISBN = B.ISBN)  JOIN "USER" U ON(R.USER_ID = U.USER_ID)';
+  let flag = 1;
+  if (context.sort && context.order) {
+    const validColumns = ['TITLE', 'EDITION_NUM', 'REQUEST_DATE', 'NUM_OF_COPIES', 'EMAIL'];
+    const validOrders = ['ASC', 'DESC'];
+
+    if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
+      query += `\nORDER BY ${context.sort} ${context.order}`;
+      if (context.sort !== 'REQUEST_DATE') {
+        query += ', REQUEST_DATE ASC';
+      }
+      flag = 0;
+    }
+  }
+  if (flag) {
+    query += '\nORDER BY REQUEST_DATE ASC';
+  }
+
+  const result = await queryExecute(query, []);
+  return result.rows;
+}
+
+export async function updateEditionDB(context) {
+  const binds = {
+    EDITION_ID: context.EDITION_ID,
+    EDITION_NUM: context.EDITION_NUM,
+    NUM_OF_COPIES: context.NUM_OF_COPIES,
+    PUBLISH_YEAR: context.PUBLISH_YEAR ? context.PUBLISH_YEAR : null
+  }
+  let query = runProcedure(`UPDATE_EDITION(:EDITION_ID, :EDITION_NUM, :NUM_OF_COPIES, :PUBLISH_YEAR)`);
+  let result = null;
+  try {
+    result = await queryExecute(query, binds);
   } catch (e) {
     return null;
   }
@@ -916,16 +957,58 @@ export async function deleteRatRevBookDB(context) {
   return result;
 }
 
-export async function deleteRequestsDB(context) {
-  let query = runProcedure('DELETE_REQUEST(:EDITION_ID, :USER_ID)');
+export async function updateHistoryDB(context) {
+  let query = runProcedure(`EDIT_HISTORY(${context.USER_ID}, ${context.RENT_HISTORY_ID}, ${context.PAY})`);
   console.log(context);
   let result;
   try {
-    result = await queryExecute(query, context);
+    result = await queryExecute(query, []);
   } catch (e) {
     return null
   }
   return context;
+}
+
+export async function deleteRequestDB(context) {
+  let query = runProcedure(`DELETE_REQUEST(${context.EDITION_ID}, ${context.USER_ID})`);
+  console.log(context);
+  let result;
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return null
+  }
+  return context;
+}
+
+export async function addRentHistoryDB(context) {
+  const binds = {
+    USER_ID: context.USER_ID,
+    EDITION_ID: context.EDITION_ID,
+    RETURN_DATE: context.RETURN_DATE ? context.RETURN_DATE : null
+  }
+  let query = runProcedure(`INSERT_RENT_HISTORY(:USER_ID, :EDITION_ID, :RETURN_DATE)`);
+  console.log(query);
+  let result = null;
+  try {
+    result = await queryExecute(query, binds);
+  } catch (e) {
+    return null
+  }
+  return context;
+}
+
+export async function getEditionDB(context) {
+  let query = baseQuery('EDITION');
+  const binds = {};
+
+  if (context.EDITION_ID) {
+    binds.EDITION_ID = context.EDITION_ID;
+    query += '\nWhere EDITION_ID = :EDITION_ID';
+  }
+
+  const result = await queryExecute(query, binds);
+  return result.rows;
 }
 
 export async function deleteAllBooksBookshelfDB(context) {

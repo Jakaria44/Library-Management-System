@@ -1,6 +1,6 @@
 import bodyParser from 'body-parser';
 import Express from 'express';
-import { verifyAdminToken, verifyGeneralToken, verifyUserToken } from '../authentication/auth.js';
+import { verifyAdminToken, verifyGeneralToken, verifyUserToken, verifyEmployeeToken } from '../authentication/auth.js';
 import {
   deleteAllBooksBookshelf,
   deleteAuthor,
@@ -10,7 +10,8 @@ import {
   deleteGenre,
   deletePublisher,
   deleteRatRevBook,
-  deleteRequests
+  deleteRequests,
+  deleteRequest
 } from '../controllers/deleteController.js';
 import {
   getAllAuthors,
@@ -42,7 +43,8 @@ import {
   getUserReviewedBooks,
   getMyRequests,
   getMyRentHistory,
-  getMyFineHistory
+  getMyFineHistory,
+  getAllRequests
 } from '../controllers/getController.js';
 import { decodeToken, loginGeneral, logout, postAdmin, postUser } from '../controllers/loginController.js';
 import {
@@ -57,7 +59,8 @@ import {
   searchedBook,
   postFavBook,
   updateUserDetails,
-  addRequest
+  addRequest,
+  acceptRequest
 } from '../controllers/postController.js';
 import {
   updateAdmin,
@@ -65,7 +68,8 @@ import {
   updateBook,
   updateGenre,
   updatePublisher,
-  updateUser
+  updateUser,
+  updateHistory
 } from '../controllers/putController.js';
 
 const router = Express.Router();
@@ -91,6 +95,12 @@ router.route('/request').post(verifyGeneralToken, urlencodedParser, addRequest);
 router.route('/del-requests').delete(verifyGeneralToken, deleteRequests);
 router.route('/my-rent-history').get(verifyGeneralToken, getMyRentHistory);
 router.route('/my-fine-history').get(verifyGeneralToken, getMyFineHistory);
+router.route('/return-book').put(verifyGeneralToken, urlencodedParser, updateHistory);
+router.route('/all-requests').get(verifyEmployeeToken, getAllRequests);
+router.route('/handle-request').post(verifyEmployeeToken, urlencodedParser, acceptRequest).delete(verifyEmployeeToken, deleteRequest);
+// router.route('/running-fine').get(verifyEmployeeToken, getRunningFine);
+// router.route('/send-message').post(verifyEmployeeToken, sendMessage);
+// router.route('/publish-news').post(verifyEmployeeToken, publishNews);
 
 router.route('/book/title').get(getBookByTitle);
 router.route('/topBooks').get(getTopBook);

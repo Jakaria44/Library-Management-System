@@ -1,4 +1,3 @@
-
 create sequence user_seq;
 
 create
@@ -102,8 +101,9 @@ END ;
 /
 
 CREATE OR REPLACE TRIGGER trg_publisher_default_image
-BEFORE INSERT ON PUBLISHER
-FOR EACH ROW
+    BEFORE INSERT
+    ON PUBLISHER
+    FOR EACH ROW
 BEGIN
     IF :NEW.Image IS NULL THEN
         :NEW.Image := 'https://ds.rokomari.store/rokomari110/company/publisher.png';
@@ -112,19 +112,22 @@ END;
 /
 
 CREATE OR REPLACE TRIGGER trg_author_default_image
-BEFORE INSERT ON AUTHOR
-FOR EACH ROW
+    BEFORE INSERT
+    ON AUTHOR
+    FOR EACH ROW
 BEGIN
     IF :NEW.Image IS NULL THEN
-        :NEW.Image := 'https://previews.123rf.com/images/anatolir/anatolir1712/anatolir171201476/91832679-man-avatar-icon-flat-illustration-of-man-avatar-vector-icon-isolated-on-white-background.jpg';
+        :NEW.Image :=
+                'https://previews.123rf.com/images/anatolir/anatolir1712/anatolir171201476/91832679-man-avatar-icon-flat-illustration-of-man-avatar-vector-icon-isolated-on-white-background.jpg';
     END IF;
 END;
 /
 
 
 CREATE OR REPLACE TRIGGER trg_user_default_image
-BEFORE INSERT ON "USER"
-FOR EACH ROW
+    BEFORE INSERT
+    ON "USER"
+    FOR EACH ROW
 BEGIN
     IF :NEW.Image IS NULL THEN
         :NEW.Image := 'https://img.freepik.com/free-icon/user_318-159711.jpg';
@@ -133,11 +136,13 @@ END;
 /
 
 CREATE OR REPLACE TRIGGER trg_book_default_image
-BEFORE INSERT ON BOOK
-FOR EACH ROW
+    BEFORE INSERT
+    ON BOOK
+    FOR EACH ROW
 BEGIN
     IF :NEW.Image IS NULL THEN
-        :NEW.Image := 'https://st2.depositphotos.com/5703046/12114/i/950/depositphotos_121142344-stock-photo-white-book-on-white-background.jpg';
+        :NEW.Image :=
+                'https://st2.depositphotos.com/5703046/12114/i/950/depositphotos_121142344-stock-photo-white-book-on-white-background.jpg';
     END IF;
 END;
 /
@@ -146,7 +151,7 @@ END;
 CREATE OR REPLACE FUNCTION IS_VALID_UPDATE_USER(
     P_USER_ID IN VARCHAR2,
     P_EMAIL IN VARCHAR2) RETURN BOOLEAN IS
-    COUNTER NUMBER;
+    COUNTER  NUMBER;
     COUNTER2 NUMBER;
 BEGIN
     SELECT COUNT(*) INTO COUNTER FROM "USER" WHERE USER_ID = P_USER_ID;
@@ -181,13 +186,13 @@ BEGIN
     IF (IS_VALID_UPDATE_USER(A_USER_ID, A_EMAIL)) THEN
         UPDATE "USER"
         SET FIRST_NAME = A_FIRST_NAME,
-            LAST_NAME = A_LAST_NAME,
-            ADDRESS = A_ADDRESS,
-            EMAIL = A_EMAIL,
+            LAST_NAME  = A_LAST_NAME,
+            ADDRESS    = A_ADDRESS,
+            EMAIL      = A_EMAIL,
             CONTACT_NO = A_CONTACT_NO,
-            IMAGE = A_IMAGE,
-            GENDER = A_GENDER,
-            PASSWORD = A_PASSWORD
+            IMAGE      = A_IMAGE,
+            GENDER     = A_GENDER,
+            PASSWORD   = A_PASSWORD
         WHERE USER_ID = A_USER_ID;
     ELSE
         raise_application_error(-20111, 'USER CANNOT BE UPDATED');
@@ -268,8 +273,10 @@ CREATE OR REPLACE FUNCTION IS_VALID_REQUEST(A_ID IN VARCHAR2) RETURN BOOLEAN IS
 BEGIN
     SELECT COUNT(*)
     INTO COUNTER
-    FROM FINE_HISTORY F JOIN RENT_HISTORY R on (F.Rent_History_ID = R.Rent_History_ID)
-    WHERE USER_ID = A_ID AND Payment_Date IS NULL;
+    FROM FINE_HISTORY F
+             JOIN RENT_HISTORY R on (F.Rent_History_ID = R.Rent_History_ID)
+    WHERE USER_ID = A_ID
+      AND Payment_Date IS NULL;
     IF
         COUNTER = 0 THEN
         RETURN TRUE;
@@ -291,7 +298,7 @@ BEGIN
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
         INSERT INTO REQUEST(USER_ID, EDITION_ID, REQUEST_DATE) VALUES (U_ID, E_ID, SYSDATE);
-		WHEN OTHERS THEN
+    WHEN OTHERS THEN
         RAISE_APPLICATION_ERROR(-20002, 'An error occurred.');
 END;
 /
@@ -333,13 +340,175 @@ END;
 /
 
 BEGIN
-    DBMS_SCHEDULER.create_job (
-        job_name        => 'UPDATE_FINE_HISTORY_JOB',
-        job_type        => 'PLSQL_BLOCK',
-        job_action      => 'BEGIN update_fine_history; END;',
-        start_date      => SYSTIMESTAMP,
-        repeat_interval => 'FREQ=HOURLY; INTERVAL=24', -- Run every 2 hours
-        enabled         => TRUE
-    );
+    DBMS_SCHEDULER.create_job(
+            job_name => 'UPDATE_FINE_HISTORY_JOB',
+            job_type => 'PLSQL_BLOCK',
+            job_action => 'BEGIN update_fine_history; END;',
+            start_date => SYSTIMESTAMP,
+            repeat_interval => 'FREQ=HOURLY; INTERVAL=24', -- Run every 2 hours
+            enabled => TRUE
+        );
+END;
+/
+
+--NEW 29-8-2023
+
+CREATE OR REPLACE FUNCTION IS_VALID_EDITION(A_EDITION_ID VARCHAR2, A_EDITION_NUM NUMBER) RETURN BOOLEAN IS
+    COUNTER  NUMBER;
+    COUNTER2 NUMBER;
+    A_ISBN   VARCHAR2(20);
+BEGIN
+    SELECT ISBN
+    INTO A_ISBN
+    FROM EDITION
+    WHERE EDITION_ID = A_EDITION_ID;
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM EDITION
+    WHERE EDITION_ID = A_EDITION_ID
+      AND EDITION_NUM = A_EDITION_NUM;
+    IF
+        COUNTER = 0 THEN
+        SELECT COUNT(*)
+        INTO COUNTER2
+        FROM EDITION
+        WHERE ISBN = A_ISBN
+          AND EDITION_NUM = A_EDITION_NUM;
+        IF COUNTER2 = 0 THEN
+            RETURN TRUE;
+        ELSE
+            RETURN FALSE;
+        end if;
+    ELSE
+        RETURN TRUE;
+    END IF;
+end;
+/
+
+
+CREATE OR REPLACE PROCEDURE UPDATE_EDITION(A_EDITION_ID VARCHAR2,
+                                           A_EDITION_NUM VARCHAR2,
+                                           A_NUM_OF_COPIES NUMBER,
+                                           A_PUBLISH_YEAR NUMBER) IS
+    COPIES NUMBER;
+    YEAR   NUMBER(4);
+BEGIN
+    IF
+        (IS_VALID_EDITION(A_EDITION_ID, A_EDITION_NUM)) THEN
+        SELECT NUM_OF_COPIES, PUBLISH_YEAR
+        INTO COPIES, YEAR
+        FROM EDITION
+        WHERE EDITION_ID = A_EDITION_ID;
+        COPIES := COPIES + A_NUM_OF_COPIES;
+        IF COPIES < 0 THEN
+            RAISE_APPLICATION_ERROR(-20001, 'CANNOT BE NEGATIVE');
+        end if;
+        IF A_PUBLISH_YEAR IS NULL THEN
+            YEAR := A_PUBLISH_YEAR;
+        END IF;
+        UPDATE EDITION
+        SET NUM_OF_COPIES = COPIES,
+            PUBLISH_YEAR  = YEAR
+        WHERE Edition_ID = A_EDITION_ID;
+    ELSE
+        raise_application_error(-20111, 'EDITION does not exist');
+    END IF;
+END ;
+/
+
+create sequence history_seq;
+
+CREATE
+    OR REPLACE TRIGGER RENT_INSERT_TRIG
+    BEFORE INSERT
+    ON RENT_HISTORY
+    FOR EACH ROW
+BEGIN
+    IF
+        :NEW.Rent_History_ID IS NULL
+    THEN
+        :NEW.Rent_History_ID := history_seq.nextval;
+    END IF;
+END;
+/
+
+
+CREATE OR REPLACE PROCEDURE INSERT_RENT_HISTORY(A_USER_ID VARCHAR2, A_EDITION_ID VARCHAR2, A_RETURN_DATE DATE) IS
+    ID     VARCHAR2(100);
+    TDATE  DATE;
+    COPIES NUMBER;
+BEGIN
+    SELECT EDITION_ID
+    INTO ID
+    FROM REQUEST
+    WHERE USER_ID = A_USER_ID
+      AND Edition_ID = A_EDITION_ID;
+    SELECT NUM_OF_COPIES
+    INTO COPIES
+    FROM EDITION
+    WHERE EDITION_ID = A_EDITION_ID;
+    IF COPIES <= 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Not Enough Copies');
+    end if;
+    IF A_RETURN_DATE IS NULL THEN
+        TDATE := SYSDATE + 7;
+    ELSE
+        TDATE := A_RETURN_DATE;
+    END IF;
+    INSERT INTO RENT_HISTORY(USER_ID, Edition_ID, Rent_Date, Return_Date)
+    VALUES (A_USER_ID, A_EDITION_ID, SYSDATE, TDATE);
+    select history_seq.currval
+    into ID
+    from DUAL;
+    DELETE
+    FROM REQUEST
+    WHERE USER_ID = A_USER_ID
+      AND Edition_ID = A_EDITION_ID;
+    UPDATE EDITION
+    SET NUM_OF_COPIES = NUM_OF_COPIES - 1
+    WHERE EDITION_ID = A_EDITION_ID;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RAISE_APPLICATION_ERROR(-20001, 'NO REQUEST.');
+    WHEN OTHERS THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Unknown error occured.');
+END ;
+/
+
+
+CREATE OR REPLACE PROCEDURE EDIT_HISTORY(U_ID VARCHAR2, A_ID VARCHAR2, PAY BOOLEAN) IS
+    ID      VARCHAR2(200);
+    COUNTER NUMBER;
+BEGIN
+    SELECT EDITION_ID
+    INTO ID
+    FROM RENT_HISTORY
+    WHERE Rent_History_ID = A_ID
+      AND USER_ID = U_ID AND STATUS = 0;
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM FINE_HISTORY
+    WHERE Rent_History_ID = A_ID
+      AND Payment_Date IS NULL;
+    IF (COUNTER > 0) THEN
+        IF (PAY = TRUE) THEN
+            UPDATE FINE_HISTORY
+            SET Payment_Date = SYSDATE
+            WHERE Rent_History_ID = A_ID;
+        ELSE
+            RAISE_APPLICATION_ERROR(-20001, 'PAYMENT IS NOT DONE');
+        END IF;
+    END IF;
+    UPDATE RENT_HISTORY
+    SET Status = 1
+    WHERE Rent_History_ID = A_ID;
+    UPDATE EDITION
+    SET NUM_OF_COPIES = NUM_OF_COPIES + 1
+    WHERE EDITION_ID = ID;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RAISE_APPLICATION_ERROR(-20002, 'DOES NOT EXIST');
+    WHEN OTHERS THEN
+        RAISE_APPLICATION_ERROR(-20003, 'UNKNOWN ERROR OCCURRED');
 END;
 /

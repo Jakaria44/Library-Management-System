@@ -18,8 +18,13 @@ import {
   getAvgRatingDB,
   addRequestDB,
   getOwnRatRevDB,
-  getMyFineHistoryDB
+  getMyFineHistoryDB,
+  updateEditionDB,
+  getMyRequestsDB,
+  addRentHistoryDB,
+  getEditionDB
 } from '../Database/queryFunctions.js';
+import {getMyRequests} from "./getController.js";
 
 
 export async function updateUserDetails(req, res, next) {
@@ -211,9 +216,14 @@ export async function addRequest(req, res, next) {
       EDITION_ID: req.body.EDITION_ID,
       CHECK: true
     };
-    const result = await getMyFineHistoryDB(request);
+    let result = await getMyFineHistoryDB(request);
     if (result.length > 0) {
       res.status(402).json({message: "PAY FIRST"})
+      return;
+    }
+    result = await getMyRequestsDB(request);
+    if (result.length >= 5) {
+      res.status(403).json({message: "MAXIMUM LIMIT REACHED"});
       return;
     }
     request = await addRequestDB(request);
@@ -221,6 +231,24 @@ export async function addRequest(req, res, next) {
       res.status(200).json({message: "Successful"})
     } else {
       res.status(404).json({message: "Already Exists"})
+    }
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function acceptRequest(req, res, next) {
+  try {
+    let request = {
+      USER_ID: req.body.USER_ID,
+      EDITION_ID: req.body.EDITION_ID
+    };
+    console.log(request);
+    request = await addRentHistoryDB(request);
+    if (request!==null) {
+      res.status(200).json({message: "Successful"})
+    } else {
+      res.status(404).json({message: "Not Enough Copies"})
     }
   } catch (e) {
     next(e);

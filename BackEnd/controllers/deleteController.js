@@ -7,7 +7,7 @@ import {
   deleteGenreDB,
   deletePublisherDB,
   deleteRatRevBookDB,
-  deleteRequestsDB
+  deleteRequestDB
 } from "../Database/queryFunctions.js";
 
 export async function deleteBookOfBookshelf(req, res, next) {
@@ -46,27 +46,41 @@ export async function deleteRequests(req, res, next) {
   const context = {};
   context.USER_ID = req.USER_ID;
   let success = true; // Flag to track success of all deletions
-
   for (const EID of req.body.Editions) {
     console.log('Processing EID:', EID);
     context.EDITION_ID = EID;
 
     try {
-      const deleted = await deleteRequestsDB(context);
+      const deleted = await deleteRequestDB(context);
       if (!deleted) {
         success = false;
-        break;
       }
     } catch (err) {
       next(err);
-      return;
     }
   }
 
   if (success) {
-    res.status(201).json({ message: 'Successful' });
+    res.status(201).json({message: 'All Successful'});
   } else {
-    res.status(404).json({ message: 'Does not Exist' });
+    res.status(404).json({message: 'Does not Exist'});
+  }
+}
+
+export async function deleteRequest(req, res, next) {
+  const context = {};
+  context.USER_ID = req.body.USER_ID;
+  context.EDITION_ID = req.body.EDITION_ID;
+
+  try {
+    const deleted = await deleteRequestDB(context);
+    if (deleted) {
+      res.status(201).json({message: 'Successful'})
+    } else {
+      res.status(404).json({message: 'Does not Exist'});
+    }
+  } catch (err) {
+    next(err);
   }
 }
 
