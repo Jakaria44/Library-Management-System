@@ -119,6 +119,7 @@ const BookDetails = () => {
   };
 
   const editions = JSON.parse(data?.EDITION).map((edition) => ({
+    id: edition.ID,
     EDITION: edition.NUM,
     AVAILABLE_COPIES: edition.COUNT,
     YEAR: edition.YEAR,

@@ -299,6 +299,7 @@ Content-Type: application/json
 
 {
   "EDITION_ID": "1"
+  
 }
 
 ###OUTPUT

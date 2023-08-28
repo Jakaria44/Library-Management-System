@@ -18,57 +18,10 @@ import Typography from "@mui/material/Typography";
 import { alpha } from "@mui/material/styles";
 import { visuallyHidden } from "@mui/utils";
 import { useConfirm } from "material-ui-confirm";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SuccessfullModal from "../../component/SuccessfulModal";
-function formatDateToDDMMYYYY(date) {
-  const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero if needed
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month (Note: January is 0)
-  const year = date.getFullYear(); // Get full year
-
-  return `${day}-${month}-${year}`;
-}
-
-function createData(title, edition, requestDate, isbn) {
-  return {
-    title,
-    edition,
-    requestDate: formatDateToDDMMYYYY(requestDate),
-    isbn,
-  };
-}
-
-const tableRows = [
-  createData(
-    "Harry Potter and Database Management System",
-    2,
-    new Date("1-20-2023"),
-    "1"
-  ),
-  createData(
-    "Harry Potter and Database Management System",
-    2,
-    new Date("1-20-2023"),
-    "2"
-  ),
-  createData(
-    "Harry Potter and Database Management System",
-    2,
-    new Date("1-20-2023"),
-    "3"
-  ),
-  createData(
-    "Harry Potter and Database Management System",
-    2,
-    new Date("1-20-2023"),
-    "4"
-  ),
-  createData(
-    "Harry Potter and Database Management System",
-    2,
-    new Date("1-20-2023"),
-    "5"
-  ),
-];
+import server from "./../../HTTP/httpCommonParam";
+import TimeFormat from "./../../utils/TimeFormat";
 
 // comparator
 function descendingComparator(a, b, orderBy) {
@@ -92,6 +45,7 @@ function getComparator(order, orderBy) {
 // only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
 // with exampleArray.slice().sort(exampleComparator)
 function stableSort(array, comparator) {
+  if (!array) return [];
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -238,10 +192,31 @@ export default function MyCollections() {
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [rows, setRows] = useState(tableRows);
+  const [rows, setRows] = useState();
   const [deleting, setDeleting] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
+  const getApplications = async () => {
+    try {
+      const response = await server.get("/my-requests");
+      console.log(response.data);
+
+      const newRows = response.data.map((row) => {
+        return {
+          id: row.EDITION_ID,
+          title: row.TITLE,
+          edition: row.EDITION_NUM,
+          requestDate: TimeFormat(row.REQUEST_DATE),
+          isbn: row.ISBN,
+        };
+      });
+      console.log(newRows);
+      setRows(newRows);
+    } catch (err) {}
+  };
+  useEffect(() => {
+    getApplications();
+  }, []);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -325,7 +300,7 @@ export default function MyCollections() {
       });
   };
 
-  return (
+  return rows ? (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar
@@ -435,5 +410,7 @@ export default function MyCollections() {
         />
       )}
     </Box>
+  ) : (
+    <LinearProgress />
   );
 }

@@ -22,12 +22,18 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import ErrorModal from "../../component/ErrorModal";
 import SignupDialog from "../../component/SignupDialog";
+import SuccessfulModal from "../../component/SuccessfulModal";
 import server from "./../../HTTP/httpCommonParam";
+
 const TitleAndCoverPage = ({ book, editions }) => {
   const [isFavourite, setIsFavourite] = useState(book.IS_FAVOURITE);
   const [selectedEdition, setSelectedEdition] = useState(editions[0]);
   const [showMessage, setShowMessage] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("An Error Occured");
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
   const theme = useTheme();
 
   useEffect(() => {
@@ -35,20 +41,29 @@ const TitleAndCoverPage = ({ book, editions }) => {
   }, []);
   const handleEditionChange = (event) => {
     console.log(editions);
+
     const selectedValue = event.target.value;
     const selectedEdition = editions.find(
       (edition) => edition.EDITION === selectedValue
     );
     setSelectedEdition(selectedEdition);
   };
-  const handleAddToCart = () => {
-    // Implement your add to cart functionality here
-    console.log(
-      "Added to cart:",
-      book.TITLE,
-      "Edition:",
-      selectedEdition.EDITION
-    );
+  const handleApplyToGet = async () => {
+    console.log("id ", selectedEdition.id);
+    try {
+      const response = await server.post(`/request`, {
+        EDITION_ID: selectedEdition.id,
+      });
+      console.log(response.data);
+      setShowSuccessMessage(true);
+    } catch (err) {
+      setShowErrorMessage(true);
+      if (err.response.status === 402) {
+        setErrorMessage("You have Due Books");
+      } else if (err.response.status === 404) {
+        setErrorMessage("You have already requested this book");
+      }
+    }
   };
 
   const handleAddToFavourite = () => {
@@ -162,10 +177,10 @@ const TitleAndCoverPage = ({ book, editions }) => {
             <Button
               variant="contained"
               color="primary"
-              onClick={handleAddToCart}
+              onClick={handleApplyToGet}
               style={{ margin: "8px" }}
             >
-              GET
+              Apply to Get
             </Button>
             <Button
               variant="contained"
@@ -184,6 +199,21 @@ const TitleAndCoverPage = ({ book, editions }) => {
         message="Please sign up to add.."
         HandleModalClosed={() => {
           setShowMessage(false);
+        }}
+      />
+
+      <SuccessfulModal
+        showSuccessMessage={showSuccessMessage}
+        successMessage="Added to Application List"
+        HandleModalClosed={() => {
+          setShowSuccessMessage(false);
+        }}
+      />
+      <ErrorModal
+        showErrorMessage={showErrorMessage}
+        errorMessage={errorMessage}
+        HandleModalClosed={() => {
+          setShowErrorMessage(false);
         }}
       />
     </Grid>
