@@ -262,6 +262,22 @@ EXCEPTION
 END ;
 /
 
+--TODO: need to check before insertion
+CREATE OR REPLACE FUNCTION IS_VALID_REQUEST(A_ID IN VARCHAR2) RETURN BOOLEAN IS
+    COUNTER NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM FINE_HISTORY F JOIN RENT_HISTORY R on (F.Rent_History_ID = R.Rent_History_ID)
+    WHERE USER_ID = A_ID AND Payment_Date IS NULL;
+    IF
+        COUNTER = 0 THEN
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END IF;
+END;
+/
 
 CREATE OR REPLACE PROCEDURE INSERT_REQUEST(E_ID IN VARCHAR2, U_ID IN VARCHAR2) IS
     P VARCHAR2(20);
@@ -296,5 +312,34 @@ EXCEPTION
         RAISE_APPLICATION_ERROR(-20001, 'Does not Exist.');
     WHEN OTHERS THEN
         RAISE_APPLICATION_ERROR(-20001, 'Unknown error occured.');
+END;
+/
+
+CREATE OR REPLACE PROCEDURE update_fine_history AS
+BEGIN
+    -- Insert overdue records into FINE_HISTORY
+    INSERT INTO FINE_HISTORY (Rent_History_ID, Start_Date)
+    SELECT Rent_History_ID, Return_Date
+    FROM rent_history
+    WHERE Status = 0
+      AND Return_Date < SYSDATE
+      AND Rent_History_ID NOT IN (SELECT Rent_History_ID FROM FINE_HISTORY);
+
+    -- Update fee amount for unpaid fines
+    UPDATE FINE_HISTORY
+    SET Fee_Amount = (SYSDATE - Start_Date) * 0.1 -- Update with your logic
+    WHERE Payment_Date IS NULL;
+END;
+/
+
+BEGIN
+    DBMS_SCHEDULER.create_job (
+        job_name        => 'UPDATE_FINE_HISTORY_JOB',
+        job_type        => 'PLSQL_BLOCK',
+        job_action      => 'BEGIN update_fine_history; END;',
+        start_date      => SYSTIMESTAMP,
+        repeat_interval => 'FREQ=HOURLY; INTERVAL=24', -- Run every 2 hours
+        enabled         => TRUE
+    );
 END;
 /

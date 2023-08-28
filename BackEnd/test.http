@@ -89,15 +89,15 @@ Content-Type: application/json
 #   "password": "ryanMonster300"
 # }
 
-{
-  "email": "mdjakaria442020@gmail.com",
-  "password": "Jakaria63"
-}
-
 # {
-#   "email": "a.n.swapnil2003@gmail.com",
-#   "password": "Ans2003"
+#   "email": "mdjakaria442020@gmail.com",
+#   "password": "Jakaria63"
 # }
+
+{
+  "email": "a.n.swapnil2003@gmail.com",
+  "password": "Ans2003"
+}
 
 ###OUTPUT
 {
@@ -294,11 +294,11 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 
 #### ---ADD REQUEST----
 POST http://localhost:3000/db-api/request
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzMjE3NzM1LCJleHAiOjE2OTMzMDQxMzV9.D2yRA5ju45IT1ikJhsKKvN8n_lTfE7Rd7anXIBbzmUc
 Content-Type: application/json
 
 {
-  "EDITION_ID": "11"
+  "EDITION_ID": "1"
 }
 
 ###OUTPUT
@@ -359,3 +359,21 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
   }
 ]
 
+
+#### ----GET FINE_HISTORY----
+GET http://localhost:3000/db-api/my-fine-history
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzIxNTgzOCwiZXhwIjoxNjkzMzAyMjM4fQ.rFEEmdv_2ranW11_QfAo4MZiR9W5ms15aUL3HHJADL8
+
+###OUTPUT
+[
+  {
+    "RENT_HISTORY_ID": "3",
+    "ISBN": "9780747591269",
+    "TITLE": "Harry Potter and the Order of the Phoenix",
+    "EDITION_ID": "8",
+    "EDITION_NUM": 1,
+    "START_DATE": "2023-09-04T10:08:33.000Z",
+    "PAYMENT_DATE": null,
+    "FEE_AMOUNT": -0.7028923611111111
+  }
+]

@@ -16,7 +16,9 @@ import {
   rateBookDB,
   ratrevBookDB,
   getAvgRatingDB,
-  addRequestDB, getOwnRatRevDB
+  addRequestDB,
+  getOwnRatRevDB,
+  getMyFineHistoryDB
 } from '../Database/queryFunctions.js';
 
 
@@ -206,8 +208,14 @@ export async function addRequest(req, res, next) {
   try {
     let request = {
       USER_ID: req.USER_ID,
-      EDITION_ID: req.body.EDITION_ID
+      EDITION_ID: req.body.EDITION_ID,
+      CHECK: true
     };
+    const result = await getMyFineHistoryDB(request);
+    if (result.length > 0) {
+      res.status(402).json({message: "PAY FIRST"})
+      return;
+    }
     request = await addRequestDB(request);
     if (request!==null) {
       res.status(200).json({message: "Successful"})
