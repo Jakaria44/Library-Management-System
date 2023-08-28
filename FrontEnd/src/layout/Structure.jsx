@@ -10,12 +10,13 @@ import { styled, useTheme } from "@mui/material/styles";
 import logo from "./../assets/IconChevronRight.svg";
 import Header from "./Header";
 
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useMenu, useMenuDispatch } from "../contexts/MenuContextProvider.jsx";
 import { actions } from "../contexts/actions.jsx";
+import server from "./../HTTP/httpCommonParam";
 import { drawerWidth } from "./../store/constants";
 import Sidebar from "./Sidebar/Sidebar";
-
 const IconChevronRight = logo;
 
 // styles

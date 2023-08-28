@@ -15,12 +15,13 @@ const ReviewCard = ({
   fullName,
   date,
   isEditable = false,
-  reviewID,
   rating,
   reviewText,
   handleEdit = () => {},
   handleDelete = () => {},
 }) => {
+  console.log(profilePicture, fullName, date, rating, reviewText);
+
   return (
     <Grid item xs={11}>
       <Paper elevation={3} style={{ padding: "16px" }}>
@@ -38,12 +39,12 @@ const ReviewCard = ({
             {isEditable && (
               <>
                 <Tooltip title="Edit">
-                  <IconButton onClick={() => handleEdit(reviewID)}>
+                  <IconButton onClick={() => handleEdit()}>
                     <Edit />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="Delete">
-                  <IconButton onClick={() => handleDelete(reviewID)}>
+                  <IconButton onClick={() => handleDelete()}>
                     <Delete />
                   </IconButton>
                 </Tooltip>

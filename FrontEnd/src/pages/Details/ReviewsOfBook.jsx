@@ -1,12 +1,11 @@
 import { Grid, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import ReviewList from "./ReviewList";
 
-const ReviewsOfBook = ({ otherReviews }) => {
-  const reviews = otherReviews;
-
-  const loggedInUserId = "user1"; // ID of the logged-in user
-
+const ReviewsOfBook = ({ id }) => {
+  useEffect(() => {
+    console.log(id);
+  });
   return (
     <Grid mt={2} item container xs={12} direction="row" spacing={2}>
       <Grid
@@ -29,11 +28,7 @@ const ReviewsOfBook = ({ otherReviews }) => {
           <Typography variant="h2">Reviews and Rating</Typography>
         </Grid>
 
-        <ReviewList
-          reviews={reviews}
-          loggedInUserId={loggedInUserId}
-          onPageChange={(page) => console.log(`Page changed to: ${page}`)}
-        />
+        <ReviewList id={id} />
       </Grid>
     </Grid>
   );

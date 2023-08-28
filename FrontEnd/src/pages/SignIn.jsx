@@ -53,6 +53,7 @@ export default function SignIn() {
       console.log(response);
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
+      localStorage.setItem("image", response.data.image);
       setSigningIn(false);
       window.location.replace("/profile");
     } catch (err) {

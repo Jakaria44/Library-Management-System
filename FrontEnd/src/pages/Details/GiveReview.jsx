@@ -1,7 +1,6 @@
 import { Divider, Grid, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import TimeFormat from "../../utils/TimeFormat";
-import server from "./../../HTTP/httpCommonParam";
 import RatingList from "./RatingList";
 import ReviewCard from "./ReviewCard";
 import WriteReview from "./WriteReview";
@@ -11,13 +10,18 @@ const GiveReview = ({
   myReview,
   ratings,
   onSubmit,
+  reviewEditing,
+  setReviewEditing,
 }) => {
-  const [reviewEditing, setReviewEditing] = useState(false);
-
   const MyReviewEdit = () => {
     if (reviewEditing) {
       return (
-        <WriteReview text={myReview.REVIEW} value={0} onSubmit={onSubmit} />
+        <WriteReview
+          text={myReview.REVIEW}
+          value={myReview.RATING}
+          onSubmit={onSubmit}
+          onCancel={() => setReviewEditing(false)}
+        />
       );
     }
     if (myRating && myReview && !reviewEditing) {
@@ -36,9 +40,27 @@ const GiveReview = ({
       );
     }
     if (myRating && !myReview) {
-      return <WriteReview text="" value={myRating} onSubmit={onSubmit} />;
+      return (
+        <WriteReview
+          text=""
+          value={myRating}
+          onCancel={() => {
+            setReviewEditing(false);
+          }}
+          onSubmit={onSubmit}
+        />
+      );
     } else {
-      return <WriteReview text="" value={0} onSubmit={onSubmit} />;
+      return (
+        <WriteReview
+          text=""
+          value={0}
+          onCancel={() => {
+            setReviewEditing(false);
+          }}
+          onSubmit={onSubmit}
+        />
+      );
     }
   };
   return (

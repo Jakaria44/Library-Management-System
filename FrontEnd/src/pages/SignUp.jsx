@@ -89,6 +89,7 @@ export default function SignUp() {
       response = await server.post("/user/signup", fields);
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
+      localStorage.setItem("image", response.data.image);
       console.log(response);
 
       setSigningUp(false);

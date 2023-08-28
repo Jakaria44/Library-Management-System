@@ -1,32 +1,26 @@
 import { useEffect, useRef, useState } from "react";
 
 // import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // material-ui
 import {
   Avatar,
   Box,
-  Card,
-  CardContent,
   Chip,
   ClickAwayListener,
   Divider,
-  Grid,
-  InputAdornment,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  OutlinedInput,
   Paper,
   Popper,
   Stack,
-  Switch,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-
+import server from "./../../HTTP/httpCommonParam";
 // third-party
 import PerfectScrollbar from "react-perfect-scrollbar";
 
@@ -34,21 +28,35 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import Transitions from "../../ui-component/extended/Transitions";
 import MainCard from "./../../ui-component/cards/MainCard";
 
-import User1 from "./../../assets/users/user-round.svg";
-
 // assets
 
-import { AccountCircle, Logout } from "@mui/icons-material";
-import SearchIcon from "@mui/icons-material/Search";
+import { Login, Logout, PersonAddAlt } from "@mui/icons-material";
 import SettingsIcon from "@mui/icons-material/Settings";
 
 // ==============================|| PROFILE MENU ||============================== //
-
 const ProfileSection = () => {
   const theme = useTheme();
-  //   const customization = useSelector((state) => state.customization);
   const navigate = useNavigate();
+  //   const customization = useSelector((state) => state.customization);
+  const [name, setName] = useState(null);
+  const [image, setImage] = useState(null);
 
+  const getUserDetails = async () => {
+    try {
+      const response = await server.get("/user/details");
+      console.log(response.data);
+      setName(response.data.FIRST_NAME + " " + response.data.LAST_NAME);
+      setImage(response.data.IMAGE);
+      // setUser();
+    } catch (err) {
+      console.log(err);
+      setImage(null);
+      setName(null);
+    }
+  };
+  useEffect(() => {
+    getUserDetails();
+  }, []);
   const [sdm, setSdm] = useState(true);
   const [value, setValue] = useState("");
   const [notification, setNotification] = useState(false);
@@ -105,7 +113,7 @@ const ProfileSection = () => {
           '&[aria-controls="menu-list-grow"], &:hover': {
             borderColor: theme.palette.primary.main,
             background: `${theme.palette.primary.main}!important`,
-            color: theme.palette.primary.light,
+            color: theme.textDark,
             "& svg": {
               stroke: theme.palette.primary.light,
             },
@@ -116,7 +124,7 @@ const ProfileSection = () => {
         }}
         icon={
           <Avatar
-            src={User1}
+            src={image ? image : <PersonAddAlt />}
             sx={{
               ...theme.typography.mediumAvatar,
               margin: "8px 0 8px 8px !important",
@@ -174,18 +182,21 @@ const ProfileSection = () => {
                   <Box sx={{ p: 2 }}>
                     <Stack>
                       <Stack direction="row" spacing={0.5} alignItems="center">
-                        <Typography variant="h4">Good Morning,</Typography>
+                        <Typography variant="h4">WELCOME,</Typography>
                         <Typography
                           component="span"
                           variant="h4"
                           sx={{ fontWeight: 400 }}
                         >
-                          Johne Doe
+                          {name || "GUEST"}
                         </Typography>
                       </Stack>
-                      <Typography variant="subtitle2">Project Admin</Typography>
+                      <Typography my={2} variant="body1">
+                        {localStorage.getItem("role")?.toUpperCase() ||
+                          "Please Sign In"}
+                      </Typography>
                     </Stack>
-                    <OutlinedInput
+                    {/* <OutlinedInput
                       sx={{ width: "100%", pr: 1, pl: 2, my: 2 }}
                       id="input-search-profile"
                       value={value}
@@ -203,7 +214,7 @@ const ProfileSection = () => {
                       inputProps={{
                         "aria-label": "weight",
                       }}
-                    />
+                    /> */}
                     <Divider />
                   </Box>
                   <PerfectScrollbar
@@ -214,7 +225,7 @@ const ProfileSection = () => {
                     }}
                   >
                     <Box sx={{ p: 2 }}>
-                      <Card
+                      {/* <Card
                         sx={{
                           bgcolor: theme.palette.primary.light,
                           my: 2,
@@ -271,9 +282,9 @@ const ProfileSection = () => {
                             </Grid>
                           </Grid>
                         </CardContent>
-                      </Card>
+                      </Card> */}
 
-                      <Divider />
+                      {/* <Divider /> */}
                       <List
                         component="nav"
                         sx={{
@@ -290,27 +301,28 @@ const ProfileSection = () => {
                           },
                         }}
                       >
-                        <ListItemButton
-                          sx={{
-                            borderRadius: "12px",
-                          }}
-                          selected={selectedIndex === 0}
-                          onClick={(event) =>
-                            handleListItemClick(event, 0, "#")
-                          }
-                        >
-                          <ListItemIcon>
-                            <SettingsIcon fontSize="medium" />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={
-                              <Typography variant="body2">
-                                Account Settings
-                              </Typography>
-                            }
-                          />
-                        </ListItemButton>
-                        <ListItemButton
+                        {name && (
+                          <ListItemButton
+                            sx={{
+                              borderRadius: "12px",
+                            }}
+                            selected={selectedIndex === 0}
+                            component={Link}
+                            to="/profile"
+                          >
+                            <ListItemIcon>
+                              <SettingsIcon fontSize="medium" />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={
+                                <Typography variant="body2">
+                                  My Account
+                                </Typography>
+                              }
+                            />
+                          </ListItemButton>
+                        )}
+                        {/* <ListItemButton
                           sx={{
                             borderRadius: "12px",
                           }}
@@ -347,20 +359,32 @@ const ProfileSection = () => {
                               </Grid>
                             }
                           />
-                        </ListItemButton>
+                        </ListItemButton> */}
                         <ListItemButton
                           sx={{
                             borderRadius: "12px",
                           }}
                           selected={selectedIndex === 4}
-                          onClick={handleLogout}
+                          onClick={() => {
+                            if (name) {
+                              handleLogout();
+                            } else {
+                              navigate("/signin");
+                            }
+                          }}
                         >
                           <ListItemIcon>
-                            <Logout stroke={1.5} size="1.3rem" />
+                            {name ? (
+                              <Logout stroke={1.5} size="1.3rem" />
+                            ) : (
+                              <Login stroke={1.5} size="1.3rem" />
+                            )}
                           </ListItemIcon>
                           <ListItemText
                             primary={
-                              <Typography variant="body2">Logout</Typography>
+                              <Typography variant="body2">
+                                {name ? "Log out" : "Sign in"}
+                              </Typography>
                             }
                           />
                         </ListItemButton>

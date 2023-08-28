@@ -2,11 +2,16 @@ import { Button, Grid, Rating, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import SignupDialog from "../../component/SignupDialog";
 
-const WriteReview = ({ text, value, onSubmit }) => {
+const WriteReview = ({ text, value, onSubmit, onCancel }) => {
   const [rating, setRating] = useState(value);
   const [review, setReview] = useState(text);
   const [showMessage, setShowMessage] = useState(false);
 
+  const handleCancel = () => {
+    setRating(0);
+    setReview("");
+    onCancel();
+  };
   const handleRatingChange = (event, newValue) => {
     setRating(newValue);
   };
@@ -18,7 +23,7 @@ const WriteReview = ({ text, value, onSubmit }) => {
   const handleSubmit = () => {
     console.log("Rating:", rating);
     console.log("Review:", review);
-    if (review === "") return;
+    if (rating === 0) return;
     if (
       localStorage.getItem("role") !== "user" &&
       localStorage.getItem("role") !== "employee"
@@ -53,10 +58,17 @@ const WriteReview = ({ text, value, onSubmit }) => {
           onChange={handleReviewChange}
         />
       </Grid>
-      <Grid item xs={12}>
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
-          Submit Review
-        </Button>
+      <Grid container xs={12} item direction="row" spacing={1}>
+        <Grid item>
+          <Button variant="error" color="error" onClick={handleCancel}>
+            Cancel
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button variant="success" color="success" onClick={handleSubmit}>
+            Submit Review
+          </Button>
+        </Grid>
       </Grid>
       <SignupDialog
         showMessage={showMessage}

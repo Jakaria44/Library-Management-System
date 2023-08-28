@@ -5,11 +5,7 @@ import { useTheme } from "@mui/material/styles";
 // project imports
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import DarkModeSwitch from "../component/DarkModeSwitch.jsx";
-import {
-  useMyTheme,
-  useMyThemeDispatch,
-} from "../contexts/ThemeContextProvider.jsx";
-import { actions } from "../contexts/actions.jsx";
+import { useMyTheme } from "../contexts/ThemeContextProvider.jsx";
 import LogoSection from "./Sections/LogoSection.jsx";
 import ProfileSection from "./Sections/ProfileSection.jsx";
 import SearchSection from "./Sections/SearchSection.jsx";

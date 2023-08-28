@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import {secret} from "../Database/databaseConfiguration.js";
+import { secret } from "../Database/databaseConfiguration.js";
 import {
   getAllAuthorsDB,
   getAllAwardsDB,
@@ -21,6 +21,8 @@ import {
   getCompleteBookDB,
   getGenreBookDB,
   getGenreDB,
+  getMyRentHistoryDB,
+  getMyRequestsDB,
   getOwnRatRevDB,
   getPublisherBooksDB,
   getPublisherDB,
@@ -29,9 +31,7 @@ import {
   getTopBookDB,
   getUserDetailsDB,
   getUserRatedBooksDB,
-  getUserReviewedBooksDB,
-  getMyRequestsDB,
-  getMyRentHistoryDB
+  getUserReviewedBooksDB
 } from "../Database/queryFunctions.js";
 
 
@@ -509,6 +509,23 @@ export async function getMyRequests(req, res, next) {
   }
 }
 
+export async function getMyRentHistory(req, res, next) {
+  try {
+    const context = {};
+    context.USER_ID = req.USER_ID;
+    context.sort = req.query.sort;
+    context.order = req.query.order;
+    const rows = await getMyRentHistoryDB(context);
+
+    if (rows.length > 0) {
+      res.status(200).json(rows);
+    } else {
+      res.status(404).json({message:"Not Found"});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
 export async function getAllRatRevOfBook(req, res, next) {
   try {
     const context = {};

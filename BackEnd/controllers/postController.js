@@ -9,18 +9,15 @@ import {
   addPublisherDB,
   addRequestDB,
   addWrittenByDB,
-  postFavouriteDB,
   createBookDB,
-  getFavouriteDB,
   getAdvancedSearchedBookDB,
   getAvgRatingDB,
   getFavouriteDB,
+  getOwnRatRevDB,
   getSearchedBookDB,
   postFavouriteDB,
   rateBookDB,
-  ratrevBookDB,
-  getAvgRatingDB,
-  addRequestDB, getOwnRatRevDB
+  ratrevBookDB
 } from '../Database/queryFunctions.js';
 
 

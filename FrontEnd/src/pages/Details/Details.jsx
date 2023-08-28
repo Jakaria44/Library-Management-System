@@ -40,31 +40,32 @@ export default Details;
 const BookDetails = () => {
   const confirm = useConfirm();
   const { data } = useAsyncValue();
-
-  const [othersReviews, setOthersReviews] = useState([]);
   const [myRating, setMyRating] = useState(null);
   const [myReview, setMyReview] = useState({});
   const [ratings, setRatings] = useState([]);
-  // const [editions, setEditions] = useState([]);
-
-  const deleteReview = async (reviewID) => {
+  const [reviewEditing, setReviewEditing] = useState(false);
+  const deleteReview = async () => {
     try {
       const response = await server.delete(`/del-rate-review?id=${data.ISBN}`);
       console.log(response);
-      confirm({
-        title: <Typography variant="h4">Delete Review</Typography>,
-        description: "Are you sure you want to delete review?",
-      })
-        .then(() => {
-          getAllReviews({ id: data.ISBN });
-        })
-        .catch(() => {
-          console.log("canceled");
-        });
+
+      // Call the confirm function and handle its promise
+      // const userConfirmed = await confirm({
+      //   title: <Typography variant="h4">Delete Review</Typography>,
+      //   description: "Are you sure you want to delete review?",
+      // });
+
+      // if (userConfirmed) {
+      //   console.log("Review deletion confirmed");
+      getAllReviews({ id: data.ISBN });
+      // } else {
+      //   console.log("Review deletion canceled");
+      // }
     } catch (err) {
       console.log("something went wrong");
     }
   };
+
   const submitReviewRating = async (rating, review) => {
     try {
       console.log(rating, review);
@@ -73,11 +74,8 @@ const BookDetails = () => {
         REVIEW: review,
       });
       console.log(response);
-      // setMyRating(rating);
-      // setMyReview(response.data.my);
-      // console.log(rating, review);
-      // setReviewEditing(false);
-      // setRatings(response.data.avg.AVG_RATING);
+      getAllReviews({ id: data.ISBN });
+      setReviewEditing(false);
     } catch (err) {
       console.log(err);
     }
@@ -91,6 +89,7 @@ const BookDetails = () => {
       const ratingCounts = {};
       const array = [...response.data.myRatRev, ...response.data.allRatRev];
       // Count the occurrences of each rating
+      console.log(response.data.allRatRev);
       array.forEach((review) => {
         const rating = review.RATING;
         if (ratingCounts[rating] === undefined) {
@@ -109,13 +108,11 @@ const BookDetails = () => {
 
       // return response.data;
       setMyRating(response.data.myRatRev[0]?.RATING);
-      setOthersReviews(response.data.allRatRev);
       setRatings(ratings);
     } catch (err) {
       console.log(err);
       if (err.response.status === 404) {
         setMyRating(null);
-        setOthersReviews([]);
         setRatings([]);
       }
     }
@@ -142,12 +139,10 @@ const BookDetails = () => {
           ratings={ratings}
           onSubmit={submitReviewRating}
           deleteReview={deleteReview}
+          reviewEditing={reviewEditing}
+          setReviewEditing={setReviewEditing}
         />
-        {othersReviews ? (
-          <ReviewsOfBook othersReviews={othersReviews} />
-        ) : (
-          <h2>No reviews Found</h2>
-        )}
+        {data ? <ReviewsOfBook id={data.ISBN} /> : <h2>No reviews Found</h2>}
       </Grid>
     </>
   );

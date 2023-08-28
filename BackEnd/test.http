@@ -103,7 +103,7 @@ Content-Type: application/json
 {
   "auth": true,
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkyOTAyMjc3LCJleHAiOjE2OTI5ODg2Nzd9.2heH3mdS22r7NZSFud5viNBWjyP5WDF3iyrRLwSp3pw",
-  "rule": "user"
+  "role": "user"
 }
 
 #### ----POST admin ----
