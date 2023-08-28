@@ -503,7 +503,7 @@ export async function getMyRequests(req, res, next) {
     if (rows.length > 0) {
       res.status(200).json(rows);
     } else {
-      res.status(200).json(rows);
+      res.status(404).json({message:"Not Found"});
     }
   } catch (err) {
     next(err);

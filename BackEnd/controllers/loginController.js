@@ -52,7 +52,7 @@ export async function loginGeneral(req, res, next) {
       if (foundAdmin.length > 0) temp.ROLE = 'admin';
       const token = jwt.sign(temp, secret, {expiresIn: '24h'}); // expires in 24 hours
       console.log("in login", temp.USER_ID, temp.ROLE, token);
-      res.status(200).json({auth: true, token: token, role: temp.ROLE , image:foundUser[0].IMAGE});
+      res.status(200).json({auth: true, token: token, role: temp.ROLE});
     } else {
 
       res.status(401).json({message: "Wrong Password", auth: false, token: null, role: null});
@@ -185,7 +185,7 @@ export async function postUser(req, res, next) {
         expiresIn: 86400, // expires in 24 hours
       },
     );
-    res.status(200).json({auth: true, token, role: 'user',  image:foundUser[0]?.IMAGE});
+    res.status(200).json({auth: true, token, role: 'user'});
   } catch (err) {
     res.status(500).json({
       message: 'Email already Exists.',
