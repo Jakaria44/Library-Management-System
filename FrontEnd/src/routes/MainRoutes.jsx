@@ -4,6 +4,8 @@ import { lazy } from "react";
 
 import Details from "../pages/Details/Details";
 import LatestBooks from "../pages/LatestBooks";
+import { loader as favouritesLoader } from "../pages/Reader/MyFavourites";
+import MyReviews from "../pages/Reader/MyReviews";
 import { loader as bookDetailsLoader } from "./../pages/Details/Details";
 import { loader as allBooksLoader } from "./../pages/allbooks/AllBooks";
 import Loadable from "./../ui-component/Loadable";
@@ -63,6 +65,7 @@ const MainRoutes = {
     {
       path: "/favourites",
       element: <MyFavourites />,
+      loader: favouritesLoader,
     },
 
     {
@@ -72,6 +75,10 @@ const MainRoutes = {
     {
       path: "/collections",
       element: <MyCollections />,
+    },
+    {
+      path: "/reviews",
+      element: <MyReviews />,
     },
     {
       path: "/duelist",
