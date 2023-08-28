@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { secret } from "../Database/databaseConfiguration.js";
+import {secret} from "../Database/databaseConfiguration.js";
 import {
   getAllAuthorsDB,
   getAllAwardsDB,
@@ -21,7 +21,6 @@ import {
   getCompleteBookDB,
   getGenreBookDB,
   getGenreDB,
-  getMyRequestsDB,
   getOwnRatRevDB,
   getPublisherBooksDB,
   getPublisherDB,
@@ -30,7 +29,9 @@ import {
   getTopBookDB,
   getUserDetailsDB,
   getUserRatedBooksDB,
-  getUserReviewedBooksDB
+  getUserReviewedBooksDB,
+  getMyRequestsDB,
+  getMyRentHistoryDB
 } from "../Database/queryFunctions.js";
 
 

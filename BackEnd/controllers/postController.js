@@ -9,14 +9,18 @@ import {
   addPublisherDB,
   addRequestDB,
   addWrittenByDB,
+  postFavouriteDB,
   createBookDB,
+  getFavouriteDB,
   getAdvancedSearchedBookDB,
   getAvgRatingDB,
   getFavouriteDB,
   getSearchedBookDB,
   postFavouriteDB,
   rateBookDB,
-  ratrevBookDB
+  ratrevBookDB,
+  getAvgRatingDB,
+  addRequestDB, getOwnRatRevDB
 } from '../Database/queryFunctions.js';
 
 
@@ -50,6 +54,10 @@ export async function postFavBook(req, res, next) {
     console.log(fav);
     try {
       const favBook = await getFavouriteDB(fav);
+      if(!favBook) {
+        res.status(404).json({message: "Not Found"});
+        return;
+      }
       await postFavouriteDB(fav);
       res.status(201).json({IS_FAVOURITE: favBook.length === 0});
     } catch (error) {
@@ -179,13 +187,16 @@ export async function ratrevBook(req, res, next) {
       RATING: req.body.RATING,
       REVIEW: req.body.REVIEW,
     };
-      console.log("in post",  ratrev)
+
+
     try {
-      const my = await ratrevBookDB(ratrev);
+      let my = await ratrevBookDB(ratrev);
       console.log(my);
+      my = await getOwnRatRevDB(my);
+      console.log(my[0]);
       const avg = await getAvgRatingDB(ratrev);
       console.log(avg);
-      res.status(201).json({my, avg});
+      res.status(201).json({my:my[0], avg});
     } catch (error) {
       res.status(501).json(error);
     }

@@ -40,7 +40,8 @@ import {
   getUserDetails,
   getUserRatedBooks,
   getUserReviewedBooks,
-  getMyRequests
+  getMyRequests,
+  getMyRentHistory
 } from '../controllers/getController.js';
 import { decodeToken, loginGeneral, logout, postAdmin, postUser } from '../controllers/loginController.js';
 import {
@@ -87,6 +88,7 @@ router.route('/del-rate-review').delete(verifyGeneralToken, deleteRatRevBook)
 router.route('/my-requests').get(verifyGeneralToken, getMyRequests);
 router.route('/request').post(verifyGeneralToken, urlencodedParser, addRequest);
 router.route('/del-requests').delete(verifyGeneralToken, deleteRequests);
+router.route('/my-rent-history').get(verifyGeneralToken, getMyRentHistory);
 
 router.route('/book/title').get(getBookByTitle);
 router.route('/topBooks').get(getTopBook);
