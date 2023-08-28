@@ -16,8 +16,6 @@ const WriteReview = ({ text, value, onSubmit }) => {
   };
 
   const handleSubmit = () => {
-    // Implement your submit logic here
-
     console.log("Rating:", rating);
     console.log("Review:", review);
     if (review === "") return;

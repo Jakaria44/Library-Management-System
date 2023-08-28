@@ -10,9 +10,8 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 const SignupDialog = ({ showMessage, message, HandleModalClosed }) => {
-  const navigate = useNavigate();
   const theme = useTheme();
   const StyledModal = styled(Modal)`
     display: flex;
@@ -56,11 +55,12 @@ const SignupDialog = ({ showMessage, message, HandleModalClosed }) => {
                 Close
               </Button>
               <Button
+                component={Link}
+                to="/signup"
                 variant="contained"
                 color="success"
                 onClick={() => {
                   HandleModalClosed();
-                  navigate("/signup");
                 }}
                 sx={{ marginLeft: theme.spacing(1) }}
               >
