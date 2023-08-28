@@ -89,15 +89,15 @@ Content-Type: application/json
 #   "password": "ryanMonster300"
 # }
 
-# {
-#   "email": "mdjakaria442020@gmail.com",
-#   "password": "Jakaria63"
-# }
-
 {
-  "email": "a.n.swapnil2003@gmail.com",
-  "password": "Ans2003"
+  "email": "mdjakaria442020@gmail.com",
+  "password": "Jakaria63"
 }
+
+# {
+#   "email": "a.n.swapnil2003@gmail.com",
+#   "password": "Ans2003"
+# }
 
 ###OUTPUT
 {
@@ -251,10 +251,12 @@ Content-Type: application/json
 ###OUTPUT
 {
   "my": {
-    "ISBN": "9781408855652",
     "USER_ID": "3",
+    "NAME": "Ahmmad Nur Swapnil",
+    "IMAGE": "https://firebasestorage.googleapis.com/v0/b/library-management-syste-4c8f7.appspot.com/o/profileImages%2Fdb991442-81ab-454e-940e-5aeb56a6c551?alt=media&token=94cf221f-2dc6-4bd3-8b9c-32a11532350c",
     "RATING": 3,
-    "REVIEW": "Not bad"
+    "REVIEW": "Not bad",
+    "EDIT_DATE": "2023-08-28T07:55:15.000Z"
   },
   "avg": {
     "AVG_RATING": 3.5
@@ -318,3 +320,42 @@ Content-Type: application/json
 {
   "message": "Does not Exist"
 }
+
+#### ----GET RENT_HISTORY----
+GET http://localhost:3000/db-api/my-rent-history?sort=STATUS&order=DESC
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
+
+###OUTPUT
+[
+  {
+    "RENT_HISTORY_ID": "2",
+    "ISBN": "9781408834992",
+    "TITLE": "Harry Potter and the Goblet of Fire",
+    "EDITION_ID": "7",
+    "EDITION_NUM": 1,
+    "RENT_DATE": "2023-08-25T10:08:32.000Z",
+    "RETURN_DATE": "2023-09-01T10:08:32.000Z",
+    "STATUS": 1
+  },
+  {
+    "RENT_HISTORY_ID": "1",
+    "ISBN": "9781408855676",
+    "TITLE": "Harry Potter and the Prisoner of Azkaban",
+    "EDITION_ID": "6",
+    "EDITION_NUM": 3,
+    "RENT_DATE": "2023-08-25T10:07:28.000Z",
+    "RETURN_DATE": "2023-09-01T10:07:28.000Z",
+    "STATUS": 1
+  },
+  {
+    "RENT_HISTORY_ID": "3",
+    "ISBN": "9780747591269",
+    "TITLE": "Harry Potter and the Order of the Phoenix",
+    "EDITION_ID": "8",
+    "EDITION_NUM": 1,
+    "RENT_DATE": "2023-08-27T10:08:32.000Z",
+    "RETURN_DATE": "2023-09-03T10:08:32.000Z",
+    "STATUS": 0
+  }
+]
+
