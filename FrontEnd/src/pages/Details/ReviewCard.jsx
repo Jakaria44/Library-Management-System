@@ -19,6 +19,7 @@ const ReviewCard = ({
   rating,
   reviewText,
   handleEdit = () => {},
+  handleDelete = () => {},
 }) => {
   return (
     <Grid item xs={11}>

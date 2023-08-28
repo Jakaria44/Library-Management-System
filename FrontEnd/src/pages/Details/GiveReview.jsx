@@ -1,36 +1,23 @@
 import { Divider, Grid, Typography } from "@mui/material";
 import React, { useState } from "react";
 import TimeFormat from "../../utils/TimeFormat";
+import server from "./../../HTTP/httpCommonParam";
 import RatingList from "./RatingList";
 import ReviewCard from "./ReviewCard";
 import WriteReview from "./WriteReview";
-
-const GiveReview = ({ myRating, myReview, ratings }) => {
+const GiveReview = ({
+  deleteReview,
+  myRating,
+  myReview,
+  ratings,
+  onSubmit,
+}) => {
   const [reviewEditing, setReviewEditing] = useState(false);
 
-  const handleSubmitReview = async (rating, review) => {
-    try {
-      // const response = await server.post(`/edit-rat-rev?id=${id}`, {
-      //   rating,
-      //   review,
-      // });
-      // console.log(response);
-      // setMyRating(rating);
-      // setMyReview(response.data);
-      console.log(rating, review);
-      setReviewEditing(false);
-    } catch (err) {
-      console.log(err);
-    }
-  };
   const MyReviewEdit = () => {
     if (reviewEditing) {
       return (
-        <WriteReview
-          text={myReview.REVIEW}
-          value={0}
-          onSubmit={handleSubmitReview}
-        />
+        <WriteReview text={myReview.REVIEW} value={0} onSubmit={onSubmit} />
       );
     }
     if (myRating && myReview && !reviewEditing) {
@@ -44,15 +31,14 @@ const GiveReview = ({ myRating, myReview, ratings }) => {
           rating={myRating}
           reviewText={myReview.REVIEW}
           handleEdit={() => setReviewEditing(true)}
+          handleDelete={deleteReview}
         />
       );
     }
     if (myRating && !myReview) {
-      return (
-        <WriteReview text="" value={myRating} onSubmit={handleSubmitReview} />
-      );
+      return <WriteReview text="" value={myRating} onSubmit={onSubmit} />;
     } else {
-      return <WriteReview text="" value={0} onSubmit={handleSubmitReview} />;
+      return <WriteReview text="" value={0} onSubmit={onSubmit} />;
     }
   };
   return (

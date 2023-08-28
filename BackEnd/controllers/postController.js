@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import {secret} from '../Database/databaseConfiguration.js';
+import { secret } from '../Database/databaseConfiguration.js';
 import {
   addAuthorDB,
   addBookAwardDB,
@@ -7,16 +7,16 @@ import {
   addBookGenreDB,
   addGenreDB,
   addPublisherDB,
+  addRequestDB,
   addWrittenByDB,
-  postFavouriteDB,
   createBookDB,
-  getFavouriteDB,
   getAdvancedSearchedBookDB,
-  getSearchedBookDB,
-  rateBookDB,
-  ratrevBookDB,
   getAvgRatingDB,
-  addRequestDB
+  getFavouriteDB,
+  getSearchedBookDB,
+  postFavouriteDB,
+  rateBookDB,
+  ratrevBookDB
 } from '../Database/queryFunctions.js';
 
 
@@ -179,7 +179,7 @@ export async function ratrevBook(req, res, next) {
       RATING: req.body.RATING,
       REVIEW: req.body.REVIEW,
     };
-
+      console.log("in post",  ratrev)
     try {
       const my = await ratrevBookDB(ratrev);
       console.log(my);

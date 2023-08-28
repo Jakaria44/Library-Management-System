@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import {secret} from "../Database/databaseConfiguration.js";
+import { secret } from "../Database/databaseConfiguration.js";
 import {
   getAllAuthorsDB,
   getAllAwardsDB,
@@ -21,6 +21,7 @@ import {
   getCompleteBookDB,
   getGenreBookDB,
   getGenreDB,
+  getMyRequestsDB,
   getOwnRatRevDB,
   getPublisherBooksDB,
   getPublisherDB,
@@ -29,8 +30,7 @@ import {
   getTopBookDB,
   getUserDetailsDB,
   getUserRatedBooksDB,
-  getUserReviewedBooksDB,
-  getMyRequestsDB
+  getUserReviewedBooksDB
 } from "../Database/queryFunctions.js";
 
 
@@ -520,7 +520,7 @@ export async function getAllRatRevOfBook(req, res, next) {
     if (rows.allRatRev.length > 0 || rows.myRatRev.length > 0) {
       res.status(200).json(rows);
     } else {
-      res.status(404).end();
+      res.status(404).json({message: "No reviews found"});
     }
   } catch (err) {
     next(err);
