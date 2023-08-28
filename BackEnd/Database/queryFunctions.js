@@ -315,6 +315,36 @@ export async function getMyRequestsDB(context) {
   return result.rows;
 }
 
+export async function getMyRentHistoryDB(context) {
+  let query = 'SELECT RENT_HISTORY_ID, B.ISBN, B.TITLE, R.EDITION_ID, E.EDITION_NUM, RENT_DATE, RETURN_DATE, STATUS' +
+    '\nFROM RENT_HISTORY R JOIN EDITION E ON(R.EDITION_ID = E.EDITION_ID) JOIN BOOK B ON(E.ISBN = B.ISBN)' +
+    `\nWHERE R.USER_ID = ${context.USER_ID}`;
+  let flag = 1;
+  if (context.sort && context.order) {
+    const validColumns = ['TITLE', 'EDITION_NUM', 'RENT_DATE', 'STATUS'];
+    const validOrders = ['ASC', 'DESC'];
+
+    if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
+      query += `\nORDER BY ${context.sort} ${context.order}`;
+      if (context.sort !== 'TITLE') {
+        query += ', TITLE ASC';
+      }
+      flag = 0;
+    }
+  }
+  if (flag) {
+    query += '\nORDER BY TITLE ASC';
+  }
+
+  let result = [];
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return [];
+  }
+  return result.rows;
+}
+
 export async function addRequestDB(context) {
   let query = runProcedure('INSERT_REQUEST(:EDITION_ID, :USER_ID)');
   let result = null;
@@ -395,17 +425,33 @@ export async function getFavouriteDB(fav) {
   let query = 'SELECT * FROM FAVOURITE';
   query += '\nWhere USER_ID = :USER_ID AND ISBN = :ISBN';
   console.log(query);
-  const result = await queryExecute(query, favDB);
+  let result = null;
+  try {
+    result = await queryExecute(query, favDB);
+  } catch (e) {
+    return null;
+  }
   return result.rows;
 }
 
 
-export async function getOwnRatRevDB(ratrev) {
-  const ratrevDB = {...ratrev};
-  let query = 'SELECT * FROM REVIEW_RATING ' +
-    '\nWhere USER_ID = :USER_ID AND ISBN = :ISBN';
+export async function getOwnRatRevDB(context) {
+  console.log(context);
+  let query = `SELECT U.USER_ID,
+                             (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME,
+                             U.IMAGE,
+                             R.RATING,
+                             R.REVIEW,
+                             R.EDIT_DATE` +
+    `\nFROM "USER" U JOIN REVIEW_RATING R ON (U.USER_ID = R.USER_ID)` +
+    `\nWHERE R.ISBN = '${context.ISBN}' AND U.USER_ID = ${context.USER_ID}`;
   console.log(query);
-  const result = await queryExecute(query, ratrevDB);
+  let result
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return null
+  }
   return result.rows;
 }
 
@@ -515,8 +561,7 @@ export async function postFavouriteDB(review) {
   const query = runProcedure('POST_FAVOURITE(:ISBN, :USER_ID)');
   try {
     const result = await queryExecute(query, reviewDB);
-  }
-  catch (e) {
+  } catch (e) {
     return null;
   }
   return reviewDB;
