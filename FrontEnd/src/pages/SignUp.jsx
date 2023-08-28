@@ -15,7 +15,6 @@ import { v4 } from "uuid";
 import server from "../HTTP/httpCommonURL";
 import SpinnerWithBackdrop from "../component/SpinnerWithBackdrop";
 import { storage } from "../firebaseConfig";
-
 const defaultImage = "https://img.freepik.com/free-icon/user_318-159711.jpg";
 
 function Copyright(props) {
@@ -46,7 +45,6 @@ export default function SignUp() {
   const [signingUp, setSigningUp] = useState(false);
   const [gender, setGender] = useState("M");
   const [email, setEmail] = useState("");
-
   const isEmailValid = email ? emailRegex.test(email) : true;
 
   const handleTogglePassword = () => {

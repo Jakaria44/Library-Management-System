@@ -13,7 +13,6 @@ import server from "../../HTTP/httpCommonParam";
 import ProfileInfo from "../ProfileInfo.jsx";
 const ReaderProfile = () => {
   const [user, setUser] = useState();
-
   const getUserDetails = async () => {
     try {
       const response = await server.get("/user/details");

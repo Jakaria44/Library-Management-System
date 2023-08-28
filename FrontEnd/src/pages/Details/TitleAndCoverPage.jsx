@@ -22,10 +22,12 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import SignupDialog from "../../component/SignupDialog";
 import server from "./../../HTTP/httpCommonParam";
 const TitleAndCoverPage = ({ book, editions }) => {
   const [isFavourite, setIsFavourite] = useState(book.IS_FAVOURITE);
   const [selectedEdition, setSelectedEdition] = useState(editions[0]);
+  const [showMessage, setShowMessage] = useState(false);
   const theme = useTheme();
 
   useEffect(() => {
@@ -56,8 +58,8 @@ const TitleAndCoverPage = ({ book, editions }) => {
     ) {
       changeFavouriteStatus();
     } else {
-      alert("please log in to add ");
-      return;
+      // do some pop up;
+      setShowMessage(true);
     }
   };
   const changeFavouriteStatus = async () => {
@@ -176,6 +178,14 @@ const TitleAndCoverPage = ({ book, editions }) => {
           </div>
         </Paper>
       </Grid>
+
+      <SignupDialog
+        showMessage={showMessage}
+        message="Please sign up to add.."
+        HandleModalClosed={() => {
+          setShowMessage(false);
+        }}
+      />
     </Grid>
   );
 };

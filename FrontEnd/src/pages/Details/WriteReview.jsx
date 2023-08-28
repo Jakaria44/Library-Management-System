@@ -1,9 +1,11 @@
 import { Button, Grid, Rating, TextField, Typography } from "@mui/material";
 import { useState } from "react";
+import SignupDialog from "../../component/SignupDialog";
 
 const WriteReview = ({ text, value, onSubmit }) => {
   const [rating, setRating] = useState(value);
   const [review, setReview] = useState(text);
+  const [showMessage, setShowMessage] = useState(false);
 
   const handleRatingChange = (event, newValue) => {
     setRating(newValue);
@@ -15,14 +17,16 @@ const WriteReview = ({ text, value, onSubmit }) => {
 
   const handleSubmit = () => {
     // Implement your submit logic here
+
     console.log("Rating:", rating);
     console.log("Review:", review);
-    if (rating === 0 || review === "") return;
+    if (review === "") return;
     if (
       localStorage.getItem("role") !== "user" &&
       localStorage.getItem("role") !== "employee"
     ) {
-      alert("You must login to give review!");
+      console.log("hi");
+      setShowMessage(true);
       return;
     }
     onSubmit(rating, review);
@@ -56,6 +60,13 @@ const WriteReview = ({ text, value, onSubmit }) => {
           Submit Review
         </Button>
       </Grid>
+      <SignupDialog
+        showMessage={showMessage}
+        message="Please sign up to add review.."
+        HandleModalClosed={() => {
+          setShowMessage(false);
+        }}
+      />
     </Grid>
   );
 };
