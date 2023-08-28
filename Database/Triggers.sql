@@ -1213,12 +1213,10 @@ END;
 CREATE OR REPLACE PROCEDURE INSERT_REQUEST(E_ID IN VARCHAR2, U_ID IN VARCHAR2) IS
     P VARCHAR2(20);
 BEGIN
-    -- Check if a record exists with the provided E_ID and U_ID
     SELECT EDITION_ID
     INTO P
     FROM REQUEST
     WHERE (EDITION_ID = E_ID AND USER_ID = U_ID);
-
     RAISE_APPLICATION_ERROR(-20001, 'Record already exists.');
 
 EXCEPTION
@@ -1647,3 +1645,31 @@ EXCEPTION
 END;
 /
 
+CREATE OR REPLACE PROCEDURE update_fine_history AS
+BEGIN
+    -- Insert overdue records into FINE_HISTORY
+    INSERT INTO FINE_HISTORY (Rent_History_ID, Start_Date)
+    SELECT Rent_History_ID, Return_Date
+    FROM rent_history
+    WHERE Status = 0
+      AND Return_Date < SYSDATE
+      AND Rent_History_ID NOT IN (SELECT Rent_History_ID FROM FINE_HISTORY);
+
+    -- Update fee amount for unpaid fines
+    UPDATE FINE_HISTORY
+    SET Fee_Amount = (SYSDATE - Start_Date) * 0.1 -- Update with your logic
+    WHERE Payment_Date IS NULL;
+END;
+/
+
+BEGIN
+    DBMS_SCHEDULER.create_job (
+        job_name        => 'UPDATE_FINE_HISTORY_JOB',
+        job_type        => 'PLSQL_BLOCK',
+        job_action      => 'BEGIN update_fine_history; END;',
+        start_date      => SYSTIMESTAMP,
+        repeat_interval => 'FREQ=HOURLY; INTERVAL=2', -- Run every 2 hours
+        enabled         => TRUE
+    );
+END;
+/

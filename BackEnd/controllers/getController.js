@@ -21,8 +21,6 @@ import {
   getCompleteBookDB,
   getGenreBookDB,
   getGenreDB,
-  getMyRentHistoryDB,
-  getMyRequestsDB,
   getOwnRatRevDB,
   getPublisherBooksDB,
   getPublisherDB,
@@ -31,7 +29,10 @@ import {
   getTopBookDB,
   getUserDetailsDB,
   getUserRatedBooksDB,
-  getUserReviewedBooksDB
+  getUserReviewedBooksDB,
+  getMyRequestsDB,
+  getMyRentHistoryDB,
+  getMyFineHistoryDB
 } from "../Database/queryFunctions.js";
 
 
@@ -526,6 +527,26 @@ export async function getMyRentHistory(req, res, next) {
     next(err);
   }
 }
+
+export async function getMyFineHistory(req, res, next) {
+  try {
+    const context = {};
+    context.USER_ID = req.USER_ID;
+    context.sort = req.query.sort;
+    context.order = req.query.order;
+    const rows = await getMyFineHistoryDB(context);
+
+    if (rows.length > 0) {
+      res.status(200).json(rows);
+    } else {
+      res.status(404).json({message:"Not Found"});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+
 export async function getAllRatRevOfBook(req, res, next) {
   try {
     const context = {};
@@ -538,7 +559,7 @@ export async function getAllRatRevOfBook(req, res, next) {
     if (rows.allRatRev.length > 0 || rows.myRatRev.length > 0) {
       res.status(200).json(rows);
     } else {
-      res.status(404).json({message: "No reviews found"});
+      res.status(404).json({message: "Not Found"});
     }
   } catch (err) {
     next(err);

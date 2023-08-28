@@ -345,11 +345,44 @@ export async function getMyRentHistoryDB(context) {
   return result.rows;
 }
 
+export async function getMyFineHistoryDB(context) {
+  let query = 'SELECT F.RENT_HISTORY_ID, B.ISBN, B.TITLE, R.EDITION_ID, E.EDITION_NUM, START_DATE, PAYMENT_DATE, FEE_AMOUNT' +
+    '\nFROM FINE_HISTORY F LEFT JOIN RENT_HISTORY R ON(R.RENT_HISTORY_ID = F.RENT_HISTORY_ID) LEFT JOIN EDITION E ON(R.EDITION_ID = E.EDITION_ID) JOIN BOOK B ON(E.ISBN = B.ISBN)' +
+    `\nWHERE R.USER_ID = ${context.USER_ID}`;
+  if(context.CHECK){
+    query += ' AND F.PAYMENT_DATE IS NULL';
+  }
+  let flag = 1;
+  if (context.sort && context.order) {
+    const validColumns = ['TITLE', 'EDITION_NUM', 'START_DATE', 'PAYMENT_DATE', 'FEE_AMOUNT'];
+    const validOrders = ['ASC', 'DESC'];
+
+    if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
+      query += `\nORDER BY ${context.sort} ${context.order}`;
+      if (context.sort !== 'TITLE') {
+        query += ', TITLE ASC';
+      }
+      flag = 0;
+    }
+  }
+  if (flag) {
+    query += '\nORDER BY TITLE ASC';
+  }
+  console.log(query)
+  let result = [];
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return [];
+  }
+  return result.rows;
+}
+
 export async function addRequestDB(context) {
-  let query = runProcedure('INSERT_REQUEST(:EDITION_ID, :USER_ID)');
+  let query = runProcedure(`INSERT_REQUEST(${context.EDITION_ID}, ${context.USER_ID})`);
   let result = null;
   try {
-    result = await queryExecute(query, context);
+    result = await queryExecute(query, []);
   } catch (e) {
     return null;
   }
