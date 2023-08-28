@@ -34,7 +34,7 @@ const AuthStructure = () => {
           <AppBar enableColorOnDark position="fixed" color="inherit">
             <Toolbar>
               <Typography variant="h3" component="div" sx={{ flexGrow: 1 }}>
-                Library
+                CSE Library
               </Typography>
               <DarkModeSwitch />
             </Toolbar>

@@ -4,9 +4,9 @@ import { useTheme } from "@mui/material/styles";
 
 // project imports
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import Typography from "@mui/material/Typography";
 import DarkModeSwitch from "../component/DarkModeSwitch.jsx";
 import { useMyTheme } from "../contexts/ThemeContextProvider.jsx";
-import LogoSection from "./Sections/LogoSection.jsx";
 import ProfileSection from "./Sections/ProfileSection.jsx";
 import SearchSection from "./Sections/SearchSection.jsx";
 
@@ -46,7 +46,11 @@ const Header = ({ handleLeftDrawerToggle }) => {
           marginLeft="16px"
           sx={{ display: { xs: "none", md: "block" }, flexGrow: 1 }}
         >
-          <LogoSection />
+          <ButtonBase disableRipple>
+            <Typography variant="h3" component="div" my={2}>
+              CSE Library
+            </Typography>
+          </ButtonBase>
         </Box>
       </Box>
 

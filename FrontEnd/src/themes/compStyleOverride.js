@@ -246,7 +246,11 @@ export default function componentStyleOverrides(theme) {
                     '&.MuiChip-deletable .MuiChip-deleteIcon': {
                         color: 'inherit',
                     },
+                    '&.MuiChip-colorError':{
+                        color: '#000'
+                    }
                 },
+                
             },
         },
         // MuiTooltip: {

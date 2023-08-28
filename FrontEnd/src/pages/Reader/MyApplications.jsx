@@ -19,6 +19,7 @@ import { alpha } from "@mui/material/styles";
 import { visuallyHidden } from "@mui/utils";
 import { useConfirm } from "material-ui-confirm";
 import { useEffect, useMemo, useState } from "react";
+import ErrorModal from "../../component/ErrorModal";
 import SuccessfullModal from "../../component/SuccessfulModal";
 import server from "./../../HTTP/httpCommonParam";
 import TimeFormat from "./../../utils/TimeFormat";
@@ -195,6 +196,7 @@ export default function MyCollections() {
   const [rows, setRows] = useState();
   const [deleting, setDeleting] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
 
   const getApplications = async () => {
     try {
@@ -226,19 +228,19 @@ export default function MyCollections() {
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       //
-      const newSelected = rows.map((n) => n.isbn);
+      const newSelected = rows.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, isbn) => {
-    const selectedIndex = selected.indexOf(isbn);
+  const handleClick = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, isbn);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -262,7 +264,7 @@ export default function MyCollections() {
     setPage(0);
   };
 
-  const isSelected = (isbn) => selected.indexOf(isbn) !== -1;
+  const isSelected = (id) => selected.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -277,13 +279,18 @@ export default function MyCollections() {
       ),
     [order, orderBy, page, rowsPerPage, rows]
   );
-  const deleteItems = () => {
+  const deleteItems = async () => {
     setDeleting(true);
-    const timer = setTimeout(() => {
+    try {
+      const response = await server.delete("/del-requests", {
+        data: { Editions: selected },
+      });
       setShowSuccessMessage(true);
-    }, 1000);
-
-    return () => clearTimeout(timer);
+    } catch (err) {
+      if (err.response.status === 404) {
+        setShowErrorMessage(true);
+      }
+    }
   };
 
   const deleteItemsHandler = () => {
@@ -334,13 +341,13 @@ export default function MyCollections() {
             ) : (
               <TableBody>
                 {visibleRows.map((row, index) => {
-                  const isItemSelected = isSelected(row.isbn);
+                  const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.isbn)}
+                      onClick={(event) => handleClick(event, row.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
@@ -400,11 +407,21 @@ export default function MyCollections() {
           setShowSuccessMessage={setShowSuccessMessage}
           successMessage="Deleted Successfully"
           HandleModalClosed={() => {
-            const newRows = rows.filter((row) => !selected.includes(row.isbn));
-
-            setRows(newRows);
+            getApplications();
             setSelected([]);
             setShowSuccessMessage(false);
+            setDeleting(false);
+          }}
+        />
+      )}
+      {showErrorMessage && (
+        <ErrorModal
+          showErrorMessage={showErrorMessage}
+          errorMessage="At least one of your selected application is not available. Please reload to view changes"
+          HandleModalClosed={() => {
+            getApplications();
+            setSelected([]);
+            setShowErrorMessage(false);
             setDeleting(false);
           }}
         />
