@@ -3,6 +3,7 @@ import { lazy } from "react";
 // project imports
 
 import Details from "../pages/Details/Details";
+import AllUsers from "../pages/Employee/AllUsers";
 import LatestBooks from "../pages/LatestBooks";
 import { loader as favouritesLoader } from "../pages/Reader/MyFavourites";
 import MyReviews from "../pages/Reader/MyReviews";
@@ -20,9 +21,7 @@ const MyDueList = Loadable(lazy(() => import("../pages/Reader/MyDueList")));
 const MyCollections = Loadable(
   lazy(() => import("../pages/Reader/MyCollections"))
 );
-const MyApplications = Loadable(
-  lazy(() => import("../pages/Reader/MyApplications"))
-);
+const Application = Loadable(lazy(() => import("../pages/Reader/Application")));
 
 const AllBooks = Loadable(lazy(() => import("./../pages/allbooks/AllBooks")));
 const HomePage = Loadable(lazy(() => import("./../pages/Home")));
@@ -70,8 +69,12 @@ const MainRoutes = {
 
     {
       path: "/applications",
-      element: <MyApplications />,
+      element: <Application />,
     },
+    // {
+    //   path: "/applications",
+    //   element: <MyApplications />,
+    // },
     {
       path: "/collections",
       element: <MyCollections />,
@@ -83,6 +86,10 @@ const MainRoutes = {
     {
       path: "/duelist",
       element: <MyDueList />,
+    },
+    {
+      path: "/allusers",
+      element: <AllUsers />,
     },
   ],
 };

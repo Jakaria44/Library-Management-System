@@ -21,6 +21,9 @@ import {
   getCompleteBookDB,
   getGenreBookDB,
   getGenreDB,
+  getMyFineHistoryDB,
+  getMyRentHistoryDB,
+  getMyRequestsDB,
   getOwnRatRevDB,
   getPublisherBooksDB,
   getPublisherDB,
@@ -29,10 +32,7 @@ import {
   getTopBookDB,
   getUserDetailsDB,
   getUserRatedBooksDB,
-  getUserReviewedBooksDB,
-  getMyRequestsDB,
-  getMyRentHistoryDB,
-  getMyFineHistoryDB
+  getUserReviewedBooksDB
 } from "../Database/queryFunctions.js";
 
 
@@ -500,11 +500,11 @@ export async function getMyRequests(req, res, next) {
     context.order = req.query.order;
     const rows = await getMyRequestsDB(context);
 
-    if (rows.length > 0) {
+    // if (rows.length > 0) {
       res.status(200).json(rows);
-    } else {
-      res.status(404).json({message:"Not Found"});
-    }
+    // } else {
+    //   res.status(404).json({message:"Not Found"});
+    // }
   } catch (err) {
     next(err);
   }

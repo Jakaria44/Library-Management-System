@@ -1,6 +1,6 @@
 // assets
 
-import { ManageAccounts } from "@mui/icons-material";
+import { PeopleSharp } from "@mui/icons-material";
 
 // constant
 
@@ -12,11 +12,11 @@ const Employee = {
   type: "group",
   children: [
     {
-      id: "employee",
-      title: "Employee",
+      id: "allusers",
+      title: "All Users",
       type: "item",
-      url: "/",
-      icon: <ManageAccounts />,
+      url: "/allusers",
+      icon: <PeopleSharp />,
       breadcrumbs: false,
     },
   ],

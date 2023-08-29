@@ -1,4 +1,4 @@
-import {queryExecute} from './database.js';
+import { queryExecute } from './database.js';
 
 function baseQuery(tableName) {
   return `Select *
@@ -295,10 +295,10 @@ export async function getMyRequestsDB(context) {
     '\nFROM REQUEST R JOIN EDITION E ON(R.EDITION_ID = E.EDITION_ID) JOIN BOOK B ON(E.ISBN = B.ISBN)' +
     `\nWHERE R.USER_ID = ${context.USER_ID}`;
   let flag = 1;
+  console.log(context);
   if (context.sort && context.order) {
-    const validColumns = ['TITLE', 'EDITION_NUM', 'REQUEST_DATE'];
+    const validColumns = ['TITLE', 'EDITION_NUM', 'REQUEST_DATE', 'ISBN'];
     const validOrders = ['ASC', 'DESC'];
-
     if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
       query += `\nORDER BY ${context.sort} ${context.order}`;
       if (context.sort !== 'TITLE') {

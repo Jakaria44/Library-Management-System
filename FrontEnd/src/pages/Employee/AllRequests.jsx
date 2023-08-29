@@ -1,4 +1,5 @@
-import { Chip, Tooltip } from "@mui/material";
+import { Send } from "@mui/icons-material";
+import { IconButton, Tooltip } from "@mui/material";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -13,9 +14,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { visuallyHidden } from "@mui/utils";
 import { useConfirm } from "material-ui-confirm";
-import { useEffect, useMemo, useState } from "react";
-import TimeFormat from "../../utils/TimeFormat";
-import server from "./../../HTTP/httpCommonParam";
+import { useMemo, useState } from "react";
 
 // comparator
 function descendingComparator(a, b, orderBy) {
@@ -52,39 +51,33 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: "title",
+    id: "name",
     disablePadding: true,
-    label: "Title of the Book",
+    label: "Full Name",
     align: "left",
   },
   {
-    id: "edition",
+    id: "email",
     disablePadding: false,
-    label: "Edition",
-    align: "right",
+    label: "Email",
+    align: "left",
   },
   {
-    id: "fineDate",
+    id: "contactNo",
     disablePadding: false,
-    label: "Fined on",
-    align: "right",
+    label: "Contact No",
+    align: "left",
   },
   {
-    id: "paymentDate",
+    id: "accept",
     disablePadding: false,
-    label: "Paid on",
-    align: "right",
+    label: "Accept Request",
+    align: "center",
   },
   {
-    id: "amount",
+    id: "deletion",
     disablePadding: false,
-    label: "Amount",
-    align: "right",
-  },
-  {
-    id: "status",
-    disablePadding: false,
-    label: "Status",
+    label: "Delete Request",
     align: "center",
   },
 ];
@@ -140,49 +133,111 @@ function EnhancedTableToolbar() {
           id="tableTitle"
           component="div"
         >
-          My Fine History
+          All Users
         </Typography>
       }
     </Toolbar>
   );
 }
+const dummyAuthors = [
+  {
+    id: 1,
+    name: "Jakaria Hossain",
+    email: "abc@gmail.com",
+    phone: "01700000000",
+  },
+  {
+    id: 2,
+    name: "Sarah Johnson",
+    email: "sarah@example.com",
+    phone: "555-123-4567",
+  },
+  {
+    id: 3,
+    name: "John Doe",
+    email: "john.doe@example.com",
+    phone: "123-456-7890",
+  },
+  {
+    id: 4,
+    name: "Emma Smith",
+    email: "emma@example.com",
+    phone: "987-654-3210",
+  },
+  {
+    id: 5,
+    name: "Michael Brown",
+    email: "michael@example.com",
+    phone: "111-222-3333",
+  },
+  {
+    id: 6,
+    name: "Amanda Wilson",
+    email: "amanda@example.com",
+    phone: "444-555-6666",
+  },
+  {
+    id: 7,
+    name: "Alex Martin",
+    email: "alex@example.com",
+    phone: "777-888-9999",
+  },
+  {
+    id: 8,
+    name: "Emily Davis",
+    email: "emily@example.com",
+    phone: "222-333-4444",
+  },
+  {
+    id: 9,
+    name: "Daniel Lee",
+    email: "daniel@example.com",
+    phone: "555-666-7777",
+  },
+  {
+    id: 10,
+    name: "Olivia Clark",
+    email: "olivia@example.com",
+    phone: "888-999-0000",
+  },
+];
 
-export default function MyDueList() {
+export default function AllUsers() {
   const confirm = useConfirm();
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("title");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState(dummyAuthors);
 
-  const getMyDueList = async () => {
-    try {
-      const response = await server.get("/my-fine-history");
-      console.log(response.data);
+  //   const getMyDueList = async () => {
+  //     try {
+  //       const response = await server.get("/my-fine-history");
+  //       console.log(response.data);
 
-      const newRows = response.data.map((row) => {
-        return {
-          editionId: row.EDITION_ID,
-          rentHistoryId: row.RENT_HISTORY_ID,
-          title: row.TITLE,
-          edition: row.EDITION_NUM,
-          fineDate: TimeFormat(row.START_DATE),
-          paymentDate: row.PAYMENT_DATE ? TimeFormat(row.PAYMENT_DATE) : "-",
-          amount: row.FEE_AMOUNT,
-          status: row.PAYMENT_DATE ? "Paid" : "Not Paid",
-          isbn: row.ISBN,
-        };
-      });
-      console.log(newRows);
-      setRows(newRows);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  useEffect(() => {
-    getMyDueList();
-    console.log(emptyRows);
-  }, []);
+  //       const newRows = response.data.map((row) => {
+  //         return {
+  //           editionId: row.EDITION_ID,
+  //           rentHistoryId: row.RENT_HISTORY_ID,
+  //           title: row.TITLE,
+  //           edition: row.EDITION_NUM,
+  //           fineDate: TimeFormat(row.START_DATE),
+  //           paymentDate: row.PAYMENT_DATE ? TimeFormat(row.PAYMENT_DATE) : "-",
+  //           amount: row.FEE_AMOUNT,
+  //           status: row.PAYMENT_DATE ? "Paid" : "Not Paid",
+  //           isbn: row.ISBN,
+  //         };
+  //       });
+  //       console.log(newRows);
+  //       setRows(newRows);
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   };
+  //   useEffect(() => {
+  //     getMyDueList();
+  //     console.log(emptyRows);
+  //   }, []);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -212,23 +267,23 @@ export default function MyDueList() {
     [order, rows, orderBy, page, rowsPerPage]
   );
 
-  const payNowHandler = (isbn) => {
-    console.log(isbn);
-    confirm({
-      title: (
-        <Typography variant="h4">Are you sure you want to pay now?</Typography>
-      ),
-      description: "This action cannot be undone",
-    })
-      .then(() => {
-        // TODO :   pay now query here.
-        console.log(isbn);
-      })
-      .catch(() => {
-        console.log(isbn);
-      });
-  };
-  return (
+  //   const payNowHandler = (isbn) => {
+  //     console.log(isbn);
+  //     confirm({
+  //       title: (
+  //         <Typography variant="h4">Are you sure you want to pay now?</Typography>
+  //       ),
+  //       description: "This action cannot be undone",
+  //     })
+  //       .then(() => {
+  //         // TODO :   pay now query here.
+  //         console.log(isbn);
+  //       })
+  //       .catch(() => {
+  //         console.log(isbn);
+  //       });
+  //   };
+  return visibleRows ? (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar />
@@ -250,42 +305,35 @@ export default function MyDueList() {
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
-                  <TableRow hover tabIndex={-1} key={row.isbn}>
+                  <TableRow hover tabIndex={-1} key={row.id}>
                     <TableCell
                       component="th"
                       id={labelId}
                       scope="row"
                       padding="normal"
                     >
-                      {row.title}
+                      {row.name}
                     </TableCell>
                     <TableCell align={headCells[1].align}>
-                      {row.edition}
+                      {row.email}
                     </TableCell>
                     <TableCell align={headCells[2].align}>
-                      {row.fineDate}
+                      {row.phone}
                     </TableCell>
-                    <TableCell align={headCells[3].align}>
-                      {row.paymentDate}
+
+                    <TableCell align="center">
+                      <Tooltip title="Send Message">
+                        <IconButton color="primary">
+                          <Send />
+                        </IconButton>
+                      </Tooltip>
                     </TableCell>
-                    <TableCell align={headCells[4].align}>
-                      {row.amount}
-                    </TableCell>
-                    <TableCell align={headCells[5].align}>
-                      {row.status === "Paid" ? (
-                        <Chip label={row.status} color="success" />
-                      ) : (
-                        <Tooltip title="Pay Now">
-                          <Chip
-                            label={row.status}
-                            onClick={() => {
-                              payNowHandler(row.isbn);
-                            }}
-                            color="error"
-                            variant="outlined"
-                          />
-                        </Tooltip>
-                      )}
+                    <TableCell align="center">
+                      <Tooltip title="Send Message">
+                        <IconButton color="primary">
+                          <Send />
+                        </IconButton>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 );
@@ -313,5 +361,9 @@ export default function MyDueList() {
         />
       </Paper>
     </Box>
+  ) : (
+    <Typography variant="h2" align="center">
+      No Requests Found
+    </Typography>
   );
 }
