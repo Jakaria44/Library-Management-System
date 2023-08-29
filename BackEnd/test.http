@@ -84,20 +84,20 @@ Content-Type: application/json
 #   "password": "abcd"
 # }
 
-{
-  "email": "ryangeorge@gmail.com",
-  "password": "ryanMonster300"
-}
+# {
+#   "email": "ryangeorge@gmail.com",
+#   "password": "ryanMonster300"
+# }
 
 # {
 #   "email": "mdjakaria442020@gmail.com",
 #   "password": "Jakaria63"
 # }
 
-# {
-#   "email": "a.n.swapnil2003@gmail.com",
-#   "password": "Ans2003"
-# }
+{
+  "email": "a.n.swapnil2003@gmail.com",
+  "password": "Ans2003"
+}
 
 ###OUTPUT
 {
@@ -164,7 +164,7 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUi
   "IS_FAVOURITE": false
 }
 
-#### --- GET AUTHOR ---
+#### --- GET one/all AUTHOR ---
 GET http://localhost:3000/db-api/getAuthor?aid=1
 
 ###OUTPUT
@@ -177,7 +177,7 @@ GET http://localhost:3000/db-api/getAuthor?aid=1
   "IMAGE": "https://ds.rokomari.store/rokomari110/people/6ed601ea2b54_2559.png"
 }
 
-#### --- GET PUBLISHER ---
+#### --- GET one/all PUBLISHER ---
 GET http://localhost:3000/db-api/getPublisher?pid=1
 
 ###OUTPUT
@@ -424,7 +424,8 @@ Content-Type: application/json
 
 {
   "USER_ID": "3",
-  "EDITION_ID": "1"
+  "EDITION_ID": "1",
+  "RETURN_DATE": "2023-09-10"
 }
 
 ###OUTPUT
@@ -461,3 +462,68 @@ Content-Type: application/json
 {
   "message": "Successfully updated"
 }
+
+#### ---SEND Message---
+POST http://localhost:3000/db-api/send-message
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzI0ODM2NCwiZXhwIjoxNjkzMzM0NzY0fQ.1NLxSdD2LmjL7g38xSLSWn3jSmXys0K4XXwPJK8rNmA
+Content-Type: application/json
+
+{
+  "USER_ID": "3",
+  "MESSAGE": "Hello, I want to borrow this book"
+}
+
+###OUTPUT
+{
+  "message": "Successful"
+}
+
+#### ---Update Message---
+PUT http://localhost:3000/db-api/edit-message
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzMzExMjEyLCJleHAiOjE2OTMzOTc2MTJ9.EnwV75NbGK3S8_M75MlMB0dCZWaEzgTUZ6RvqSGhkZA
+
+###OUTPUT
+{
+  "message": "Successfully updated"
+}
+
+#### ---Delete Message---
+DELETE http://localhost:3000/db-api/edit-message
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzMzExMjEyLCJleHAiOjE2OTMzOTc2MTJ9.EnwV75NbGK3S8_M75MlMB0dCZWaEzgTUZ6RvqSGhkZA
+
+###OUTPUT
+{
+  "message": "Successfully deleted"
+}
+
+#### ---publish News---
+POST http://localhost:3000/db-api/publish-news
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzI0ODM2NCwiZXhwIjoxNjkzMzM0NzY0fQ.1NLxSdD2LmjL7g38xSLSWn3jSmXys0K4XXwPJK8rNmA
+Content-Type: application/json
+
+{
+  "NEWS": "New book has been added"
+}
+
+###OUTPUT
+{
+  "message": "Successful"
+}
+
+#### ---- GET ALL RUNNING FINE ----
+GET http://localhost:3000/db-api/running-fine?sort=NAME&order=DESC
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzI0ODM2NCwiZXhwIjoxNjkzMzM0NzY0fQ.1NLxSdD2LmjL7g38xSLSWn3jSmXys0K4XXwPJK8rNmA
+
+###OUTPUT
+[
+  {
+    "RENT_HISTORY_ID": "3",
+    "USER_ID": "1",
+    "EMAIL": "ryangeorge@gmail.com",
+    "NAME": "Ryan George",
+    "ISBN": "9780747591269",
+    "EDITION_ID": "8",
+    "START_DATE": "2023-09-04T10:08:33.000Z",
+    "FEE_AMOUNT": -0.6006145833333333
+  }
+]

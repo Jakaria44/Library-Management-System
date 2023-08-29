@@ -276,7 +276,9 @@ export async function getAllLanguagesDB() {
 export async function getAuthorDB(context) {
   let query =
     "SELECT NAME, DoB, DoD, NATIONALITY, BIO, IMAGE FROM AUTHOR";
-  query += '\nWHERE AUTHOR_ID = :AUTHOR_ID';
+  if(context.AUTHOR_ID) {
+    query += '\nWHERE AUTHOR_ID = :AUTHOR_ID';
+  }
   const result = await queryExecute(query, context);
   return result.rows;
 }
@@ -285,7 +287,9 @@ export async function getPublisherDB(context) {
   let query = '';
   query +=
     "SELECT NAME, POSTAL_CODE, CITY, COUNTRY, CONTACT_NO, EMAIL, IMAGE FROM PUBLISHER";
-  query += '\nWhere PUBLISHER_ID = :PUBLISHER_ID';
+  if(context.PUBLISHER_ID) {
+    query += '\nWhere PUBLISHER_ID = :PUBLISHER_ID';
+  }
   const result = await queryExecute(query, context);
   return result.rows;
 }
@@ -378,6 +382,38 @@ export async function getMyFineHistoryDB(context) {
   return result.rows;
 }
 
+export async function getRunningFineDB(context) {
+  let query = "SELECT F.RENT_HISTORY_ID, U.USER_ID, U.EMAIL, (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, B.ISBN, R.EDITION_ID, START_DATE, FEE_AMOUNT" +
+    '\nFROM FINE_HISTORY F LEFT JOIN RENT_HISTORY R ON(R.RENT_HISTORY_ID = F.RENT_HISTORY_ID) ' +
+    'LEFT JOIN "USER" U ON(U.USER_ID = R.USER_ID) LEFT JOIN EDITION E ON(R.EDITION_ID = E.EDITION_ID) JOIN BOOK B ON(E.ISBN = B.ISBN)' +
+    '\nWHERE F.PAYMENT_DATE IS NULL';
+  let flag = 1;
+  if (context.sort && context.order) {
+    const validColumns = ['EMAIL', 'NAME', 'START_DATE', 'FEE_AMOUNT'];
+    const validOrders = ['ASC', 'DESC'];
+
+    if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
+      query += `\nORDER BY ${context.sort} ${context.order}`;
+      if (context.sort !== 'FEE_AMOUNT') {
+        query += ', FEE_AMOUNT DESC';
+      }
+      flag = 0;
+    }
+  }
+  if (flag) {
+    query += '\nORDER BY FEE_AMOUNT DESC';
+  }
+  console.log(query)
+  let result = [];
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return [];
+  }
+  return result.rows;
+}
+
+
 export async function addRequestDB(context) {
   let query = runProcedure(`INSERT_REQUEST(${context.EDITION_ID}, ${context.USER_ID})`);
   let result = null;
@@ -390,8 +426,11 @@ export async function addRequestDB(context) {
 }
 
 export async function getAllRequestsDB(context) {
-  let query = 'SELECT R.USER_ID, U.EMAIL, B.ISBN, B.TITLE, R.EDITION_ID, E.EDITION_NUM, E.NUM_OF_COPIES, R.REQUEST_DATE ' +
+  let query = `SELECT (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, R.USER_ID, U.EMAIL, B.ISBN, B.TITLE, R.EDITION_ID, E.EDITION_NUM, E.NUM_OF_COPIES, R.REQUEST_DATE` +
     '\nFROM REQUEST R JOIN EDITION E ON(R.EDITION_ID = E.EDITION_ID) JOIN BOOK B ON(E.ISBN = B.ISBN)  JOIN "USER" U ON(R.USER_ID = U.USER_ID)';
+  if (context.USER_ID) {
+    query += `\nWHERE R.USER_ID <> ${context.USER_ID}`
+  }
   let flag = 1;
   if (context.sort && context.order) {
     const validColumns = ['TITLE', 'EDITION_NUM', 'REQUEST_DATE', 'NUM_OF_COPIES', 'EMAIL'];
@@ -960,7 +999,7 @@ export async function deleteRatRevBookDB(context) {
 export async function updateHistoryDB(context) {
   let query = runProcedure(`EDIT_HISTORY(${context.USER_ID}, ${context.RENT_HISTORY_ID}, ${context.PAY})`);
   console.log(context);
-  let result;
+  let result = null;
   try {
     result = await queryExecute(query, []);
   } catch (e) {
@@ -985,7 +1024,7 @@ export async function addRentHistoryDB(context) {
   const binds = {
     USER_ID: context.USER_ID,
     EDITION_ID: context.EDITION_ID,
-    RETURN_DATE: context.RETURN_DATE ? context.RETURN_DATE : null
+    RETURN_DATE: context.RETURN_DATE
   }
   let query = runProcedure(`INSERT_RENT_HISTORY(:USER_ID, :EDITION_ID, :RETURN_DATE)`);
   console.log(query);
@@ -1004,11 +1043,59 @@ export async function getEditionDB(context) {
 
   if (context.EDITION_ID) {
     binds.EDITION_ID = context.EDITION_ID;
-    query += '\nWhere EDITION_ID = :EDITION_ID';
+    query += `\nWhere EDITION_ID = ${context.EDITION_ID}`;
   }
-
-  const result = await queryExecute(query, binds);
+  console.log(query);
+  const result = await queryExecute(query, []);
   return result.rows;
+}
+
+export async function sendMessageDB(context) {
+  let query = runProcedure(`INSERT_MESSAGE(${context.USER_ID}, '${context.MESSAGE}')`);
+  console.log(context);
+  let result;
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return null
+  }
+  return context;
+}
+
+export async function updateMessageDB(context) {
+  let query = runProcedure(`UPDATE_MESSAGE(${context.USER_ID})`)
+  console.log(context);
+  let result = null;
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return null
+  }
+  return context;
+}
+
+export async function deleteMessageDB(context) {
+  let query = runProcedure(`DELETE_MESSAGE(${context.USER_ID})`)
+  console.log(context);
+  let result = null;
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return null
+  }
+  return context;
+}
+
+export async function publishNewsDB(context) {
+  let query = runProcedure(`INSERT_NEWS('${context.NEWS}')`);
+  console.log(context);
+  let result;
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return null
+  }
+  return context;
 }
 
 export async function deleteAllBooksBookshelfDB(context) {

@@ -1,6 +1,6 @@
 import bodyParser from 'body-parser';
 import Express from 'express';
-import { verifyAdminToken, verifyGeneralToken, verifyUserToken, verifyEmployeeToken } from '../authentication/auth.js';
+import {verifyAdminToken, verifyGeneralToken, verifyUserToken, verifyEmployeeToken} from '../authentication/auth.js';
 import {
   deleteAllBooksBookshelf,
   deleteAuthor,
@@ -11,7 +11,8 @@ import {
   deletePublisher,
   deleteRatRevBook,
   deleteRequests,
-  deleteRequest
+  deleteRequest,
+  deleteMessage
 } from '../controllers/deleteController.js';
 import {
   getAllAuthors,
@@ -44,9 +45,10 @@ import {
   getMyRequests,
   getMyRentHistory,
   getMyFineHistory,
-  getAllRequests
+  getAllRequests,
+  getRunningFine
 } from '../controllers/getController.js';
-import { decodeToken, loginGeneral, logout, postAdmin, postUser } from '../controllers/loginController.js';
+import {decodeToken, loginGeneral, logout, postAdmin, postUser} from '../controllers/loginController.js';
 import {
   addAuthor,
   addBook,
@@ -60,7 +62,10 @@ import {
   postFavBook,
   updateUserDetails,
   addRequest,
-  acceptRequest
+  acceptRequest,
+  sendMessage,
+  publishNews,
+  postBook
 } from '../controllers/postController.js';
 import {
   updateAdmin,
@@ -69,17 +74,19 @@ import {
   updateGenre,
   updatePublisher,
   updateUser,
-  updateHistory
+  updateHistory,
+  updateMessage
 } from '../controllers/putController.js';
 
 const router = Express.Router();
 router.use(Express.json());
 let urlencodedParser = bodyParser.urlencoded({extended: true});
 
-
-router.route('/book').get(verifyGeneralToken,getBookDetailsByID);
-router.route('/all-books-sum').get(verifyGeneralToken,getAllBookSum);
-router.route('/user/signup').post(urlencodedParser,postUser);
+//TODO: ADD, UPDATE AND REMOVE BOOK
+router.route('/book').get(verifyGeneralToken, getBookDetailsByID)
+  // .post(verifyEmployeeToken, urlencodedParser, postBook);
+router.route('/all-books-sum').get(verifyGeneralToken, getAllBookSum);
+router.route('/user/signup').post(urlencodedParser, postUser);
 router.route('/user/login').post(urlencodedParser, loginGeneral);
 router.route('/user/update').put(verifyUserToken, urlencodedParser, updateUser);
 
@@ -98,9 +105,12 @@ router.route('/my-fine-history').get(verifyGeneralToken, getMyFineHistory);
 router.route('/return-book').put(verifyGeneralToken, urlencodedParser, updateHistory);
 router.route('/all-requests').get(verifyEmployeeToken, getAllRequests);
 router.route('/handle-request').post(verifyEmployeeToken, urlencodedParser, acceptRequest).delete(verifyEmployeeToken, deleteRequest);
-// router.route('/running-fine').get(verifyEmployeeToken, getRunningFine);
-// router.route('/send-message').post(verifyEmployeeToken, sendMessage);
-// router.route('/publish-news').post(verifyEmployeeToken, publishNews);
+router.route('/send-message').post(verifyEmployeeToken, urlencodedParser, sendMessage);
+router.route('/edit-message').put(verifyGeneralToken, updateMessage).delete(verifyGeneralToken, deleteMessage);
+router.route('/publish-news').post(verifyEmployeeToken, urlencodedParser, publishNews);
+router.route('/running-fine').get(verifyEmployeeToken, getRunningFine);
+
+
 
 router.route('/book/title').get(getBookByTitle);
 router.route('/topBooks').get(getTopBook);

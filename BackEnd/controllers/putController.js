@@ -7,7 +7,8 @@ import {
   updateGenreDB,
   updatePublisherDB,
   updateUserDB,
-  updateHistoryDB
+  updateHistoryDB,
+  updateMessageDB
 } from '../Database/queryFunctions.js';
 import bcrypt from "bcrypt";
 
@@ -111,6 +112,21 @@ export async function updateHistory(req, res, next) {
   }
 }
 
+export async function updateMessage(req, res, next) {
+  try {
+    var context = {
+      USER_ID: req.USER_ID
+    };
+    context = await updateMessageDB(context);
+    if (context) {
+      res.status(200).json({message: 'Successfully updated'});
+    } else {
+      res.status(404).json({message: 'Failed to update'});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
 
 export async function updateUser(req, res, next) {
   try {
