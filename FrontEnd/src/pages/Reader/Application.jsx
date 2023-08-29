@@ -1,14 +1,12 @@
 import { Delete } from "@mui/icons-material";
 import { Box, IconButton, Typography } from "@mui/material";
-import {
-  DataGrid,
-  GridToolbarContainer,
-  GridToolbarExport,
-} from "@mui/x-data-grid";
+import { GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 import { useConfirm } from "material-ui-confirm";
 import React, { useCallback, useEffect, useState } from "react";
 import ErrorModal from "../../component/ErrorModal";
+import StyledDataGrid from "../../component/StyledDataGrid";
 import SuccessfullModal from "../../component/SuccessfulModal";
+import TimeFormat from "../../utils/TimeFormat";
 import server from "./../../HTTP/httpCommonParam";
 import CustomNoRowsOverlay from "./../../component/CustomNoRowsOverlay";
 const NoRequestOverlay = () => (
@@ -28,7 +26,7 @@ const Application = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [queryOptions]);
 
   const handleSortModelChange = useCallback((sortModel) => {
     // Here you save the data you need from the sort model
@@ -53,7 +51,7 @@ const Application = () => {
         TITLE: item.TITLE,
         EDITION_ID: item.EDITION_ID,
         EDITION_NUM: item.EDITION_NUM,
-        REQUEST_DATE: new Date(item.REQUEST_DATE).toLocaleString(),
+        REQUEST_DATE: TimeFormat(item.REQUEST_DATE),
       }));
       setRows(data);
     } catch (error) {
@@ -95,7 +93,7 @@ const Application = () => {
 
   function CustomToolbar() {
     return (
-      <GridToolbarContainer>
+      <GridToolbarContainer sx={{ margin: "16px" }}>
         {rows.length !== 0 && <GridToolbarExport />}
         <IconButton
           sx={{ display: `${selected.length === 0 ? "none" : "block"}` }}
@@ -120,12 +118,12 @@ const Application = () => {
       >
         My Requests
       </Typography>
-      <DataGrid
+      <StyledDataGrid
         rows={rows}
         columns={[
           { field: "ISBN", headerName: "ISBN", width: 150 },
           { field: "TITLE", headerName: "Title", minWidth: 300 },
-          { field: "EDITION_NUM", headerName: "Edition ", width: 150 },
+          { field: "EDITION_NUM", headerName: "Edition ", width: 100 },
           { field: "REQUEST_DATE", headerName: "Request Date", width: 200 },
         ]}
         loading={loading}
