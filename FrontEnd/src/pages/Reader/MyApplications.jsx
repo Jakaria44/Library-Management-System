@@ -428,6 +428,6 @@ export default function MyCollections() {
       )}
     </Box>
   ) : (
-    <LinearProgress />
+    <Typography variant="h3">You have no pending book request</Typography>
   );
 }

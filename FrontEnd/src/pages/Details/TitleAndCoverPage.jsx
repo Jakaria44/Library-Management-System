@@ -4,6 +4,7 @@ import { useTheme } from "@emotion/react";
 import {
   Book,
   CalendarMonth,
+  Category,
   ConfirmationNumber,
   Language,
   LocalLibrary,
@@ -12,21 +13,46 @@ import {
 } from "@mui/icons-material";
 import {
   Button,
+  Chip,
   Grid,
+  List,
   ListItem,
   ListItemIcon,
   ListItemText,
   MenuItem,
   Paper,
   Select,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import ErrorModal from "../../component/ErrorModal";
 import SignupDialog from "../../component/SignupDialog";
+import SpinnerWithBackdrop from "../../component/SpinnerWithBackdrop";
 import SuccessfulModal from "../../component/SuccessfulModal";
 import server from "./../../HTTP/httpCommonParam";
 
+const CategoryList = ({ category }) => {
+  return (
+    <Grid container mx={2} spacing={2} direction="row">
+      {category.map((element) => (
+        <Grid item key={element.id}>
+          <Tooltip title={"View More of this Category"}>
+            <Chip
+              label={element.name}
+              variant="primary"
+              color="info"
+              style={{ margin: "4px" }}
+              component={Link}
+              to={`/categories/${element.id}`}
+            />
+          </Tooltip>
+        </Grid>
+      ))}
+    </Grid>
+  );
+};
 const TitleAndCoverPage = ({ book, editions }) => {
   const [isFavourite, setIsFavourite] = useState(book.IS_FAVOURITE);
   const [selectedEdition, setSelectedEdition] = useState(editions[0]);
@@ -34,9 +60,21 @@ const TitleAndCoverPage = ({ book, editions }) => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("An Error Occured");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [category, setCategory] = useState([]);
   const theme = useTheme();
 
+  const initializeCategory = () => {
+    const category = [];
+    const genre = JSON.parse(book.GENRE);
+    genre.forEach((element) => {
+      category.push({ name: element.NAME, id: element.ID });
+    });
+    setCategory(category);
+  };
+
   useEffect(() => {
+    initializeCategory();
     console.log(editions);
   }, []);
   const handleEditionChange = (event) => {
@@ -51,6 +89,7 @@ const TitleAndCoverPage = ({ book, editions }) => {
 
   const apply = async () => {
     console.log("id ", selectedEdition.id);
+    setLoading(true);
     try {
       const response = await server.post(`/request`, {
         EDITION_ID: selectedEdition.id,
@@ -64,6 +103,8 @@ const TitleAndCoverPage = ({ book, editions }) => {
       } else if (err.response.status === 404) {
         setErrorMessage("You have already requested this book");
       }
+    } finally {
+      setLoading(false);
     }
   };
   const handleApplyToGet = () => {
@@ -145,7 +186,7 @@ const TitleAndCoverPage = ({ book, editions }) => {
       {/* Right side: Book Information */}
       <Grid item xs={12} md={8}>
         <Paper elevation={3} sx={{ padding: "16px" }}>
-          <ul style={{ listStyleType: "none", padding: 0 }}>
+          <List>
             {bookInfoList.map((info, index) => (
               <ListItem key={index}>
                 <ListItemIcon>{info.icon}</ListItemIcon>
@@ -158,8 +199,20 @@ const TitleAndCoverPage = ({ book, editions }) => {
                 />
               </ListItem>
             ))}
-          </ul>
-
+            <ListItem key={bookInfoList.length + 2}>
+              <ListItemIcon>
+                <Category />
+              </ListItemIcon>
+              <ListItemText
+                primary="Categories: "
+                primaryTypographyProps={{
+                  fontWeight: "medium",
+                  variant: "h3",
+                }}
+              />
+              <CategoryList category={category} />
+            </ListItem>
+          </List>
           <Typography
             variant="h3"
             style={{ marginTop: "16px", marginLeft: "16px" }}
@@ -228,6 +281,7 @@ const TitleAndCoverPage = ({ book, editions }) => {
           setShowErrorMessage(false);
         }}
       />
+      <SpinnerWithBackdrop backdropOpen={loading} helperText="Please Wait" />
     </Grid>
   );
 };

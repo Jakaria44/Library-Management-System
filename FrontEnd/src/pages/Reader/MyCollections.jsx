@@ -330,7 +330,7 @@ export default function MyCollections() {
         />
       </Paper>
       <SpinnerWithBackdrop
-        backdropOpen={!visibleRows.length}
+        backdropOpen={!visibleRows.length && rows.length}
         helperText="Loading..."
       />
     </Box>
