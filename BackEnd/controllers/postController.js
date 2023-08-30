@@ -18,8 +18,15 @@ import {
   getAvgRatingDB,
   addRequestDB,
   getOwnRatRevDB,
-  getMyFineHistoryDB
+  getMyFineHistoryDB,
+  updateEditionDB,
+  getMyRequestsDB,
+  addRentHistoryDB,
+  getEditionDB,
+  sendMessageDB,
+  publishNewsDB
 } from '../Database/queryFunctions.js';
+import {getMyRequests} from "./getController.js";
 
 
 export async function updateUserDetails(req, res, next) {
@@ -52,7 +59,7 @@ export async function postFavBook(req, res, next) {
     console.log(fav);
     try {
       const favBook = await getFavouriteDB(fav);
-      if(!favBook) {
+      if (!favBook) {
         res.status(404).json({message: "Not Found"});
         return;
       }
@@ -194,7 +201,7 @@ export async function ratrevBook(req, res, next) {
       console.log(my[0]);
       const avg = await getAvgRatingDB(ratrev);
       console.log(avg);
-      res.status(201).json({my:my[0], avg});
+      res.status(201).json({my: my[0], avg});
     } catch (error) {
       res.status(501).json(error);
     }
@@ -211,16 +218,92 @@ export async function addRequest(req, res, next) {
       EDITION_ID: req.body.EDITION_ID,
       CHECK: true
     };
-    const result = await getMyFineHistoryDB(request);
+    let result = await getMyFineHistoryDB(request);
     if (result.length > 0) {
       res.status(402).json({message: "PAY FIRST"})
       return;
     }
+    result = await getMyRequestsDB(request);
+    if (result.length >= 5) {
+      res.status(403).json({message: "MAXIMUM LIMIT REACHED"});
+      return;
+    }
     request = await addRequestDB(request);
-    if (request!==null) {
+    if (request) {
       res.status(200).json({message: "Successful"})
     } else {
       res.status(404).json({message: "Already Exists"})
+    }
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function sendMessage(req, res, next) {
+  try {
+    if (req.body.USER_ID === req.USER_ID) {
+      res.status(402).json({message: "Can't send message to self"})
+    }
+    let request = {
+      USER_ID: req.body.USER_ID,
+      MESSAGE: req.body.MESSAGE
+    };
+    request = await sendMessageDB(request);
+    if (request) {
+      res.status(200).json({message: "Successful"})
+    } else {
+      res.status(404).json({message: "Message send Failed"})
+    }
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function publishNews(req, res, next) {
+  try {
+    let request = {
+      NEWS: req.body.NEWS
+    };
+    request = await publishNewsDB(request);
+    if (request) {
+      res.status(200).json({message: "Successful"})
+    } else {
+      res.status(404).json({message: "Message send Failed"})
+    }
+  } catch (e) {
+    next(e);
+  }
+}
+
+
+export async function acceptRequest(req, res, next) {
+  try {
+    if (req.body.USER_ID === req.USER_ID) {
+      res.status(402).json({message: "Can't accept own request"})
+    }
+    let context = {
+      USER_ID: req.body.USER_ID,
+      EDITION_ID: req.body.EDITION_ID,
+      RETURN_DATE: req.body.RETURN_DATE ? new Date(req.body.RETURN_DATE) : null
+    };
+    let days = context.RETURN_DATE ? Math.floor((context.RETURN_DATE - (new Date())) / (1000 * 60 * 60 * 24)) : 7;
+    console.log(context);
+    let request = await addRentHistoryDB(context);
+    if (request) {
+      const result = await getEditionDB(context);
+      console.log(result);
+      const isbn = (result[0] ? result[0].ISBN : 'UNKNOWN');
+      const edition = (result[0] ? result[0].EDITION_NUM : 'UNKNOWN');
+      context.MESSAGE = `Your request for the book, ISBN : {${isbn}} and EDITION_NUM = {${edition}} has been accepted. Please collect the book. You need to return the book by {${days}} to avoid fine.`;
+      console.log(context);
+      request = await sendMessageDB(context);
+      if (!request) {
+        res.status(201).json({message: 'Successful but message not send'})
+      } else {
+        res.status(200).json({message: 'Successful'})
+      }
+    } else {
+      res.status(404).json({message: "Not Enough Copies"})
     }
   } catch (e) {
     next(e);
@@ -242,27 +325,21 @@ export async function bookToBookshelf(req, res, next) {
 }
 
 
-function getBookFromRequest(req) {
-  const book = {
-    ISBN: req.body.ISBN,
-    TITLE: req.body.TITLE,
-    COVER_IMAGE: req.body.COVER_IMAGE,
-    BINDING: req.body.BINDING,
-    NUMBER_OF_PAGES: Number(req.body.NUMBER_OF_PAGES),
-    ORIGINAL_PUBLICATION_YEAR: Number(req.body.ORIGINAL_PUBLICATION_YEAR),
-    LANGUAGE: req.body.LANGUAGE,
-    DESCRIPTION: req.body.DESCRIPTION,
-    SUMMARY: req.body.SUMMARY,
-    PUBLISHER_ID: req.body.PUBLISHER_ID,
-    PUBLICATION_DATE: req.body.PUBLICATION_DATE
-  };
-
-  return book;
-}
-
 export async function postBook(req, res, next) {
   try {
-    let book = getBookFromRequest(req);
+    let book = {
+      ISBN: req.body.ISBN,
+      TITLE: req.body.TITLE,
+      COVER_IMAGE: req.body.COVER_IMAGE,
+      BINDING: req.body.BINDING,
+      NUMBER_OF_PAGES: Number(req.body.NUMBER_OF_PAGES),
+      ORIGINAL_PUBLICATION_YEAR: Number(req.body.ORIGINAL_PUBLICATION_YEAR),
+      LANGUAGE: req.body.LANGUAGE,
+      DESCRIPTION: req.body.DESCRIPTION,
+      SUMMARY: req.body.SUMMARY,
+      PUBLISHER_ID: req.body.PUBLISHER_ID,
+      PUBLICATION_DATE: req.body.PUBLICATION_DATE
+    }
 
     book = await createBookDB(book);
     res.status(201).json(book);

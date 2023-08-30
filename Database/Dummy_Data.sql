@@ -156,6 +156,7 @@ VALUES (3, 0, SYSDATE + 11, NULL);
 INSERT INTO c##library.NEWS(NEWS_ID, NEWS_TEXT, NEWS_DATE)
 VALUES (1, 'WELCOME TO THE LIBRARY', SYSDATE);
 
+--TODO: add the message after create
 --MESSAGE
 INSERT INTO c##library.MESSAGE(MESSAGE_ID, USER_ID, MESSAGE_DATE, MESSAGE)
 VALUES (1, 1, SYSDATE + 9, 'Please, return the book as soon as possible or you will be fined.');

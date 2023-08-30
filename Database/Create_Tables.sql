@@ -202,12 +202,13 @@ CREATE TABLE NEWS
     News_Text VARCHAR2(2000),
     News_Date DATE NOT NULL
 );
-
+--TODO: DROP AND CREATE
 CREATE TABLE MESSAGE
 (
     Message_ID   VARCHAR2(20) PRIMARY KEY,
     User_ID      VARCHAR2(20) NOT NULL,
     Message_Date DATE         NOT NULL,
     Message      VARCHAR2(2000),
+    Seen         NUMBER(1) default 0,
     FOREIGN KEY (User_ID) REFERENCES "USER" (User_ID)
 );

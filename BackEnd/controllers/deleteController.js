@@ -7,7 +7,10 @@ import {
   deleteGenreDB,
   deletePublisherDB,
   deleteRatRevBookDB,
-  deleteRequestsDB
+  deleteRequestDB,
+  getEditionDB,
+  sendMessageDB,
+  deleteMessageDB
 } from "../Database/queryFunctions.js";
 
 export async function deleteBookOfBookshelf(req, res, next) {
@@ -46,27 +49,70 @@ export async function deleteRequests(req, res, next) {
   const context = {};
   context.USER_ID = req.USER_ID;
   let success = true; // Flag to track success of all deletions
-
   for (const EID of req.body.Editions) {
     console.log('Processing EID:', EID);
     context.EDITION_ID = EID;
 
     try {
-      const deleted = await deleteRequestsDB(context);
+      const deleted = await deleteRequestDB(context);
       if (!deleted) {
         success = false;
-        break;
       }
     } catch (err) {
       next(err);
-      return;
     }
   }
 
   if (success) {
-    res.status(201).json({ message: 'Successful' });
+    res.status(201).json({message: 'All Successful'});
   } else {
-    res.status(404).json({ message: 'Does not Exist' });
+    res.status(404).json({message: 'Does not Exist'});
+  }
+}
+
+export async function deleteRequest(req, res, next) {
+  try {
+    if (req.body.USER_ID === req.USER_ID) {
+      res.status(402).json({message: "Can't accept own request"})
+    }
+    let context = {};
+    context.USER_ID = req.body.USER_ID;
+    context.EDITION_ID = req.body.EDITION_ID;
+    let deleted = await deleteRequestDB(context);
+    if (deleted) {
+      const result = await getEditionDB(context);
+      console.log(result);
+      const isbn = (result[0] ? result[0].ISBN : 'UNKNOWN');
+      const edition = (result[0] ? result[0].EDITION_NUM : 'UNKNOWN');
+      context.MESSAGE = `Your request for the book, ISBN : {${isbn}} and EDITION_NUM = {${edition}} has been rejected. Please communicate with the manager for further query.`;
+      deleted = await sendMessageDB(context);
+      if (!deleted) {
+        res.status(201).json({message: 'Successful but message not send'})
+      } else {
+        res.status(200).json({message: 'Successful'})
+      }
+    } else {
+      res.status(404).json({message: 'Does not Exist'});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+
+export async function deleteMessage(req, res, next) {
+  try {
+    var context = {
+      USER_ID: req.USER_ID
+    };
+    context = await deleteMessageDB(context);
+    if (context) {
+      res.status(200).json({message: 'Successfully deleted'});
+    } else {
+      res.status(404).json({message: 'Failed to delete'});
+    }
+  } catch (err) {
+    next(err);
   }
 }
 
