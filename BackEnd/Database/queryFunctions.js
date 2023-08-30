@@ -274,30 +274,90 @@ export async function getAllLanguagesDB() {
 }
 
 export async function getAuthorDB(context) {
-  let query =
-    "SELECT NAME, DoB, DoD, NATIONALITY, BIO, IMAGE FROM AUTHOR";
-  if(context.AUTHOR_ID) {
-    query += '\nWHERE AUTHOR_ID = :AUTHOR_ID';
+  let query = baseQuery('AUTHOR');
+  if (context.AUTHOR_ID) {
+    query += `\nWHERE AUTHOR_ID = ${context.AUTHOR_ID}`;
   }
-  const result = await queryExecute(query, context);
+  const result = await queryExecute(query, []);
   return result.rows;
 }
 
 export async function getPublisherDB(context) {
   let query = '';
-  query +=
-    "SELECT NAME, POSTAL_CODE, CITY, COUNTRY, CONTACT_NO, EMAIL, IMAGE FROM PUBLISHER";
-  if(context.PUBLISHER_ID) {
-    query += '\nWhere PUBLISHER_ID = :PUBLISHER_ID';
+  query += baseQuery('PUBLISHER');
+  if (context.PUBLISHER_ID) {
+    query += `\nWhere PUBLISHER_ID = ${context.PUBLISHER_ID}`;
   }
-  const result = await queryExecute(query, context);
+  const result = await queryExecute(query, []);
   return result.rows;
 }
 
+export async function getMyMessagesDB(context) {
+  // get all messages of a user
+  let query = baseQuery('MESSAGE') +
+    `\nWHERE USER_ID = ${context.USER_ID}` +
+    '\nORDER BY Message_Date DESC';
+  let result = null;
+  try {
+    result = await queryExecute(query, []);
+  } catch (err) {
+    return [];
+  }
+  return result.rows;
+}
+
+export async function getAllNewsDB(context) {
+  // get all messages of a user
+  let query = baseQuery('NEWS') +
+    '\nORDER BY News_Date DESC';
+  let result = null;
+  try {
+    result = await queryExecute(query, []);
+  } catch (err) {
+    return [];
+  }
+  return result.rows;
+}
+
+export async function getAllUsersDB(context) {
+  // get all messages of a user
+  let query = "SELECT USER_ID, (FIRST_NAME || ' ' || LAST_NAME) AS NAME, IMAGE, ADDRESS, EMAIL, CONTACT_NO, GENDER"+
+    '\nFROM "USER"';
+  let flag = 1;
+  if (context.sort && context.order) {
+    const validColumns = ['USER_ID', 'NAME', 'EMAIL'];
+    const validOrders = ['ASC', 'DESC'];
+
+    if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
+      query += `\nORDER BY ${context.sort} ${context.order}`;
+      if (context.sort !== 'NAME') {
+        query += ', NAME ASC';
+      }
+      flag = 0;
+    }
+  }
+  if (flag) {
+    query += '\nORDER BY NAME ASC';
+  }
+
+  let result = null;
+  try {
+    result = await queryExecute(query, []);
+  } catch (err) {
+    return [];
+  }
+  return result.rows;
+}
+
+
+
 export async function getMyRequestsDB(context) {
   let query = 'SELECT B.ISBN, B.TITLE, R.EDITION_ID, E.EDITION_NUM, R.REQUEST_DATE ' +
-    '\nFROM REQUEST R JOIN EDITION E ON(R.EDITION_ID = E.EDITION_ID) JOIN BOOK B ON(E.ISBN = B.ISBN)' +
-    `\nWHERE R.USER_ID = ${context.USER_ID}`;
+    '\nFROM REQUEST R JOIN EDITION E ON(R.EDITION_ID = E.EDITION_ID) JOIN BOOK B ON(E.ISBN = B.ISBN)';
+  if (context.USER_ID) {
+    query +=
+      `\nWHERE R.USER_ID = ${context.USER_ID}`;
+  }
   let flag = 1;
   if (context.sort && context.order) {
     const validColumns = ['TITLE', 'EDITION_NUM', 'REQUEST_DATE'];
@@ -318,6 +378,35 @@ export async function getMyRequestsDB(context) {
   const result = await queryExecute(query, []);
   return result.rows;
 }
+
+
+export async function getAllRequestsDB(context) {
+  let query = `SELECT (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, R.USER_ID, U.EMAIL, B.ISBN, B.TITLE, R.EDITION_ID, E.EDITION_NUM, E.NUM_OF_COPIES, R.REQUEST_DATE` +
+    '\nFROM REQUEST R JOIN EDITION E ON(R.EDITION_ID = E.EDITION_ID) JOIN BOOK B ON(E.ISBN = B.ISBN)  JOIN "USER" U ON(R.USER_ID = U.USER_ID)';
+  // if (context.USER_ID) {
+  //   query += `\nWHERE R.USER_ID <> ${context.USER_ID}`
+  // }
+  let flag = 1;
+  if (context.sort && context.order) {
+    const validColumns = ['TITLE', 'EDITION_NUM', 'REQUEST_DATE', 'NUM_OF_COPIES', 'EMAIL'];
+    const validOrders = ['ASC', 'DESC'];
+
+    if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
+      query += `\nORDER BY ${context.sort} ${context.order}`;
+      if (context.sort !== 'REQUEST_DATE') {
+        query += ', REQUEST_DATE ASC';
+      }
+      flag = 0;
+    }
+  }
+  if (flag) {
+    query += '\nORDER BY REQUEST_DATE ASC';
+  }
+
+  const result = await queryExecute(query, []);
+  return result.rows;
+}
+
 
 export async function getMyRentHistoryDB(context) {
   let query = 'SELECT RENT_HISTORY_ID, B.ISBN, B.TITLE, R.EDITION_ID, E.EDITION_NUM, RENT_DATE, RETURN_DATE, STATUS' +
@@ -351,8 +440,11 @@ export async function getMyRentHistoryDB(context) {
 
 export async function getMyFineHistoryDB(context) {
   let query = 'SELECT F.RENT_HISTORY_ID, B.ISBN, B.TITLE, R.EDITION_ID, E.EDITION_NUM, START_DATE, PAYMENT_DATE, FEE_AMOUNT' +
-    '\nFROM FINE_HISTORY F LEFT JOIN RENT_HISTORY R ON(R.RENT_HISTORY_ID = F.RENT_HISTORY_ID) LEFT JOIN EDITION E ON(R.EDITION_ID = E.EDITION_ID) JOIN BOOK B ON(E.ISBN = B.ISBN)' +
-    `\nWHERE R.USER_ID = ${context.USER_ID}`;
+    '\nFROM FINE_HISTORY F LEFT JOIN RENT_HISTORY R ON(R.RENT_HISTORY_ID = F.RENT_HISTORY_ID) LEFT JOIN EDITION E ON(R.EDITION_ID = E.EDITION_ID) JOIN BOOK B ON(E.ISBN = B.ISBN)';
+  if (context.USER_ID) {
+    query +=
+      `\nWHERE R.USER_ID = ${context.USER_ID}`;
+  }
   if (context.CHECK) {
     query += ' AND F.PAYMENT_DATE IS NULL';
   }
@@ -385,8 +477,10 @@ export async function getMyFineHistoryDB(context) {
 export async function getRunningFineDB(context) {
   let query = "SELECT F.RENT_HISTORY_ID, U.USER_ID, U.EMAIL, (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, B.ISBN, R.EDITION_ID, START_DATE, FEE_AMOUNT" +
     '\nFROM FINE_HISTORY F LEFT JOIN RENT_HISTORY R ON(R.RENT_HISTORY_ID = F.RENT_HISTORY_ID) ' +
-    'LEFT JOIN "USER" U ON(U.USER_ID = R.USER_ID) LEFT JOIN EDITION E ON(R.EDITION_ID = E.EDITION_ID) JOIN BOOK B ON(E.ISBN = B.ISBN)' +
-    '\nWHERE F.PAYMENT_DATE IS NULL';
+    'LEFT JOIN "USER" U ON(U.USER_ID = R.USER_ID) LEFT JOIN EDITION E ON(R.EDITION_ID = E.EDITION_ID) JOIN BOOK B ON(E.ISBN = B.ISBN)';
+  if (context.CHECK) {
+    query += '\nWHERE F.PAYMENT_DATE IS NULL';
+  }
   let flag = 1;
   if (context.sort && context.order) {
     const validColumns = ['EMAIL', 'NAME', 'START_DATE', 'FEE_AMOUNT'];
@@ -423,33 +517,6 @@ export async function addRequestDB(context) {
     return null;
   }
   return context;
-}
-
-export async function getAllRequestsDB(context) {
-  let query = `SELECT (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, R.USER_ID, U.EMAIL, B.ISBN, B.TITLE, R.EDITION_ID, E.EDITION_NUM, E.NUM_OF_COPIES, R.REQUEST_DATE` +
-    '\nFROM REQUEST R JOIN EDITION E ON(R.EDITION_ID = E.EDITION_ID) JOIN BOOK B ON(E.ISBN = B.ISBN)  JOIN "USER" U ON(R.USER_ID = U.USER_ID)';
-  if (context.USER_ID) {
-    query += `\nWHERE R.USER_ID <> ${context.USER_ID}`
-  }
-  let flag = 1;
-  if (context.sort && context.order) {
-    const validColumns = ['TITLE', 'EDITION_NUM', 'REQUEST_DATE', 'NUM_OF_COPIES', 'EMAIL'];
-    const validOrders = ['ASC', 'DESC'];
-
-    if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
-      query += `\nORDER BY ${context.sort} ${context.order}`;
-      if (context.sort !== 'REQUEST_DATE') {
-        query += ', REQUEST_DATE ASC';
-      }
-      flag = 0;
-    }
-  }
-  if (flag) {
-    query += '\nORDER BY REQUEST_DATE ASC';
-  }
-
-  const result = await queryExecute(query, []);
-  return result.rows;
 }
 
 export async function updateEditionDB(context) {
@@ -570,13 +637,11 @@ export async function getOwnRatRevDB(context) {
 
 export async function getGenreDB(context) {
   let query = baseQuery('GENRE');
-  const binds = {};
 
   if (context.GENRE_ID) {
-    binds.GENRE_ID = context.GENRE_ID;
-    query += '\nWhere GENRE_ID = :GENRE_ID';
+    query += `\nWhere GENRE_ID = ${context.GENRE_ID}`;
   }
-  const result = await queryExecute(query, binds);
+  const result = await queryExecute(query, []);
   return result.rows;
 }
 
@@ -1075,7 +1140,7 @@ export async function updateMessageDB(context) {
 }
 
 export async function deleteMessageDB(context) {
-  let query = runProcedure(`DELETE_MESSAGE(${context.USER_ID})`)
+  let query = runProcedure(`DELETE_MESSAGE(${context.USER_ID}, ${context.MESSAGE_ID})`)
   console.log(context);
   let result = null;
   try {

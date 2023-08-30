@@ -89,6 +89,9 @@ Content-Type: application/json
 #   "password": "ryanMonster300"
 # }
 
+#eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQwODQ0NCwiZXhwIjoxNjkzNDk0ODQ0fQ.cO8wITeKKR_J_IOh6dyJqa3Jz6lsKpSC6ug8A99q87g
+
+
 # {
 #   "email": "mdjakaria442020@gmail.com",
 #   "password": "Jakaria63"
@@ -98,6 +101,8 @@ Content-Type: application/json
   "email": "a.n.swapnil2003@gmail.com",
   "password": "Ans2003"
 }
+
+#eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzNDA5MDQ3LCJleHAiOjE3NjU0MDkwNDd9.hKy8COHQJepf0B8Y6-DwDiHUqEhBDWeaV0IfhHWppUs
 
 ###OUTPUT
 {
@@ -191,6 +196,20 @@ GET http://localhost:3000/db-api/getPublisher?pid=1
   "IMAGE": "https://media-exp1.licdn.com/dms/image/C4E0BAQEDkPybVXr47Q/company-logo_200_200/0/1544531682586?e=2159024400&v=beta&t=JjAs9ok_PwgXA9CFsXKm3bt6fjbFI4N7SZRn4ajOUVg"
 }
 
+#### --- GET one/all GENRE ---
+GET http://localhost:3000/db-api/getGenre?pid=1
+
+###OUTPUT
+{
+  "NAME": "Bloomsbury Publishing",
+  "POSTAL_CODE": "WC1B 3DP",
+  "CITY": "London",
+  "COUNTRY": "England",
+  "CONTACT_NO": "+44 (0)20 7631 5600",
+  "EMAIL": "contact@bloomsbury.com",
+  "IMAGE": "https://media-exp1.licdn.com/dms/image/C4E0BAQEDkPybVXr47Q/company-logo_200_200/0/1544531682586?e=2159024400&v=beta&t=JjAs9ok_PwgXA9CFsXKm3bt6fjbFI4N7SZRn4ajOUVg"
+}
+
 #### --- Update User ---
 PUT http://localhost:3000/db-api/user/update
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMjMiLCJST0xFIjoiYWRtaW4iLCJpYXQiOjE2OTMxNDk2MzMsImV4cCI6MTY5MzIzNjAzM30.Cefp7PW8JbtR2jzKGqD7vMhIEodwoWjACxLUGgIAqBo
@@ -272,7 +291,8 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUi
 
 #### ----GET ALL MY REQUESTS----
 GET http://localhost:3000/db-api/my-requests?sort=EDITION_NUM&order=ASC
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzNDA5MDQ3LCJleHAiOjE3NjU0MDkwNDd9.hKy8COHQJepf0B8Y6-DwDiHUqEhBDWeaV0IfhHWppUs
+
 ###OUTPUT
 [
   {
@@ -378,34 +398,24 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
   }
 ]
 
-########################
-
 #### ----GET ALL REQUESTS----
 GET http://localhost:3000/db-api/all-requests?sort=NUM_OF_COPIES&order=DESC
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzI0ODM2NCwiZXhwIjoxNjkzMzM0NzY0fQ.1NLxSdD2LmjL7g38xSLSWn3jSmXys0K4XXwPJK8rNmA
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQwODQ0NCwiZXhwIjoxNjkzNDk0ODQ0fQ.cO8wITeKKR_J_IOh6dyJqa3Jz6lsKpSC6ug8A99q87g
 ###OUTPUT
 [
   {
-    "USER_ID": "1",
-    "EMAIL": "ryangeorge@gmail.com",
-    "ISBN": "9781408894743",
-    "TITLE": "Harry Potter and the Deathly Hallows",
-    "EDITION_ID": "11",
-    "EDITION_NUM": 2,
-    "NUM_OF_COPIES": 3,
-    "REQUEST_DATE": "2023-08-27T20:44:04.000Z"
-  },
-  {
+    "NAME": "Ahmmad Nur Swapnil",
     "USER_ID": "3",
     "EMAIL": "a.n.swapnil2003@gmail.com",
     "ISBN": "9781408855652",
     "TITLE": "Harry Potter and the Philosophers Stone",
     "EDITION_ID": "1",
     "EDITION_NUM": 1,
-    "NUM_OF_COPIES": 3,
-    "REQUEST_DATE": "2023-08-28T10:18:36.000Z"
+    "NUM_OF_COPIES": 99,
+    "REQUEST_DATE": "1900-12-31T18:06:40.000Z"
   },
   {
+    "NAME": "Ryan George",
     "USER_ID": "1",
     "EMAIL": "ryangeorge@gmail.com",
     "ISBN": "9780439785969",
@@ -450,12 +460,12 @@ Content-Type: application/json
 
 #### ----RETURN BOOK----
 PUT http://localhost:3000/db-api/return-book
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzI2MzczMSwiZXhwIjoxNjkzMzUwMTMxfQ.JZGDlzU_w8l0z5Tlh2uIiS-L56CoR5lAzmgEaoEXPAU
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzNDA5MDQ3LCJleHAiOjE3NjU0MDkwNDd9.hKy8COHQJepf0B8Y6-DwDiHUqEhBDWeaV0IfhHWppUs
 Content-Type: application/json
 
 {
-  "RENT_HISTORY_ID": "3",
-  "PAY": true
+  "RENT_HISTORY_ID": "16",
+  "PAY": false
 }
 
 ###OUTPUT
@@ -464,12 +474,12 @@ Content-Type: application/json
 }
 
 #### ---SEND Message---
-POST http://localhost:3000/db-api/send-message
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzI0ODM2NCwiZXhwIjoxNjkzMzM0NzY0fQ.1NLxSdD2LmjL7g38xSLSWn3jSmXys0K4XXwPJK8rNmA
+POST http://localhost:3000/db-api/message
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQwODQ0NCwiZXhwIjoxNjkzNDk0ODQ0fQ.cO8wITeKKR_J_IOh6dyJqa3Jz6lsKpSC6ug8A99q87g
 Content-Type: application/json
 
 {
-  "USER_ID": "3",
+  "USER_ID": "1",
   "MESSAGE": "Hello, I want to borrow this book"
 }
 
@@ -488,13 +498,28 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUi
 }
 
 #### ---Delete Message---
-DELETE http://localhost:3000/db-api/edit-message
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzMzExMjEyLCJleHAiOjE2OTMzOTc2MTJ9.EnwV75NbGK3S8_M75MlMB0dCZWaEzgTUZ6RvqSGhkZA
+DELETE http://localhost:3000/db-api/edit-message?mid=7
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQwODQ0NCwiZXhwIjoxNjkzNDk0ODQ0fQ.cO8wITeKKR_J_IOh6dyJqa3Jz6lsKpSC6ug8A99q87g
 
 ###OUTPUT
 {
   "message": "Successfully deleted"
 }
+
+#### ---- GET My Messages ----
+GET http://localhost:3000/db-api/message
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQwODQ0NCwiZXhwIjoxNjkzNDk0ODQ0fQ.cO8wITeKKR_J_IOh6dyJqa3Jz6lsKpSC6ug8A99q87g
+
+###OUTPUT
+[
+  {
+    "MESSAGE_ID": "1",
+    "USER_ID": "1",
+    "MESSAGE_DATE": "2023-09-07T08:03:13.000Z",
+    "MESSAGE": "Please, return the book as soon as possible or you will be fined.",
+    "SEEN": 1
+  }
+]
 
 #### ---publish News---
 POST http://localhost:3000/db-api/publish-news
@@ -510,20 +535,90 @@ Content-Type: application/json
   "message": "Successful"
 }
 
-#### ---- GET ALL RUNNING FINE ----
-GET http://localhost:3000/db-api/running-fine?sort=NAME&order=DESC
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzI0ODM2NCwiZXhwIjoxNjkzMzM0NzY0fQ.1NLxSdD2LmjL7g38xSLSWn3jSmXys0K4XXwPJK8rNmA
+#### ---- GET ALL FINE ----
+GET http://localhost:3000/db-api/all-fine?sort=NAME&order=DESC
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQwODQ0NCwiZXhwIjoxNjkzNDk0ODQ0fQ.cO8wITeKKR_J_IOh6dyJqa3Jz6lsKpSC6ug8A99q87g
+
+Content-Type: application/json
+
+{
+  "CHECK": true
+}
+
+#true for running
 
 ###OUTPUT
 [
   {
     "RENT_HISTORY_ID": "3",
-    "USER_ID": "1",
-    "EMAIL": "ryangeorge@gmail.com",
-    "NAME": "Ryan George",
     "ISBN": "9780747591269",
+    "TITLE": "Harry Potter and the Order of the Phoenix",
     "EDITION_ID": "8",
+    "EDITION_NUM": 1,
     "START_DATE": "2023-09-04T10:08:33.000Z",
-    "FEE_AMOUNT": -0.6006145833333333
+    "PAYMENT_DATE": null,
+    "FEE_AMOUNT": -0.5028935185185185
+  }
+]
+
+#### ---- GET ALL NEWS ----
+GET http://localhost:3000/db-api/publish-news
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQwODQ0NCwiZXhwIjoxNjkzNDk0ODQ0fQ.cO8wITeKKR_J_IOh6dyJqa3Jz6lsKpSC6ug8A99q87g
+
+###OUTPUT
+[
+  {
+    "NEWS_ID": "2",
+    "NEWS_TEXT": "New book has been added",
+    "NEWS_DATE": "2023-08-29T12:21:56.000Z"
+  },
+  {
+    "NEWS_ID": "1",
+    "NEWS_TEXT": "WELCOME TO THE LIBRARY",
+    "NEWS_DATE": "2023-08-24T10:08:33.000Z"
+  }
+]
+
+### ----- GET ALL USERS -----
+GET http://localhost:3000/db-api/all-users?sort=NAME&order=DESC
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQwODQ0NCwiZXhwIjoxNjkzNDk0ODQ0fQ.cO8wITeKKR_J_IOh6dyJqa3Jz6lsKpSC6ug8A99q87g
+
+###OUTPUT
+[
+  {
+    "USER_ID": "23",
+    "NAME": "jake paul",
+    "IMAGE": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
+    "ADDRESS": "New York, USA",
+    "EMAIL": "abcd@gmail.com",
+    "CONTACT_NO": "01712345678",
+    "GENDER": "M"
+  },
+  {
+    "USER_ID": "1",
+    "NAME": "Ryan George",
+    "IMAGE": "https://img.freepik.com/free-icon/user_318-159711.jpg",
+    "ADDRESS": "England",
+    "EMAIL": "ryangeorge@gmail.com",
+    "CONTACT_NO": "854 526 8852",
+    "GENDER": "M"
+  },
+  {
+    "USER_ID": "6",
+    "NAME": "Jakaria Hossain",
+    "IMAGE": "https://drive.google.com/file/d/1VzQYM8sLT1EtWOVk1w-pUGeQuIR-44DY/view?usp=sharing",
+    "ADDRESS": "Pabna, Bangladesh",
+    "EMAIL": "mdjakaria442020@gmail.com",
+    "CONTACT_NO": "01790-715232",
+    "GENDER": "M"
+  },
+  {
+    "USER_ID": "3",
+    "NAME": "Ahmmad Nur Swapnil",
+    "IMAGE": "https://firebasestorage.googleapis.com/v0/b/library-management-syste-4c8f7.appspot.com/o/profileImages%2Fdb991442-81ab-454e-940e-5aeb56a6c551?alt=media&token=94cf221f-2dc6-4bd3-8b9c-32a11532350c",
+    "ADDRESS": "Senbag, Noakhali, Bangladesh",
+    "EMAIL": "a.n.swapnil2003@gmail.com",
+    "CONTACT_NO": "01750-320621",
+    "GENDER": "M"
   }
 ]
