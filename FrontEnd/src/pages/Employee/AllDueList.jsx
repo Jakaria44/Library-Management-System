@@ -1,74 +1,32 @@
-import { Box, Typography } from "@mui/material";
-import {
-  GridToolbar,
-  GridToolbarContainer,
-  GridToolbarExport,
-} from "@mui/x-data-grid";
+import { Box, Grid, Typography } from "@mui/material";
+import { GridToolbar } from "@mui/x-data-grid";
 import { useConfirm } from "material-ui-confirm";
 // import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import React, { useCallback, useEffect, useState } from "react";
 import ErrorModal from "../../component/ErrorModal";
 import StyledDataGrid from "../../component/StyledDataGrid";
 import SuccessfullModal from "../../component/SuccessfulModal";
+import TextArea from "../../component/TextArea";
 import TimeFormat from "../../utils/TimeFormat";
 import server from "./../../HTTP/httpCommonParam";
 import CustomNoRowsOverlay from "./../../component/CustomNoRowsOverlay";
+import SendMessage from "./SendMessage";
+import Message from "./SendMessage";
 const NoRequestOverlay = () => (
   <CustomNoRowsOverlay text="No Pending Requests" />
 );
 
 const Application = () => {
-  const confirm = useConfirm();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [queryOptions, setQueryOptions] = useState({
     sort: "STATUS",
     order: "DESC",
   });
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [showErrorMessage, setShowErrorMessage] = useState(false);
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   useEffect(() => {
     fetchData();
   }, [queryOptions]);
-
-  const handleDeleteRequest = useCallback((row) => async () => {
-    try {
-      await confirm({
-        title: (
-          <Typography variant="h3" gutterBottom>
-            Delete This Request?
-          </Typography>
-        ),
-        content: (
-          <Typography variant="body1">
-            Are you sure you want to delete {row.NAME}'s request?
-          </Typography>
-        ),
-      });
-
-      try {
-        console.log(row.EDITION_ID, row.USER_ID);
-        const res = await server.delete("/handle-request", {
-          data: {
-            USER_ID: row.USER_ID,
-            EDITION_ID: row.EDITION_ID,
-          },
-        });
-        setSuccessMessage(res.data.message);
-        setShowSuccessMessage(true);
-        fetchData();
-      } catch (err) {
-        setErrorMessage(err.response.data.message);
-        setShowErrorMessage(true);
-        console.log(err);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  });
 
   const handleSortModelChange = useCallback((sortModel) => {
     // Here you save the data you need from the sort model
@@ -104,14 +62,6 @@ const Application = () => {
     }
   };
 
-  function CustomToolbar() {
-    return (
-      <GridToolbarContainer sx={{ margin: "16px" }}>
-        {rows.length !== 0 && <GridToolbarExport />}
-      </GridToolbarContainer>
-    );
-  }
-
   return (
     <Box height="85%">
       <Typography
@@ -126,7 +76,22 @@ const Application = () => {
       <StyledDataGrid
         rows={rows}
         columns={[
-          { field: "NAME", headerName: "Name", width: 200 },
+          {
+            field: "NAME",
+            headerName: "Name",
+            renderCell: (params) => (
+              <Grid container direction="row" alignItems="center" spacing={1}>
+                <Grid item xs={8}>
+                  <Typography variant="body2">{params.row.NAME}</Typography>
+                </Grid>
+
+                <Grid item xs={2}>
+                  <Message user={params.row} />
+                </Grid>
+              </Grid>
+            ),
+            width: 240,
+          },
           { field: "EMAIL", headerName: "Email", width: 250 },
           { field: "ISBN", headerName: "ISBN", minWidth: 200 },
           { field: "FEE_AMOUNT", headerName: "Amount (Tk)", width: 200 },
@@ -169,27 +134,6 @@ const Application = () => {
         disableDensitySelector
         disableRowSelectionOnClick
       />
-      {showSuccessMessage && (
-        <SuccessfullModal
-          showSuccessMessage={showSuccessMessage}
-          setShowSuccessMessage={setShowSuccessMessage}
-          successMessage={successMessage}
-          HandleModalClosed={() => {
-            setShowSuccessMessage(false);
-            fetchData();
-          }}
-        />
-      )}
-      {showErrorMessage && (
-        <ErrorModal
-          showErrorMessage={showErrorMessage}
-          errorMessage={errorMessage}
-          HandleModalClosed={() => {
-            setShowErrorMessage(false);
-            fetchData();
-          }}
-        />
-      )}
     </Box>
   );
 };

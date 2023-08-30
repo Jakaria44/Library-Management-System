@@ -9,9 +9,14 @@ import {
 } from "@mui/material";
 import React from "react";
 
-const TextArea = (props) => {
-  const { open, handleClose, handleSubmit, setValue, title, buttonText } =
-    props;
+const TextArea = ({
+  open,
+  handleClose,
+  handleSubmit,
+  setValue,
+  title,
+  buttonText,
+}) => {
   return (
     <Box fullWidth>
       <Dialog
@@ -33,7 +38,7 @@ const TextArea = (props) => {
             multiline
             maxRows={10}
             id="name"
-            label="Write news here"
+            label={`${title} here`}
             fullWidth
             variant="standard"
             onChange={(e) => setValue(e.target.value)}

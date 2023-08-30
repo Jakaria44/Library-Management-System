@@ -1,5 +1,5 @@
 import { CheckCircleOutline, DeleteForever } from "@mui/icons-material";
-import { Box, Typography } from "@mui/material";
+import { Box, Grid, Tooltip, Typography } from "@mui/material";
 import {
   GridActionsCellItem,
   GridToolbar,
@@ -18,6 +18,7 @@ import SuccessfullModal from "../../component/SuccessfulModal";
 import TimeFormat from "../../utils/TimeFormat";
 import server from "./../../HTTP/httpCommonParam";
 import CustomNoRowsOverlay from "./../../component/CustomNoRowsOverlay";
+import Message from "./SendMessage";
 const NoRequestOverlay = () => (
   <CustomNoRowsOverlay text="No Pending Requests" />
 );
@@ -192,31 +193,55 @@ const Application = () => {
       <StyledDataGrid
         rows={rows}
         columns={[
-          { field: "NAME", headerName: "Name", width: 150 },
-          { field: "EMAIL", headerName: "Email", width: 200 },
-          { field: "TITLE", headerName: "Title", minWidth: 300 },
+          {
+            field: "NAME",
+            headerName: "Name",
+            renderCell: (params) => (
+              <Grid container direction="row" alignItems="center" spacing={1}>
+                <Grid item xs={8}>
+                  <Typography variant="body2">{params.row.NAME}</Typography>
+                </Grid>
+
+                <Grid item xs={2}>
+                  <Message user={params.row} />
+                </Grid>
+              </Grid>
+            ),
+            width: 240,
+          },
+          { field: "EMAIL", headerName: "Email", width: 220 },
+          { field: "TITLE", headerName: "Title", minWidth: 320 },
           { field: "EDITION_NUM", headerName: "Edition", width: 80 },
-          { field: "NUM_OF_COPIES", headerName: "Available Copy", width: 120 },
-          { field: "REQUEST_DATE", headerName: "Request Date", width: 200 },
+          {
+            field: "NUM_OF_COPIES",
+            headerName: "Available",
+            renderCell: (params) => <strong>{params.row.NUM_OF_COPIES}</strong>,
+            width: 80,
+          },
+          { field: "REQUEST_DATE", headerName: "Request Date", width: 160 },
           {
             field: "ISBN",
             headerName: "Action",
             type: "actions",
             getActions: (params) => [
-              <GridActionsCellItem
-                icon={<DeleteForever />}
-                label="Delete"
-                color="error"
-                onClick={handleDeleteRequest(params.row)}
-              />,
-              <GridActionsCellItem
-                icon={<CheckCircleOutline />}
-                label="Accept"
-                color="success"
-                onClick={handleAcceptRequest(params.row)}
-              />,
+              <Tooltip title="Delete Request">
+                <GridActionsCellItem
+                  icon={<DeleteForever />}
+                  label="Delete"
+                  color="error"
+                  onClick={handleDeleteRequest(params.row)}
+                />
+              </Tooltip>,
+              <Tooltip title="Accept Request">
+                <GridActionsCellItem
+                  icon={<CheckCircleOutline />}
+                  label="Accept"
+                  color="success"
+                  onClick={handleAcceptRequest(params.row)}
+                />
+              </Tooltip>,
             ],
-            width: 150,
+            width: 100,
           },
         ]}
         loading={loading}
