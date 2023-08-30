@@ -1,6 +1,6 @@
 // assets
 
-import { PeopleSharp } from "@mui/icons-material";
+import { Checklist, PeopleSharp } from "@mui/icons-material";
 
 // constant
 
@@ -17,6 +17,14 @@ const Employee = {
       type: "item",
       url: "/allusers",
       icon: <PeopleSharp />,
+      breadcrumbs: false,
+    },
+    {
+      id: "allrequests",
+      title: "All Requests",
+      type: "item",
+      url: "/allrequests",
+      icon: <Checklist />,
       breadcrumbs: false,
     },
   ],

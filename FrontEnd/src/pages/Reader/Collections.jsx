@@ -7,6 +7,7 @@ import {
 } from "@mui/x-data-grid";
 import { useConfirm } from "material-ui-confirm";
 import React, { useCallback, useEffect, useState } from "react";
+import ErrorModal from "../../component/ErrorModal";
 import StyledDataGrid from "../../component/StyledDataGrid";
 import SuccessfulModal from "../../component/SuccessfulModal";
 import TimeFormat from "../../utils/TimeFormat";
@@ -50,6 +51,9 @@ const Collections = () => {
   const confirm = useConfirm();
   const [rows, setRows] = useState([]);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [loading, setLoading] = useState(false);
   const [queryOptions, setQueryOptions] = useState({
     sort: "STATUS",
@@ -115,8 +119,14 @@ const Collections = () => {
           ),
           description: "This action cannot be undone",
         });
-        // const res = await server.post("/return-book", data);
-        setShowSuccessMessage(true);
+        try {
+          const res = await server.put("/return-book", data);
+          setSuccessMessage(res.data.message);
+          setShowSuccessMessage(true);
+        } catch (err) {
+          setErrorMessage(err.response.data.message);
+          setShowErrorMessage(true);
+        }
       } catch (err) {
         console.log("cancelled");
       }
@@ -184,6 +194,15 @@ const Collections = () => {
         successMessage="We've recieved the book. Thanks"
         HandleModalClosed={() => {
           setShowSuccessMessage(false);
+          fetchData();
+        }}
+      />
+      <ErrorModal
+        showErrorMessage={showErrorMessage}
+        errorMessage={errorMessage}
+        HandleModalClosed={() => {
+          fetchData();
+          setShowErrorMessage(false);
         }}
       />
     </Box>
