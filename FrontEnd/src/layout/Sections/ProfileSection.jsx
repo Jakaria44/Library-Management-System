@@ -7,9 +7,15 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   Avatar,
   Box,
+  Button,
   Chip,
   ClickAwayListener,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
+  Grid,
   List,
   ListItemButton,
   ListItemIcon,
@@ -17,6 +23,7 @@ import {
   Paper,
   Popper,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -30,12 +37,20 @@ import MainCard from "./../../ui-component/cards/MainCard";
 
 // assets
 
-import { Login, Logout, PersonAddAlt } from "@mui/icons-material";
+import { Feed, Login, Logout, PersonAddAlt } from "@mui/icons-material";
 import SettingsIcon from "@mui/icons-material/Settings";
+import ErrorModal from "../../component/ErrorModal";
+import SuccessfulModal from "../../component/SuccessfulModal";
 
 // ==============================|| PROFILE MENU ||============================== //
 const ProfileSection = () => {
   const theme = useTheme();
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showingNewsModal, setShowingNewsModal] = useState(false);
+  const [news, setNews] = useState("");
   const navigate = useNavigate();
   //   const customization = useSelector((state) => state.customization);
   const [name, setName] = useState(null);
@@ -74,7 +89,10 @@ const ProfileSection = () => {
   };
 
   const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+    if (
+      (anchorRef.current && anchorRef.current.contains(event.target)) ||
+      showingNewsModal
+    ) {
       return;
     }
     setOpen(false);
@@ -101,6 +119,21 @@ const ProfileSection = () => {
     prevOpen.current = open;
   }, [open]);
 
+  const submitNews = async () => {
+    try {
+      const res = await server.post("/publish-news", {
+        NEWS: news,
+      });
+      console.log(res.data);
+      setSuccessMessage(res.data.message);
+      setShowSuccessMessage(true);
+    } catch (err) {
+      setErrorMessage(err.response.data.message);
+      setShowErrorMessage(true);
+      console.log(err);
+    }
+  };
+
   return (
     <>
       <Chip
@@ -111,7 +144,7 @@ const ProfileSection = () => {
           transition: "all .2s ease-in-out",
           borderColor: theme.palette.background,
           '&[aria-controls="menu-list-grow"], &:hover': {
-            borderColor: theme.palette.primary.main,
+            borderColor: theme.palette.background.main,
             background: `${theme.palette.primary.main}!important`,
             color: theme.textDark,
             "& svg": {
@@ -322,44 +355,30 @@ const ProfileSection = () => {
                             />
                           </ListItemButton>
                         )}
-                        {/* <ListItemButton
+                        <ListItemButton
                           sx={{
                             borderRadius: "12px",
                           }}
                           selected={selectedIndex === 1}
-                          onClick={(event) =>
-                            handleListItemClick(event, 1, "#")
-                          }
+                          onClick={(event) => setShowingNewsModal(true)}
                         >
                           <ListItemIcon>
-                            <AccountCircle stroke={1.5} size="1.3rem" />
+                            <Feed stroke={1.5} size="1.3rem" />
                           </ListItemIcon>
-                          <ListItemText
-                            primary={
-                              <Grid
-                                container
-                                spacing={1}
-                                justifyContent="space-between"
-                              >
-                                <Grid item>
-                                  <Typography variant="body2">
-                                    Social Profile
-                                  </Typography>
-                                </Grid>
-                                <Grid item>
-                                  <Chip
-                                    label="02"
-                                    size="small"
-                                    sx={{
-                                      bgcolor: theme.palette.warning.dark,
-                                      color: theme.palette.background.default,
-                                    }}
-                                  />
-                                </Grid>
+                          <ListItemText>
+                            <Grid
+                              container
+                              spacing={1}
+                              justifyContent="space-between"
+                            >
+                              <Grid item>
+                                <Typography variant="body2">
+                                  Publish News
+                                </Typography>
                               </Grid>
-                            }
-                          />
-                        </ListItemButton> */}
+                            </Grid>
+                          </ListItemText>
+                        </ListItemButton>
                         <ListItemButton
                           sx={{
                             borderRadius: "12px",
@@ -397,8 +416,66 @@ const ProfileSection = () => {
           </Transitions>
         )}
       </Popper>
+      <PublishNewsModal
+        open={showingNewsModal}
+        handleClose={(event, reason) => {
+          if (reason === "backdropClick" || reason === "escapeKeyDown") {
+            return;
+          }
+          setShowingNewsModal(false);
+        }}
+        handleSubmit={() => {
+          submitNews();
+        }}
+        setNews={setNews}
+      />
+
+      <SuccessfulModal
+        showSuccessMessage={showSuccessMessage}
+        successMessage={successMessage}
+        HandleModalClosed={() => {
+          setShowSuccessMessage(false);
+        }}
+      />
+      <ErrorModal
+        showErrorMessage={showErrorMessage}
+        errorMessage={errorMessage}
+        HandleModalClosed={() => {
+          setShowErrorMessage(false);
+        }}
+      />
     </>
   );
 };
 
 export default ProfileSection;
+
+function PublishNewsModal(props) {
+  const { open, handleClose, handleSubmit, setNews } = props;
+  return (
+    <Box component="form">
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+        <DialogTitle variant="h3">Publish News</DialogTitle>
+        <DialogContent>
+          <TextField
+            required
+            multiline
+            maxRows={10}
+            autoFocus
+            id="name"
+            label="Write news here"
+            fullWidth
+            variant="standard"
+            onChange={(e) => setNews(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button type="submit" onClick={handleSubmit}>
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
+  );
+}
