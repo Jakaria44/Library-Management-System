@@ -12,6 +12,7 @@ import { DateTimePicker } from "@mui/x-date-pickers";
 import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import dayjs from "dayjs";
 import React, { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import ErrorModal from "../../component/ErrorModal";
 import StyledDataGrid from "../../component/StyledDataGrid";
 import SuccessfullModal from "../../component/SuccessfulModal";
@@ -210,7 +211,24 @@ const Application = () => {
             width: 240,
           },
           { field: "EMAIL", headerName: "Email", width: 220 },
-          { field: "TITLE", headerName: "Title", minWidth: 320 },
+          {
+            field: "TITLE",
+            headerName: "Title",
+            minWidth: 320,
+            renderCell: (params) => (
+              <Tooltip title="see this book">
+                <Typography
+                  component={Link}
+                  to={`/details/${params.row.ISBN}`}
+                  variant="body2"
+                  color="primary"
+                  sx={{ cursor: "pointer", textDecoration: "none" }}
+                >
+                  {params.row.TITLE}
+                </Typography>
+              </Tooltip>
+            ),
+          },
           { field: "EDITION_NUM", headerName: "Edition", width: 80 },
           {
             field: "NUM_OF_COPIES",

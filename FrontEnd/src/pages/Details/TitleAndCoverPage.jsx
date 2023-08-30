@@ -261,7 +261,7 @@ const TitleAndCoverPage = ({ book, editions }) => {
 
       <SignupDialog
         showMessage={showMessage}
-        message="Please sign up to add.."
+        message="Please sign in to add.."
         HandleModalClosed={() => {
           setShowMessage(false);
         }}

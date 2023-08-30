@@ -1,16 +1,11 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { GridToolbar } from "@mui/x-data-grid";
-import { useConfirm } from "material-ui-confirm";
 // import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import React, { useCallback, useEffect, useState } from "react";
-import ErrorModal from "../../component/ErrorModal";
 import StyledDataGrid from "../../component/StyledDataGrid";
-import SuccessfullModal from "../../component/SuccessfulModal";
-import TextArea from "../../component/TextArea";
 import TimeFormat from "../../utils/TimeFormat";
 import server from "./../../HTTP/httpCommonParam";
 import CustomNoRowsOverlay from "./../../component/CustomNoRowsOverlay";
-import SendMessage from "./SendMessage";
 import Message from "./SendMessage";
 const NoRequestOverlay = () => (
   <CustomNoRowsOverlay text="No Pending Requests" />
@@ -56,6 +51,7 @@ const Application = () => {
       }));
       setRows(data);
     } catch (error) {
+      setRows([]);
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
@@ -96,6 +92,24 @@ const Application = () => {
           { field: "ISBN", headerName: "ISBN", minWidth: 200 },
           { field: "FEE_AMOUNT", headerName: "Amount (Tk)", width: 200 },
           { field: "START_DATE", headerName: "Start Date", width: 200 },
+          // {
+          //   field: "TITLE",
+          //   headerName: "Title",
+          //   minWidth: 320,
+          //   renderCell: (params) => (
+          //     <Tooltip title="see this book">
+          //       <Typography
+          //         component={Link}
+          //         to={`/details/${params.row.ISBN}`}
+          //         variant="body2"
+          //         color="primary"
+          //         sx={{ cursor: "pointer", textDecoration: "none" }}
+          //       >
+          //         {params.row.TITLE}
+          //       </Typography>
+          //     </Tooltip>
+          //   ),
+          // },
           // {
           //   field: "ISBN",
           //   headerName: "Action",

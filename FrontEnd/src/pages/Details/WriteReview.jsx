@@ -72,7 +72,7 @@ const WriteReview = ({ text, value, onSubmit, onCancel }) => {
       </Grid>
       <SignupDialog
         showMessage={showMessage}
-        message="Please sign up to add review.."
+        message="Please sign in to add review.."
         HandleModalClosed={() => {
           setShowMessage(false);
         }}

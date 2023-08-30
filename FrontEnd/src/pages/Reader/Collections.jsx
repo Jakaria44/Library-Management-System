@@ -13,6 +13,7 @@ import SuccessfulModal from "../../component/SuccessfulModal";
 import TimeFormat from "../../utils/TimeFormat";
 import server from "./../../HTTP/httpCommonParam";
 import CustomNoRowsOverlay from "./../../component/CustomNoRowsOverlay";
+import { Link } from "react-router-dom";
 
 // import { alpha, styled } from "@mui/material/styles";
 // import { gridClasses } from "@mui/x-data-grid";
@@ -90,6 +91,7 @@ const Collections = () => {
       }));
       setRows(data);
     } catch (error) {
+      setRows([]);
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
@@ -120,7 +122,9 @@ const Collections = () => {
           description: "This action cannot be undone",
         });
         try {
-          const res = await server.put("/return-book", data);
+          const res = await server.put("/return-book", {
+            RENT_HISTORY_ID: row.id,
+          });
           setSuccessMessage(res.data.message);
           setShowSuccessMessage(true);
         } catch (err) {
@@ -130,12 +134,6 @@ const Collections = () => {
       } catch (err) {
         console.log("cancelled");
       }
-      // try {
-      //   const res = await server.post("/return-book", data);
-      //   fetchData();
-      // } catch (err) {
-      //   console.log(err);
-      // }
     },
     []
   );
@@ -155,7 +153,24 @@ const Collections = () => {
         rows={rows}
         columns={[
           { field: "ISBN", headerName: "ISBN", width: 150 },
-          { field: "TITLE", headerName: "Title", minWidth: 300 },
+          {
+            field: "TITLE",
+            headerName: "Title",
+            minWidth: 320,
+            renderCell: (params) => (
+              <Tooltip title="see this book">
+                <Typography
+                  component={Link}
+                  to={`/details/${params.row.ISBN}`}
+                  variant="body2"
+                  color="primary"
+                  sx={{ cursor: "pointer", textDecoration: "none" }}
+                >
+                  {params.row.TITLE}
+                </Typography>
+              </Tooltip>
+            ),
+          },
           { field: "EDITION_NUM", headerName: "Edition ", width: 100 },
           { field: "RENT_DATE", headerName: "Rent Date", width: 200 },
           { field: "RETURN_DATE", headerName: "Return Date", width: 200 },

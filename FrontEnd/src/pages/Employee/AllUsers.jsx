@@ -204,34 +204,6 @@ export default function AllUsers() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [rows, setRows] = useState(dummyAuthors);
 
-  //   const getMyDueList = async () => {
-  //     try {
-  //       const response = await server.get("/my-fine-history");
-  //       console.log(response.data);
-
-  //       const newRows = response.data.map((row) => {
-  //         return {
-  //           editionId: row.EDITION_ID,
-  //           rentHistoryId: row.RENT_HISTORY_ID,
-  //           title: row.TITLE,
-  //           edition: row.EDITION_NUM,
-  //           fineDate: TimeFormat(row.START_DATE),
-  //           paymentDate: row.PAYMENT_DATE ? TimeFormat(row.PAYMENT_DATE) : "-",
-  //           amount: row.FEE_AMOUNT,
-  //           status: row.PAYMENT_DATE ? "Paid" : "Not Paid",
-  //           isbn: row.ISBN,
-  //         };
-  //       });
-  //       console.log(newRows);
-  //       setRows(newRows);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
-  //   useEffect(() => {
-  //     getMyDueList();
-  //     console.log(emptyRows);
-  //   }, []);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");

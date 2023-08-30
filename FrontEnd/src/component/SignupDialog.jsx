@@ -56,7 +56,7 @@ const SignupDialog = ({ showMessage, message, HandleModalClosed }) => {
               </Button>
               <Button
                 component={Link}
-                to="/signup"
+                to="/signin"
                 variant="contained"
                 color="success"
                 onClick={() => {
@@ -64,7 +64,7 @@ const SignupDialog = ({ showMessage, message, HandleModalClosed }) => {
                 }}
                 sx={{ marginLeft: theme.spacing(1) }}
               >
-                sign up
+                sign in
               </Button>
             </Grid>
           </Box>

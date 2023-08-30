@@ -21,8 +21,8 @@ import { useConfirm } from "material-ui-confirm";
 import { useEffect, useMemo, useState } from "react";
 import ErrorModal from "../../component/ErrorModal";
 import SuccessfullModal from "../../component/SuccessfulModal";
-import server from "./../../HTTP/httpCommonParam";
-import TimeFormat from "./../../utils/TimeFormat";
+import server from "../../HTTP/httpCommonParam";
+import TimeFormat from "../../utils/TimeFormat";
 
 // comparator
 function descendingComparator(a, b, orderBy) {

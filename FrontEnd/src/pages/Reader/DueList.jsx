@@ -12,6 +12,7 @@ import SuccessfulModal from "../../component/SuccessfulModal";
 import TimeFormat from "../../utils/TimeFormat";
 import server from "./../../HTTP/httpCommonParam";
 import CustomNoRowsOverlay from "./../../component/CustomNoRowsOverlay";
+import { Link } from "react-router-dom";
 const NoRowsOverlay = () => (
   <CustomNoRowsOverlay text="You have no Dues to pay!" />
 );
@@ -59,6 +60,7 @@ const DueList = () => {
       }));
       setRows(data);
     } catch (error) {
+      setRows([]);
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
@@ -115,7 +117,24 @@ const DueList = () => {
         rows={rows}
         columns={[
           { field: "ISBN", headerName: "ISBN", width: 150 },
-          { field: "TITLE", headerName: "Title", minWidth: 300 },
+          {
+            field: "TITLE",
+            headerName: "Title",
+            minWidth: 320,
+            renderCell: (params) => (
+              <Tooltip title="see this book">
+                <Typography
+                  component={Link}
+                  to={`/details/${params.row.ISBN}`}
+                  variant="body2"
+                  color="primary"
+                  sx={{ cursor: "pointer", textDecoration: "none" }}
+                >
+                  {params.row.TITLE}
+                </Typography>
+              </Tooltip>
+            ),
+          },
           { field: "EDITION_NUM", headerName: "Edition ", width: 100 },
           { field: "START_DATE", headerName: "Start Date", width: 200 },
           {

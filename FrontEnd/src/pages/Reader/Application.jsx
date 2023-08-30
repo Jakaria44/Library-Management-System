@@ -1,5 +1,5 @@
 import { Delete } from "@mui/icons-material";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import { GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 import { useConfirm } from "material-ui-confirm";
 import React, { useCallback, useEffect, useState } from "react";
@@ -9,6 +9,7 @@ import SuccessfullModal from "../../component/SuccessfulModal";
 import TimeFormat from "../../utils/TimeFormat";
 import server from "./../../HTTP/httpCommonParam";
 import CustomNoRowsOverlay from "./../../component/CustomNoRowsOverlay";
+import { Link } from "react-router-dom";
 const NoRequestOverlay = () => (
   <CustomNoRowsOverlay text="No Pending Requests" />
 );
@@ -55,6 +56,7 @@ const Application = () => {
       }));
       setRows(data);
     } catch (error) {
+      setRows([]);
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
@@ -122,7 +124,24 @@ const Application = () => {
         rows={rows}
         columns={[
           { field: "ISBN", headerName: "ISBN", width: 150 },
-          { field: "TITLE", headerName: "Title", minWidth: 300 },
+          {
+            field: "TITLE",
+            headerName: "Title",
+            minWidth: 320,
+            renderCell: (params) => (
+              <Tooltip title="see this book">
+                <Typography
+                  component={Link}
+                  to={`/details/${params.row.ISBN}`}
+                  variant="body2"
+                  color="primary"
+                  sx={{ cursor: "pointer", textDecoration: "none" }}
+                >
+                  {params.row.TITLE}
+                </Typography>
+              </Tooltip>
+            ),
+          },
           { field: "EDITION_NUM", headerName: "Edition ", width: 100 },
           { field: "REQUEST_DATE", headerName: "Request Date", width: 200 },
         ]}
