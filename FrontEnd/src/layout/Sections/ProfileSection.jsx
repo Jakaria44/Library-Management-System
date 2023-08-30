@@ -7,13 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   Avatar,
   Box,
-  Button,
   Chip,
   ClickAwayListener,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Divider,
   Grid,
   List,
@@ -23,7 +18,6 @@ import {
   Paper,
   Popper,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -41,6 +35,7 @@ import { Feed, Login, Logout, PersonAddAlt } from "@mui/icons-material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ErrorModal from "../../component/ErrorModal";
 import SuccessfulModal from "../../component/SuccessfulModal";
+import TextArea from "../../component/TextArea";
 
 // ==============================|| PROFILE MENU ||============================== //
 const ProfileSection = () => {
@@ -402,7 +397,7 @@ const ProfileSection = () => {
                           <ListItemText
                             primary={
                               <Typography variant="body2">
-                                {name ? "Log out" : "Sign in"}
+                                {name ? "Sign out" : "Sign in"}
                               </Typography>
                             }
                           />
@@ -416,18 +411,17 @@ const ProfileSection = () => {
           </Transitions>
         )}
       </Popper>
-      <PublishNewsModal
+      <TextArea
         open={showingNewsModal}
-        handleClose={(event, reason) => {
-          if (reason === "backdropClick" || reason === "escapeKeyDown") {
-            return;
-          }
+        handleClose={(event) => {
           setShowingNewsModal(false);
         }}
         handleSubmit={() => {
           submitNews();
         }}
-        setNews={setNews}
+        setValue={setNews}
+        title="Publish News"
+        buttonText="Publish"
       />
 
       <SuccessfulModal
@@ -435,6 +429,7 @@ const ProfileSection = () => {
         successMessage={successMessage}
         HandleModalClosed={() => {
           setShowSuccessMessage(false);
+          setShowingNewsModal(false);
         }}
       />
       <ErrorModal
@@ -442,6 +437,7 @@ const ProfileSection = () => {
         errorMessage={errorMessage}
         HandleModalClosed={() => {
           setShowErrorMessage(false);
+          setShowingNewsModal(false);
         }}
       />
     </>
@@ -449,33 +445,3 @@ const ProfileSection = () => {
 };
 
 export default ProfileSection;
-
-function PublishNewsModal(props) {
-  const { open, handleClose, handleSubmit, setNews } = props;
-  return (
-    <Box component="form">
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-        <DialogTitle variant="h3">Publish News</DialogTitle>
-        <DialogContent>
-          <TextField
-            required
-            multiline
-            maxRows={10}
-            autoFocus
-            id="name"
-            label="Write news here"
-            fullWidth
-            variant="standard"
-            onChange={(e) => setNews(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit" onClick={handleSubmit}>
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
-  );
-}

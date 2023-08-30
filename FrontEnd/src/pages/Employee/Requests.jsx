@@ -1,15 +1,15 @@
 import { CheckCircleOutline, DeleteForever } from "@mui/icons-material";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import {
   GridActionsCellItem,
   GridToolbar,
   GridToolbarContainer,
   GridToolbarExport,
 } from "@mui/x-data-grid";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useConfirm } from "material-ui-confirm";
 // import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-// import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+import { DateTimePicker } from "@mui/x-date-pickers";
+import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import dayjs from "dayjs";
 import React, { useCallback, useEffect, useState } from "react";
 import ErrorModal from "../../component/ErrorModal";
@@ -51,27 +51,31 @@ const Application = () => {
           </Typography>
         ),
         content: (
-          <Grid direction="row" container spacing={2}>
-            <Grid item xs={7}>
-              <Typography variant="body1">
-                Select Return Date for "{row.NAME}"
-              </Typography>
-            </Grid>
-            <Grid item xs={5}>
-              <DatePicker
-                disablePast
-                formatDensity="spacious"
-                format="DD MMMM, YYYY"
-                views={["day", "month", "year"]}
-                value={returnDate}
-                onChange={(newValue) => {
-                  date = newValue.format("YYYY-MM-DD");
-                  console.log(date);
-                  return setReturnDate(newValue);
-                }}
-              />
-            </Grid>
-          </Grid>
+          <Box>
+            <Typography variant="body2">
+              Select Return Date for "{row.NAME}"
+            </Typography>
+            <DemoContainer components={["DateTimePicker"]}>
+              <DemoItem>
+                <DateTimePicker
+                  disablePast
+                  formatDensity="spacious"
+                  format="DD-MMMM-YYYY HH:mm"
+                  // viewRenderers={{
+                  //   hours: renderTimeViewClock,
+                  //   minutes: renderTimeViewClock,
+                  //   seconds: renderTimeViewClock,
+                  // }}
+                  value={returnDate}
+                  onChange={(newValue) => {
+                    date = newValue.toDate();
+                    console.log(date);
+                    return setReturnDate(newValue);
+                  }}
+                />
+              </DemoItem>
+            </DemoContainer>
+          </Box>
         ),
       });
 
@@ -120,7 +124,6 @@ const Application = () => {
         });
         setSuccessMessage(res.data.message);
         setShowSuccessMessage(true);
-        fetchData();
       } catch (err) {
         setErrorMessage(err.response.data.message);
         setShowErrorMessage(true);
@@ -160,6 +163,7 @@ const Application = () => {
       }));
       setRows(data);
     } catch (error) {
+      setRows([]);
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
@@ -232,25 +236,23 @@ const Application = () => {
         disableDensitySelector
         disableRowSelectionOnClick
       />
-      {showSuccessMessage && (
-        <SuccessfullModal
-          showSuccessMessage={showSuccessMessage}
-          setShowSuccessMessage={setShowSuccessMessage}
-          successMessage={successMessage}
-          HandleModalClosed={() => {
-            setShowSuccessMessage(false);
-          }}
-        />
-      )}
-      {showErrorMessage && (
-        <ErrorModal
-          showErrorMessage={showErrorMessage}
-          errorMessage={errorMessage}
-          HandleModalClosed={() => {
-            setShowErrorMessage(false);
-          }}
-        />
-      )}
+      <SuccessfullModal
+        showSuccessMessage={showSuccessMessage}
+        setShowSuccessMessage={setShowSuccessMessage}
+        successMessage={successMessage}
+        HandleModalClosed={() => {
+          setShowSuccessMessage(false);
+          fetchData();
+        }}
+      />
+      <ErrorModal
+        showErrorMessage={showErrorMessage}
+        errorMessage={errorMessage}
+        HandleModalClosed={() => {
+          setShowErrorMessage(false);
+          fetchData();
+        }}
+      />
     </Box>
   );
 };

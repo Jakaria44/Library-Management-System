@@ -27,6 +27,14 @@ const Employee = {
       icon: <Checklist />,
       breadcrumbs: false,
     },
+    {
+      id: "allduelists",
+      title: "Pending Fine List",
+      type: "item",
+      url: "/allduelists",
+      icon: <Checklist />,
+      breadcrumbs: false,
+    },
   ],
 };
 

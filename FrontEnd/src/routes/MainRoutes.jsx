@@ -3,16 +3,17 @@ import { lazy } from "react";
 // project imports
 
 import Details from "../pages/Details/Details";
+import AllDueList from "../pages/Employee/AllDueList";
 import AllUsers from "../pages/Employee/AllUsers";
 import Requests from "../pages/Employee/Requests";
 import LatestBooks from "../pages/LatestBooks";
 import Collections from "../pages/Reader/Collections";
+import DueList from "../pages/Reader/DueList";
 import { loader as favouritesLoader } from "../pages/Reader/MyFavourites";
 import MyReviews from "../pages/Reader/MyReviews";
 import { loader as bookDetailsLoader } from "./../pages/Details/Details";
 import { loader as allBooksLoader } from "./../pages/allbooks/AllBooks";
 import Loadable from "./../ui-component/Loadable";
-import DueList from "../pages/Reader/DueList";
 // main routing
 const Structure = Loadable(lazy(() => import("../layout/Structure.jsx")));
 
@@ -97,6 +98,10 @@ const MainRoutes = {
     {
       path: "/allrequests",
       element: <Requests />,
+    },
+    {
+      path: "/allduelists",
+      element: <AllDueList />,
     },
   ],
 };
