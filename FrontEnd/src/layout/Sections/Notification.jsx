@@ -58,6 +58,7 @@ const actionSX = {
 const Notification = () => {
   const theme = useTheme();
   const confirm = useConfirm();
+  const [numberOfUnseen, setNumberOfUnseen] = useState(0);
   const [showMessage, setShowMessage] = useState(false);
   const [message, setMessage] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
@@ -75,6 +76,10 @@ const Notification = () => {
     try {
       const res = await server.get("/message");
       setNotifications(res.data);
+      console.log(res.data);
+      setNumberOfUnseen(
+        res.data.filter((notification) => notification.SEEN === 0).length
+      );
     } catch (err) {
       console.log(err);
     }
@@ -146,6 +151,8 @@ const Notification = () => {
   function NotificationAvatar({ msg }) {
     if (msg?.includes("accepted")) {
       return <CheckCircleOutline color="success" />;
+    } else if (msg?.includes("rejected")) {
+      return <Close color="error" />;
     }
     // else if ( )
     return <Comment />;
@@ -213,7 +220,7 @@ const Notification = () => {
         aria-haspopup="true"
         onClick={handleToggle}
       >
-        <Badge badgeContent={notifications.length} max={99} color="primary">
+        <Badge badgeContent={numberOfUnseen} max={99} color="primary">
           <Avatar variant="circular">
             <NotificationsNone />
           </Avatar>

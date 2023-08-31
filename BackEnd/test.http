@@ -168,9 +168,9 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUi
 {
   "IS_FAVOURITE": false
 }
-
+# TODO
 #### --- GET one/all AUTHOR ---
-GET http://localhost:3000/db-api/getAuthor?aid=1
+GET http://localhost:3000/db-api/getAuthor
 
 ###OUTPUT
 {
@@ -182,8 +182,10 @@ GET http://localhost:3000/db-api/getAuthor?aid=1
   "IMAGE": "https://ds.rokomari.store/rokomari110/people/6ed601ea2b54_2559.png"
 }
 
+
+# TODO
 #### --- GET one/all PUBLISHER ---
-GET http://localhost:3000/db-api/getPublisher?pid=1
+GET http://localhost:3000/db-api/getPublisher
 
 ###OUTPUT
 {
@@ -385,7 +387,7 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 ]
 
 
-#### ----GET ACCEPT REQUESTS----
+#### ---- ACCEPT REQUESTS----
 POST http://localhost:3000/db-api/handle-request
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzI0ODM2NCwiZXhwIjoxNjkzMzM0NzY0fQ.1NLxSdD2LmjL7g38xSLSWn3jSmXys0K4XXwPJK8rNmA
 Content-Type: application/json
@@ -431,7 +433,7 @@ Content-Type: application/json
   "message": "Successfully updated"
 }
 
-#### ---Update Message---
+#### ---Update Message status ---
 PUT http://localhost:3000/db-api/edit-message
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzMzExMjEyLCJleHAiOjE2OTMzOTc2MTJ9.EnwV75NbGK3S8_M75MlMB0dCZWaEzgTUZ6RvqSGhkZA
 
