@@ -85,9 +85,25 @@ const router = Express.Router();
 router.use(Express.json());
 let urlencodedParser = bodyParser.urlencoded({extended: true});
 
-//TODO: ADD, UPDATE AND REMOVE BOOK
 router.route('/book').get(verifyGeneralToken, getBookDetailsByID)
   // .post(verifyEmployeeToken, urlencodedParser, postBook);
+router.route('/getPublisher')
+  .get(verifyGeneralToken, getPublisher)
+  .post(verifyEmployeeToken, urlencodedParser, addPublisher)
+  .put(verifyEmployeeToken, urlencodedParser, updatePublisher)
+  .delete(verifyEmployeeToken, deletePublisher)
+router.route('/getAuthor')
+  .get(verifyGeneralToken, getAuthor)
+  .post(verifyEmployeeToken, urlencodedParser, addAuthor)
+  .put(verifyEmployeeToken, urlencodedParser, updateAuthor)
+  .delete(verifyEmployeeToken, deleteAuthor)
+
+router.route('/getGenre')
+  .get(verifyGeneralToken, getGenre)
+  .post(verifyEmployeeToken, urlencodedParser, addGenre)
+  .put(verifyEmployeeToken, urlencodedParser, updateGenre)
+  .delete(verifyEmployeeToken, deleteGenre)
+
 router.route('/all-books-sum').get(verifyGeneralToken, getAllBookSum);
 router.route('/user/signup').post(urlencodedParser, postUser);
 router.route('/user/login').post(urlencodedParser, loginGeneral);
@@ -98,9 +114,6 @@ router.route('/all-users').get(verifyEmployeeToken, getAllUsers);
 router.route('/admin/signup').post(urlencodedParser, postAdmin);
 router.route('/all-rat-rev').get(verifyGeneralToken, getAllRatRevOfBook);
 router.route('/edit-favourite').post(verifyGeneralToken, urlencodedParser, postFavBook);
-router.route('/getPublisher').get(verifyGeneralToken, getPublisher);
-router.route('/getAuthor').get(verifyGeneralToken, getAuthor);
-router.route('/getGenre').get(verifyGeneralToken, getGenre);
 
 router.route('/rate-review').post(verifyGeneralToken, urlencodedParser, ratrevBook).get(verifyGeneralToken, getOwnRatRev);
 router.route('/del-rate-review').delete(verifyGeneralToken, deleteRatRevBook)

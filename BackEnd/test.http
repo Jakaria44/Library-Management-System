@@ -84,23 +84,22 @@ Content-Type: application/json
 #   "password": "abcd"
 # }
 
-# {
-#   "email": "ryangeorge@gmail.com",
-#   "password": "ryanMonster300"
-# }
+{
+  "email": "ryangeorge@gmail.com",
+  "password": "ryanMonster300"
+}
 
-#eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQwODQ0NCwiZXhwIjoxNjkzNDk0ODQ0fQ.cO8wITeKKR_J_IOh6dyJqa3Jz6lsKpSC6ug8A99q87g
-
+#eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
 
 # {
 #   "email": "mdjakaria442020@gmail.com",
 #   "password": "Jakaria63"
 # }
 
-{
-  "email": "a.n.swapnil2003@gmail.com",
-  "password": "Ans2003"
-}
+# {
+#   "email": "a.n.swapnil2003@gmail.com",
+#   "password": "Ans2003"
+# }
 
 #eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzNDA5MDQ3LCJleHAiOjE3NjU0MDkwNDd9.hKy8COHQJepf0B8Y6-DwDiHUqEhBDWeaV0IfhHWppUs
 
@@ -169,11 +168,13 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUi
   "IS_FAVOURITE": false
 }
 
+#for all, don't give any parameter
 #### --- GET one/all AUTHOR ---
 GET http://localhost:3000/db-api/getAuthor?aid=1
 
 ###OUTPUT
 {
+  "AUTHOR_ID": "1",
   "NAME": "J. K. Rowling",
   "DOB": "1965-07-30T18:00:00.000Z",
   "DOD": "1990-12-29T18:00:00.000Z",
@@ -187,27 +188,23 @@ GET http://localhost:3000/db-api/getPublisher?pid=1
 
 ###OUTPUT
 {
+  "PUBLISHER_ID": "1",
   "NAME": "Bloomsbury Publishing",
-  "POSTAL_CODE": "WC1B 3DP",
+  "IMAGE": "https://media-exp1.licdn.com/dms/image/C4E0BAQEDkPybVXr47Q/company-logo_200_200/0/1544531682586?e=2159024400&v=beta&t=JjAs9ok_PwgXA9CFsXKm3bt6fjbFI4N7SZRn4ajOUVg",
   "CITY": "London",
   "COUNTRY": "England",
+  "POSTAL_CODE": "WC1B 3DP",
   "CONTACT_NO": "+44 (0)20 7631 5600",
-  "EMAIL": "contact@bloomsbury.com",
-  "IMAGE": "https://media-exp1.licdn.com/dms/image/C4E0BAQEDkPybVXr47Q/company-logo_200_200/0/1544531682586?e=2159024400&v=beta&t=JjAs9ok_PwgXA9CFsXKm3bt6fjbFI4N7SZRn4ajOUVg"
+  "EMAIL": "contact@bloomsbury.com"
 }
 
 #### --- GET one/all GENRE ---
-GET http://localhost:3000/db-api/getGenre?pid=1
+GET http://localhost:3000/db-api/getGenre?gid=1
 
 ###OUTPUT
 {
-  "NAME": "Bloomsbury Publishing",
-  "POSTAL_CODE": "WC1B 3DP",
-  "CITY": "London",
-  "COUNTRY": "England",
-  "CONTACT_NO": "+44 (0)20 7631 5600",
-  "EMAIL": "contact@bloomsbury.com",
-  "IMAGE": "https://media-exp1.licdn.com/dms/image/C4E0BAQEDkPybVXr47Q/company-logo_200_200/0/1544531682586?e=2159024400&v=beta&t=JjAs9ok_PwgXA9CFsXKm3bt6fjbFI4N7SZRn4ajOUVg"
+  "GENRE_ID": "1",
+  "GENRE_NAME": "Fantasy"
 }
 
 #### --- Update User ---
@@ -536,7 +533,7 @@ Content-Type: application/json
 }
 
 #### ---- GET ALL FINE ----
-GET http://localhost:3000/db-api/all-fine?sort=NAME&order=DESC
+GET http://localhost:3000/db-api/all-fine?sort=PAYMENT_DATE&order=ASC
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQwODQ0NCwiZXhwIjoxNjkzNDk0ODQ0fQ.cO8wITeKKR_J_IOh6dyJqa3Jz6lsKpSC6ug8A99q87g
 
 Content-Type: application/json
@@ -579,46 +576,183 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
   }
 ]
 
-### ----- GET ALL USERS -----
-GET http://localhost:3000/db-api/all-users?sort=NAME&order=DESC
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQwODQ0NCwiZXhwIjoxNjkzNDk0ODQ0fQ.cO8wITeKKR_J_IOh6dyJqa3Jz6lsKpSC6ug8A99q87g
+#### --- POST one AUTHOR ---
+POST http://localhost:3000/db-api/getAuthor
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
 
+{
+  "NAME": "A",
+  "IMAGE": null,
+  "DoB": "2023-01-01",
+  "DoD": null,
+  "BIO": "a",
+  "NATIONALITY": "Bangladesh"
+}
 ###OUTPUT
-[
-  {
-    "USER_ID": "23",
-    "NAME": "jake paul",
-    "IMAGE": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
-    "ADDRESS": "New York, USA",
-    "EMAIL": "abcd@gmail.com",
-    "CONTACT_NO": "01712345678",
-    "GENDER": "M"
-  },
-  {
-    "USER_ID": "1",
-    "NAME": "Ryan George",
-    "IMAGE": "https://img.freepik.com/free-icon/user_318-159711.jpg",
-    "ADDRESS": "England",
-    "EMAIL": "ryangeorge@gmail.com",
-    "CONTACT_NO": "854 526 8852",
-    "GENDER": "M"
-  },
-  {
-    "USER_ID": "6",
-    "NAME": "Jakaria Hossain",
-    "IMAGE": "https://drive.google.com/file/d/1VzQYM8sLT1EtWOVk1w-pUGeQuIR-44DY/view?usp=sharing",
-    "ADDRESS": "Pabna, Bangladesh",
-    "EMAIL": "mdjakaria442020@gmail.com",
-    "CONTACT_NO": "01790-715232",
-    "GENDER": "M"
-  },
-  {
-    "USER_ID": "3",
-    "NAME": "Ahmmad Nur Swapnil",
-    "IMAGE": "https://firebasestorage.googleapis.com/v0/b/library-management-syste-4c8f7.appspot.com/o/profileImages%2Fdb991442-81ab-454e-940e-5aeb56a6c551?alt=media&token=94cf221f-2dc6-4bd3-8b9c-32a11532350c",
-    "ADDRESS": "Senbag, Noakhali, Bangladesh",
-    "EMAIL": "a.n.swapnil2003@gmail.com",
-    "CONTACT_NO": "01750-320621",
-    "GENDER": "M"
+{
+  "message": "Successful",
+  "author": {
+    "AUTHOR_ID": "23",
+    "NAME": "A",
+    "DOB": "2023-01-01T00:00:00.000Z",
+    "DOD": null,
+    "NATIONALITY": "Bangladesh",
+    "BIO": "a",
+    "IMAGE": "https://previews.123rf.com/images/anatolir/anatolir1712/anatolir171201476/91832679-man-avatar-icon-flat-illustration-of-man-avatar-vector-icon-isolated-on-white-background.jpg"
   }
-]
+}
+
+#### --- POST one PUBLISHER ---
+POST http://localhost:3000/db-api/getPublisher
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "NAME": "A",
+  "IMAGE": null,
+  "CITY": "a",
+  "COUNTRY": "a",
+  "EMAIL": "a@gmail.com",
+  "CONTACT_NO": "01",
+  "POSTAL_CODE": "M"
+}
+###OUTPUT
+{
+  "message": "Successful",
+  "publisher": {
+    "PUBLISHER_ID": "21",
+    "NAME": "A",
+    "IMAGE": "https://ds.rokomari.store/rokomari110/company/publisher.png",
+    "CITY": "a",
+    "COUNTRY": "a",
+    "POSTAL_CODE": "M",
+    "CONTACT_NO": "01",
+    "EMAIL": "a@gmail.com"
+  }
+}
+
+#### --- POST one GENRE ---
+POST http://localhost:3000/db-api/getGenre
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "GENRE_NAME": "A"
+}
+###OUTPUT
+{
+  "message": "Successful",
+  "genre": {
+    "GENRE_ID": "13",
+    "GENRE_NAME": "A"
+  }
+}
+
+#### --- PUT one AUTHOR ---
+PUT http://localhost:3000/db-api/getAuthor
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "AUTHOR_ID": "23",
+  "NAME": "A",
+  "IMAGE": null,
+  "DoB": "2023-01-01",
+  "DoD": "2023-01-01",
+  "BIO": "a",
+  "NATIONALITY": "Bangladesh"
+}
+###OUTPUT
+{
+  "message": "Successful",
+  "author": {
+    "AUTHOR_ID": "23",
+    "NAME": "A",
+    "DoB": "2023-01-01T00:00:00.000Z",
+    "DoD": "2023-01-01T00:00:00.000Z",
+    "NATIONALITY": "Bangladesh",
+    "BIO": "a",
+    "IMAGE": null
+  }
+}
+
+#### --- PUT one PUBLISHER ---
+PUT http://localhost:3000/db-api/getPublisher
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "PUBLISHER_ID": "21",
+  "NAME": "A",
+  "IMAGE": null,
+  "CITY": "a",
+  "COUNTRY": "a",
+  "EMAIL": "abc@gmail.com",
+  "PASSWORD": "$2b$10$tlCyz5LiC8FkOIXAFwlfhORBQGTo8zYGin5eZ1V2skvr2C.vtcMca",
+  "CONTACT_NO": "01",
+  "POSTAL_CODE": "M"
+}
+###OUTPUT
+{
+  "message": "Successful",
+  "publisher": {
+    "PUBLISHER_ID": "21",
+    "NAME": "A",
+    "IMAGE": null,
+    "CITY": "a",
+    "COUNTRY": "a",
+    "POSTAL_CODE": "M",
+    "CONTACT_NO": "01",
+    "EMAIL": "abc@gmail.com"
+  }
+}
+
+#### --- PUT one GENRE ---
+PUT http://localhost:3000/db-api/getGenre
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "GENRE_ID": "13",
+  "GENRE_NAME": "B"
+}
+###OUTPUT
+{
+  "message": "Successful",
+  "genre": {
+    "GENRE_ID": "13",
+    "GENRE_NAME": "B"
+  }
+}
+
+
+#### --- DELETE one AUTHOR ---
+DELETE http://localhost:3000/db-api/getAuthor?aid=23
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+
+###OUTDELETE
+
+{
+  "message": "Successfully deleted"
+}
+
+#### --- DELETE one PUBLISHER ---
+DELETE http://localhost:3000/db-api/getPublisher?pid=21
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+
+###OUTDELETE
+
+{
+  "message": "Successfully deleted"
+}
+
+#### --- DELETE one GENRE ---
+DELETE http://localhost:3000/db-api/getGenre?gid=13
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+
+###OUTDELETE
+
+{
+  "message": "Successfully deleted"
+}

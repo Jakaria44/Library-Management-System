@@ -554,7 +554,7 @@ end;
 /
 
 CREATE OR REPLACE PROCEDURE DELETE_MESSAGE(U_ID IN VARCHAR2, M_ID IN VARCHAR2) IS
-ID VARCHAR2(20);
+    ID VARCHAR2(20);
 BEGIN
     SELECT MESSAGE_ID
     INTO ID
@@ -570,6 +570,415 @@ EXCEPTION
         RAISE_APPLICATION_ERROR(-20002, 'DOES NOT EXIST');
     WHEN OTHERS THEN
         RAISE_APPLICATION_ERROR(-20003, 'UNKNOWN ERROR OCCURRED');
+END;
+/
+
+create sequence genre_seq;
+
+CREATE
+    OR REPLACE TRIGGER GENRE_INSERT_TRIG
+    BEFORE INSERT
+    ON GENRE
+    FOR EACH ROW
+BEGIN
+    IF
+        :NEW.GENRE_ID IS NULL
+    THEN
+        :NEW.GENRE_ID := genre_seq.nextval;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE FUNCTION IS_VALID_GENRE(G_NAME IN VARCHAR2) RETURN BOOLEAN IS
+    TG_NAME VARCHAR2(100);
+BEGIN
+    SELECT GENRE_NAME
+    INTO TG_NAME
+    FROM GENRE
+    WHERE UPPER(GENRE_NAME) = UPPER(G_NAME);
+    RETURN FALSE;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN TRUE;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('SOME ERROR OCCURED');
+        RETURN FALSE;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE INSERT_GENRE(G_NAME IN VARCHAR2) IS
+    ID NUMBER;
+BEGIN
+    IF
+        (IS_VALID_GENRE(G_NAME)) THEN
+        INSERT INTO GENRE(GENRE_NAME) VALUES (G_NAME);
+        select genre_seq.currval into ID from DUAL;
+    ELSE
+        raise_application_error(-20111, 'GENRE NAME IS ALREADY USED');
+    END IF;
+END;
+/
+
+create sequence author_seq;
+
+CREATE
+    OR REPLACE TRIGGER AUTHOR_INSERT_TRIG
+    BEFORE INSERT
+    ON AUTHOR
+    FOR EACH ROW
+BEGIN
+    IF
+        :NEW.AUTHOR_ID IS NULL
+    THEN
+        :NEW.AUTHOR_ID := author_seq.nextval;
+    END IF;
+END;
+/
+
+create or replace FUNCTION IS_VALID_AUTHOR_INSERT(ANAME IN VARCHAR2, ADOB IN DATE)
+    return BOOLEAN IS
+    COUNTER NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM AUTHOR
+    WHERE (UPPER(NAME) = UPPER(ANAME) AND DOB = ADOB);
+    IF
+        COUNTER = 0 THEN
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE INSERT_AUTHOR(A_NAME VARCHAR2,
+                                          A_DoB DATE,
+                                          A_DoD DATE,
+                                          A_NATIONALITY VARCHAR2,
+                                          A_BIO VARCHAR2,
+                                          A_IMAGE VARCHAR2)
+    IS
+    ID NUMBER;
+BEGIN
+    IF
+        (IS_VALID_AUTHOR_INSERT(A_NAME, A_DOB)) THEN
+        INSERT INTO "AUTHOR" (NAME, DoB, DoD, NATIONALITY, BIO, IMAGE)
+        VALUES (A_NAME, A_DoB, A_DoD, A_NATIONALITY, A_BIO, A_IMAGE);
+        select author_seq.currval
+        into ID
+        from DUAL;
+    ELSE
+        raise_application_error(-20111, 'NAME AND DOB IS NOT UNIQUE');
+    END IF;
+END ;
+/
+
+create sequence publisher_seq;
+
+CREATE
+    OR REPLACE TRIGGER PUBLISHER_INSERT_TRIG
+    BEFORE INSERT
+    ON PUBLISHER
+    FOR EACH ROW
+BEGIN
+    IF
+        :NEW.PUBLISHER_ID IS NULL
+    THEN
+        :NEW.PUBLISHER_ID := publisher_seq.nextval;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE FUNCTION IS_VALID_PUBLISHER(P_NAME IN VARCHAR2, P_EMAIL IN VARCHAR2) RETURN BOOLEAN IS
+    COUNTER NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM PUBLISHER
+    WHERE (UPPER(NAME) = UPPER(P_NAME) OR EMAIL = P_EMAIL);
+    IF
+        COUNTER = 0 THEN
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE INSERT_PUBLISHER(A_NAME VARCHAR2,
+                                             A_IMAGE VARCHAR2,
+                                             A_CITY VARCHAR2,
+                                             A_COUNTRY VARCHAR2,
+                                             A_POSTAL_CODE VARCHAR2,
+                                             A_CONTACT_NO VARCHAR2,
+                                             A_EMAIL VARCHAR2) IS
+    ID NUMBER;
+BEGIN
+    IF
+        (IS_VALID_PUBLISHER(A_NAME, A_EMAIL)) THEN
+        INSERT INTO PUBLISHER(NAME, IMAGE, CITY, COUNTRY, POSTAL_CODE, CONTACT_NO, EMAIL)
+        VALUES (A_NAME, A_IMAGE, A_CITY, A_COUNTRY, A_POSTAL_CODE, A_CONTACT_NO, A_EMAIL);
+        select publisher_seq.currval
+        into ID
+        from DUAL;
+    ELSE
+        raise_application_error(-20111, 'PUBLISHER NAME OR EMAIL NOT UNIQUE');
+    END IF;
+END;
+/
+
+
+CREATE OR REPLACE FUNCTION IS_VALID_UPDATE_GENRE(G_ID IN VARCHAR2, G_NAME IN VARCHAR2) RETURN BOOLEAN IS
+    COUNTER NUMBER;
+    COUNTER2
+            NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM GENRE
+    WHERE GENRE_ID = G_ID;
+    IF
+        COUNTER = 0 THEN
+        RETURN FALSE;
+    ELSE
+        SELECT COUNT(*)
+        INTO COUNTER2
+        FROM GENRE
+        WHERE UPPER(GENRE_NAME) = UPPER(G_NAME)
+          AND GENRE_ID <> G_ID;
+        IF
+            COUNTER2 = 0 THEN
+            RETURN TRUE;
+        ELSE
+            RETURN FALSE;
+        END IF;
+    END IF;
+END;
+/
+
+
+CREATE OR REPLACE PROCEDURE UPDATE_GENRE(G_ID IN VARCHAR2, G_NAME IN VARCHAR2) IS
+BEGIN
+    IF
+        (IS_VALID_UPDATE_GENRE(G_ID, G_NAME)) THEN
+        UPDATE GENRE
+        SET GENRE_NAME = G_NAME
+        WHERE GENRE_ID = G_ID;
+    ELSE
+        raise_application_error(-20111, 'GENRE CANNOT BE UPDATED');
+    END IF;
+END;
+/
+
+
+CREATE OR REPLACE FUNCTION IS_VALID_UPDATE_AUTHOR(A_ID IN VARCHAR2, ANAME IN VARCHAR2, ADOB IN DATE) RETURN BOOLEAN IS
+    COUNTER NUMBER;
+    COUNTER2
+            NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM AUTHOR
+    WHERE AUTHOR_ID = A_ID;
+    IF
+        COUNTER = 0 THEN
+        RETURN FALSE;
+    ELSE
+        SELECT COUNT(*)
+        INTO COUNTER2
+        FROM AUTHOR
+        WHERE (UPPER(NAME) = UPPER(ANAME) AND DOB = ADOB)
+          AND AUTHOR_ID <> A_ID;
+        IF
+            COUNTER2 = 0 THEN
+            RETURN TRUE;
+        ELSE
+            RETURN FALSE;
+        END IF;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE UPDATE_AUTHOR(A_AUTHOR_ID VARCHAR2,
+                                          A_NAME VARCHAR2,
+                                          A_DoB DATE,
+                                          A_DoD DATE,
+                                          A_NATIONALITY VARCHAR2,
+                                          A_BIO VARCHAR2,
+                                          A_IMAGE VARCHAR2) IS
+BEGIN
+    IF
+        (IS_VALID_UPDATE_AUTHOR(A_AUTHOR_ID, A_NAME, A_DoB)) THEN
+        UPDATE AUTHOR
+        SET NAME=A_NAME,
+            DoB=A_DoB,
+            DoD=A_DoD,
+            NATIONALITY=A_NATIONALITY,
+            BIO=A_BIO,
+            IMAGE=A_IMAGE
+        WHERE AUTHOR_ID = A_AUTHOR_ID;
+    ELSE
+        raise_application_error(-20111, 'AUTHOR CANNOT BE UPDATED');
+    END IF;
+END;
+/
+
+CREATE OR REPLACE FUNCTION IS_VALID_UPDATE_PUBLISHER(P_ID IN VARCHAR2, PMAIL IN VARCHAR2, P_NAME IN VARCHAR2) RETURN BOOLEAN IS
+    COUNTER NUMBER;
+    COUNTER2
+            NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM PUBLISHER
+    WHERE PUBLISHER_ID = P_ID;
+    IF
+        COUNTER = 0 THEN
+        RETURN FALSE;
+    ELSE
+        SELECT COUNT(*)
+        INTO COUNTER2
+        FROM PUBLISHER
+        WHERE (UPPER(NAME) = UPPER(P_NAME) OR EMAIL = PMAIL)
+          AND PUBLISHER_ID <> P_ID;
+        IF
+            COUNTER2 = 0 THEN
+            RETURN TRUE;
+        ELSE
+            RETURN FALSE;
+        END IF;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE UPDATE_PUBLISHER(A_PUBLISHER_ID VARCHAR2,
+                                             A_NAME VARCHAR2,
+                                             A_IMAGE VARCHAR2,
+                                             A_CITY VARCHAR2,
+                                             A_COUNTRY VARCHAR2,
+                                             A_POSTAL_CODE VARCHAR2,
+                                             A_CONTACT_NO VARCHAR2,
+                                             A_EMAIL VARCHAR2) IS
+BEGIN
+    IF
+        (IS_VALID_UPDATE_PUBLISHER(A_PUBLISHER_ID, A_EMAIL, A_NAME)) THEN
+        UPDATE PUBLISHER
+        SET NAME=A_NAME,
+            IMAGE=A_IMAGE,
+            CITY=A_CITY,
+            COUNTRY=A_COUNTRY,
+            POSTAL_CODE=A_POSTAL_CODE,
+            CONTACT_NO=A_CONTACT_NO,
+            EMAIL=A_EMAIL
+        WHERE PUBLISHER_ID = A_PUBLISHER_ID;
+    ELSE
+        raise_application_error(-20111, 'PUBLISHER CANNOT BE UPDATED');
+    END IF;
+END;
+/
+
+
+CREATE OR REPLACE FUNCTION IS_VALID_DELETE_AUTHOR(A_ID IN VARCHAR2) RETURN BOOLEAN IS
+    COUNTER NUMBER;
+		COUNTER2 NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM WRITTEN_BY
+    WHERE AUTHOR_ID = A_ID;
+		SELECT COUNT(*)
+    INTO COUNTER2
+    FROM AUTHOR
+    WHERE AUTHOR_ID = A_ID;
+    IF
+        (COUNTER = 0 AND COUNTER2 > 0) THEN
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END IF;
+END;
+/
+
+
+CREATE OR REPLACE PROCEDURE DELETE_AUTHOR(A_ID IN VARCHAR2) IS
+BEGIN
+    IF
+        (IS_VALID_DELETE_AUTHOR(A_ID)) THEN
+        DELETE
+        FROM AUTHOR
+        WHERE AUTHOR_ID = A_ID;
+    ELSE
+        raise_application_error(-20111, 'AUTHOR CANNOT BE DELETED');
+    END IF;
+END;
+/
+
+CREATE OR REPLACE FUNCTION IS_VALID_DELETE_PUBLISHER(P_ID IN VARCHAR2) RETURN BOOLEAN IS
+    COUNTER NUMBER;
+		COUNTER2 NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM BOOK
+    WHERE PUBLISHER_ID = P_ID;
+		SELECT COUNT(*)
+    INTO COUNTER2
+    FROM PUBLISHER
+    WHERE PUBLISHER_ID = P_ID;
+    IF
+        (COUNTER = 0 AND COUNTER2>0) THEN
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE DELETE_PUBLISHER(P_ID IN VARCHAR2) IS
+BEGIN
+    IF
+        (IS_VALID_DELETE_PUBLISHER(P_ID)) THEN
+        DELETE
+        FROM PUBLISHER
+        WHERE PUBLISHER_ID = P_ID;
+    ELSE
+        raise_application_error(-20111, 'PUBLISHER CANNOT BE DELETED');
+    END IF;
+END;
+/
+
+CREATE OR REPLACE FUNCTION IS_VALID_DELETE_GENRE(G_ID IN VARCHAR2) RETURN BOOLEAN IS
+    COUNTER NUMBER;
+		COUNTER2 NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM BOOK_GENRE
+    WHERE GENRE_ID = G_ID;
+		SELECT COUNT(*)
+    INTO COUNTER2
+    FROM GENRE
+    WHERE GENRE_ID = G_ID;
+    IF
+        (COUNTER = 0 AND COUNTER2 > 0) THEN
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE DELETE_GENRE(G_ID IN VARCHAR2) IS
+BEGIN
+    IF
+        (IS_VALID_DELETE_GENRE(G_ID)) THEN
+        DELETE
+        FROM GENRE
+        WHERE GENRE_ID = G_ID;
+    ELSE
+        raise_application_error(-20111, 'GENRE CANNOT BE DELETED');
+    END IF;
 END;
 /
 

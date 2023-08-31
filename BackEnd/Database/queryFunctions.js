@@ -1,5 +1,14 @@
 import {queryExecute} from './database.js';
 
+// let result = null;
+//   try {
+//     result = await queryExecute(query, genre);
+//   } catch (e) {
+//     return null;
+//   }
+//   return genre;
+
+
 function baseQuery(tableName) {
   return `Select *
           From ${tableName}`;
@@ -321,7 +330,7 @@ export async function getAllNewsDB(context) {
 
 export async function getAllUsersDB(context) {
   // get all messages of a user
-  let query = "SELECT USER_ID, (FIRST_NAME || ' ' || LAST_NAME) AS NAME, IMAGE, ADDRESS, EMAIL, CONTACT_NO, GENDER"+
+  let query = "SELECT USER_ID, (FIRST_NAME || ' ' || LAST_NAME) AS NAME, IMAGE, ADDRESS, EMAIL, CONTACT_NO, GENDER" +
     '\nFROM "USER"';
   let flag = 1;
   if (context.sort && context.order) {
@@ -348,7 +357,6 @@ export async function getAllUsersDB(context) {
   }
   return result.rows;
 }
-
 
 
 export async function getMyRequestsDB(context) {
@@ -475,7 +483,7 @@ export async function getMyFineHistoryDB(context) {
 }
 
 export async function getRunningFineDB(context) {
-  let query = "SELECT F.RENT_HISTORY_ID, U.USER_ID, U.EMAIL, (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, B.ISBN, R.EDITION_ID, START_DATE, FEE_AMOUNT" +
+  let query = "SELECT F.RENT_HISTORY_ID, U.USER_ID, U.EMAIL, (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, B.ISBN, B.TITLE, R.EDITION_ID, START_DATE, PAYMENT_DATE, FEE_AMOUNT" +
     '\nFROM FINE_HISTORY F LEFT JOIN RENT_HISTORY R ON(R.RENT_HISTORY_ID = F.RENT_HISTORY_ID) ' +
     'LEFT JOIN "USER" U ON(U.USER_ID = R.USER_ID) LEFT JOIN EDITION E ON(R.EDITION_ID = E.EDITION_ID) JOIN BOOK B ON(E.ISBN = B.ISBN)';
   if (context.CHECK) {
@@ -483,7 +491,7 @@ export async function getRunningFineDB(context) {
   }
   let flag = 1;
   if (context.sort && context.order) {
-    const validColumns = ['EMAIL', 'NAME', 'START_DATE', 'FEE_AMOUNT'];
+    const validColumns = ['EMAIL', 'NAME', 'START_DATE', 'FEE_AMOUNT', 'TITLE', 'PAYMENT_DATE'];
     const validOrders = ['ASC', 'DESC'];
 
     if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
@@ -1249,38 +1257,70 @@ export async function deleteBookDB(context) {
 //     return result.rows;
 // }
 
-export async function updateAuthorDB(context) {
-  const query = runProcedure(
-    'UPDATE_AUTHOR(:PERSON_ID, :FIRST_NAME, :LAST_NAME, :ADDRESS, :EMAIL, :PHONE_NUMBER, :DETAILS, :WEB_ADDRESS)'
-  );
+export async function updateAuthorDB(author) {
+  const query = runProcedure('UPDATE_AUTHOR(:AUTHOR_ID, :NAME, :DoB, :DoD, :NATIONALITY, :BIO, :IMAGE)');
 
-  const result = await queryExecute(query, context);
-  return result;
+  let result = null;
+  try {
+    result = await queryExecute(query, author);
+  } catch (e) {
+    return null;
+  }
+
+  return author;
 }
 
 export async function addAuthorDB(author) {
   console.log(author);
+  const binds = {
+    NAME: author.NAME,
+    DoB: author.DoB
+  }
+  const query = runProcedure('INSERT_AUTHOR(:NAME, :DoB, :DoD, :NATIONALITY, :BIO, :IMAGE)');
+  const query1 = baseQuery('AUTHOR') +
+    `\nWHERE (UPPER(NAME) = UPPER(:NAME) AND DoB = :DoB)`;
+  let result = null;
+  try {
+    console.log(author);
+    console.log(query);
+    console.log(query1);
 
-  const procedure =
-    'INSERT_AUTHOR(:FIRST_NAME, :LAST_NAME, :ADDRESS, :EMAIL, :PHONE_NUMBER, :DETAILS, :WEB_ADDRESS)';
-  const query = runProcedure(procedure);
-  const result = await queryExecute(query, author);
-  return author;
+    await queryExecute(query, author);
+    result = await queryExecute(query1, binds);
+  } catch (e) {
+    return null;
+  }
+  return result.rows[0];
 }
 
 export async function deleteAuthorDB(context) {
-  const procedure = 'DELETE_AUTHOR(:PERSON_ID)';
-  const query = runProcedure(procedure);
-
-  const result = await queryExecute(query, context);
-  return result;
+  const query = runProcedure('DELETE_AUTHOR(:AUTHOR_ID)');
+  let result = null;
+  try {
+    result = await queryExecute(query, context);
+  } catch (e) {
+    return null;
+  }
+  return context;
 }
 
 export async function addPublisherDB(publisher) {
-  const procedure = 'INSERT_PUBLISHER(:NAME, :ADDRESS, :EMAIL_ID, :WEB_ADDRESS)';
-  const query = runProcedure(procedure);
-  const result = await queryExecute(query, publisher);
-  return publisher;
+  const query = runProcedure('INSERT_PUBLISHER(:NAME ,:IMAGE ,:CITY ,:COUNTRY ,:POSTAL_CODE ,:CONTACT_NO ,LOWER(:EMAIL))');
+  const query1 = baseQuery('PUBLISHER') +
+    `\nWHERE LOWER(EMAIL) = LOWER('${publisher.EMAIL}')`;
+  let result = null;
+
+  try {
+    console.log(publisher);
+    console.log(query);
+    console.log(query1);
+    await queryExecute(query, publisher);
+    result = await queryExecute(query1, []);
+    console.log(result);
+  } catch (e) {
+    return null;
+  }
+  return result.rows[0];
 }
 
 // export async function getPublisherDB(context) {
@@ -1295,44 +1335,66 @@ export async function addPublisherDB(publisher) {
 //     return result.rows;
 // }
 
-export async function updatePublisherDB(context) {
-  const query = runProcedure(
-    'UPDATE_PUBLISHER(:PUBLISHER_ID, :NAME, :ADDRESS, :EMAIL_ID, :WEB_ADDRESS)'
-  );
+export async function updatePublisherDB(publisher) {
+  const query = runProcedure('UPDATE_PUBLISHER(:PUBLISHER_ID, :NAME ,:IMAGE ,:CITY ,:COUNTRY ,:POSTAL_CODE ,:CONTACT_NO ,LOWER(:EMAIL))');
 
-  const result = await queryExecute(query, context);
-  return result;
+  let result = null;
+  try {
+    result = await queryExecute(query, publisher);
+  } catch (e) {
+    return null;
+  }
+  return publisher;
 }
 
 export async function deletePublisherDB(context) {
-  const procedure = 'DELETE_PUBLISHER(:PUBLISHER_ID)';
-  const query = runProcedure(procedure);
-
-  const result = await queryExecute(query, context);
-  return result;
+  const query = runProcedure('DELETE_PUBLISHER(:PUBLISHER_ID)');
+  let result = null;
+  try {
+    result = await queryExecute(query, context);
+  } catch (e) {
+    return null;
+  }
+  return context;
 }
 
 export async function addGenreDB(genre) {
-  const procedure = 'INSERT_GENRE(:GENRE_NAME)';
-  const query = runProcedure(procedure);
-  const result = await queryExecute(query, genre);
+  const query = runProcedure('INSERT_GENRE(INITCAP(LOWER(:GENRE_NAME)))');
+  const query1 = baseQuery('GENRE') +
+    `\nWHERE UPPER(GENRE_NAME) = UPPER('${genre.GENRE_NAME}')`;
+  let result = null;
+  try {
+    console.log(genre);
+    console.log(query);
+    console.log(query1);
+    await queryExecute(query, genre);
+    result = await queryExecute(query1, []);
+  } catch (e) {
+    return null;
+  }
+  return result.rows[0];
+}
+
+export async function updateGenreDB(genre) {
+  const query = runProcedure('UPDATE_GENRE(:GENRE_ID, :GENRE_NAME)');
+  let result = null;
+  try {
+    result = await queryExecute(query, genre);
+  } catch (e) {
+    return null;
+  }
   return genre;
 }
 
-export async function updateGenreDB(context) {
-  const query = runProcedure('UPDATE_GENRE(:GENRE_ID, :GENRE_NAME)');
-
-  const result = await queryExecute(query, context);
-  return result;
-}
-
-export async function deleteGenreDB(context) {
-  let query = 'delete from GENRE';
-  console.log(context);
-  query += '\nwhere GENRE_ID = :GENRE_ID';
-
-  const result = await queryExecute(query, context);
-  return result;
+export async function deleteGenreDB(genre) {
+  const query = runProcedure('DELETE_GENRE(:GENRE_ID)');
+  let result = null;
+  try {
+    result = await queryExecute(query, genre);
+  } catch (e) {
+    return null;
+  }
+  return genre;
 }
 
 export async function updateAdminDB(context) {

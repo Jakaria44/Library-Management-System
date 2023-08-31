@@ -15,7 +15,7 @@ import bcrypt from "bcrypt";
 
 export async function updateBook(req, res, next) {
   try {
-    var book = {
+    let book = {
       ISBN: req.body.ISBN,
       TITLE: req.body.TITLE,
       COVER_IMAGE: req.body.COVER_IMAGE,
@@ -41,20 +41,21 @@ export async function updateBook(req, res, next) {
 
 export async function updateAuthor(req, res, next) {
   try {
-    var author = {
-      PERSON_ID: req.body.PERSON_ID,
-      FIRST_NAME: req.body.FIRST_NAME,
-      LAST_NAME: req.body.LAST_NAME,
-      ADDRESS: req.body.ADDRESS,
-      EMAIL: req.body.EMAIL,
-      PHONE_NUMBER: req.body.PHONE_NUMBER,
-      DETAILS: req.body.DETAILS,
-      WEB_ADDRESS: req.body.WEB_ADDRESS
+    let author = {
+      AUTHOR_ID: req.body.AUTHOR_ID,
+      NAME: req.body.NAME,
+      DoB: new Date(req.body.DoB),
+      DoD: req.body.DoD? new Date(req.body.DoD): null,
+      NATIONALITY: req.body.NATIONALITY,
+      BIO: req.body.BIO,
+      IMAGE: req.body.IMAGE
     };
     author = await updateAuthorDB(author);
-    res.status(201).json(author);
-
-
+    if (author) {
+      res.status(201).json({message: "Successful", author});
+    } else {
+      res.status(404).json({message: "Not successful"});
+    }
   } catch (err) {
     next(err);
   }
@@ -63,16 +64,22 @@ export async function updateAuthor(req, res, next) {
 
 export async function updatePublisher(req, res, next) {
   try {
-    var publisher = {
+    let publisher = {
       PUBLISHER_ID: req.body.PUBLISHER_ID,
       NAME: req.body.NAME,
-      ADDRESS: req.body.ADDRESS,
-      EMAIL_ID: req.body.EMAIL_ID,
-      WEB_ADDRESS: req.body.WEB_ADDRESS
+      IMAGE: req.body.IMAGE,
+      CITY: req.body.CITY,
+      COUNTRY: req.body.COUNTRY,
+      POSTAL_CODE: req.body.POSTAL_CODE,
+      CONTACT_NO: req.body.CONTACT_NO,
+      EMAIL: req.body.EMAIL
     };
     publisher = await updatePublisherDB(publisher);
-    res.status(201).json(publisher);
-
+    if (publisher) {
+      res.status(201).json({message: "Successful", publisher});
+    } else {
+      res.status(404).json({message: "Not successful"});
+    }
   } catch (err) {
     next(err);
   }
@@ -80,14 +87,16 @@ export async function updatePublisher(req, res, next) {
 
 export async function updateGenre(req, res, next) {
   try {
-    var genre = {
+    let genre = {
       GENRE_ID: req.body.GENRE_ID,
       GENRE_NAME: req.body.GENRE_NAME
     };
     genre = await updateGenreDB(genre);
-    res.status(201).json(genre);
-
-
+    if (genre) {
+      res.status(201).json({message: "Successful", genre});
+    } else {
+      res.status(404).json({message: "Not successful"});
+    }
   } catch (err) {
     next(err);
   }

@@ -414,21 +414,20 @@ export async function addBook(req, res, next) {
 export async function addAuthor(req, res, next) {
   try {
     let author = {
-      FIRST_NAME: req.body.FIRST_NAME,
-      LAST_NAME: req.body.LAST_NAME,
-      ADDRESS: req.body.ADDRESS,
-      EMAIL: req.body.EMAIL,
-      PHONE_NUMBER: req.body.PHONE_NUMBER,
-      DETAILS: req.body.DETAILS,
-      WEB_ADDRESS: req.body.WEB_ADDRESS
+      NAME: req.body.NAME,
+      DoB: new Date(req.body.DoB),
+      DoD: req.body.DoD? new Date(req.body.DoD): null,
+      NATIONALITY: req.body.NATIONALITY,
+      BIO: req.body.BIO,
+      IMAGE: req.body.IMAGE
     };
     author = await addAuthorDB(author);
-
-    res.status(201).json("Done Properly");
-
-
+    if (author) {
+      res.status(201).json({message: "Successful", author});
+    } else {
+      res.status(404).json({message: "Not successful"});
+    }
   } catch (err) {
-    res.status(501).json(err);
     next(err);
   }
 }
@@ -437,17 +436,20 @@ export async function addPublisher(req, res, next) {
   try {
     let publisher = {
       NAME: req.body.NAME,
-      ADDRESS: req.body.ADDRESS,
-      EMAIL_ID: req.body.EMAIL_ID,
-      WEB_ADDRESS: req.body.WEB_ADDRESS
+      IMAGE: req.body.IMAGE,
+      CITY: req.body.CITY,
+      COUNTRY: req.body.COUNTRY,
+      POSTAL_CODE: req.body.POSTAL_CODE,
+      CONTACT_NO: req.body.CONTACT_NO,
+      EMAIL: req.body.EMAIL
     };
     publisher = await addPublisherDB(publisher);
-
-    res.status(201).json("Done Properly");
-
-
+    if (publisher) {
+      res.status(201).json({message: "Successful", publisher});
+    } else {
+      res.status(404).json({message: "Not successful"});
+    }
   } catch (err) {
-    res.status(501).json(err);
     next(err);
   }
 }
@@ -455,15 +457,16 @@ export async function addPublisher(req, res, next) {
 export async function addGenre(req, res, next) {
   try {
     let genre = {
-      GENRE_NAME: req.body.GENRE_NAME,
+      GENRE_NAME: req.body.GENRE_NAME
     };
+    console.log(genre);
     genre = await addGenreDB(genre);
-
-    res.status(201).json("Done Properly");
-
-
+    if (genre) {
+      res.status(201).json({message: "Successful", genre});
+    } else {
+      res.status(404).json({message: "Not successful"});
+    }
   } catch (err) {
-    res.status(501).json(err);
     next(err);
   }
 }

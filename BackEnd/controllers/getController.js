@@ -332,10 +332,12 @@ export async function getGenre(req, res, next) {
 
     const rows = await getGenreDB(context);
 
-    if (rows.length >= 1) {
+    if (rows.length === 1) {
+      res.status(200).json(rows[0]);
+    }else if (rows.length > 1) {
       res.status(200).json(rows);
     } else {
-      res.status(404).end();
+      res.status(404).json({message:"Not Found"});
     }
   } catch (err) {
     next(err);
