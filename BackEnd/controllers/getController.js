@@ -34,7 +34,10 @@ import {
   getMyRentHistoryDB,
   getMyFineHistoryDB,
   getAllRequestsDB,
-  getRunningFineDB
+  getRunningFineDB,
+  getMyMessagesDB,
+  getAllNewsDB,
+  getAllUsersDB
 } from "../Database/queryFunctions.js";
 
 
@@ -325,7 +328,7 @@ export async function getGenre(req, res, next) {
   try {
     const context = {};
 
-    context.GENRE_ID = req.query.GENRE_ID;
+    context.GENRE_ID = req.query.gid;
 
     const rows = await getGenreDB(context);
 
@@ -333,6 +336,24 @@ export async function getGenre(req, res, next) {
       res.status(200).json(rows);
     } else {
       res.status(404).end();
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getMyMessages(req, res, next) {
+  try {
+    const context = {};
+
+    context.USER_ID = req.USER_ID;
+
+    const rows = await getMyMessagesDB(context);
+
+    if (rows.length >= 1) {
+      res.status(200).json(rows);
+    } else {
+      res.status(404).json({message:"Not Found"});
     }
   } catch (err) {
     next(err);
@@ -515,10 +536,44 @@ export async function getMyRequests(req, res, next) {
 export async function getAllRequests(req, res, next) {
   try {
     const context = {};
-    context.USER_ID = req.USER_ID;
+    // context.USER_ID = req.USER_ID;
     context.sort = req.query.sort;
     context.order = req.query.order;
     const rows = await getAllRequestsDB(context);
+
+    if (rows.length > 0) {
+      res.status(200).json(rows);
+    } else {
+      res.status(404).json({message:"Not Found"});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getAllNews(req, res, next) {
+  try {
+    const context = {};
+    // context.USER_ID = req.USER_ID;
+    const rows = await getAllNewsDB(context);
+
+    if (rows.length > 0) {
+      res.status(200).json(rows);
+    } else {
+      res.status(404).json({message:"Not Found"});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getAllUsers(req, res, next) {
+  try {
+    const context = {};
+    // context.USER_ID = req.USER_ID;
+    context.sort = req.query.sort;
+    context.order = req.query.order;
+    const rows = await getAllUsersDB(context);
 
     if (rows.length > 0) {
       res.status(200).json(rows);
@@ -571,6 +626,7 @@ export async function getRunningFine(req, res, next) {
     const context = {};
     context.sort = req.query.sort;
     context.order = req.query.order;
+    context.CHECK = req.body.CHECK;
     const rows = await getRunningFineDB(context);
 
     if (rows.length > 0) {

@@ -101,6 +101,7 @@ export async function updateHistory(req, res, next) {
       RENT_HISTORY_ID: req.body.RENT_HISTORY_ID,
       PAY: req.body.PAY ? req.body.PAY : false
     };
+    console.log(history)
     history = await updateHistoryDB(history);
     if (history) {
       res.status(200).json({message: 'Successfully updated'});

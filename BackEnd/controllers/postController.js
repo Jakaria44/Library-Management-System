@@ -243,6 +243,7 @@ export async function sendMessage(req, res, next) {
   try {
     if (req.body.USER_ID === req.USER_ID) {
       res.status(402).json({message: "Can't send message to self"})
+      return;
     }
     let request = {
       USER_ID: req.body.USER_ID,
@@ -280,6 +281,7 @@ export async function acceptRequest(req, res, next) {
   try {
     if (req.body.USER_ID === req.USER_ID) {
       res.status(402).json({message: "Can't accept own request"})
+      return
     }
     let context = {
       USER_ID: req.body.USER_ID,

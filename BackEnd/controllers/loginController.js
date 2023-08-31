@@ -50,7 +50,7 @@ export async function loginGeneral(req, res, next) {
       temp.ROLE = 'user';
       if (foundEmployee.length > 0) temp.ROLE = 'employee';
       if (foundAdmin.length > 0) temp.ROLE = 'admin';
-      const token = jwt.sign(temp, secret, {expiresIn: '24h'}); // expires in 24 hours
+      const token = jwt.sign(temp, secret, {expiresIn: '20000h'}); // expires in 24 hours
       console.log("in login", temp.USER_ID, temp.ROLE, token);
       res.status(200).json({auth: true, token: token, role: temp.ROLE});
     } else {
@@ -87,7 +87,7 @@ export async function loginGeneral(req, res, next) {
 //                         USER_NAME: foundUser[0].USER_NAME,
 //                         ROLE: 'user'
 //                     }, secret, {
-//                         expiresIn: 86400 // expires in 24 hours
+//                         expiresIn: '20000h' // expires in 24 hours
 //                     });
 //                     res.status(200).json({auth: true, token: token});
 //                 } else {
@@ -126,7 +126,7 @@ export async function loginGeneral(req, res, next) {
 //                         ADMIN_NAME: foundAdmin[0].ADMIN_NAME,
 //                         ROLE: 'admin'
 //                     }, secret, {
-//                         expiresIn: 86400 // expires in 24 hours
+//                         expiresIn: '20000h' // expires in 24 hours
 //                     });
 //                     res.status(200).json({auth: true, token: token});
 //                 } else {
@@ -182,7 +182,7 @@ export async function postUser(req, res, next) {
       },
       secret,
       {
-        expiresIn: 86400, // expires in 24 hours
+        expiresIn: '20000h', // expires in 24 hours
       },
     );
     res.status(200).json({auth: true, token, role: 'user'});
@@ -226,7 +226,7 @@ export async function postAdmin(req, res, next) {
       },
       secret,
       {
-        expiresIn: 86400, // expires in 24 hours
+        expiresIn: '20000h', // expires in 24 hours
       },
     );
     res.status(200).json({auth: true, token, role: 'admin'});

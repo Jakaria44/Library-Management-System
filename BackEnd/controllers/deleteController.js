@@ -73,7 +73,8 @@ export async function deleteRequests(req, res, next) {
 export async function deleteRequest(req, res, next) {
   try {
     if (req.body.USER_ID === req.USER_ID) {
-      res.status(402).json({message: "Can't accept own request"})
+      res.status(402).json({message: "Can't reject own request"})
+      return
     }
     let context = {};
     context.USER_ID = req.body.USER_ID;
@@ -103,7 +104,8 @@ export async function deleteRequest(req, res, next) {
 export async function deleteMessage(req, res, next) {
   try {
     var context = {
-      USER_ID: req.USER_ID
+      USER_ID: req.USER_ID,
+      MESSAGE_ID: req.query.mid
     };
     context = await deleteMessageDB(context);
     if (context) {
