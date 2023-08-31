@@ -20,7 +20,7 @@ const SendMessage = ({ user }) => {
         USER_ID: user.USER_ID,
         MESSAGE: message,
       };
-      const res = await server.post("/send-message", {
+      const res = await server.post("/message", {
         USER_ID: user.USER_ID,
         MESSAGE: message,
       });
@@ -69,6 +69,7 @@ const SendMessage = ({ user }) => {
       />
 
       <TextArea
+        limit={200}
         open={showWriteMessage}
         setValue={setMessage}
         title="Write Message"

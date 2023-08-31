@@ -10,6 +10,7 @@ import {
 import React from "react";
 
 const TextArea = ({
+  limit,
   open,
   handleClose,
   handleSubmit,
@@ -18,7 +19,7 @@ const TextArea = ({
   buttonText,
 }) => {
   return (
-    <Box fullWidth>
+    <Box>
       <Dialog
         open={open}
         onClose={(event, reason) => {
@@ -33,7 +34,10 @@ const TextArea = ({
         <DialogTitle variant="h3">{title}</DialogTitle>
         <DialogContent>
           <TextField
-            autoFocus
+            inputProps={{
+              maxLength: limit,
+            }}
+            autoFocus={true}
             required
             multiline
             maxRows={10}

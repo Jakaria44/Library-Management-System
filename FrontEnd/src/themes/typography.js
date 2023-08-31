@@ -5,7 +5,18 @@
 
 export default function themeTypography(theme) {
   return {
-    fontFamily: theme?.customization?.fontFamily,
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
     h6: {
       fontWeight: 500,
       color: theme.heading,

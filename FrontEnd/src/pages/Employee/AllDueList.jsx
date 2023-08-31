@@ -1,7 +1,9 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Tooltip, Typography } from "@mui/material";
 import { GridToolbar } from "@mui/x-data-grid";
 // import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
+import { CheckCircle, Error } from "@mui/icons-material";
 import React, { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import StyledDataGrid from "../../component/StyledDataGrid";
 import TimeFormat from "../../utils/TimeFormat";
 import server from "./../../HTTP/httpCommonParam";
@@ -27,7 +29,8 @@ const Application = () => {
     // Here you save the data you need from the sort model
     console.log(sortModel);
     setQueryOptions({
-      sort: sortModel[0]?.field || "REQUEST_DATE",
+      sort:
+        sortModel[0].field === "STATUS" ? "PAYMENT_DATE" : sortModel[0].field,
       order: sortModel[0]?.sort === "asc" ? "ASC" : "DESC",
     });
   }, []);
@@ -35,7 +38,7 @@ const Application = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await server.get("/running-fine", {
+      const response = await server.get("/all-fine", {
         params: queryOptions,
       });
 
@@ -45,10 +48,15 @@ const Application = () => {
         ISBN: item.ISBN,
         EMAIL: item.EMAIL,
         NAME: item.NAME,
+        TITLE: item.TITLE,
         EDITION_ID: item.EDITION_ID,
+        EDITION_NUM: item.EDITION_NUM,
+        PAYMENT_DATE: item.PAYMENT_DATE ? TimeFormat(item.PAYMENT_DATE) : "-",
         START_DATE: TimeFormat(item.START_DATE),
         FEE_AMOUNT: item.FEE_AMOUNT,
+        STATUS: item.PAYMENT_DATE ? 1 : 0,
       }));
+      console.log(data);
       setRows(data);
     } catch (error) {
       setRows([]);
@@ -67,7 +75,7 @@ const Application = () => {
         p={2}
         component="div"
       >
-        ALL Requests
+        Fine List
       </Typography>
       <StyledDataGrid
         rows={rows}
@@ -86,50 +94,49 @@ const Application = () => {
                 </Grid>
               </Grid>
             ),
-            width: 240,
+            width: 200,
           },
-          { field: "EMAIL", headerName: "Email", width: 250 },
-          { field: "ISBN", headerName: "ISBN", minWidth: 200 },
-          { field: "FEE_AMOUNT", headerName: "Amount (Tk)", width: 200 },
-          { field: "START_DATE", headerName: "Start Date", width: 200 },
-          // {
-          //   field: "TITLE",
-          //   headerName: "Title",
-          //   minWidth: 320,
-          //   renderCell: (params) => (
-          //     <Tooltip title="see this book">
-          //       <Typography
-          //         component={Link}
-          //         to={`/details/${params.row.ISBN}`}
-          //         variant="body2"
-          //         color="primary"
-          //         sx={{ cursor: "pointer", textDecoration: "none" }}
-          //       >
-          //         {params.row.TITLE}
-          //       </Typography>
-          //     </Tooltip>
-          //   ),
-          // },
-          // {
-          //   field: "ISBN",
-          //   headerName: "Action",
-          //   type: "actions",
-          //   getActions: (params) => [
-          //     <GridActionsCellItem
-          //       icon={<DeleteForever />}
-          //       label="Delete"
-          //       color="error"
-          //       onClick={handleDeleteRequest(params.row)}
-          //     />,
-          //     <GridActionsCellItem
-          //       icon={<CheckCircleOutline />}
-          //       label="Accept"
-          //       color="success"
-          //       onClick={handleAcceptRequest(params.row)}
-          //     />,
-          //   ],
-          //   width: 150,
-          // },
+          { field: "EMAIL", headerName: "Email", width: 200 },
+          {
+            field: "TITLE",
+            headerName: "Title",
+            minWidth: 300,
+            renderCell: (params) => (
+              <Tooltip title="see this book">
+                <Typography
+                  component={Link}
+                  to={`/details/${params.row.ISBN}`}
+                  variant="body2"
+                  color="primary"
+                  sx={{ cursor: "pointer", textDecoration: "none" }}
+                >
+                  {params.row.TITLE}
+                </Typography>
+              </Tooltip>
+            ),
+          },
+          {
+            field: "FEE_AMOUNT",
+            headerName: "Amount (Tk)",
+            width: 100,
+            renderCell: (params) => (
+              <Typography variant="body2"> {params.row.FEE_AMOUNT}</Typography>
+            ),
+          },
+          { field: "START_DATE", headerName: "Start Date", width: 160 },
+          { field: "PAYMENT_DATE", headerName: "Payment Date", width: 160 },
+          {
+            field: "STATUS",
+            headerName: "Status",
+            width: 80,
+            renderCell: (params) => (
+              <Tooltip title={params.row.STATUS ? "paid" : "Not paid"}>
+                <IconButton color={params.row.STATUS ? "success" : "error"}>
+                  {params.row.STATUS ? <CheckCircle /> : <Error />}
+                </IconButton>
+              </Tooltip>
+            ),
+          },
         ]}
         loading={loading}
         pagination

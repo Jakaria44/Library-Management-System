@@ -413,6 +413,7 @@ const ProfileSection = () => {
       </Popper>
       <TextArea
         open={showingNewsModal}
+        limit={2000}
         handleClose={(event) => {
           setShowingNewsModal(false);
         }}

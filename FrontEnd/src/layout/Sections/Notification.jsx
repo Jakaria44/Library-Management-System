@@ -6,6 +6,7 @@ import {
   Badge,
   Box,
   Card,
+  Chip,
   ClickAwayListener,
   Fade,
   IconButton,
@@ -16,13 +17,24 @@ import {
   ListItemText,
   Paper,
   Popper,
+  Tooltip,
   Typography,
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 // project import
-import { Close, NotificationsNone } from "@mui/icons-material";
+import {
+  CheckCircleOutline,
+  Close,
+  Comment,
+  NotificationsNone,
+} from "@mui/icons-material";
+import { useConfirm } from "material-ui-confirm";
+import ErrorModal from "../../component/ErrorModal";
+import MessageModal from "../../component/MessageModal";
+import SuccessfullModal from "../../component/SuccessfulModal";
+import TimeFormat from "../../utils/TimeFormat";
 import server from "./../../HTTP/httpCommonParam";
 // sx styles
 const avatarSX = {
@@ -45,19 +57,24 @@ const actionSX = {
 
 const Notification = () => {
   const theme = useTheme();
+  const confirm = useConfirm();
+  const [showMessage, setShowMessage] = useState(false);
+  const [message, setMessage] = useState({});
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const matchesXs = useMediaQuery(theme.breakpoints.down("md"));
 
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
 
-  const [numberOfNotifications, setNumberOfNotifications] = useState(0);
   const [notifications, setNotifications] = useState([]);
 
   const getMyNotifications = async () => {
     try {
-      const res = await server.get(`/api/notifications`);
-      setNotifications(res.data.notifications);
-      setNumberOfNotifications(res.data.notifications.length);
+      const res = await server.get("/message");
+      setNotifications(res.data);
     } catch (err) {
       console.log(err);
     }
@@ -75,21 +92,67 @@ const Notification = () => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
+    if (showMessage || showErrorMessage || showSuccessMessage) {
+      return;
+    }
     setOpen(false);
   };
 
   const deleteMessage = async (id) => {
     try {
-      await server.delete(`/api/notifications/${id}`);
-      getMyNotifications();
+      await confirm({
+        title: (
+          <Typography variant="h3" gutterBottom>
+            Delete This Message?
+          </Typography>
+        ),
+        content: (
+          <Typography variant="body1">
+            Are you sure you want to delete this Message?
+          </Typography>
+        ),
+      });
+
+      try {
+        const res = await server.delete(`/edit-message?mid=${id}`);
+        await getMyNotifications();
+
+        setSuccessMessage(res.data.message);
+        setShowSuccessMessage(true);
+      } catch (err) {
+        setErrorMessage(err.response.data.message);
+        setShowErrorMessage(true);
+        console.log(err);
+      } finally {
+        setShowMessage(false);
+      }
     } catch (err) {
       console.log(err);
     }
   };
 
-  function SingleNotification({ id, date, msg }) {
+  async function markAll() {
+    try {
+      const res = await server.get("/mark-all");
+      getMyNotifications();
+      setSuccessMessage(res.data.message);
+      setShowSuccessMessage(true);
+    } catch (err) {
+      setErrorMessage(err.response.data.message);
+      setShowErrorMessage(true);
+      console.log(err);
+    }
+  }
+  function NotificationAvatar({ msg }) {
+    if (msg?.includes("accepted")) {
+      return <CheckCircleOutline color="success" />;
+    }
+    // else if ( )
+    return <Comment />;
+  }
+  function SingleNotification({ id, date, msg, seen }) {
     return (
-      <ListItem>
+      <ListItem divider>
         <ListItemAvatar>
           <Avatar
             sx={{
@@ -97,34 +160,44 @@ const Notification = () => {
               bgcolor: "primary.lighter",
             }}
           >
-            {msg[0]}
+            <NotificationAvatar msg={msg} />
           </Avatar>
         </ListItemAvatar>
         <ListItemText
+          sx={{ cursor: "pointer" }}
+          onClick={() => {
+            setMessage({ msg: msg, id: id });
+            setShowMessage(true);
+          }}
           primary={
-            <Typography variant="body2">
-              <Typography component="span" variant="subtitle1">
-                {msg}
+            <Tooltip title="Click to view full message" placement="left">
+              <Typography variant="body2">
+                <Typography component="span" variant="subtitle1">
+                  {msg.substring(0, 65) + (msg.length > 65 ? "..." : "")}
+                </Typography>
               </Typography>
-            </Typography>
+            </Tooltip>
           }
           secondary={
             <Typography variant="caption" noWrap>
-              {date.toLocaleString()}
+              {TimeFormat(date)}
             </Typography>
           }
           // secondary="Daily scrum meeting time"
         />
         <ListItemSecondaryAction>
-          <IconButton
-            edge="end"
-            aria-label="delete"
-            onClick={() => {
-              deleteMessage(id);
-            }}
-          >
-            <Close />
-          </IconButton>
+          <Tooltip title="Delete">
+            <Avatar
+              edge="end"
+              aria-label="delete"
+              sx={{ cursor: "pointer" }}
+              onClick={() => {
+                deleteMessage(id);
+              }}
+            >
+              <Close />
+            </Avatar>
+          </Tooltip>
         </ListItemSecondaryAction>
       </ListItem>
     );
@@ -133,22 +206,18 @@ const Notification = () => {
     <Box sx={{ flexShrink: 0, ml: 0.75 }}>
       <IconButton
         disableRipple
-        // color="secondary"
-        // sx={{
-        //   color: "text.primary",
-        //   // bgcolor: open ? iconBackColorOpen : iconBackColor,
-        // }}
+        color="secondary"
         aria-label="open profile"
         ref={anchorRef}
         aria-controls={open ? "profile-grow" : undefined}
         aria-haspopup="true"
         onClick={handleToggle}
       >
-        <Avatar variant="rounded" sx={{ ...avatarSX }}>
-          <Badge badgeContent={numberOfNotifications} color="primary">
+        <Badge badgeContent={notifications.length} max={99} color="primary">
+          <Avatar variant="circular">
             <NotificationsNone />
-          </Badge>
-        </Avatar>
+          </Avatar>
+        </Badge>
       </IconButton>
       <Popper
         placement="bottom-start"
@@ -192,15 +261,18 @@ const Notification = () => {
                       <Typography variant="h3">Notifications</Typography>
                     </Box>
                     <Box>
-                      <IconButton size="small" onClick={handleToggle}>
-                        <Close />
-                      </IconButton>
+                      <Chip
+                        label="Mark All As Read"
+                        size="small"
+                        onClick={markAll}
+                      ></Chip>
                     </Box>
                   </Box>
                   <List
-                    component="nav"
                     sx={{
-                      // bgcolor: "theme.background.default",
+                      height: { xs: 300, sm: 450 },
+                      overflowY: "scroll",
+                      bgcolor: "theme.background.default",
                       borderRadius: "8px",
                       p: 0,
                       "& .MuiListItemButton-root": {
@@ -226,9 +298,11 @@ const Notification = () => {
                     ) : (
                       notifications.map((notification) => (
                         <SingleNotification
-                          key={notification.id}
-                          date={new Date(notification.createdAt)}
-                          msg={notification.message}
+                          key={notification.MESSAGE_ID}
+                          id={notification.MESSAGE_ID}
+                          date={new Date(notification.MESSAGE_DATE)}
+                          msg={notification.MESSAGE}
+                          seen={notification.SEEN}
                         />
                       ))
                     )}
@@ -239,6 +313,32 @@ const Notification = () => {
           </Fade>
         )}
       </Popper>
+
+      <MessageModal
+        showMessage={showMessage}
+        message={message.msg}
+        HandleClosed={() => {
+          setShowMessage(false);
+        }}
+        HandleDelete={() => {
+          deleteMessage(message.id);
+        }}
+      />
+      <SuccessfullModal
+        showSuccessMessage={showSuccessMessage}
+        setShowSuccessMessage={setShowSuccessMessage}
+        successMessage={successMessage}
+        HandleModalClosed={() => {
+          setShowSuccessMessage(false);
+        }}
+      />
+      <ErrorModal
+        showErrorMessage={showErrorMessage}
+        errorMessage={errorMessage}
+        HandleModalClosed={() => {
+          setShowErrorMessage(false);
+        }}
+      />
     </Box>
   );
 };
