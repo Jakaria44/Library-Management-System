@@ -7,12 +7,13 @@ import {
 } from "@mui/x-data-grid";
 import { useConfirm } from "material-ui-confirm";
 import React, { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import ErrorModal from "../../component/ErrorModal";
 import StyledDataGrid from "../../component/StyledDataGrid";
 import SuccessfulModal from "../../component/SuccessfulModal";
 import TimeFormat from "../../utils/TimeFormat";
 import server from "./../../HTTP/httpCommonParam";
 import CustomNoRowsOverlay from "./../../component/CustomNoRowsOverlay";
-import { Link } from "react-router-dom";
 const NoRowsOverlay = () => (
   <CustomNoRowsOverlay text="You have no Dues to pay!" />
 );
@@ -21,6 +22,9 @@ const DueList = () => {
   const confirm = useConfirm();
   const [rows, setRows] = useState([]);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [loading, setLoading] = useState(false);
   const [queryOptions, setQueryOptions] = useState({
     sort: "STATUS",
@@ -52,12 +56,11 @@ const DueList = () => {
         EDITION_ID: item.EDITION_ID,
         EDITION_NUM: item.EDITION_NUM,
         START_DATE: TimeFormat(item.START_DATE),
-        PAYMENT_DATE_DATE: item.RETURN_DATE
-          ? TimeFormat(item.RETURN_DATE)
-          : "-",
-        STATUS: item.RETURN_DATE ? 1 : 0,
+        PAYMENT_DATE: item.PAYMENT_DATE ? TimeFormat(item.PAYMENT_DATE) : "-",
+        STATUS: item.PAYMENT_DATE ? 1 : 0,
         FEE_AMOUNT: item.FEE_AMOUNT,
       }));
+      console.log(data);
       setRows(data);
     } catch (error) {
       setRows([]);
@@ -80,24 +83,25 @@ const DueList = () => {
       if (row.STATUS === 1) return;
       try {
         await confirm({
-          title: (
-            <Typography variant="h4">
-              Are you sure you want to pay now?
-            </Typography>
-          ),
+          title: <Typography variant="h4">Pay now?</Typography>,
           description: "This action cannot be undone",
         });
-        // const res = await server.post("/return-book", data);
-        setShowSuccessMessage(true);
+        try {
+          const res = await server.put("/return-book", {
+            RENT_HISTORY_ID: row.id,
+            PAY: true,
+          });
+          setSuccessMessage(res.data.message);
+          setShowSuccessMessage(true);
+        } catch (err) {
+          setErrorMessage(err.response.data.message);
+          setShowErrorMessage(true);
+        }
       } catch (err) {
         console.log("cancelled");
+      } finally {
+        fetchData();
       }
-      // try {
-      //   const res = await server.post("/return-book", data);
-      //   fetchData();
-      // } catch (err) {
-      //   console.log(err);
-      // }
     },
     []
   );
@@ -172,9 +176,16 @@ const DueList = () => {
       />
       <SuccessfulModal
         showSuccessMessage={showSuccessMessage}
-        successMessage="We've recieved your fine. Now you can get more books!"
+        successMessage={successMessage}
         HandleModalClosed={() => {
           setShowSuccessMessage(false);
+        }}
+      />
+      <ErrorModal
+        showErrorMessage={showErrorMessage}
+        errorMessage={errorMessage}
+        HandleModalClosed={() => {
+          setShowErrorMessage(false);
         }}
       />
     </Box>

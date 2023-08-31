@@ -7,6 +7,7 @@ import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import Typography from "@mui/material/Typography";
 import DarkModeSwitch from "../component/DarkModeSwitch.jsx";
 import { useMyTheme } from "../contexts/ThemeContextProvider.jsx";
+import Notification from "./Sections/Notification.jsx";
 import ProfileSection from "./Sections/ProfileSection.jsx";
 import SearchSection from "./Sections/SearchSection.jsx";
 
@@ -77,6 +78,8 @@ const Header = ({ handleLeftDrawerToggle }) => {
         </Avatar> */}
         <DarkModeSwitch />
       </Box>
+      <Box sx={{ flexGrow: 1 }} />
+      <Notification />
       <Box sx={{ flexGrow: 1 }} />
 
       <ProfileSection />
