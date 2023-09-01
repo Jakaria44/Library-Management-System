@@ -11,32 +11,32 @@ VALUES (1, 'Bloomsbury Publishing',
         '+44 (0)20 7631 5600', 'contact@bloomsbury.com', 'London', 'England', 'WC1B 3DP');
 
 --BOOK
-INSERT INTO c##library.BOOK (PUBLISHER_ID, PUBLISH_YEAR, LANGUAGE, IMAGE, TITLE, ISBN, NUMBER_OF_PAGES, DESCRIPTION)
-VALUES (1, 1997, 'English', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/4cf25a33d8a4_86392.gif',
+INSERT INTO c##library.BOOK (PUBLISHER_ID, LANGUAGE, IMAGE, TITLE, ISBN, NUMBER_OF_PAGES, DESCRIPTION)
+VALUES (1, 'English', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/4cf25a33d8a4_86392.gif',
         'Harry Potter and the Philosophers Stone', '9781408855652', 352,
         'Harry Potter discovers he''s a wizard on his eleventh birthday and is invited to attend Hogwarts School of Witchcraft and Wizardry. There, he makes friends, learns magic, and uncovers the mystery of the Sorcerer''s Stone.');
-INSERT INTO c##library.BOOK (PUBLISHER_ID, PUBLISH_YEAR, LANGUAGE, IMAGE, TITLE, ISBN, NUMBER_OF_PAGES, DESCRIPTION)
-VALUES (1, 1998, 'English', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/58c09b4d2824_110120.gif',
+INSERT INTO c##library.BOOK (PUBLISHER_ID, LANGUAGE, IMAGE, TITLE, ISBN, NUMBER_OF_PAGES, DESCRIPTION)
+VALUES (1, 'English', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/58c09b4d2824_110120.gif',
         'Harry Potter and the Chamber of Secrets ', '9781408855669', 384,
         'Harry returns to Hogwarts for his second year, only to find the school plagued by mysterious attacks. With the help of his friends, he investigates the legend of the Chamber of Secrets and its monstrous secrets.');
-INSERT INTO c##library.BOOK (PUBLISHER_ID, PUBLISH_YEAR, LANGUAGE, IMAGE, TITLE, ISBN, NUMBER_OF_PAGES, DESCRIPTION)
-VALUES (1, 1999, 'English', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/a5a669963_101016.jpg',
+INSERT INTO c##library.BOOK (PUBLISHER_ID, LANGUAGE, IMAGE, TITLE, ISBN, NUMBER_OF_PAGES, DESCRIPTION)
+VALUES (1, 'English', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/a5a669963_101016.jpg',
         'Harry Potter and the Prisoner of Azkaban', '9781408855676', 462,
         'In his third year, Harry learns that an escaped prisoner, Sirius Black, is believed to be after him. With new magical creatures and revelations about his past, Harry uncovers the truth behind Sirius''s escape.');
-INSERT INTO c##library.BOOK (PUBLISHER_ID, PUBLISH_YEAR, LANGUAGE, IMAGE, TITLE, ISBN, NUMBER_OF_PAGES, DESCRIPTION)
-VALUES (1, 2000, 'English', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/629765c8f_152119.jpg',
+INSERT INTO c##library.BOOK (PUBLISHER_ID, LANGUAGE, IMAGE, TITLE, ISBN, NUMBER_OF_PAGES, DESCRIPTION)
+VALUES (1, 'English', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/629765c8f_152119.jpg',
         'Harry Potter and the Goblet of Fire', '9781408834992', 640,
         'Harry is unexpectedly entered into the dangerous Triwizard Tournament, competing against older students. But as the tournament progresses, dark forces are at work, leading to a shocking turn of events.');
-INSERT INTO c##library.BOOK (PUBLISHER_ID, PUBLISH_YEAR, LANGUAGE, IMAGE, TITLE, ISBN, NUMBER_OF_PAGES, DESCRIPTION)
-VALUES (1, 2003, 'English', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/bc4625241f54_86391.jpg',
+INSERT INTO c##library.BOOK (PUBLISHER_ID, LANGUAGE, IMAGE, TITLE, ISBN, NUMBER_OF_PAGES, DESCRIPTION)
+VALUES (1, 'English', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/bc4625241f54_86391.jpg',
         'Harry Potter and the Order of the Phoenix', '9780747591269', 901,
         'As Harry enters his fifth year, he faces resistance from the Ministry of Magic and his peers who doubt his claims about the return of Lord Voldemort. He forms "Dumbledore''s Army" to teach his friends defensive magic.');
-INSERT INTO c##library.BOOK (PUBLISHER_ID, PUBLISH_YEAR, LANGUAGE, IMAGE, TITLE, ISBN, NUMBER_OF_PAGES, DESCRIPTION)
-VALUES (1, 2005, 'English', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/127d59aff684_102401.gif',
+INSERT INTO c##library.BOOK (PUBLISHER_ID, LANGUAGE, IMAGE, TITLE, ISBN, NUMBER_OF_PAGES, DESCRIPTION)
+VALUES (1, 'English', 'https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/127d59aff684_102401.gif',
         'Harry Potter and the Half-Blood Prince', '9780439785969', 652,
         'Voldemort''s power is growing, and Harry learns about his enemy''s past through memories collected in a mysterious book. Meanwhile, he navigates teenage emotions and the challenges of preparing for the final battle.');
-INSERT INTO c##library.BOOK (PUBLISHER_ID, PUBLISH_YEAR, LANGUAGE, IMAGE, TITLE, ISBN, NUMBER_OF_PAGES, DESCRIPTION)
-VALUES (1, 2007, 'English',
+INSERT INTO c##library.BOOK (PUBLISHER_ID, LANGUAGE, IMAGE, TITLE, ISBN, NUMBER_OF_PAGES, DESCRIPTION)
+VALUES (1, 'English',
         'https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/Harry_Potter_and_the_Deathly_Hallows_(Se-J.K_Rowling-699a7-122325.jpg',
         'Harry Potter and the Deathly Hallows', '9781408894743', 608,
         'In the final book, Harry, Ron, and Hermione go on a dangerous mission to destroy Horcruxes, Voldemort''s secret to immortality. The trio faces their most challenging obstacles and makes ultimate sacrifices.');
@@ -124,9 +124,6 @@ VALUES ('9781408894743', '1');
 --REVIEW_RATING
 INSERT INTO c##library.REVIEW_RATING(ISBN, USER_ID, RATING, REVIEW, EDIT_DATE)
 VALUES ('9781408855652', 1, 5, 'My most favourite book ever', SYSDATE);
-
-INSERT INTO c##library.REVIEW_RATING(ISBN, USER_ID, RATING, REVIEW, EDIT_DATE)
-VALUES ('9781408855652', 3, 4, 'I like this one', SYSDATE);
 INSERT INTO c##library.REVIEW_RATING(ISBN, USER_ID, RATING, REVIEW, EDIT_DATE)
 VALUES ('9781408894743', 1, 5, 'The End of my favourite series', SYSDATE + 1);
 
@@ -139,6 +136,7 @@ VALUES (2, 150, 'Cleaner');
 --EMPLOYEE
 INSERT INTO c##library.EMPLOYEE(USER_ID, JOB_ID, JOIN_DATE, END_DATE)
 VALUES (1, 2, SYSDATE, NULL);
+
 
 --RENT_HISTORY
 INSERT INTO c##library.RENT_HISTORY(RENT_HISTORY_ID, USER_ID, EDITION_ID, RENT_DATE, RETURN_DATE, STATUS)

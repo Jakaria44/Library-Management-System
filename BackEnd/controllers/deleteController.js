@@ -10,7 +10,8 @@ import {
   deleteRequestDB,
   getEditionDB,
   sendMessageDB,
-  deleteMessageDB
+  deleteMessageDB,
+  deleteEditionDB
 } from "../Database/queryFunctions.js";
 
 export async function deleteBookOfBookshelf(req, res, next) {
@@ -151,13 +152,15 @@ export async function deleteBookshelf(req, res, next) {
 
 export async function deleteBook(req, res, next) {
   try {
-    const context = {};
-
-    context.ISBN = req.query.ISBN;
-
+    let context = {};
+    context.ISBN = req.query.id;
     let deleted = await deleteBookDB(context);
 
-    res.status(201).json(deleted);
+    if (deleted) {
+      res.status(200).json({message: 'Successfully deleted'});
+    } else {
+      res.status(404).json({message: 'Failed to delete'});
+    }
   } catch (err) {
     next(err);
   }
@@ -203,6 +206,24 @@ export async function deleteGenre(req, res, next) {
     deleted.GENRE_ID = req.query.gid;
 
     deleted = await deleteGenreDB(deleted);
+
+    if (deleted) {
+      res.status(200).json({message: 'Successfully deleted'});
+    } else {
+      res.status(404).json({message: 'Failed to delete'});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function deleteEdition(req, res, next) {
+  try {
+    let deleted = {};
+
+    deleted.EDITION_ID = req.query.eid;
+
+    deleted = await deleteEditionDB(deleted);
 
     if (deleted) {
       res.status(200).json({message: 'Successfully deleted'});

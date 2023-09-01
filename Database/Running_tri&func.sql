@@ -1,4 +1,4 @@
-create sequence user_seq;
+-- create sequence user_seq;
 
 create
     or replace trigger user_insert_trig
@@ -319,82 +319,20 @@ BEGIN
 END;
 /
 
-BEGIN
-    DBMS_SCHEDULER.create_job(
-            job_name => 'UPDATE_FINE_HISTORY_JOB',
-            job_type => 'PLSQL_BLOCK',
-            job_action => 'BEGIN update_fine_history; END;',
-            start_date => SYSTIMESTAMP,
-            repeat_interval => 'FREQ=HOURLY; INTERVAL=24', -- Run every 2 hours
-            enabled => TRUE
-        );
-END;
-/
-
-CREATE OR REPLACE FUNCTION IS_VALID_EDITION(A_EDITION_ID VARCHAR2, A_EDITION_NUM NUMBER) RETURN BOOLEAN IS
-    COUNTER  NUMBER;
-    COUNTER2 NUMBER;
-    A_ISBN   VARCHAR2(20);
-BEGIN
-    SELECT ISBN
-    INTO A_ISBN
-    FROM EDITION
-    WHERE EDITION_ID = A_EDITION_ID;
-    SELECT COUNT(*)
-    INTO COUNTER
-    FROM EDITION
-    WHERE EDITION_ID = A_EDITION_ID
-      AND EDITION_NUM = A_EDITION_NUM;
-    IF
-        COUNTER = 0 THEN
-        SELECT COUNT(*)
-        INTO COUNTER2
-        FROM EDITION
-        WHERE ISBN = A_ISBN
-          AND EDITION_NUM = A_EDITION_NUM;
-        IF COUNTER2 = 0 THEN
-            RETURN TRUE;
-        ELSE
-            RETURN FALSE;
-        end if;
-    ELSE
-        RETURN TRUE;
-    END IF;
-end;
-/
+-- BEGIN
+--     DBMS_SCHEDULER.create_job (
+--         job_name        => 'UPDATE_FINE_HISTORY_JOB',
+--         job_type        => 'PLSQL_BLOCK',
+--         job_action      => 'BEGIN update_fine_history; END;',
+--         start_date      => SYSTIMESTAMP,
+--         repeat_interval => 'FREQ=HOURLY; INTERVAL=24', -- Run every 24 hours
+--         enabled         => TRUE
+--     );
+-- END;
+-- /
 
 
-CREATE OR REPLACE PROCEDURE UPDATE_EDITION(A_EDITION_ID VARCHAR2,
-                                           A_EDITION_NUM VARCHAR2,
-                                           A_NUM_OF_COPIES NUMBER,
-                                           A_PUBLISH_YEAR NUMBER) IS
-    COPIES NUMBER;
-    YEAR   NUMBER(4);
-BEGIN
-    IF
-        (IS_VALID_EDITION(A_EDITION_ID, A_EDITION_NUM)) THEN
-        SELECT NUM_OF_COPIES, PUBLISH_YEAR
-        INTO COPIES, YEAR
-        FROM EDITION
-        WHERE EDITION_ID = A_EDITION_ID;
-        COPIES := COPIES + A_NUM_OF_COPIES;
-        IF COPIES < 0 THEN
-            RAISE_APPLICATION_ERROR(-20001, 'CANNOT BE NEGATIVE');
-        end if;
-        IF A_PUBLISH_YEAR IS NULL THEN
-            YEAR := A_PUBLISH_YEAR;
-        END IF;
-        UPDATE EDITION
-        SET NUM_OF_COPIES = COPIES,
-            PUBLISH_YEAR  = YEAR
-        WHERE Edition_ID = A_EDITION_ID;
-    ELSE
-        raise_application_error(-20111, 'EDITION does not exist');
-    END IF;
-END ;
-/
-
-create sequence history_seq;
+-- create sequence history_seq;
 
 CREATE
     OR REPLACE TRIGGER RENT_INSERT_TRIG
@@ -490,7 +428,7 @@ EXCEPTION
 END;
 /
 
-create sequence msg_seq;
+-- create sequence msg_seq;
 
 CREATE
     OR REPLACE TRIGGER MESSAGE_INSERT_TRIG
@@ -527,7 +465,7 @@ BEGIN
 END;
 /
 
-create sequence news_seq;
+-- create sequence news_seq;
 
 CREATE
     OR REPLACE TRIGGER NEWS_INSERT_TRIG
@@ -573,7 +511,7 @@ EXCEPTION
 END;
 /
 
-create sequence genre_seq;
+-- create sequence genre_seq;
 
 CREATE
     OR REPLACE TRIGGER GENRE_INSERT_TRIG
@@ -619,7 +557,8 @@ BEGIN
 END;
 /
 
-create sequence author_seq;
+
+-- create sequence author_seq;
 
 CREATE
     OR REPLACE TRIGGER AUTHOR_INSERT_TRIG
@@ -674,7 +613,7 @@ BEGIN
 END ;
 /
 
-create sequence publisher_seq;
+-- create sequence publisher_seq;
 
 CREATE
     OR REPLACE TRIGGER PUBLISHER_INSERT_TRIG
@@ -878,16 +817,15 @@ BEGIN
 END;
 /
 
-
 CREATE OR REPLACE FUNCTION IS_VALID_DELETE_AUTHOR(A_ID IN VARCHAR2) RETURN BOOLEAN IS
-    COUNTER NUMBER;
-		COUNTER2 NUMBER;
+    COUNTER  NUMBER;
+    COUNTER2 NUMBER;
 BEGIN
     SELECT COUNT(*)
     INTO COUNTER
     FROM WRITTEN_BY
     WHERE AUTHOR_ID = A_ID;
-		SELECT COUNT(*)
+    SELECT COUNT(*)
     INTO COUNTER2
     FROM AUTHOR
     WHERE AUTHOR_ID = A_ID;
@@ -915,19 +853,19 @@ END;
 /
 
 CREATE OR REPLACE FUNCTION IS_VALID_DELETE_PUBLISHER(P_ID IN VARCHAR2) RETURN BOOLEAN IS
-    COUNTER NUMBER;
-		COUNTER2 NUMBER;
+    COUNTER  NUMBER;
+    COUNTER2 NUMBER;
 BEGIN
     SELECT COUNT(*)
     INTO COUNTER
     FROM BOOK
     WHERE PUBLISHER_ID = P_ID;
-		SELECT COUNT(*)
+    SELECT COUNT(*)
     INTO COUNTER2
     FROM PUBLISHER
     WHERE PUBLISHER_ID = P_ID;
     IF
-        (COUNTER = 0 AND COUNTER2>0) THEN
+        (COUNTER = 0 AND COUNTER2 > 0) THEN
         RETURN TRUE;
     ELSE
         RETURN FALSE;
@@ -949,14 +887,14 @@ END;
 /
 
 CREATE OR REPLACE FUNCTION IS_VALID_DELETE_GENRE(G_ID IN VARCHAR2) RETURN BOOLEAN IS
-    COUNTER NUMBER;
-		COUNTER2 NUMBER;
+    COUNTER  NUMBER;
+    COUNTER2 NUMBER;
 BEGIN
     SELECT COUNT(*)
     INTO COUNTER
     FROM BOOK_GENRE
     WHERE GENRE_ID = G_ID;
-		SELECT COUNT(*)
+    SELECT COUNT(*)
     INTO COUNTER2
     FROM GENRE
     WHERE GENRE_ID = G_ID;
@@ -982,3 +920,324 @@ BEGIN
 END;
 /
 
+create sequence edition_seq;
+
+CREATE
+    OR REPLACE TRIGGER EDITION_INSERT_TRIG
+    BEFORE INSERT
+    ON EDITION
+    FOR EACH ROW
+BEGIN
+    IF
+        :NEW.EDITION_ID IS NULL
+    THEN
+        :NEW.EDITION_ID := edition_seq.nextval;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE FUNCTION IS_VALID_INSERT_EDITION(A_ISBN VARCHAR2, A_EDITION_NUM NUMBER, A_PUBLISH_YEAR NUMBER) RETURN BOOLEAN IS
+    COUNTER  NUMBER;
+    COUNTER2 NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM EDITION
+    WHERE ISBN = A_ISBN
+      AND EDITION_NUM = A_EDITION_NUM;
+    IF
+        COUNTER = 0 THEN
+        SELECT COUNT(*)
+        INTO COUNTER2
+        FROM ((SELECT *
+               FROM EDITION
+               WHERE ISBN = A_ISBN
+                 AND PUBLISH_YEAR > A_PUBLISH_YEAR
+                 AND EDITION_NUM < A_EDITION_NUM)
+              UNION
+              (SELECT *
+               FROM EDITION
+               WHERE ISBN = A_ISBN
+                 AND PUBLISH_YEAR < A_PUBLISH_YEAR
+                 AND EDITION_NUM > A_EDITION_NUM));
+        IF COUNTER2 = 0 THEN
+            RETURN TRUE;
+        ELSE
+            RETURN FALSE;
+        END IF;
+    ELSE
+        RETURN FALSE;
+    END IF;
+end;
+/
+
+CREATE OR REPLACE PROCEDURE INSERT_EDITION(A_ISBN VARCHAR2,
+                                           A_EDITION_NUM NUMBER,
+                                           A_NUM_OF_COPIES NUMBER,
+                                           A_PUBLISH_YEAR NUMBER) IS
+    ID NUMBER;
+BEGIN
+    IF
+        (IS_VALID_INSERT_EDITION(A_ISBN, A_EDITION_NUM, A_PUBLISH_YEAR) AND A_NUM_OF_COPIES >= 0) THEN
+        INSERT INTO EDITION (ISBN, EDITION_NUM, NUM_OF_COPIES, PUBLISH_YEAR)
+        VALUES (A_ISBN,
+                A_EDITION_NUM,
+                A_NUM_OF_COPIES,
+                A_PUBLISH_YEAR);
+        select edition_seq.currval
+        into ID
+        from DUAL;
+    ELSE
+        raise_application_error(-20111, 'EDITION IS NOT ELIGIBLE');
+    END IF;
+END;
+/
+
+CREATE OR REPLACE FUNCTION IS_VALID_EDITION(A_EDITION_ID VARCHAR2, A_EDITION_NUM NUMBER, A_PUBLISH_YEAR NUMBER) RETURN BOOLEAN IS
+    COUNTER  NUMBER;
+    COUNTER2 NUMBER;
+    A_ISBN   VARCHAR2(20);
+BEGIN
+    SELECT ISBN
+    INTO A_ISBN
+    FROM EDITION
+    WHERE EDITION_ID = A_EDITION_ID;
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM EDITION
+    WHERE ISBN = A_ISBN
+      AND EDITION_ID <> A_EDITION_ID
+      AND EDITION_NUM = A_EDITION_NUM;
+    IF
+        COUNTER = 0 THEN
+        SELECT COUNT(*)
+        INTO COUNTER2
+        FROM EDITION
+        WHERE ISBN = A_ISBN
+          AND ((EDITION_NUM < A_EDITION_NUM AND PUBLISH_YEAR > A_PUBLISH_YEAR) OR
+               (EDITION_NUM > A_EDITION_NUM AND PUBLISH_YEAR < A_PUBLISH_YEAR));
+        IF COUNTER2 = 0 THEN
+            RETURN TRUE;
+        ELSE
+            RETURN FALSE;
+        end if;
+    ELSE
+        RETURN FALSE;
+    END IF;
+end;
+/
+
+CREATE OR REPLACE PROCEDURE UPDATE_EDITION(A_EDITION_ID VARCHAR2,
+                                           A_EDITION_NUM NUMBER,
+                                           A_NUM_OF_COPIES NUMBER,
+                                           A_PUBLISH_YEAR NUMBER) IS
+    COPIES NUMBER;
+    YEAR   NUMBER(4);
+BEGIN
+    SELECT NUM_OF_COPIES, PUBLISH_YEAR
+    INTO COPIES, YEAR
+    FROM EDITION
+    WHERE EDITION_ID = A_EDITION_ID;
+    COPIES := COPIES + A_NUM_OF_COPIES;
+    IF COPIES < 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'COPIES CANNOT BE NEGATIVE');
+    end if;
+    IF A_PUBLISH_YEAR IS NOT NULL THEN
+        YEAR := A_PUBLISH_YEAR;
+    END IF;
+    IF
+        (IS_VALID_EDITION(A_EDITION_ID, A_EDITION_NUM, YEAR)) THEN
+        UPDATE EDITION
+        SET NUM_OF_COPIES = COPIES,
+            PUBLISH_YEAR  = YEAR,
+            EDITION_NUM   = A_EDITION_NUM
+        WHERE Edition_ID = A_EDITION_ID;
+    ELSE
+        raise_application_error(-20111, 'EDITION IS NOT ELIGIBLE');
+    END IF;
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RAISE_APPLICATION_ERROR(-20002, 'DOES NOT EXIST');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+        RAISE;
+END ;
+/
+
+
+CREATE OR REPLACE PROCEDURE DELETE_EDITION(E_ID IN VARCHAR2) IS
+    ID      VARCHAR2(100);
+    COUNTER NUMBER;
+BEGIN
+    SELECT ISBN
+    INTO ID
+    FROM EDITION
+    WHERE EDITION_ID = E_ID;
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM EDITION
+    WHERE ISBN = ID;
+    IF
+        COUNTER < 2 THEN
+        raise_application_error(-20111, 'Only one edition left');
+    ELSE
+        DELETE
+        FROM EDITION
+        WHERE EDITION_ID = E_ID;
+    END IF;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        raise_application_error(-20111, 'No Data Found');
+    WHEN OTHERS THEN
+        raise_application_error(-20111, 'Some Error Occurred');
+END;
+/
+
+CREATE OR REPLACE FUNCTION IS_VALID_TITLE(GIVEN_ISBN VARCHAR2, GIVEN_TITLE IN VARCHAR2)
+    RETURN BOOLEAN IS
+    F_TITLE VARCHAR2(100);
+BEGIN
+    SELECT TITLE
+    INTO F_TITLE
+    FROM BOOK
+    WHERE UPPER(TITLE) = UPPER(GIVEN_TITLE)
+      AND ISBN <> GIVEN_ISBN;
+    RETURN FALSE;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN TRUE;
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('SOME ERROR OCCURRED');
+        RETURN FALSE;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE INSERT_BOOK(A_ISBN VARCHAR2,
+                                        A_TITLE VARCHAR2,
+                                        A_IMAGE VARCHAR2,
+                                        A_NUMBER_OF_PAGES NUMBER,
+                                        A_LANGUAGE VARCHAR2,
+                                        A_DESCRIPTION VARCHAR2,
+                                        A_PUBLISHER_ID VARCHAR2) IS
+BEGIN
+    IF
+        (IS_VALID_TITLE(A_ISBN, A_TITLE)) THEN
+        INSERT INTO BOOK(ISBN, TITLE, IMAGE, NUMBER_OF_PAGES, LANGUAGE, DESCRIPTION, PUBLISHER_ID)
+        VALUES (A_ISBN, A_TITLE, A_IMAGE, A_NUMBER_OF_PAGES, A_LANGUAGE, A_DESCRIPTION, A_PUBLISHER_ID);
+    ELSE
+        raise_application_error(-20111, 'TITLE NOT UNIQUE');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        raise_application_error(-20111, 'ISBN NOT UNIQUE/ SOME DATA IS WRONG');
+END;
+/
+
+
+CREATE OR REPLACE PROCEDURE UPDATE_BOOK(A_ISBN VARCHAR2,
+                                        A_TITLE VARCHAR2,
+                                        A_IMAGE VARCHAR2,
+                                        A_NUMBER_OF_PAGES NUMBER,
+                                        A_LANGUAGE VARCHAR2,
+                                        A_DESCRIPTION VARCHAR2,
+                                        A_PUBLISHER_ID VARCHAR2) IS
+    F_ISBN VARCHAR2(20);
+BEGIN
+    SELECT ISBN
+    INTO F_ISBN
+    FROM BOOK
+    WHERE ISBN = A_ISBN;
+    IF
+        (IS_VALID_TITLE(A_ISBN, A_TITLE)) THEN
+        UPDATE BOOK
+        SET TITLE=A_TITLE,
+            IMAGE=A_IMAGE,
+            NUMBER_OF_PAGES=A_NUMBER_OF_PAGES,
+            LANGUAGE=A_LANGUAGE,
+            DESCRIPTION=A_DESCRIPTION,
+            PUBLISHER_ID=A_PUBLISHER_ID
+        WHERE ISBN = A_ISBN;
+    ELSE
+        raise_application_error(-20111, 'TITLE IS NOT VALID');
+    END IF;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        raise_application_error(-20111, 'DOESNOT EXISTS');
+    WHEN OTHERS THEN
+        raise_application_error(-20111, 'SOME DATA IS WRONG');
+END;
+/
+
+CREATE OR REPLACE PROCEDURE DELETE_BOOK(B_ISBN IN VARCHAR2) IS
+    P VARCHAR2;
+BEGIN
+    SELECT ISBN
+    INTO P
+    FROM BOOK
+    WHERE ISBN = B_ISBN;
+    DELETE
+    FROM BOOK
+    WHERE ISBN = B_ISBN;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        raise_application_error(-20111, 'DOES NOT EXISTS');
+    WHEN OTHERS THEN
+        raise_application_error(-20111, 'CAN NOT BE DELETED');
+END;
+/
+
+CREATE OR REPLACE PROCEDURE INSERT_WRITTEN_BY(B_ISBN IN VARCHAR2, P_ID IN VARCHAR2) IS
+    P VARCHAR2(20);
+BEGIN
+    SELECT ISBN
+    INTO P
+    FROM WRITTEN_BY
+    WHERE (ISBN = B_ISBN AND AUTHOR_ID = P_ID);
+    raise_application_error(-20111, 'ALREADY EXISTS');
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        INSERT INTO WRITTEN_BY(ISBN, AUTHOR_ID) VALUES (B_ISBN, P_ID);
+    WHEN OTHERS THEN
+        raise_application_error(-20111, 'SOME ERROR OCCURRED');
+END;
+/
+
+
+CREATE OR REPLACE PROCEDURE INSERT_BOOK_GENRE(B_ISBN IN VARCHAR2, G_ID IN VARCHAR2) IS
+    P VARCHAR2(20);
+BEGIN
+    SELECT ISBN
+    INTO P
+    FROM BOOK_GENRE
+    WHERE (ISBN = B_ISBN AND GENRE_ID = G_ID);
+    raise_application_error(-20111, 'ALREADY EXISTS');
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        INSERT INTO BOOK_GENRE(ISBN, GENRE_ID) VALUES (B_ISBN, G_ID);
+    WHEN OTHERS THEN
+        raise_application_error(-20111, 'SOME ERROR OCCURRED');
+END;
+/
+
+CREATE OR REPLACE PROCEDURE DELETE_WRITTEN_BY(B_ISBN IN VARCHAR2) IS
+BEGIN
+		DELETE
+		FROM WRITTEN_BY
+		WHERE ISBN = B_ISBN;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE_APPLICATION_ERROR(-20001,'SOME ERROR OCCURRED');
+END;
+/
+
+CREATE OR REPLACE PROCEDURE DELETE_BOOK_GENRE(B_ISBN IN VARCHAR2) IS
+BEGIN
+   	DELETE
+		FROM BOOK_GENRE
+		WHERE ISBN = B_ISBN;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE_APPLICATION_ERROR(-20001,'SOME ERROR OCCURRED');
+END;
+/

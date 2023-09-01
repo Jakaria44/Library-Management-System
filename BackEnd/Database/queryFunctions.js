@@ -106,7 +106,8 @@ export async function getBookDetailsByIDDB(context) {
     "(SELECT JSON_ARRAYAGG(DISTINCT JSON_OBJECT('NAME' VALUE A.NAME, 'ID' VALUE A.AUTHOR_ID)) FROM WRITTEN_BY WB JOIN AUTHOR A ON WB.AUTHOR_ID = A.AUTHOR_ID WHERE WB.ISBN = B.ISBN) AS AUTHOR, " +
     "(SELECT JSON_ARRAYAGG(DISTINCT JSON_OBJECT('NAME' VALUE G.GENRE_NAME, 'ID' VALUE G.GENRE_ID)) FROM BOOK_GENRE BG JOIN GENRE G ON BG.GENRE_ID = G.GENRE_ID WHERE BG.ISBN = B.ISBN) AS GENRE, " +
     "(SELECT JSON_ARRAYAGG(DISTINCT JSON_OBJECT('ID' VALUE E.EDITION_ID, 'NUM' VALUE E.EDITION_NUM, 'COUNT' VALUE E.NUM_OF_COPIES, 'YEAR' VALUE E.PUBLISH_YEAR)) FROM EDITION E WHERE E.ISBN = B.ISBN) AS EDITION, " +
-    "P.PUBLISHER_ID, P.NAME AS PUBLISHER_NAME, B.TITLE, B.IMAGE, B.PUBLISH_YEAR, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE, " +
+    "(SELECT  MIN(E.PUBLISH_YEAR) FROM EDITION E WHERE E.ISBN = B.ISBN) AS PUBLISH_YEAR, "+
+    "P.PUBLISHER_ID, P.NAME AS PUBLISHER_NAME, B.TITLE, B.IMAGE, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE, " +
     "NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, NVL(COUNT(DISTINCT F.USER_ID), 0) AS FAVOURITE, B.DESCRIPTION";
   if (context.USER_ID) {
     query += `, CASE WHEN B.ISBN = ANY(SELECT F.ISBN FROM FAVOURITE F WHERE F.USER_ID = ${context.USER_ID}) THEN 1 ELSE 0 END AS IS_FAVOURITE`;
@@ -118,7 +119,7 @@ export async function getBookDetailsByIDDB(context) {
     "LEFT JOIN FAVOURITE F ON (B.ISBN = F.ISBN)";
   query += `\nWHERE B.ISBN = '${context.ISBN}'`;
   query +=
-    "\nGROUP BY B.ISBN, B.TITLE, B.IMAGE, P.PUBLISHER_ID, P.NAME, B.PUBLISH_YEAR, B.NUMBER_OF_PAGES, B.LANGUAGE, B.DESCRIPTION";
+    "\nGROUP BY B.ISBN, B.TITLE, B.IMAGE, P.PUBLISHER_ID, P.NAME, B.NUMBER_OF_PAGES, B.LANGUAGE, B.DESCRIPTION";
   console.log(query);
   const result = await queryExecute(query, []);
   return result.rows;
@@ -126,7 +127,7 @@ export async function getBookDetailsByIDDB(context) {
 
 // export async function getBookDetailsByIDDB(context) {
 //   console.log(context);
-//   const query = 'SELECT B.ISBN,B.TITLE,B.IMAGE,B.NUMBER_OF_PAGES,B.LANGUAGE,B.PUBLISH_YEAR,'+
+//   const query = 'SELECT B.ISBN,B.TITLE,B.IMAGE,B.NUMBER_OF_PAGES,B.LANGUAGE,'+
 //     'B.DESCRIPTION,B.PUBLISHER_ID,P.NAME AS PUBLISHER_NAME,P.EMAIL AS PUBLISHER_EMAIL,' +
 //     'P.CONTACT_NO AS PUBLISHER_CONTACT_NO,' +
 //     "(P.POSTAL_CODE || ', ' || P.CITY || ', ' || P.COUNTRY) AS PUBLISHER_ADDRESS," +
@@ -134,7 +135,7 @@ export async function getBookDetailsByIDDB(context) {
 //     'AS AUTHOR_NAME FROM BOOK B JOIN PUBLISHER P ON (B.PUBLISHER_ID = P.PUBLISHER_ID)' +
 //     ' JOIN WRITTEN_BY WB ON (B.ISBN = WB.ISBN) JOIN AUTHOR A ON (WB.AUTHOR_ID = A.AUTHOR_ID)' +
 //     ' where B.ISBN = :ISBN \n' +
-//     'GROUP BY B.ISBN,B.TITLE,B.IMAGE,B.NUMBER_OF_PAGES,B.LANGUAGE,B.PUBLISH_YEAR,' +
+//     'GROUP BY B.ISBN,B.TITLE,B.IMAGE,B.NUMBER_OF_PAGES,B.LANGUAGE,' +
 //     'B.DESCRIPTION,B.PUBLISHER_ID,P.NAME,P.EMAIL,P.CONTACT_NO,' +
 //     "(P.POSTAL_CODE || ', ' || P.CITY || ', ' || P.COUNTRY),P.IMAGE\n";
 //   console.log(query);
@@ -162,7 +163,8 @@ export async function getBookDB() {
 export async function getAllBookSumDB(context) {
   console.log(context);
   let query =
-    "SELECT B.ISBN, B.TITLE, B.IMAGE, B.PUBLISH_YEAR, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE, " +
+    "SELECT B.ISBN, B.TITLE, B.IMAGE, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE, " +
+    "(SELECT  MIN(E.PUBLISH_YEAR) FROM EDITION E WHERE E.ISBN = B.ISBN) AS PUBLISH_YEAR, "+
     "(SELECT LISTAGG(A.NAME, ', ') FROM WRITTEN_BY WB JOIN AUTHOR A ON WB.AUTHOR_ID = A.AUTHOR_ID WHERE WB.ISBN = B.ISBN) AS AUTHORS, " +
     "NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, NVL(COUNT(DISTINCT F.USER_ID),0) AS FAVOURITE";
   if (context.USER_ID) {
@@ -173,11 +175,11 @@ export async function getAllBookSumDB(context) {
     'LEFT JOIN REVIEW_RATING R ON (B.ISBN = R.ISBN) ' +
     'LEFT JOIN FAVOURITE F ON(B.ISBN = F.ISBN)';
   query +=
-    '\nGROUP BY B.ISBN, B.TITLE, B.IMAGE, B.PUBLISH_YEAR, B.NUMBER_OF_PAGES, B.LANGUAGE';
+    '\nGROUP BY B.ISBN, B.TITLE, B.IMAGE, B.NUMBER_OF_PAGES, B.LANGUAGE';
 
   // Check for sorting and ordering options
   if (context.sort && context.order) {
-    const validColumns = ['TITLE', 'PUBLISH_YEAR', 'PAGE', 'LANGUAGE', 'RATING', 'FAVOURITE'];
+    const validColumns = ['TITLE', 'PAGE', 'LANGUAGE', 'RATING', 'FAVOURITE'];
     const validOrders = ['ASC', 'DESC'];
 
     if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
@@ -186,7 +188,7 @@ export async function getAllBookSumDB(context) {
         query += ', B.TITLE ASC';
       }
     } else {
-      query += '\nORDER BY B.TITLE ASC, B.PUBLISH_YEAR DESC';
+      query += '\nORDER BY B.TITLE ASC';
     }
   }
 
@@ -278,7 +280,12 @@ export async function getAllPublishersDB() {
 export async function getAllLanguagesDB() {
   let query = 'SELECT LANGUAGE FROM BOOK GROUP BY LANGUAGE';
   query += '\nORDER BY LANGUAGE ASC';
-  const result = await queryExecute(query);
+  let result = null;
+  try {
+    result = await queryExecute(query);
+  } catch (e) {
+    return [];
+  }
   return result.rows;
 }
 
@@ -528,20 +535,22 @@ export async function addRequestDB(context) {
 }
 
 export async function updateEditionDB(context) {
-  const binds = {
-    EDITION_ID: context.EDITION_ID,
-    EDITION_NUM: context.EDITION_NUM,
-    NUM_OF_COPIES: context.NUM_OF_COPIES,
-    PUBLISH_YEAR: context.PUBLISH_YEAR ? context.PUBLISH_YEAR : null
-  }
-  let query = runProcedure(`UPDATE_EDITION(:EDITION_ID, :EDITION_NUM, :NUM_OF_COPIES, :PUBLISH_YEAR)`);
+  let query = runProcedure(`UPDATE_EDITION('${context.EDITION_ID}', ${context.EDITION_NUM}, ${context.NUM_OF_COPIES}, ${context.PUBLISH_YEAR})`);
+
+  const query1 = baseQuery('EDITION') +
+    `\nWHERE EDITION_ID = '${context.EDITION_ID}'`;
   let result = null;
   try {
-    result = await queryExecute(query, binds);
+    console.log(query);
+    console.log(query1);
+    await queryExecute(query, []);
+    console.log(context);
+
+    result = await queryExecute(query1, []);
   } catch (e) {
     return null;
   }
-  return context;
+  return result.rows[0];
 }
 
 
@@ -1025,11 +1034,13 @@ async function getAuthorGenreIntoBook(books) {
 
 export async function createBookDB(book) {
   const bookDB = {...book};
-  const query =
-    'insert into BOOK (ISBN, TITLE, COVER_IMAGE, BINDING, NUMBER_OF_PAGES, ORIGINAL_PUBLICATION_YEAR, LANGUAGE, DESCRIPTION, SUMMARY, PUBLISHER_ID, PUBLICATION_DATE)\nvalues (:ISBN, :TITLE, :COVER_IMAGE, :BINDING, :NUMBER_OF_PAGES, :ORIGINAL_PUBLICATION_YEAR, :LANGUAGE, :DESCRIPTION, :SUMMARY, :PUBLISHER_ID, :PUBLICATION_DATE)';
-
-  const result = await queryExecute(query, bookDB);
-
+  const query = runProcedure('INSERT_BOOK(:ISBN, :TITLE, :IMAGE, :NUMBER_OF_PAGES, INITCAP(LOWER(:LANGUAGE)), :DESCRIPTION, :PUBLISHER_ID)');
+  try {
+    await queryExecute(query, bookDB);
+  } catch
+    (e) {
+    return null;
+  }
   return bookDB;
 }
 
@@ -1112,14 +1123,23 @@ export async function addRentHistoryDB(context) {
 
 export async function getEditionDB(context) {
   let query = baseQuery('EDITION');
-  const binds = {};
-
-  if (context.EDITION_ID) {
-    binds.EDITION_ID = context.EDITION_ID;
-    query += `\nWhere EDITION_ID = ${context.EDITION_ID}`;
+  if (context.ISBN && context.EDITION_ID) {
+    query += `\nWhere ISBN = '${context.ISBN}'`;
+    query += ` And EDITION_ID = '${context.EDITION_ID}'`;
+  } else if (context.ISBN) {
+    query += `\nWhere ISBN = '${context.ISBN}'`;
+  } else if (context.EDITION_ID) {
+    query += `\nWhere EDITION_ID = '${context.EDITION_ID}'`;
+  } else {
+    return []
   }
   console.log(query);
-  const result = await queryExecute(query, []);
+  let result = null;
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return [];
+  }
   return result.rows;
 }
 
@@ -1205,34 +1225,76 @@ export async function addBookAwardDB(bookAward) {
 }
 
 export async function addWrittenByDB(bookAuthor) {
-  const procedure = 'INSERT_WRITTEN_BY(:ISBN, :AUTHOR_ID)';
-  const query = runProcedure(procedure);
-  const result = await queryExecute(query, bookAuthor);
+  const query = runProcedure('INSERT_WRITTEN_BY(:ISBN, :AUTHOR_ID)');
+  console.log(bookAuthor);
+  try {
+    console.log(query);
+    // console.log(query1);
+    await queryExecute(query, bookAuthor);
+    // result = await queryExecute(query1, binds);
+  } catch (e) {
+    return null;
+  }
   return bookAuthor;
 }
 
 export async function addBookGenreDB(bookGenre) {
-  const procedure = 'INSERT_BOOK_GENRE(:ISBN, :GENRE_ID)';
-  const query = runProcedure(procedure);
-  const result = await queryExecute(query, bookGenre);
+  const query = runProcedure('INSERT_BOOK_GENRE(:ISBN, :GENRE_ID)');
+  console.log(bookGenre);
+  try {
+    console.log(query);
+    // console.log(query1);
+    await queryExecute(query, bookGenre);
+    // result = await queryExecute(query1, binds);
+  } catch (e) {
+    return null;
+  }
   return bookGenre;
 }
 
 
 export async function updateBookDB(context) {
-  const query = runProcedure(
-    'UPDATE_BOOK(:ISBN, :TITLE, :COVER_IMAGE, :BINDING, :NUMBER_OF_PAGES, :ORIGINAL_PUBLICATION_YEAR, :LANGUAGE, :DESCRIPTION, :SUMMARY, :PUBLICATION_DATE)'
-  );
-
-  const result = await queryExecute(query, context);
-  return result;
+  const query = runProcedure('UPDATE_BOOK(:ISBN, :TITLE, :IMAGE, :NUMBER_OF_PAGES, INITCAP(LOWER(:LANGUAGE)), :DESCRIPTION, :PUBLISHER_ID)');
+  try {
+    await queryExecute(query, context);
+  } catch
+    (e) {
+    return null;
+  }
+  return context;
 }
 
 export async function deleteBookDB(context) {
   const query = runProcedure('DELETE_BOOK(:ISBN)');
+  let result = null;
+  try {
+    result = await queryExecute(query, context);
+  } catch (e) {
+    return null;
+  }
+  return context;
+}
 
-  const result = await queryExecute(query, context);
-  return result;
+export async function deleteBookGenreDB(context) {
+  const query = runProcedure('DELETE_BOOK_GENRE(:ISBN)');
+  let result = null;
+  try {
+    result = await queryExecute(query, context);
+  } catch (e) {
+    return null;
+  }
+  return context;
+}
+
+export async function deleteWittenByDB(context) {
+  const query = runProcedure('DELETE_WRITTEN_BY(:ISBN)');
+  let result = null;
+  try {
+    result = await queryExecute(query, context);
+  } catch (e) {
+    return null;
+  }
+  return context;
 }
 
 // export async function getAuthorDB(context){
@@ -1375,6 +1437,27 @@ export async function addGenreDB(genre) {
   return result.rows[0];
 }
 
+export async function addEditionDB(edition) {
+  const query = runProcedure(`INSERT_EDITION('${edition.ISBN}', ${edition.EDITION_NUM}, ${edition.NUM_OF_COPIES}, ${edition.PUBLISH_YEAR})`);
+  // const binds = {
+  //   ISBN: edition.ISBN,
+  //   EDITION_NUM: edition.EDITION_NUM
+  // }
+  // const query1 = baseQuery('EDITION') +
+  //   `\nWHERE ISBN = :ISBN AND EDITION_NUM = :EDITION_NUM`;
+  // let result = null;
+  console.log(edition);
+  try {
+    console.log(query);
+    // console.log(query1);
+    await queryExecute(query, []);
+    // result = await queryExecute(query1, binds);
+  } catch (e) {
+    return null;
+  }
+  return edition;
+}
+
 export async function updateGenreDB(genre) {
   const query = runProcedure('UPDATE_GENRE(:GENRE_ID, :GENRE_NAME)');
   let result = null;
@@ -1395,6 +1478,17 @@ export async function deleteGenreDB(genre) {
     return null;
   }
   return genre;
+}
+
+export async function deleteEditionDB(context) {
+  const query = runProcedure(`DELETE_EDITION('${context.EDITION_ID}')`);
+  let result = null;
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return null;
+  }
+  return context;
 }
 
 export async function updateAdminDB(context) {

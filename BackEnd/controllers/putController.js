@@ -8,7 +8,9 @@ import {
   updatePublisherDB,
   updateUserDB,
   updateHistoryDB,
-  updateMessageDB
+  updateMessageDB,
+  updateEditionDB,
+  createBookDB
 } from '../Database/queryFunctions.js';
 import bcrypt from "bcrypt";
 
@@ -18,21 +20,19 @@ export async function updateBook(req, res, next) {
     let book = {
       ISBN: req.body.ISBN,
       TITLE: req.body.TITLE,
-      COVER_IMAGE: req.body.COVER_IMAGE,
-      BINDING: req.body.BINDING,
+      IMAGE: req.body?.IMAGE,
       NUMBER_OF_PAGES: Number(req.body.NUMBER_OF_PAGES),
-      ORIGINAL_PUBLICATION_YEAR: Number(req.body.ORIGINAL_PUBLICATION_YEAR),
       LANGUAGE: req.body.LANGUAGE,
       DESCRIPTION: req.body.DESCRIPTION,
-      SUMMARY: req.body.SUMMARY,
-      PUBLICATION_DATE: req.body.PUBLICATION_DATE
+      PUBLISHER_ID: req.body.PUBLISHER_ID
     };
-
-
+    console.log(book);
     book = await updateBookDB(book);
-    res.status(201).json(book);
-
-
+    if (book) {
+      res.status(201).json({message: "Successful"});
+    } else {
+      res.status(404).json({message: "Not successful"});
+    }
   } catch (err) {
     next(err);
   }
@@ -94,6 +94,25 @@ export async function updateGenre(req, res, next) {
     genre = await updateGenreDB(genre);
     if (genre) {
       res.status(201).json({message: "Successful", genre});
+    } else {
+      res.status(404).json({message: "Not successful"});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function updateEdition(req, res, next) {
+  try {
+    let edition = {
+      EDITION_ID: req.body.EDITION_ID,
+      EDITION_NUM: req.body.EDITION_NUM,
+      NUM_OF_COPIES: req.body.ADD_COPIES,
+      PUBLISH_YEAR: req.body?.PUBLISH_YEAR
+    };
+    edition = await updateEditionDB(edition);
+    if (edition) {
+      res.status(201).json({message: "Successful", edition});
     } else {
       res.status(404).json({message: "Not successful"});
     }

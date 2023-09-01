@@ -1,50 +1,44 @@
 ##### ----GET All Books (sorted) ----
 GET http://localhost:3000/db-api/all-books-sum?sort=TITLE&order=DESC
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
 ###OUTPUT
 [
   {
-    "ISBN": "9781408894743",
-    "TITLE": "Harry Potter and the Deathly Hallows",
-    "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/Harry_Potter_and_the_Deathly_Hallows_(Se-J.K_Rowling-699a7-122325.jpg",
-    "PUBLISH_YEAR": 2007,
-    "PAGE": 608,
+    "ISBN": "9781408855676",
+    "TITLE": "Harry Potter and the Prisoner of Azkaban",
+    "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/a5a669963_101016.jpg",
+    "PAGE": 462,
     "LANGUAGE": "English",
+    "PUBLISH_YEAR": 1999,
     "AUTHORS": "J. K. Rowling",
-    "RATING": 5,
-    "PUBLISHER": "Bloomsbury Publishing",
-    "FAVOURITE": 1,
-    "IS_FAVOURITE": 1
+    "RATING": 0,
+    "FAVOURITE": 1
   },
   {
     "ISBN": "9781408855652",
     "TITLE": "Harry Potter and the Philosophers Stone",
     "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/4cf25a33d8a4_86392.gif",
-    "PUBLISH_YEAR": 1997,
     "PAGE": 352,
     "LANGUAGE": "English",
+    "PUBLISH_YEAR": 1997,
     "AUTHORS": "J. K. Rowling",
     "RATING": 5,
-    "PUBLISHER": "Bloomsbury Publishing",
-    "FAVOURITE": 1,
-    "IS_FAVOURITE": 1
+    "FAVOURITE": 1
   }
 ]
 
 #### ----GET Single Book ----
-GET http://localhost:3000/db-api/book?id=9781408894743
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzMTY5Nzk2LCJleHAiOjE2OTMyNTYxOTZ9.Fql8neO8fVLw7dsjh-0aWrkzqBTPzkFK1_Rh8eCMuSE
+GET http://localhost:3000/db-api/book?id=1111111111111
 ###OUTPUT
 {
   "ISBN": "9781408855652",
   "AUTHOR": "[{\"NAME\":\"J. K. Rowling\",\"ID\":\"1\"}]",
   "GENRE": "[{\"NAME\":\"Fantasy\",\"ID\":\"1\"}]",
   "EDITION": "[{\"ID\":\"1\",\"NUM\":1,\"COUNT\":3,\"YEAR\":1997},{\"ID\":\"2\",\"NUM\":2,\"COUNT\":3,\"YEAR\":1999}]",
+  "PUBLISH_YEAR": 1910,
   "PUBLISHER_ID": "1",
   "PUBLISHER_NAME": "Bloomsbury Publishing",
   "TITLE": "Harry Potter and the Philosophers Stone",
   "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/4cf25a33d8a4_86392.gif",
-  "PUBLISH_YEAR": 1997,
   "PAGE": 352,
   "LANGUAGE": "English",
   "RATING": 4.5,
@@ -58,12 +52,12 @@ POST http://localhost:3000/db-api/user/signup
 Content-Type: application/json
 
 {
-  "firstName": "jake",
-  "lastName": "paul",
+  "firstName": "Ahmmad Nur",
+  "lastName": "Swapnil",
   "image": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
   "address": "Ney York, USA",
-  "email": "abcd@gmail.com",
-  "password": "abcd",
+  "email": "a.n.swapnil2003@gmail.com",
+  "password": "Ans2003",
   "contactNo": "01712345678",
   "gender": "M"
 }
@@ -79,17 +73,12 @@ Content-Type: application/json
 POST http://localhost:3000/db-api/user/login
 Content-Type: application/json
 
-# {
-#   "email": "abcd@gmail.com",
-#   "password": "abcd"
-# }
-
 {
   "email": "ryangeorge@gmail.com",
   "password": "ryanMonster300"
 }
 
-#eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+#eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzU1NzMyOCwiZXhwIjoxNzY1NTU3MzI4fQ.OWzBW1GTgnYmm8q49j_mcge89WXpLG6KHK6I_jLqWaM
 
 # {
 #   "email": "mdjakaria442020@gmail.com",
@@ -100,8 +89,6 @@ Content-Type: application/json
 #   "email": "a.n.swapnil2003@gmail.com",
 #   "password": "Ans2003"
 # }
-
-#eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzNDA5MDQ3LCJleHAiOjE3NjU0MDkwNDd9.hKy8COHQJepf0B8Y6-DwDiHUqEhBDWeaV0IfhHWppUs
 
 ###OUTPUT
 {
@@ -115,12 +102,12 @@ POST http://localhost:3000/db-api/admin/signup
 Content-Type: application/json
 
 {
-  "firstName": "jake",
-  "lastName": "paul",
+  "firstName": "jakaria",
+  "lastName": "hossain",
   "image": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
   "address": "Ney York, USA",
-  "email": "abcd@gmail.com",
-  "password": "abcd",
+  "email": "mdjakaria442020@gmail.com",
+  "password": "Jakaria63",
   "contactNo": "01712345678",
   "gender": "M"
 }
@@ -593,7 +580,7 @@ Content-Type: application/json
 {
   "message": "Successful",
   "author": {
-    "AUTHOR_ID": "23",
+    "AUTHOR_ID": "24",
     "NAME": "A",
     "DOB": "2023-01-01T00:00:00.000Z",
     "DOD": null,
@@ -605,7 +592,7 @@ Content-Type: application/json
 
 #### --- POST one PUBLISHER ---
 POST http://localhost:3000/db-api/getPublisher
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzU1NzMyOCwiZXhwIjoxNzY1NTU3MzI4fQ.OWzBW1GTgnYmm8q49j_mcge89WXpLG6KHK6I_jLqWaM
 Content-Type: application/json
 
 {
@@ -621,7 +608,7 @@ Content-Type: application/json
 {
   "message": "Successful",
   "publisher": {
-    "PUBLISHER_ID": "21",
+    "PUBLISHER_ID": "22",
     "NAME": "A",
     "IMAGE": "https://ds.rokomari.store/rokomari110/company/publisher.png",
     "CITY": "a",
@@ -644,7 +631,7 @@ Content-Type: application/json
 {
   "message": "Successful",
   "genre": {
-    "GENRE_ID": "13",
+    "GENRE_ID": "14",
     "GENRE_NAME": "A"
   }
 }
@@ -756,3 +743,190 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 {
   "message": "Successfully deleted"
 }
+
+
+#### --- GET EDITION BY EID/ID/BOTH ---
+GET http://localhost:3000/db-api/getEdition?id=9781408855652
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+
+###OUTPUT
+[
+  {
+    "EDITION_ID": "1",
+    "ISBN": "9781408855652",
+    "EDITION_NUM": 1,
+    "NUM_OF_COPIES": 99,
+    "PUBLISH_YEAR": 1997
+  },
+  {
+    "EDITION_ID": "2",
+    "ISBN": "9781408855652",
+    "EDITION_NUM": 2,
+    "NUM_OF_COPIES": 100,
+    "PUBLISH_YEAR": 1999
+  }
+]
+
+#### --- ADD EDITION ---
+POST http://localhost:3000/db-api/getEdition
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzU0MTI5MCwiZXhwIjoxNzY1NTQxMjkwfQ.fk6dqRDtlpVC2KRvBxFOFN_gdnM3cQpLxid2cew6hzQ
+Content-Type: application/json
+
+{
+  "ISBN": "1111111111111",
+  "Editions":[
+    {
+      "EDITION_NUM": 1,
+      "NUM_OF_COPIES": 10,
+      "PUBLISH_YEAR": 2022
+    },
+    {
+      "EDITION_NUM": 2,
+      "NUM_OF_COPIES": 10,
+      "PUBLISH_YEAR": 2023
+    }
+  ]
+}
+###OUTPUT
+{
+  "message": "All Successful"
+}
+
+#### --- UPDATE EDITION ---
+PUT http://localhost:3000/db-api/getEdition
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "EDITION_ID": "16",
+  "EDITION_NUM": 0,
+  "ADD_COPIES": 10,
+  "PUBLISH_YEAR": 1910
+}
+
+###OUTPUT
+{
+  "message": "Successful",
+  "edition": {
+    "EDITION_ID": "12",
+    "ISBN": "9781408894743",
+    "EDITION_NUM": 8,
+    "NUM_OF_COPIES": 60,
+    "PUBLISH_YEAR": 2010
+  }
+}
+
+#### --- DELETE Edition ---
+DELETE http://localhost:3000/db-api/getEdition?eid=14
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+
+###OUTDELETE
+
+{
+  "message": "Successfully deleted"
+}
+
+#### --- GET ALL LANGUAGE ---
+GET http://localhost:3000/db-api/getLanguage
+
+###OUTPUT
+[
+  {
+    "LANGUAGE": "Bangla"
+  },
+  {
+    "LANGUAGE": "English"
+  }
+]
+
+#### --- POST one BOOK ---
+POST http://localhost:3000/db-api/book
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "ISBN": "1111111111111",
+  "TITLE": "new book",
+  "IMAGE": null,
+  "NUMBER_OF_PAGES": 0,
+  "LANGUAGE": "Bangla",
+  "DESCRIPTION": "Most easy book",
+  "PUBLISHER_ID": "22"
+}
+###OUTPUT
+{
+  "message": "Successful"
+}
+
+#### --- PUT one BOOK ---
+PUT http://localhost:3000/db-api/book
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "ISBN": "1111111111111",
+  "TITLE": "new book1",
+  "IMAGE": null,
+  "NUMBER_OF_PAGES": 0,
+  "LANGUAGE": "BangLa",
+  "DESCRIPTION": "Most easy book",
+  "PUBLISHER_ID": "22"
+}
+###OUTPUT
+{
+  "message": "Successful"
+}
+
+#### --- DELETE one BOOK ---
+DELETE http://localhost:3000/db-api/book?id=1111111111111
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+
+###OUTDELETE
+{
+  "message": "Successfully deleted"
+}
+
+#### --- WRITTER ADD ---
+POST http://localhost:3000/db-api/writtenBy
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "ISBN": "1111111111111",
+  "Authors": [
+    {
+      "AUTHOR_ID": "1"
+    },
+    {
+      "AUTHOR_ID": "24"
+    }
+  ]
+}
+
+###OUTPUT
+{
+  "message": "All Successful"
+}
+
+#### --- BOOK GENRE ADD ---
+POST http://localhost:3000/db-api/book-genre
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "ISBN": "1111111111111",
+  "Genres": [
+    {
+      "GENRE_ID": "1"
+    },
+    {
+      "GENRE_ID": "14"
+    }
+  ]
+}
+
+###OUTPUT
+{
+  "message": "All Successful"
+}
+
