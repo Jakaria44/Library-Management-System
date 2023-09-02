@@ -1,31 +1,3 @@
-##### ----GET All Books (sorted) ----
-GET http://localhost:3000/db-api/all-books-sum?sort=TITLE&order=DESC
-###OUTPUT
-[
-  {
-    "ISBN": "9781408855676",
-    "TITLE": "Harry Potter and the Prisoner of Azkaban",
-    "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/a5a669963_101016.jpg",
-    "PAGE": 462,
-    "LANGUAGE": "English",
-    "PUBLISH_YEAR": 1999,
-    "AUTHORS": "J. K. Rowling",
-    "RATING": 0,
-    "FAVOURITE": 1
-  },
-  {
-    "ISBN": "9781408855652",
-    "TITLE": "Harry Potter and the Philosophers Stone",
-    "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/4cf25a33d8a4_86392.gif",
-    "PAGE": 352,
-    "LANGUAGE": "English",
-    "PUBLISH_YEAR": 1997,
-    "AUTHORS": "J. K. Rowling",
-    "RATING": 5,
-    "FAVOURITE": 1
-  }
-]
-
 #### ----GET Single Book ----
 GET http://localhost:3000/db-api/book?id=1111111111111
 ###OUTPUT
@@ -625,7 +597,7 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 Content-Type: application/json
 
 {
-  "GENRE_NAME": "A"
+  "GENRE_NAME": "B"
 }
 ###OUTPUT
 {
@@ -930,3 +902,52 @@ Content-Type: application/json
   "message": "All Successful"
 }
 
+##### ----GET All Books (sorted AND advanced searched) ----
+GET http://localhost:3000/db-api/all-books-sum?sort=TITLE&order=DESC
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "MY_RAT": true,
+  "MY_FAV": true,
+  "ISBN":"9781408894743",
+  "TITLE": "DEATH",
+  "LANGUAGE": "EnGliSh",
+  "PUBLISHER_ID": "1",
+  "AUTHOR_ID": "1",
+  "GENRE_ID": "1",
+  "PAGE_START": 600,
+  "PAGE_END": 700,
+  "YEAR_START": 2000,
+  "YEAR_END": 2020,
+  "RATING_START": 4,
+  "RATING_END": 5
+}
+
+###OUTPUT
+[
+  {
+    "ISBN": "9781408894743",
+    "TITLE": "Harry Potter and the Deathly Hallows",
+    "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/Harry_Potter_and_the_Deathly_Hallows_(Se-J.K_Rowling-699a7-122325.jpg",
+    "PAGE": 608,
+    "LANGUAGE": "English",
+    "PUBLISH_YEAR": 2010,
+    "AUTHORS": "J. K. Rowling",
+    "RATING": 5,
+    "FAVOURITE": 1,
+    "IS_FAVOURITE": 1
+  }
+]
+
+##### ----GET All Books (sorted AND advanced searched) ----
+GET http://localhost:3000/db-api/all-book
+
+###OUTPUT
+[
+  {
+    "ISBN":,
+    "TITLE":,
+    "IMAGE":
+  }
+]

@@ -1,4 +1,6 @@
--- create sequence user_seq;
+drop sequence user_seq;
+
+create sequence user_seq;
 
 create
     or replace trigger user_insert_trig
@@ -101,9 +103,8 @@ END ;
 /
 
 CREATE OR REPLACE TRIGGER trg_publisher_default_image
-    BEFORE INSERT
-    ON PUBLISHER
-    FOR EACH ROW
+BEFORE INSERT ON PUBLISHER
+FOR EACH ROW
 BEGIN
     IF :NEW.Image IS NULL THEN
         :NEW.Image := 'https://ds.rokomari.store/rokomari110/company/publisher.png';
@@ -112,22 +113,19 @@ END;
 /
 
 CREATE OR REPLACE TRIGGER trg_author_default_image
-    BEFORE INSERT
-    ON AUTHOR
-    FOR EACH ROW
+BEFORE INSERT ON AUTHOR
+FOR EACH ROW
 BEGIN
     IF :NEW.Image IS NULL THEN
-        :NEW.Image :=
-                'https://previews.123rf.com/images/anatolir/anatolir1712/anatolir171201476/91832679-man-avatar-icon-flat-illustration-of-man-avatar-vector-icon-isolated-on-white-background.jpg';
+        :NEW.Image := 'https://previews.123rf.com/images/anatolir/anatolir1712/anatolir171201476/91832679-man-avatar-icon-flat-illustration-of-man-avatar-vector-icon-isolated-on-white-background.jpg';
     END IF;
 END;
 /
 
 
 CREATE OR REPLACE TRIGGER trg_user_default_image
-    BEFORE INSERT
-    ON "USER"
-    FOR EACH ROW
+BEFORE INSERT ON "USER"
+FOR EACH ROW
 BEGIN
     IF :NEW.Image IS NULL THEN
         :NEW.Image := 'https://img.freepik.com/free-icon/user_318-159711.jpg';
@@ -136,13 +134,11 @@ END;
 /
 
 CREATE OR REPLACE TRIGGER trg_book_default_image
-    BEFORE INSERT
-    ON BOOK
-    FOR EACH ROW
+BEFORE INSERT ON BOOK
+FOR EACH ROW
 BEGIN
     IF :NEW.Image IS NULL THEN
-        :NEW.Image :=
-                'https://st2.depositphotos.com/5703046/12114/i/950/depositphotos_121142344-stock-photo-white-book-on-white-background.jpg';
+        :NEW.Image := 'https://st2.depositphotos.com/5703046/12114/i/950/depositphotos_121142344-stock-photo-white-book-on-white-background.jpg';
     END IF;
 END;
 /
@@ -151,7 +147,7 @@ END;
 CREATE OR REPLACE FUNCTION IS_VALID_UPDATE_USER(
     P_USER_ID IN VARCHAR2,
     P_EMAIL IN VARCHAR2) RETURN BOOLEAN IS
-    COUNTER  NUMBER;
+    COUNTER NUMBER;
     COUNTER2 NUMBER;
 BEGIN
     SELECT COUNT(*) INTO COUNTER FROM "USER" WHERE USER_ID = P_USER_ID;
@@ -184,13 +180,13 @@ BEGIN
     IF (IS_VALID_UPDATE_USER(A_USER_ID, A_EMAIL)) THEN
         UPDATE "USER"
         SET FIRST_NAME = A_FIRST_NAME,
-            LAST_NAME  = A_LAST_NAME,
-            ADDRESS    = A_ADDRESS,
-            EMAIL      = A_EMAIL,
+            LAST_NAME = A_LAST_NAME,
+            ADDRESS = A_ADDRESS,
+            EMAIL = A_EMAIL,
             CONTACT_NO = A_CONTACT_NO,
-            IMAGE      = A_IMAGE,
-            GENDER     = A_GENDER,
-            PASSWORD   = A_PASSWORD
+            IMAGE = A_IMAGE,
+            GENDER = A_GENDER,
+            PASSWORD = A_PASSWORD
         WHERE USER_ID = A_USER_ID;
     ELSE
         raise_application_error(-20111, 'USER CANNOT BE UPDATED');
@@ -278,7 +274,7 @@ BEGIN
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
         INSERT INTO REQUEST(USER_ID, EDITION_ID, REQUEST_DATE) VALUES (U_ID, E_ID, SYSDATE);
-    WHEN OTHERS THEN
+		WHEN OTHERS THEN
         RAISE_APPLICATION_ERROR(-20002, 'An error occurred.');
 END;
 /
@@ -319,20 +315,21 @@ BEGIN
 END;
 /
 
--- BEGIN
---     DBMS_SCHEDULER.create_job (
---         job_name        => 'UPDATE_FINE_HISTORY_JOB',
---         job_type        => 'PLSQL_BLOCK',
---         job_action      => 'BEGIN update_fine_history; END;',
---         start_date      => SYSTIMESTAMP,
---         repeat_interval => 'FREQ=HOURLY; INTERVAL=24', -- Run every 24 hours
---         enabled         => TRUE
---     );
--- END;
--- /
+BEGIN
+    DBMS_SCHEDULER.create_job (
+        job_name        => 'UPDATE_FINE_HISTORY_JOB',
+        job_type        => 'PLSQL_BLOCK',
+        job_action      => 'BEGIN update_fine_history; END;',
+        start_date      => SYSTIMESTAMP,
+        repeat_interval => 'FREQ=HOURLY; INTERVAL=24', -- Run every 24 hours
+        enabled         => TRUE
+    );
+END;
+/
 
+drop sequence history_seq;
 
--- create sequence history_seq;
+create sequence history_seq;
 
 CREATE
     OR REPLACE TRIGGER RENT_INSERT_TRIG
@@ -398,8 +395,7 @@ BEGIN
     INTO ID
     FROM RENT_HISTORY
     WHERE Rent_History_ID = A_ID
-      AND USER_ID = U_ID
-      AND STATUS = 0;
+      AND USER_ID = U_ID AND STATUS = 0;
     SELECT COUNT(*)
     INTO COUNTER
     FROM FINE_HISTORY
@@ -428,7 +424,9 @@ EXCEPTION
 END;
 /
 
--- create sequence msg_seq;
+drop sequence msg_seq;
+
+create sequence msg_seq;
 
 CREATE
     OR REPLACE TRIGGER MESSAGE_INSERT_TRIG
@@ -456,16 +454,16 @@ end;
 
 CREATE OR REPLACE PROCEDURE UPDATE_MESSAGE(U_ID IN VARCHAR2) IS
 BEGIN
-    FOR R IN (SELECT MESSAGE_ID FROM MESSAGE WHERE USER_ID = U_ID)
-        LOOP
-            UPDATE MESSAGE
-            SET Seen = 1
-            WHERE MESSAGE_ID = R.MESSAGE_ID;
-        END LOOP;
+    FOR R IN (SELECT MESSAGE_ID FROM MESSAGE WHERE USER_ID = U_ID) LOOP
+        UPDATE MESSAGE
+        SET Seen = 1
+        WHERE MESSAGE_ID = R.MESSAGE_ID;
+    END LOOP;
 END;
 /
+drop sequence news_seq;
 
--- create sequence news_seq;
+create sequence news_seq;
 
 CREATE
     OR REPLACE TRIGGER NEWS_INSERT_TRIG
@@ -492,7 +490,7 @@ end;
 /
 
 CREATE OR REPLACE PROCEDURE DELETE_MESSAGE(U_ID IN VARCHAR2, M_ID IN VARCHAR2) IS
-    ID VARCHAR2(20);
+ID VARCHAR2(20);
 BEGIN
     SELECT MESSAGE_ID
     INTO ID
@@ -510,8 +508,9 @@ EXCEPTION
         RAISE_APPLICATION_ERROR(-20003, 'UNKNOWN ERROR OCCURRED');
 END;
 /
+drop sequence genre_seq;
 
--- create sequence genre_seq;
+create sequence genre_seq;
 
 CREATE
     OR REPLACE TRIGGER GENRE_INSERT_TRIG
@@ -557,8 +556,9 @@ BEGIN
 END;
 /
 
+drop sequence author_seq;
 
--- create sequence author_seq;
+create sequence author_seq;
 
 CREATE
     OR REPLACE TRIGGER AUTHOR_INSERT_TRIG
@@ -612,8 +612,9 @@ BEGIN
     END IF;
 END ;
 /
+drop sequence publisher_seq;
 
--- create sequence publisher_seq;
+create sequence publisher_seq;
 
 CREATE
     OR REPLACE TRIGGER PUBLISHER_INSERT_TRIG
@@ -818,14 +819,14 @@ END;
 /
 
 CREATE OR REPLACE FUNCTION IS_VALID_DELETE_AUTHOR(A_ID IN VARCHAR2) RETURN BOOLEAN IS
-    COUNTER  NUMBER;
-    COUNTER2 NUMBER;
+    COUNTER NUMBER;
+		COUNTER2 NUMBER;
 BEGIN
     SELECT COUNT(*)
     INTO COUNTER
     FROM WRITTEN_BY
     WHERE AUTHOR_ID = A_ID;
-    SELECT COUNT(*)
+		SELECT COUNT(*)
     INTO COUNTER2
     FROM AUTHOR
     WHERE AUTHOR_ID = A_ID;
@@ -853,19 +854,19 @@ END;
 /
 
 CREATE OR REPLACE FUNCTION IS_VALID_DELETE_PUBLISHER(P_ID IN VARCHAR2) RETURN BOOLEAN IS
-    COUNTER  NUMBER;
-    COUNTER2 NUMBER;
+    COUNTER NUMBER;
+		COUNTER2 NUMBER;
 BEGIN
     SELECT COUNT(*)
     INTO COUNTER
     FROM BOOK
     WHERE PUBLISHER_ID = P_ID;
-    SELECT COUNT(*)
+		SELECT COUNT(*)
     INTO COUNTER2
     FROM PUBLISHER
     WHERE PUBLISHER_ID = P_ID;
     IF
-        (COUNTER = 0 AND COUNTER2 > 0) THEN
+        (COUNTER = 0 AND COUNTER2>0) THEN
         RETURN TRUE;
     ELSE
         RETURN FALSE;
@@ -887,14 +888,14 @@ END;
 /
 
 CREATE OR REPLACE FUNCTION IS_VALID_DELETE_GENRE(G_ID IN VARCHAR2) RETURN BOOLEAN IS
-    COUNTER  NUMBER;
-    COUNTER2 NUMBER;
+    COUNTER NUMBER;
+		COUNTER2 NUMBER;
 BEGIN
     SELECT COUNT(*)
     INTO COUNTER
     FROM BOOK_GENRE
     WHERE GENRE_ID = G_ID;
-    SELECT COUNT(*)
+		SELECT COUNT(*)
     INTO COUNTER2
     FROM GENRE
     WHERE GENRE_ID = G_ID;
@@ -919,6 +920,7 @@ BEGIN
     END IF;
 END;
 /
+drop sequence edition_seq;
 
 create sequence edition_seq;
 
@@ -998,24 +1000,19 @@ CREATE OR REPLACE FUNCTION IS_VALID_EDITION(A_EDITION_ID VARCHAR2, A_EDITION_NUM
     COUNTER2 NUMBER;
     A_ISBN   VARCHAR2(20);
 BEGIN
-    SELECT ISBN
-    INTO A_ISBN
-    FROM EDITION
+    SELECT ISBN INTO A_ISBN FROM EDITION
     WHERE EDITION_ID = A_EDITION_ID;
-    SELECT COUNT(*)
-    INTO COUNTER
-    FROM EDITION
-    WHERE ISBN = A_ISBN
-      AND EDITION_ID <> A_EDITION_ID
+    SELECT COUNT(*) INTO COUNTER FROM EDITION
+    WHERE ISBN = A_ISBN AND EDITION_ID <> A_EDITION_ID
       AND EDITION_NUM = A_EDITION_NUM;
     IF
         COUNTER = 0 THEN
         SELECT COUNT(*)
         INTO COUNTER2
         FROM EDITION
-        WHERE ISBN = A_ISBN
-          AND ((EDITION_NUM < A_EDITION_NUM AND PUBLISH_YEAR > A_PUBLISH_YEAR) OR
-               (EDITION_NUM > A_EDITION_NUM AND PUBLISH_YEAR < A_PUBLISH_YEAR));
+        WHERE ISBN = A_ISBN AND
+				((EDITION_NUM < A_EDITION_NUM AND PUBLISH_YEAR > A_PUBLISH_YEAR) OR
+				(EDITION_NUM > A_EDITION_NUM AND PUBLISH_YEAR < A_PUBLISH_YEAR));
         IF COUNTER2 = 0 THEN
             RETURN TRUE;
         ELSE
@@ -1034,17 +1031,17 @@ CREATE OR REPLACE PROCEDURE UPDATE_EDITION(A_EDITION_ID VARCHAR2,
     COPIES NUMBER;
     YEAR   NUMBER(4);
 BEGIN
-    SELECT NUM_OF_COPIES, PUBLISH_YEAR
-    INTO COPIES, YEAR
-    FROM EDITION
-    WHERE EDITION_ID = A_EDITION_ID;
-    COPIES := COPIES + A_NUM_OF_COPIES;
-    IF COPIES < 0 THEN
-        RAISE_APPLICATION_ERROR(-20001, 'COPIES CANNOT BE NEGATIVE');
-    end if;
-    IF A_PUBLISH_YEAR IS NOT NULL THEN
-        YEAR := A_PUBLISH_YEAR;
-    END IF;
+		SELECT NUM_OF_COPIES, PUBLISH_YEAR
+		INTO COPIES, YEAR
+		FROM EDITION
+		WHERE EDITION_ID = A_EDITION_ID;
+		COPIES := COPIES + A_NUM_OF_COPIES;
+		IF COPIES < 0 THEN
+				RAISE_APPLICATION_ERROR(-20001, 'COPIES CANNOT BE NEGATIVE');
+		end if;
+		IF A_PUBLISH_YEAR IS NOT NULL THEN
+				YEAR := A_PUBLISH_YEAR;
+		END IF;
     IF
         (IS_VALID_EDITION(A_EDITION_ID, A_EDITION_NUM, YEAR)) THEN
         UPDATE EDITION
@@ -1067,7 +1064,7 @@ END ;
 
 
 CREATE OR REPLACE PROCEDURE DELETE_EDITION(E_ID IN VARCHAR2) IS
-    ID      VARCHAR2(100);
+    ID VARCHAR2(100);
     COUNTER NUMBER;
 BEGIN
     SELECT ISBN
@@ -1093,6 +1090,7 @@ EXCEPTION
         raise_application_error(-20111, 'Some Error Occurred');
 END;
 /
+
 
 CREATE OR REPLACE FUNCTION IS_VALID_TITLE(GIVEN_ISBN VARCHAR2, GIVEN_TITLE IN VARCHAR2)
     RETURN BOOLEAN IS
@@ -1142,7 +1140,7 @@ CREATE OR REPLACE PROCEDURE UPDATE_BOOK(A_ISBN VARCHAR2,
                                         A_LANGUAGE VARCHAR2,
                                         A_DESCRIPTION VARCHAR2,
                                         A_PUBLISHER_ID VARCHAR2) IS
-    F_ISBN VARCHAR2(20);
+F_ISBN VARCHAR2(20);
 BEGIN
     SELECT ISBN
     INTO F_ISBN
@@ -1170,7 +1168,7 @@ END;
 /
 
 CREATE OR REPLACE PROCEDURE DELETE_BOOK(B_ISBN IN VARCHAR2) IS
-    P VARCHAR2;
+    P VARCHAR2(20);
 BEGIN
     SELECT ISBN
     INTO P

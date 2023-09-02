@@ -76,21 +76,29 @@ export async function postFavBook(req, res, next) {
 export async function advanceSearch(req, res, next) {
   try {
     const context = {};
-
+    if (req.USER_ID) {
+      context.USER_ID = req.USER_ID;
+    }
+    if (req.body.MY_FAV) {
+      context.MY_FAV = req.body.MY_FAV;
+    }
+    if (req.body.MY_RAT) {
+      context.MY_RAT = req.body.MY_RAT;
+    }
+    if (req.body.ISBN) {
+      context.ISBN = req.body.ISBN;
+    }
     if (req.body.TITLE) {
       context.TITLE = req.body.TITLE;
     }
-    if (req.body.AUTHOR) {
-      context.AUTHOR = req.body.AUTHOR;
+    if (req.body.LANGUAGE) {
+      context.LANGUAGE = req.body.LANGUAGE;
     }
-    if (req.body.PUBLISHER) {
-      context.PUBLISHER = req.body.PUBLISHER;
+    if (req.body.PAGE_START) {
+      context.PAGE_START = req.body.PAGE_START;
     }
-    if (req.body.GENRE_ID) {
-      context.GENRE_ID = req.body.GENRE_ID;
-    }
-    if (req.body.AWARD) {
-      context.AWARD = req.body.AWARD;
+    if (req.body.PAGE_END) {
+      context.PAGE_END = req.body.PAGE_END;
     }
     if (req.body.YEAR_START) {
       context.YEAR_START = req.body.YEAR_START;
@@ -98,31 +106,26 @@ export async function advanceSearch(req, res, next) {
     if (req.body.YEAR_END) {
       context.YEAR_END = req.body.YEAR_END;
     }
-
     if (req.body.RATING_START) {
       context.RATING_START = req.body.RATING_START;
     }
     if (req.body.RATING_END) {
       context.RATING_END = req.body.RATING_END;
     }
-
-    if (req.body.PAGE_START) {
-      context.PAGE_START = req.body.PAGE_START;
+    if (req.body.AUTHOR_ID) {
+      context.AUTHOR_ID = req.body.AUTHOR_ID;
     }
-    if (req.body.PAGE_END) {
-      context.PAGE_END = req.body.PAGE_END;
+    if (req.body.PUBLISHER_ID) {
+      context.PUBLISHER_ID = req.body.PUBLISHER_ID;
     }
-    if (req.body.LANGUAGE) {
-      context.LANGUAGE = req.body.LANGUAGE;
+    if (req.body.GENRE_ID) {
+      context.GENRE_ID = req.body.GENRE_ID;
     }
-    if (req.body.BINDING) {
-      context.BINDING = req.body.BINDING;
+    if (req.query.sort) {
+      context.sort = req.query.sort;
     }
-    if (req.body.SORT) {
-      context.SORT = req.body.SORT;
-    }
-    if (req.body.SORT_TYPE) {
-      context.SORT_TYPE = req.body.SORT_TYPE;
+    if (req.query.order) {
+      context.order = req.query.order;
     }
 
 
@@ -131,7 +134,7 @@ export async function advanceSearch(req, res, next) {
     if (rows.length >= 1) {
       res.status(200).json(rows);
     } else {
-      res.status(404).end();
+      res.status(404).json({message: "Not Found"});
     }
   } catch (err) {
     next(err);
