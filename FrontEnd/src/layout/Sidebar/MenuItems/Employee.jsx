@@ -1,6 +1,6 @@
 // assets
 
-import { Checklist, PeopleSharp } from "@mui/icons-material";
+import { Checklist, NoteAdd, PeopleSharp } from "@mui/icons-material";
 
 // constant
 
@@ -33,6 +33,15 @@ const Employee = {
       type: "item",
       url: "/allduelists",
       icon: <Checklist />,
+      breadcrumbs: false,
+    },
+
+    {
+      id: "addbook",
+      title: "Add Book",
+      type: "item",
+      url: "/addbook",
+      icon: <NoteAdd />,
       breadcrumbs: false,
     },
   ],

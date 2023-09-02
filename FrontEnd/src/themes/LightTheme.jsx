@@ -18,7 +18,6 @@ export const Theme = (mode) => {
     backgroundDefault: mode === "light" ? color.paper : colors?.darkBackground,
     background: mode === "light" ? color.primaryLight : colors?.darkPaper,
     backgroundComponent: mode === "light" ? color.grey500 : color.grey600,
-    buttonBackground: mode === "light" ? color.primaryLight : color.grey700,
     darkTextPrimary: mode === "light" ? color.grey700 : color.grey50,
     darkTextSecondary: mode === "light" ? color.grey500 : color.grey500,
     textDark: mode === "light" ? color.grey900 : color.grey50,
@@ -27,6 +26,7 @@ export const Theme = (mode) => {
     divider: mode === "light" ? color.grey200 : color.grey800,
     itemBackgroundHover:
       mode === "light" ? color.darkTextPrimary : color.grey600,
+    buttonBackground: mode === "light" ? color.primary200 : color.darkButton,
     itemBackground: mode === "light" ? color.secondaryLight : color.darkPaper,
   };
 

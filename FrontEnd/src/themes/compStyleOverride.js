@@ -41,7 +41,7 @@ export default function componentStyleOverrides(theme) {
                     borderRadius: '4px',
                     color: theme.textDark,
                     transition: 'all .2s ease-in-out',
-                    background: theme.itemBackground,
+                    background: theme.buttonBackground,
                     '&:hover': {
                         color: theme.background,
                         background: theme.heading,

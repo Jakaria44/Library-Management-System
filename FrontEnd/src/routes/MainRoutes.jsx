@@ -11,6 +11,7 @@ const LatestBooks = Loadable(lazy(() => import("../pages/LatestBooks")));
 const Collections = Loadable(lazy(() => import("../pages/Reader/Collections")));
 const DueList = Loadable(lazy(() => import("../pages/Reader/DueList")));
 const MyReviews = Loadable(lazy(() => import("../pages/Reader/MyReviews")));
+const AddBook = Loadable(lazy(() => import("../pages/Employee/AddBook")));
 
 import { loader as favouritesLoader } from "../pages/Reader/MyFavourites";
 import { loader as bookDetailsLoader } from "./../pages/Details/Details";
@@ -99,6 +100,10 @@ const MainRoutes = {
     {
       path: "/allduelists",
       element: <AllDueList />,
+    },
+    {
+      path: "/addbook",
+      element: <AddBook />,
     },
   ],
 };
