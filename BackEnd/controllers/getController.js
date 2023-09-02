@@ -37,7 +37,8 @@ import {
   getRunningFineDB,
   getMyMessagesDB,
   getAllNewsDB,
-  getAllUsersDB
+  getAllUsersDB,
+  getEditionDB
 } from "../Database/queryFunctions.js";
 
 
@@ -277,7 +278,7 @@ export async function getAllLanguages(req, res, next) {
     if (rows.length > 0) {
       res.status(200).json(rows);
     } else {
-      res.status(404).end();
+      res.status(404).json({message:"Not Found"});
     }
   } catch (err) {
     next(err);
@@ -326,21 +327,45 @@ export async function getPublisher(req, res, next) {
 
 export async function getGenre(req, res, next) {
   try {
-    const context = {};
+    let context = {};
 
     context.GENRE_ID = req.query.gid;
 
     const rows = await getGenreDB(context);
 
-    if (rows.length >= 1) {
+    if (rows.length === 1) {
+      res.status(200).json(rows[0]);
+    }else if (rows.length > 1) {
       res.status(200).json(rows);
     } else {
-      res.status(404).end();
+      res.status(404).json({message:"Not Found"});
     }
   } catch (err) {
     next(err);
   }
 }
+
+export async function getEdition(req, res, next) {
+  try {
+    let context = {};
+
+    context.ISBN = req.query.id;
+    context.EDITION_ID = req.query.eid;
+
+    const rows = await getEditionDB(context);
+
+    if (rows.length === 1) {
+      res.status(200).json(rows[0]);
+    }else if (rows.length > 1) {
+      res.status(200).json(rows);
+    } else {
+      res.status(404).json({message:"Not Found"});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
 
 export async function getMyMessages(req, res, next) {
   try {

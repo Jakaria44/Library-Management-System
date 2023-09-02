@@ -10,7 +10,8 @@ import {
   deleteRequestDB,
   getEditionDB,
   sendMessageDB,
-  deleteMessageDB
+  deleteMessageDB,
+  deleteEditionDB
 } from "../Database/queryFunctions.js";
 
 export async function deleteBookOfBookshelf(req, res, next) {
@@ -151,13 +152,15 @@ export async function deleteBookshelf(req, res, next) {
 
 export async function deleteBook(req, res, next) {
   try {
-    const context = {};
-
-    context.ISBN = req.query.ISBN;
-
+    let context = {};
+    context.ISBN = req.query.id;
     let deleted = await deleteBookDB(context);
 
-    res.status(201).json(deleted);
+    if (deleted) {
+      res.status(200).json({message: 'Successfully deleted'});
+    } else {
+      res.status(404).json({message: 'Failed to delete'});
+    }
   } catch (err) {
     next(err);
   }
@@ -165,13 +168,15 @@ export async function deleteBook(req, res, next) {
 
 export async function deleteAuthor(req, res, next) {
   try {
-    const context = {};
+    let deleted = {};
+    deleted.AUTHOR_ID = req.query.aid;
 
-    context.PERSON_ID = req.query.PERSON_ID;
-
-    let deleted = await deleteAuthorDB(context);
-
-    res.status(201).json(deleted);
+    deleted = await deleteAuthorDB(deleted);
+    if (deleted) {
+      res.status(200).json({message: 'Successfully deleted'});
+    } else {
+      res.status(404).json({message: 'Failed to delete'});
+    }
   } catch (err) {
     next(err);
   }
@@ -179,13 +184,16 @@ export async function deleteAuthor(req, res, next) {
 
 export async function deletePublisher(req, res, next) {
   try {
-    const context = {};
+    let deleted = {};
 
-    context.PUBLISHER_ID = req.query.PUBLISHER_ID;
+    deleted.PUBLISHER_ID = req.query.pid;
 
-    let deleted = await deletePublisherDB(context);
-
-    res.status(201).json(deleted);
+    deleted = await deletePublisherDB(deleted);
+    if (deleted) {
+      res.status(200).json({message: 'Successfully deleted'});
+    } else {
+      res.status(404).json({message: 'Failed to delete'});
+    }
   } catch (err) {
     next(err);
   }
@@ -193,13 +201,35 @@ export async function deletePublisher(req, res, next) {
 
 export async function deleteGenre(req, res, next) {
   try {
-    const context = {};
+    let deleted = {};
 
-    context.GENRE_ID = req.query.GENRE_ID;
+    deleted.GENRE_ID = req.query.gid;
 
-    let deleted = await deleteGenreDB(context);
+    deleted = await deleteGenreDB(deleted);
 
-    res.status(201).json(deleted);
+    if (deleted) {
+      res.status(200).json({message: 'Successfully deleted'});
+    } else {
+      res.status(404).json({message: 'Failed to delete'});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function deleteEdition(req, res, next) {
+  try {
+    let deleted = {};
+
+    deleted.EDITION_ID = req.query.eid;
+
+    deleted = await deleteEditionDB(deleted);
+
+    if (deleted) {
+      res.status(200).json({message: 'Successfully deleted'});
+    } else {
+      res.status(404).json({message: 'Failed to delete'});
+    }
   } catch (err) {
     next(err);
   }

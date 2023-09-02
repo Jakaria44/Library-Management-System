@@ -19,12 +19,12 @@ import {
   addRequestDB,
   getOwnRatRevDB,
   getMyFineHistoryDB,
-  updateEditionDB,
   getMyRequestsDB,
   addRentHistoryDB,
   getEditionDB,
   sendMessageDB,
-  publishNewsDB
+  publishNewsDB,
+  addEditionDB, deleteBookGenreDB, deleteWittenByDB
 } from '../Database/queryFunctions.js';
 import {getMyRequests} from "./getController.js";
 
@@ -332,19 +332,19 @@ export async function postBook(req, res, next) {
     let book = {
       ISBN: req.body.ISBN,
       TITLE: req.body.TITLE,
-      COVER_IMAGE: req.body.COVER_IMAGE,
-      BINDING: req.body.BINDING,
+      IMAGE: req.body?.IMAGE,
       NUMBER_OF_PAGES: Number(req.body.NUMBER_OF_PAGES),
-      ORIGINAL_PUBLICATION_YEAR: Number(req.body.ORIGINAL_PUBLICATION_YEAR),
       LANGUAGE: req.body.LANGUAGE,
       DESCRIPTION: req.body.DESCRIPTION,
-      SUMMARY: req.body.SUMMARY,
-      PUBLISHER_ID: req.body.PUBLISHER_ID,
-      PUBLICATION_DATE: req.body.PUBLICATION_DATE
+      PUBLISHER_ID: req.body.PUBLISHER_ID
     }
-
+    console.log(book);
     book = await createBookDB(book);
-    res.status(201).json(book);
+    if (book) {
+      res.status(201).json({message: "Successful"});
+    } else {
+      res.status(404).json({message: "Not successful"});
+    }
   } catch (err) {
     next(err);
   }
@@ -369,16 +369,6 @@ export async function addBook(req, res, next) {
     book = await addBookDB(book);
 
     console.log(book);
-    if (req.body.AWARDS) {
-      for (var i = 0; i < req.body.AWARDS.length; i++) {
-        let bookAward = {
-          ISBN: req.body.ISBN,
-          AWARDS: req.body.AWARDS[i]
-        };
-        bookAward = await addBookAwardDB(bookAward);
-
-      }
-    }
 
     if (req.body.AUTHORS) {
       for (var i = 0; i < req.body.AUTHORS.length; i++) {
@@ -414,21 +404,20 @@ export async function addBook(req, res, next) {
 export async function addAuthor(req, res, next) {
   try {
     let author = {
-      FIRST_NAME: req.body.FIRST_NAME,
-      LAST_NAME: req.body.LAST_NAME,
-      ADDRESS: req.body.ADDRESS,
-      EMAIL: req.body.EMAIL,
-      PHONE_NUMBER: req.body.PHONE_NUMBER,
-      DETAILS: req.body.DETAILS,
-      WEB_ADDRESS: req.body.WEB_ADDRESS
+      NAME: req.body.NAME,
+      DoB: new Date(req.body.DoB),
+      DoD: req.body.DoD ? new Date(req.body.DoD) : null,
+      NATIONALITY: req.body.NATIONALITY,
+      BIO: req.body.BIO,
+      IMAGE: req.body.IMAGE
     };
     author = await addAuthorDB(author);
-
-    res.status(201).json("Done Properly");
-
-
+    if (author) {
+      res.status(201).json({message: "Successful", author});
+    } else {
+      res.status(404).json({message: "Not successful"});
+    }
   } catch (err) {
-    res.status(501).json(err);
     next(err);
   }
 }
@@ -437,17 +426,20 @@ export async function addPublisher(req, res, next) {
   try {
     let publisher = {
       NAME: req.body.NAME,
-      ADDRESS: req.body.ADDRESS,
-      EMAIL_ID: req.body.EMAIL_ID,
-      WEB_ADDRESS: req.body.WEB_ADDRESS
+      IMAGE: req.body.IMAGE,
+      CITY: req.body.CITY,
+      COUNTRY: req.body.COUNTRY,
+      POSTAL_CODE: req.body.POSTAL_CODE,
+      CONTACT_NO: req.body.CONTACT_NO,
+      EMAIL: req.body.EMAIL
     };
     publisher = await addPublisherDB(publisher);
-
-    res.status(201).json("Done Properly");
-
-
+    if (publisher) {
+      res.status(201).json({message: "Successful", publisher});
+    } else {
+      res.status(404).json({message: "Not successful"});
+    }
   } catch (err) {
-    res.status(501).json(err);
     next(err);
   }
 }
@@ -455,18 +447,120 @@ export async function addPublisher(req, res, next) {
 export async function addGenre(req, res, next) {
   try {
     let genre = {
-      GENRE_NAME: req.body.GENRE_NAME,
+      GENRE_NAME: req.body.GENRE_NAME
     };
+    console.log(genre);
     genre = await addGenreDB(genre);
-
-    res.status(201).json("Done Properly");
-
-
+    if (genre) {
+      res.status(201).json({message: "Successful", genre});
+    } else {
+      res.status(404).json({message: "Not successful"});
+    }
   } catch (err) {
-    res.status(501).json(err);
     next(err);
   }
 }
+
+export async function addEdition(req, res, next) {
+  let edition = {
+    ISBN: req.body.ISBN
+  };
+  let success = true; // Flag to track success of all deletions
+
+  for (const edi of req.body.Editions) {
+    edition.EDITION_NUM = edi.EDITION_NUM;
+    edition.NUM_OF_COPIES = edi.NUM_OF_COPIES;
+    edition.PUBLISH_YEAR = edi.PUBLISH_YEAR;
+    console.log(edition);
+    try {
+      const added = await addEditionDB(edition);
+      if (!added) {
+        success = false;
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+  if (success) {
+    res.status(201).json({message: 'All Successful'});
+  } else {
+    res.status(404).json({message: 'INTERRUPTED BY ERROR'});
+  }
+}
+
+// if (req.body.AUTHORS) {
+//       for (var i = 0; i < req.body.AUTHORS.length; i++) {
+//         let bookAuthor = {
+//           ISBN: req.body.ISBN,
+//           AUTHOR_ID: req.body.AUTHORS[i]
+//         };
+//         bookAuthor = await addWrittenByDB(bookAuthor);
+//
+//       }
+//     }
+//
+//     if (req.body.GENRES) {
+//       for (var i = 0; i < req.body.GENRES.length; i++) {
+//         let bookGenre = {
+//           ISBN: req.body.ISBN,
+//           GENRE_ID: req.body.GENRES[i]
+//         };
+//         bookGenre = await addBookGenreDB(bookGenre);
+//       }
+//     }
+
+export async function addWrittenBy(req, res, next) {
+  let written = {
+    ISBN: req.body.ISBN
+  };
+  written = await deleteWittenByDB(written)
+  let success = true; // Flag to track success of all deletions
+
+  for (const edi of req.body.Authors) {
+    written.AUTHOR_ID = edi.AUTHOR_ID;
+    console.log(written);
+    try {
+      const added = await addWrittenByDB(written);
+      if (!added) {
+        success = false;
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+  if (success) {
+    res.status(201).json({message: 'All Successful'});
+  } else {
+    res.status(404).json({message: 'INTERRUPTED BY ERROR'});
+  }
+}
+
+export async function addBookGenre(req, res, next) {
+  let genre = {
+    ISBN: req.body.ISBN
+  };
+  genre = await deleteBookGenreDB(genre);
+  let success = true; // Flag to track success of all deletions
+
+  for (const edi of req.body.Genres) {
+    genre.GENRE_ID = edi.GENRE_ID;
+    console.log(genre);
+    try {
+      const added = await addBookGenreDB(genre);
+      if (!added) {
+        success = false;
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+  if (success) {
+    res.status(201).json({message: 'All Successful'});
+  } else {
+    res.status(404).json({message: 'INTERRUPTED BY ERROR'});
+  }
+}
+
 
 export async function reviewRateBook(req, res, next) {
   try {
