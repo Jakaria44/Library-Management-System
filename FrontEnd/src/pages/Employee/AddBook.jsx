@@ -21,6 +21,7 @@ import {
 import Autocomplete from "@mui/material/Autocomplete";
 import Checkbox from "@mui/material/Checkbox";
 import React, { useEffect, useMemo, useState } from "react";
+import Languages from "../../utils/Languages";
 import AddAuthor from "./AddAuthor";
 import AddPublisher from "./AddPublisher";
 
@@ -47,10 +48,10 @@ const AddBook = () => {
     publisher: "",
   });
   const [authors, setAuthors] = useState([]);
-  const [addAuthor, setAddAuthor] = useState(false);
   const [publishers, setPublishers] = useState([]);
-  const [addPublisher, setAddPublisher] = useState(false);
   const [editingPublisher, setEditingPublisher] = useState({});
+  const [addAuthor, setAddAuthor] = useState(false);
+  const [addPublisher, setAddPublisher] = useState(false);
   const [addCategory, setAddCategory] = useState(false);
   const [categories, setCategories] = useState([
     "Fiction",
@@ -60,7 +61,13 @@ const AddBook = () => {
   const [editingCategory, setEditingCategory] = useState("");
 
   const [isbn, setisbn] = useState(ISBN);
+  // const [edition, setEdition] = useState(0);
 
+  // useMemo(()=>{
+  //   if(isbn.includes(book.isbn) ){
+
+  //   }
+  // }, [isbn, edition])
   useEffect(() => {
     console.log(book.genre);
   }, [book.genre]);
@@ -239,6 +246,7 @@ const AddBook = () => {
                 label="Number Of Pages "
                 name="numberOfPages"
                 type="number"
+                error={book.numberOfPages && book.numberOfPages <= 0}
                 onChange={(e) =>
                   setBook((prev) => ({
                     ...prev,
@@ -248,15 +256,30 @@ const AddBook = () => {
               />
             </Grid>
             <Grid item xs>
-              <TextField
-                required
-                fullWidth
-                id="language"
-                label="Language of the Book"
-                name="language"
-                onChange={(e) =>
-                  setBook((prev) => ({ ...prev, language: e.target.value }))
-                }
+              <Autocomplete
+                options={Languages}
+                autoHighlight
+                getOptionLabel={(option) => option.name}
+                renderOption={(props, option) => (
+                  <li {...props}>
+                    [{option.code}] {option.name} : {option.nativeName}
+                  </li>
+                )}
+                onChange={(e, value) => {
+                  setBook((prev) => ({
+                    ...prev,
+                    language: value,
+                  }));
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    required
+                    label="Language"
+                    placeholder="Add Language"
+                  />
+                )}
+                // loadingText={<CircularProgress />}
               />
             </Grid>
           </Grid>

@@ -42,7 +42,7 @@ const Application = () => {
         params: queryOptions,
       });
 
-      console.log("all due data", data);
+      console.log("all due data", response.data);
       const data = response.data.map((item) => ({
         id: item.RENT_HISTORY_ID,
         USER_ID: item.USER_ID,

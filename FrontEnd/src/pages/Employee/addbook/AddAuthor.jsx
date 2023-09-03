@@ -12,26 +12,41 @@ import {
 import { DateField } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+
 import React, { useState } from "react";
-import SpinnerWithBackdrop from "../../component/SpinnerWithBackdrop";
-import nationalities from "../../utils/AllCountries";
-const AddAuthor = ({ onClose }) => {
+import { v4 } from "uuid";
+import SpinnerWithBackdrop from "../../../component/SpinnerWithBackdrop";
+import { storage } from "../../../firebaseConfig";
+import nationalities from "../../../utils/AllCountries";
+import server from "./../../../HTTP/httpCommonParam";
+
+const fields = {
+  NAME: 1,
+  DoB: 2,
+  DoD: 3,
+  IMAGE: 4,
+  NATIONALITY: 5,
+  BIO: 6,
+};
+const defaultImage =
+  "https://previews.123rf.com/images/anatolir/anatolir1712/anatolir171201476/91832679-man-avatar-icon-flat-illustration-of-man-avatar-vector-icon-isolated-on-white-background.jpg";
+const AddAuthor = ({ onClose, onSubmit }) => {
   const [author, setAuthor] = useState({
     NAME: "",
-    DOB: "",
-    DOD: "",
-    IMAGE: null,
+    DoB: null,
+    DoD: null,
+    IMAGE: defaultImage,
     NATIONALITY: "",
     BIO: "",
   });
+  const [error, setError] = useState(null);
   // console.log(nationalities);
-  const [previewUrl, setPreviewUrl] = useState();
+  const [previewUrl, setPreviewUrl] = useState(defaultImage);
   const [selectedImage, setSelectedImage] = useState(null);
 
   const [uploading, setUploading] = useState(false);
 
   const uploadImage = () => {
-    setUploading(true);
     const imageRef = ref(storage, `profileImages/${v4()}`);
 
     uploadBytes(imageRef, selectedImage)
@@ -41,7 +56,7 @@ const AddAuthor = ({ onClose }) => {
           const updatedAuthor = { ...author, IMAGE: url };
           setAuthor(updatedAuthor);
           console.log(updatedAuthor);
-          updateAuthor();
+          updateAuthor(updatedAuthor);
         });
       })
       .catch((error) => {
@@ -64,25 +79,54 @@ const AddAuthor = ({ onClose }) => {
     }
   };
 
-  const updateAuthor = async () => {
+  const updateAuthor = async (newAuthor) => {
+    const newAuthorValue = newAuthor;
     try {
+      console.log(newAuthor);
+      const res = await server.post("/getAuthor", newAuthor);
+
+      newAuthorValue.AUTHOR_ID = res.data.author.AUTHOR_ID;
+      console.log(res);
     } catch (err) {
       console.log(err);
     } finally {
       setUploading(false);
-      onClose();
+      onSubmit(newAuthorValue);
     }
   };
-  const handleAddAuthor = async (e) => {
+
+  const validate = () => {
+    if (author.NAME === "") {
+      setError(fields.NAME);
+      return false;
+    }
+    if (!author.DoB) {
+      setError(fields.DoB);
+      return false;
+    }
+    if (author.BIO === "") {
+      setError(fields.BIO);
+      return false;
+    }
+    if (author.NATIONALITY === "") {
+      setError(fields.NATIONALITY);
+      return false;
+    }
+    return true;
+  };
+  const handleAddAuthor = (e) => {
     e.preventDefault();
+    if (!validate()) return;
+    setUploading(true);
+    console.log("add");
     if (selectedImage) {
       uploadImage();
     } else {
-      updateAuthor();
+      updateAuthor(author);
     }
   };
   return (
-    <form onSubmit={handleAddAuthor}>
+    <>
       <DialogTitle variant="h3">Add Author</DialogTitle>
 
       <DialogContent>
@@ -103,6 +147,7 @@ const AddAuthor = ({ onClose }) => {
               <input
                 type="file"
                 accept="image/*"
+                name="image"
                 onChange={handleImageSelect}
                 style={{ display: "none" }}
               />
@@ -115,6 +160,8 @@ const AddAuthor = ({ onClose }) => {
               fullWidth
               label="Author Name"
               name="authorName"
+              error={error === fields.NAME}
+              helperText={error === fields.NAME && "This field is required"}
               onChange={(e) => setAuthor({ ...author, NAME: e.target.value })}
               value={author?.NAME}
             />
@@ -125,18 +172,22 @@ const AddAuthor = ({ onClose }) => {
                 required
                 disableFuture
                 label="Date of Birth"
-                value={author?.DOB}
+                name="dob"
+                error={error === fields.DoB}
+                helperText={error === fields.DoB && "This field is required"}
+                value={author?.DoB}
                 onChange={(newValue) =>
-                  setAuthor({ ...author, DOB: newValue.toISOString() })
+                  setAuthor({ ...author, DoB: newValue.toISOString() })
                 }
                 format="LL"
               />
               <DateField
                 disableFuture
+                name="dod"
                 label="Date of Death"
-                value={author?.DOD}
+                value={author?.DoD}
                 onChange={(newValue) =>
-                  setAuthor({ ...author, DOB: newValue.toISOString() })
+                  setAuthor({ ...author, DoD: newValue.toISOString() })
                 }
                 format="LL"
               />
@@ -146,6 +197,8 @@ const AddAuthor = ({ onClose }) => {
             <TextField
               multiline
               rows={4}
+              error={error === fields.BIO}
+              helperText={error === fields.BIO && "This field is required"}
               fullWidth
               required
               label="Biography"
@@ -159,7 +212,16 @@ const AddAuthor = ({ onClose }) => {
               autoHighlight
               options={nationalities}
               renderInput={(params) => (
-                <TextField {...params} required label="Nationality" />
+                <TextField
+                  {...params}
+                  required
+                  error={error === fields.NATIONALITY}
+                  helperText={
+                    error === fields.NATIONALITY && "This field is required"
+                  }
+                  name="nationality"
+                  label="Nationality"
+                />
               )}
               onChange={(e, value) =>
                 setAuthor({ ...author, NATIONALITY: value })
@@ -175,14 +237,14 @@ const AddAuthor = ({ onClose }) => {
           </Button>
         </Grid>
         <Grid item>
-          <Button type="submit">Add</Button>
+          <Button onClick={handleAddAuthor}>Add</Button>
         </Grid>
       </Grid>
       <SpinnerWithBackdrop
         backdropOpen={uploading}
         helperText="Please wait while we update this information"
       />
-    </form>
+    </>
   );
 };
 

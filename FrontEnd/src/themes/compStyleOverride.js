@@ -215,6 +215,13 @@ export default function componentStyleOverrides(theme) {
                 },
             },
         },
+        MuiPaper: {
+            styleOverrides: {
+                root: {
+                    background: theme.backgroundDefault,
+                },
+            },
+        },
         MuiSlider: {
             styleOverrides: {
                 root: {

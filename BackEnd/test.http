@@ -157,7 +157,7 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUi
 
 #for all, don't give any parameter
 #### --- GET one/all AUTHOR ---
-GET http://localhost:3000/db-api/getAuthor?aid=1
+GET http://localhost:3000/db-api/getAuthor
 
 ###OUTPUT
 {
@@ -171,7 +171,7 @@ GET http://localhost:3000/db-api/getAuthor?aid=1
 }
 
 #### --- GET one/all PUBLISHER ---
-GET http://localhost:3000/db-api/getPublisher?pid=1
+GET http://localhost:3000/db-api/getPublisher
 
 ###OUTPUT
 {
@@ -186,7 +186,7 @@ GET http://localhost:3000/db-api/getPublisher?pid=1
 }
 
 #### --- GET one/all GENRE ---
-GET http://localhost:3000/db-api/getGenre?gid=1
+GET http://localhost:3000/db-api/getGenre
 
 ###OUTPUT
 {
@@ -565,7 +565,7 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 
 #### --- POST one AUTHOR ---
 POST http://localhost:3000/db-api/getAuthor
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ3MjcwNywiZXhwIjoxNzY1NDcyNzA3fQ.DP801eMLJkQWZDWJw95B-Igaukx5G5x1rpX57JdzEoc
 Content-Type: application/json
 
 {
@@ -592,15 +592,15 @@ Content-Type: application/json
 
 #### --- POST one PUBLISHER ---
 POST http://localhost:3000/db-api/getPublisher
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzU1NzMyOCwiZXhwIjoxNzY1NTU3MzI4fQ.OWzBW1GTgnYmm8q49j_mcge89WXpLG6KHK6I_jLqWaM
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ3MjcwNywiZXhwIjoxNzY1NDcyNzA3fQ.DP801eMLJkQWZDWJw95B-Igaukx5G5x1rpX57JdzEoc
 Content-Type: application/json
 
 {
-  "NAME": "A",
+  "NAME": "Demo Publisher",
   "IMAGE": null,
   "CITY": "a",
   "COUNTRY": "a",
-  "EMAIL": "a@gmail.com",
+  "EMAIL": "ab@gmail.com",
   "CONTACT_NO": "01",
   "POSTAL_CODE": "M"
 }
@@ -621,11 +621,11 @@ Content-Type: application/json
 
 #### --- POST one GENRE ---
 POST http://localhost:3000/db-api/getGenre
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ3MjcwNywiZXhwIjoxNzY1NDcyNzA3fQ.DP801eMLJkQWZDWJw95B-Igaukx5G5x1rpX57JdzEoc
 Content-Type: application/json
 
 {
-  "GENRE_NAME": "A"
+  "GENRE_NAME": "History"
 }
 ###OUTPUT
 {

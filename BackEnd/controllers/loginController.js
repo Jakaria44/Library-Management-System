@@ -163,11 +163,7 @@ export async function postUser(req, res, next) {
     };
     let foundUser = null;
 
-    try {
-
-    } catch (err) {
-      res.status(500).send(err.message);
-    }
+    
     const result = await postUserDB(user);
     if (user !== result) {
       throw new Error(result);

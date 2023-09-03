@@ -12,9 +12,9 @@ import {
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import React, { useState } from "react";
 import { v4 } from "uuid";
-import SpinnerWithBackdrop from "../../component/SpinnerWithBackdrop";
-import countryList from "../../utils/CountryList";
-import { storage } from "./../../firebaseConfig";
+import SpinnerWithBackdrop from "../../../component/SpinnerWithBackdrop";
+import countryList from "../../../utils/CountryList";
+import { storage } from "../../../firebaseConfig";
 
 // import server from "./../../HTTP/httpCommonParam";
 const defaultImage =
@@ -98,7 +98,7 @@ const AddPublisher = ({ onClose }) => {
   };
   return (
     <form onSubmit={handleAddPublisher}>
-      <DialogTitle variant="h3">Add Author</DialogTitle>
+      <DialogTitle variant="h3">Add Publisher</DialogTitle>
 
       <DialogContent>
         <Grid container spacing={2}>
