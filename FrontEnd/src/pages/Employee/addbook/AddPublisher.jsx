@@ -10,16 +10,28 @@ import {
   TextField,
 } from "@mui/material";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { v4 } from "uuid";
 import SpinnerWithBackdrop from "../../../component/SpinnerWithBackdrop";
-import countryList from "../../../utils/CountryList";
 import { storage } from "../../../firebaseConfig";
+import countryList from "../../../utils/CountryList";
 
-// import server from "./../../HTTP/httpCommonParam";
+const fields = {
+  NAME: 1,
+  EMAIL: 2,
+  COUNTRY: 3,
+  POSTAL_CODE: 4,
+  CONTACT_NO: 5,
+};
+
+const emailRegex =
+  /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+import server from "./../../../HTTP/httpCommonParam";
 const defaultImage =
   "https://ds.rokomari.store/rokomari110/company/publisher.png";
-const AddPublisher = ({ onClose }) => {
+const AddPublisher = ({ onSubmit, onClose }) => {
+  const [error, setError] = useState(null);
   /*
   //     City         VARCHAR2(100),
     Country      VARCHAR2(100),
@@ -37,12 +49,16 @@ const AddPublisher = ({ onClose }) => {
     EMAIL: "",
   });
 
-  const [previewUrl, setPreviewUrl] = useState();
+  const isEmailValid = useMemo(
+    () => (publisher.EMAIL ? emailRegex.test(publisher.EMAIL) : true),
+    [publisher.EMAIL]
+  );
+
+  const [previewUrl, setPreviewUrl] = useState(defaultImage);
   const [selectedImage, setSelectedImage] = useState(null);
   const [uploading, setUploading] = useState(false);
 
   const uploadImage = () => {
-    setUploading(true);
     const imageRef = ref(storage, `profileImages/${v4()}`);
 
     uploadBytes(imageRef, selectedImage)
@@ -52,7 +68,7 @@ const AddPublisher = ({ onClose }) => {
           const updatedPublisher = { ...publisher, IMAGE: url };
           setPublisher(updatedPublisher);
           console.log(updatedPublisher);
-          updatePublisher();
+          updatePublisher(updatedPublisher);
         });
       })
       .catch((error) => {
@@ -75,29 +91,60 @@ const AddPublisher = ({ onClose }) => {
     }
   };
 
-  const updatePublisher = async () => {
+  const updatePublisher = async (newPublisher) => {
+    const newPublisherValue = newPublisher;
     try {
-      // const res = await server.post("/publisher");
+      console.log(newPublisher);
+      const res = await server.post("/getPublisher", newPublisher);
+
+      newPublisherValue.PUBLISHER_ID = res.data.publisher.PUBLISHER_ID;
+      console.log(res);
     } catch (err) {
       console.log(err);
     } finally {
       setUploading(false);
-      onClose();
+      onSubmit(newPublisherValue);
     }
   };
   // useMemo(() => {
   //   console.log(publisher);
   // }, [publisher]);
-  const handleAddPublisher = async (e) => {
+  const validate = () => {
+    if (publisher.NAME === "") {
+      setError(fields.NAME);
+      return false;
+    }
+    if (!publisher.COUNTRY) {
+      setError(fields.COUNTRY);
+      return false;
+    }
+    if (publisher.POSTAL_CODE === "") {
+      setError(fields.POSTAL_CODE);
+      return false;
+    }
+    if (publisher.CONTACT_NO === "") {
+      setError(fields.CONTACT_NO);
+      return false;
+    }
+    if (publisher.EMAIL === "" || !isEmailValid) {
+      setError(fields.EMAIL);
+      return false;
+    }
+    return true;
+  };
+  const handleAddPublisher = (e) => {
+    if (!validate()) return;
     e.preventDefault();
+    console.log(onSubmit);
+    setUploading(true);
     if (selectedImage) {
       uploadImage();
     } else {
-      updatePublisher();
+      updatePublisher(publisher);
     }
   };
   return (
-    <form onSubmit={handleAddPublisher}>
+    <>
       <DialogTitle variant="h3">Add Publisher</DialogTitle>
 
       <DialogContent>
@@ -131,6 +178,8 @@ const AddPublisher = ({ onClose }) => {
                 fullWidth
                 label="Publisher Name"
                 name="NAME"
+                error={error === fields.NAME}
+                helperText={error === fields.NAME && "This field is required"}
                 onChange={(e) =>
                   setPublisher({ ...publisher, NAME: e.target.value })
                 }
@@ -143,6 +192,12 @@ const AddPublisher = ({ onClose }) => {
                 required
                 fullWidth
                 label="Email"
+                error={error === fields.EMAIL}
+                helperText={
+                  !isEmailValid
+                    ? "Please enter a valid email"
+                    : error === fields.EMAIL && "This field is required"
+                }
                 name="EMAIL"
                 type="email"
                 onChange={(e) =>
@@ -158,6 +213,10 @@ const AddPublisher = ({ onClose }) => {
                 fullWidth
                 label="Postal Code"
                 name="POSTAL_CODE"
+                error={error === fields.POSTAL_CODE}
+                helperText={
+                  error === fields.POSTAL_CODE && "This field is required"
+                }
                 onChange={(e) =>
                   setPublisher({ ...publisher, POSTAL_CODE: e.target.value })
                 }
@@ -170,6 +229,10 @@ const AddPublisher = ({ onClose }) => {
                 required
                 fullWidth
                 label="Contact No"
+                error={error === fields.CONTACT_NO}
+                helperText={
+                  error === fields.CONTACT_NO && "This field is required"
+                }
                 name="CONTACT_NO"
                 onChange={(e) =>
                   setPublisher({ ...publisher, CONTACT_NO: e.target.value })
@@ -184,7 +247,15 @@ const AddPublisher = ({ onClose }) => {
               autoHighlight
               options={countryList}
               renderInput={(params) => (
-                <TextField {...params} required label="Country" />
+                <TextField
+                  {...params}
+                  error={error === fields.COUNTRY}
+                  helperText={
+                    error === fields.COUNTRY && "This field is required"
+                  }
+                  required
+                  label="Country"
+                />
               )}
               onChange={(e, value) =>
                 setPublisher({ ...publisher, COUNTRY: value })
@@ -200,14 +271,14 @@ const AddPublisher = ({ onClose }) => {
           </Button>
         </Grid>
         <Grid item>
-          <Button type="submit">Add</Button>
+          <Button onClick={handleAddPublisher}>Add</Button>
         </Grid>
       </Grid>
       <SpinnerWithBackdrop
         backdropOpen={uploading}
         helperText="Please wait while we update this information"
       />
-    </form>
+    </>
   );
 };
 

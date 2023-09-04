@@ -277,7 +277,6 @@ export default function AuthorGenrePublisherAdd({
 
       {/* Add New Category */}
       <Dialog
-        ref={inputRef}
         open={addCategory}
         onClose={(event, reason) => {
           if (reason === "backdropClick" || reason === "escapeKeyDown") {
@@ -368,7 +367,24 @@ export default function AuthorGenrePublisherAdd({
           setAddPublisher(false);
         }}
       >
-        <AddPublisher onClose={() => setAddPublisher(false)} />
+        <AddPublisher
+          onSubmit={(value) => {
+            console.log(value);
+            loadAllPublishers()
+              .then((res) => {
+                setAuthorGenrePublisher((prev) => ({
+                  ...prev,
+                  publisher: value,
+                }));
+                setAddPublisher(false);
+              })
+              .catch((err) => {
+                console.log(err);
+                setAddPublisher(false);
+              });
+          }}
+          onClose={() => setAddPublisher(false)}
+        />
       </Dialog>
     </React.Fragment>
   );

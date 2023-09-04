@@ -142,62 +142,63 @@ export default function AddBook() {
   return (
     <React.Fragment>
       <CssBaseline />
-      <form id="book-add">
-        <Container
-          noValidate={false}
-          onSubmit={handleNext}
-          maxWidth="md"
-          sx={{ mb: 4 }}
-        >
-          <Paper
-            background="background.paper"
-            elevation={24}
-            sx={{ p: { xs: 2, md: 3 } }}
-            square
-          >
-            <Typography component="h1" gutterBottom variant="h2" align="center">
-              Add Book
-            </Typography>
-            <Stepper
-              alternativeLabel
-              activeStep={activeStep}
-              connector={<ColorlibConnector />}
-            >
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel StepIconComponent={ColorlibStepIcon}>
-                    {label}
-                  </StepLabel>
-                </Step>
-              ))}
-            </Stepper>
 
-            <React.Fragment>
-              {/* <Slide
+      <Container
+        component="form"
+        id="addBookForm "
+        noValidate={false}
+        onSubmit={handleNext}
+        maxWidth="md"
+        sx={{ mb: 4 }}
+      >
+        <Paper
+          background="background.paper"
+          elevation={24}
+          sx={{ p: { xs: 2, md: 3 } }}
+          square
+        >
+          <Typography component="h1" gutterBottom variant="h2" align="center">
+            Add Book
+          </Typography>
+          <Stepper
+            alternativeLabel
+            activeStep={activeStep}
+            connector={<ColorlibConnector />}
+          >
+            {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel StepIconComponent={ColorlibStepIcon}>
+                  {label}
+                </StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+
+          <React.Fragment>
+            {/* <Slide
               container={containerRef.current}
               direction={direction}
               in={true}
               mountOnEnter
               unmountOnExit
             > */}
-              {getStepContent(activeStep)}
+            {getStepContent(activeStep)}
 
-              {/* </Slide> */}
-              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                {activeStep !== 0 && (
-                  <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
-                    Back
-                  </Button>
-                )}
-
-                <Button type="submit" variant="contained" sx={{ mt: 3, ml: 1 }}>
-                  {activeStep === steps.length - 1 ? "Add Book" : "Next"}
+            {/* </Slide> */}
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              {activeStep !== 0 && (
+                <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
+                  Back
                 </Button>
-              </Box>
-            </React.Fragment>
-          </Paper>
-        </Container>
-      </form>
+              )}
+
+              <Button type="submit" variant="contained" sx={{ mt: 3, ml: 1 }}>
+                {activeStep === steps.length - 1 ? "Add Book" : "Next"}
+              </Button>
+            </Box>
+          </React.Fragment>
+        </Paper>
+      </Container>
     </React.Fragment>
   );
 }
