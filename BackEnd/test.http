@@ -1,31 +1,3 @@
-##### ----GET All Books (sorted) ----
-GET http://localhost:3000/db-api/all-books-sum?sort=TITLE&order=DESC
-###OUTPUT
-[
-  {
-    "ISBN": "9781408855676",
-    "TITLE": "Harry Potter and the Prisoner of Azkaban",
-    "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/a5a669963_101016.jpg",
-    "PAGE": 462,
-    "LANGUAGE": "English",
-    "PUBLISH_YEAR": 1999,
-    "AUTHORS": "J. K. Rowling",
-    "RATING": 0,
-    "FAVOURITE": 1
-  },
-  {
-    "ISBN": "9781408855652",
-    "TITLE": "Harry Potter and the Philosophers Stone",
-    "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/4cf25a33d8a4_86392.gif",
-    "PAGE": 352,
-    "LANGUAGE": "English",
-    "PUBLISH_YEAR": 1997,
-    "AUTHORS": "J. K. Rowling",
-    "RATING": 5,
-    "FAVOURITE": 1
-  }
-]
-
 #### ----GET Single Book ----
 GET http://localhost:3000/db-api/book?id=1111111111111
 ###OUTPUT
@@ -157,7 +129,7 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUi
 
 #for all, don't give any parameter
 #### --- GET one/all AUTHOR ---
-GET http://localhost:3000/db-api/getAuthor
+GET http://localhost:3000/db-api/getAuthor?aid=1
 
 ###OUTPUT
 {
@@ -171,7 +143,7 @@ GET http://localhost:3000/db-api/getAuthor
 }
 
 #### --- GET one/all PUBLISHER ---
-GET http://localhost:3000/db-api/getPublisher
+GET http://localhost:3000/db-api/getPublisher?pid=1
 
 ###OUTPUT
 {
@@ -186,7 +158,7 @@ GET http://localhost:3000/db-api/getPublisher
 }
 
 #### --- GET one/all GENRE ---
-GET http://localhost:3000/db-api/getGenre
+GET http://localhost:3000/db-api/getGenre?gid=1
 
 ###OUTPUT
 {
@@ -565,7 +537,7 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 
 #### --- POST one AUTHOR ---
 POST http://localhost:3000/db-api/getAuthor
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ3MjcwNywiZXhwIjoxNzY1NDcyNzA3fQ.DP801eMLJkQWZDWJw95B-Igaukx5G5x1rpX57JdzEoc
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
 Content-Type: application/json
 
 {
@@ -592,15 +564,15 @@ Content-Type: application/json
 
 #### --- POST one PUBLISHER ---
 POST http://localhost:3000/db-api/getPublisher
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ3MjcwNywiZXhwIjoxNzY1NDcyNzA3fQ.DP801eMLJkQWZDWJw95B-Igaukx5G5x1rpX57JdzEoc
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzU1NzMyOCwiZXhwIjoxNzY1NTU3MzI4fQ.OWzBW1GTgnYmm8q49j_mcge89WXpLG6KHK6I_jLqWaM
 Content-Type: application/json
 
 {
-  "NAME": "Demo Publisher",
+  "NAME": "A",
   "IMAGE": null,
   "CITY": "a",
   "COUNTRY": "a",
-  "EMAIL": "ab@gmail.com",
+  "EMAIL": "a@gmail.com",
   "CONTACT_NO": "01",
   "POSTAL_CODE": "M"
 }
@@ -621,11 +593,11 @@ Content-Type: application/json
 
 #### --- POST one GENRE ---
 POST http://localhost:3000/db-api/getGenre
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ3MjcwNywiZXhwIjoxNzY1NDcyNzA3fQ.DP801eMLJkQWZDWJw95B-Igaukx5G5x1rpX57JdzEoc
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
 Content-Type: application/json
 
 {
-  "GENRE_NAME": "History"
+  "GENRE_NAME": "B"
 }
 ###OUTPUT
 {
@@ -793,15 +765,14 @@ Content-Type: application/json
 }
 
 #### --- UPDATE EDITION ---
-PUT http://localhost:3000/db-api/getEdition
+PUT http://localhost:3000/db-api/getEdition?eid=10
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
 Content-Type: application/json
 
 {
-  "EDITION_ID": "16",
   "EDITION_NUM": 0,
-  "ADD_COPIES": 10,
-  "PUBLISH_YEAR": 1910
+  "NUM_OF_COPIES": 10,
+  "PUBLISH_YEAR": 2007
 }
 
 ###OUTPUT
@@ -838,53 +809,6 @@ GET http://localhost:3000/db-api/getLanguage
     "LANGUAGE": "English"
   }
 ]
-
-#### --- POST one BOOK ---
-POST http://localhost:3000/db-api/book
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
-Content-Type: application/json
-
-{
-  "ISBN": "1111111111111",
-  "TITLE": "new book",
-  "IMAGE": null,
-  "NUMBER_OF_PAGES": 0,
-  "LANGUAGE": "Bangla",
-  "DESCRIPTION": "Most easy book",
-  "PUBLISHER_ID": "22"
-}
-###OUTPUT
-{
-  "message": "Successful"
-}
-
-#### --- PUT one BOOK ---
-PUT http://localhost:3000/db-api/book
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
-Content-Type: application/json
-
-{
-  "ISBN": "1111111111111",
-  "TITLE": "new book1",
-  "IMAGE": null,
-  "NUMBER_OF_PAGES": 0,
-  "LANGUAGE": "BangLa",
-  "DESCRIPTION": "Most easy book",
-  "PUBLISHER_ID": "22"
-}
-###OUTPUT
-{
-  "message": "Successful"
-}
-
-#### --- DELETE one BOOK ---
-DELETE http://localhost:3000/db-api/book?id=1111111111111
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
-
-###OUTDELETE
-{
-  "message": "Successfully deleted"
-}
 
 #### --- WRITTER ADD ---
 POST http://localhost:3000/db-api/writtenBy
@@ -930,3 +854,179 @@ Content-Type: application/json
   "message": "All Successful"
 }
 
+##### ----GET All Books (sorted AND advanced searched) ----
+GET http://localhost:3000/db-api/all-books-sum?sort=TITLE&order=DESC
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "MY_RAT": true,
+  "MY_FAV": true,
+  "ISBN":"9781408894743",
+  "TITLE": "DEATH",
+  "LANGUAGE": "EnGliSh",
+  "PUBLISHER_ID": "1",
+  "AUTHOR_ID": "1",
+  "GENRE_ID": "1",
+  "PAGE_START": 600,
+  "PAGE_END": 700,
+  "YEAR_START": 2000,
+  "YEAR_END": 2020,
+  "RATING_START": 4,
+  "RATING_END": 5
+}
+
+###OUTPUT
+[
+  {
+    "ISBN": "9781408894743",
+    "TITLE": "Harry Potter and the Deathly Hallows",
+    "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/Harry_Potter_and_the_Deathly_Hallows_(Se-J.K_Rowling-699a7-122325.jpg",
+    "PAGE": 608,
+    "LANGUAGE": "English",
+    "PUBLISH_YEAR": 2010,
+    "AUTHORS": "J. K. Rowling",
+    "RATING": 5,
+    "FAVOURITE": 1,
+    "IS_FAVOURITE": 1
+  }
+]
+
+##### ----GET All Books (sorted AND advanced searched) ----
+GET http://localhost:3000/db-api/all-book
+
+###OUTPUT
+[
+  {
+    "ISBN":,
+    "TITLE":,
+    "IMAGE":
+  }
+]
+
+#### ------ GET ALL USERS ----
+GET http://localhost:3000/db-api/all-users?sort=EMAIL&order=ASC
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "USER": false,
+  "EMPLOYEE" : true,
+  "ADMIN": true
+}
+
+###OUTPUT
+[
+  {
+    "USER_ID": "3",
+    "NAME": "jakaria hossain",
+    "IMAGE": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
+    "ADDRESS": "Ney York, USA",
+    "EMAIL": "mdjakaria442020@gmail.com",
+    "CONTACT_NO": "01712345678",
+    "GENDER": "M",
+    "ROLE": "admin"
+  },
+  {
+    "USER_ID": "1",
+    "NAME": "Ryan George",
+    "IMAGE": "https://img.freepik.com/free-icon/user_318-159711.jpg",
+    "ADDRESS": "England",
+    "EMAIL": "ryangeorge@gmail.com",
+    "CONTACT_NO": "854 526 8852",
+    "GENDER": "M",
+    "ROLE": "employee"
+  }
+]
+
+
+#### --- POST one BOOK ---
+POST http://localhost:3000/db-api/book
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "ISBN": "1111111111112",
+  "TITLE": "new book2",
+  "IMAGE": null,
+  "NUMBER_OF_PAGES": 0,
+  "LANGUAGE": "Bangla",
+  "DESCRIPTION": "Most easy book",
+  "PUBLISHER_ID": "1",
+  "Authors": [
+    {
+      "AUTHOR_ID": "1"
+    }
+  ],
+  "Genres": [
+    {
+      "GENRE_ID": "1"
+    }
+  ],
+  "Editions":[
+    {
+      "EDITION_NUM": 1,
+      "NUM_OF_COPIES": 10,
+      "PUBLISH_YEAR": 2022
+    },
+    {
+      "EDITION_NUM": 2,
+      "NUM_OF_COPIES": 10,
+      "PUBLISH_YEAR": 2023
+    }
+  ]
+}
+###OUTPUT
+{
+  "message": "Successful"
+}
+
+#### --- PUT one BOOK ---
+PUT http://localhost:3000/db-api/book
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "ISBN": "1111111111112",
+  "TITLE": "new book2",
+  "IMAGE": "https://img.freepik.com/premium-photo/book-library-with-old-open-textbook-stack-piles-literature-text-archive-reading-desk_779468-5822.jpg?w=2000",
+  "NUMBER_OF_PAGES": 0,
+  "LANGUAGE": "Bangla",
+  "DESCRIPTION": "Most easy book",
+  "PUBLISHER_ID": "1",
+  "Authors": [
+    {
+      "AUTHOR_ID": "1"
+    }
+  ],
+  "Genres": [
+    {
+      "GENRE_ID": "1"
+    },
+    {
+      "GENRE_ID": "2"
+    }
+  ],
+  "Editions":[
+    {
+      "EDITION_NUM": 3,
+      "NUM_OF_COPIES": 10,
+      "PUBLISH_YEAR": 2024
+    }
+  ]
+}
+
+#only added edition
+###OUTPUT
+{
+  "message": "Successful"
+}
+
+#### --- DELETE one BOOK ---
+DELETE http://localhost:3000/db-api/book?id=1111111111111
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+
+###OUTDELETE
+{
+  "message": "Successfully deleted"
+}

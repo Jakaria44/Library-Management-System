@@ -24,30 +24,16 @@ import {
   getEditionDB,
   sendMessageDB,
   publishNewsDB,
-  addEditionDB, deleteBookGenreDB, deleteWittenByDB
+  addEditionDB,
+  deleteBookGenreDB,
+  deleteWittenByDB,
+  addJobDB,
+  getApplicationsDB,
+  applyForJobDB,
+  addEmployeeDB,
+  getEmployeeDB
 } from '../Database/queryFunctions.js';
 import {getMyRequests} from "./getController.js";
-
-
-export async function updateUserDetails(req, res, next) {
-  try {
-    let user = {
-      PERSON_ID: req.body.PERSON_ID,
-      FIRST_NAME: req.body.FIRST_NAME,
-      LAST_NAME: req.body.LAST_NAME,
-      ADDRESS: req.body.ADDRESS,
-      EMAIL: req.body.EMAIL,
-      PHONE_NUMBER: req.body.PHONE_NUMBER,
-      DETAILS: req.body.DETAILS,
-      WEB_ADDRESS: req.body.WEB_ADDRESS
-    };
-
-    user = await updateUserDB(user);
-    res.status(201).json(user);
-  } catch (err) {
-    next(err);
-  }
-}
 
 export async function postFavBook(req, res, next) {
 
@@ -76,21 +62,29 @@ export async function postFavBook(req, res, next) {
 export async function advanceSearch(req, res, next) {
   try {
     const context = {};
-
+    if (req.USER_ID) {
+      context.USER_ID = req.USER_ID;
+    }
+    if (req.body.MY_FAV) {
+      context.MY_FAV = req.body.MY_FAV;
+    }
+    if (req.body.MY_RAT) {
+      context.MY_RAT = req.body.MY_RAT;
+    }
+    if (req.body.ISBN) {
+      context.ISBN = req.body.ISBN;
+    }
     if (req.body.TITLE) {
       context.TITLE = req.body.TITLE;
     }
-    if (req.body.AUTHOR) {
-      context.AUTHOR = req.body.AUTHOR;
+    if (req.body.LANGUAGE) {
+      context.LANGUAGE = req.body.LANGUAGE;
     }
-    if (req.body.PUBLISHER) {
-      context.PUBLISHER = req.body.PUBLISHER;
+    if (req.body.PAGE_START) {
+      context.PAGE_START = req.body.PAGE_START;
     }
-    if (req.body.GENRE_ID) {
-      context.GENRE_ID = req.body.GENRE_ID;
-    }
-    if (req.body.AWARD) {
-      context.AWARD = req.body.AWARD;
+    if (req.body.PAGE_END) {
+      context.PAGE_END = req.body.PAGE_END;
     }
     if (req.body.YEAR_START) {
       context.YEAR_START = req.body.YEAR_START;
@@ -98,31 +92,26 @@ export async function advanceSearch(req, res, next) {
     if (req.body.YEAR_END) {
       context.YEAR_END = req.body.YEAR_END;
     }
-
     if (req.body.RATING_START) {
       context.RATING_START = req.body.RATING_START;
     }
     if (req.body.RATING_END) {
       context.RATING_END = req.body.RATING_END;
     }
-
-    if (req.body.PAGE_START) {
-      context.PAGE_START = req.body.PAGE_START;
+    if (req.body.AUTHOR_ID) {
+      context.AUTHOR_ID = req.body.AUTHOR_ID;
     }
-    if (req.body.PAGE_END) {
-      context.PAGE_END = req.body.PAGE_END;
+    if (req.body.PUBLISHER_ID) {
+      context.PUBLISHER_ID = req.body.PUBLISHER_ID;
     }
-    if (req.body.LANGUAGE) {
-      context.LANGUAGE = req.body.LANGUAGE;
+    if (req.body.GENRE_ID) {
+      context.GENRE_ID = req.body.GENRE_ID;
     }
-    if (req.body.BINDING) {
-      context.BINDING = req.body.BINDING;
+    if (req.query.sort) {
+      context.sort = req.query.sort;
     }
-    if (req.body.SORT) {
-      context.SORT = req.body.SORT;
-    }
-    if (req.body.SORT_TYPE) {
-      context.SORT_TYPE = req.body.SORT_TYPE;
+    if (req.query.order) {
+      context.order = req.query.order;
     }
 
 
@@ -131,7 +120,7 @@ export async function advanceSearch(req, res, next) {
     if (rows.length >= 1) {
       res.status(200).json(rows);
     } else {
-      res.status(404).end();
+      res.status(404).json({message: "Not Found"});
     }
   } catch (err) {
     next(err);
@@ -239,6 +228,28 @@ export async function addRequest(req, res, next) {
   }
 }
 
+export async function applyForJob(req, res, next) {
+  try {
+    let request = {
+      USER_ID: req.USER_ID,
+      JOB_ID: req.query.jid
+    };
+    let result = await getApplicationsDB(request);
+    if (result.length >= 3) {
+      res.status(403).json({message: "MAXIMUM LIMIT REACHED"});
+      return;
+    }
+    request = await applyForJobDB(request);
+    if (request) {
+      res.status(200).json({message: "Successful"})
+    } else {
+      res.status(404).json({message: "Already Exists"})
+    }
+  } catch (e) {
+    next(e);
+  }
+}
+
 export async function sendMessage(req, res, next) {
   try {
     if (req.body.USER_ID === req.USER_ID) {
@@ -312,6 +323,33 @@ export async function acceptRequest(req, res, next) {
   }
 }
 
+export async function acceptApplication(req, res, next) {
+  try {
+    let context = {
+      USER_ID: req.body.USER_ID,
+      JOB_ID: req.body.JOB_ID
+    };
+    console.log(context);
+    let request = await addEmployeeDB(context);
+    if (request) {
+      const result = await getEmployeeDB(context);
+      console.log(result);
+      const jobTitle = (result[0] ? result[0].JOB_TITLE : 'UNKNOWN');
+      context.MESSAGE = `Congratulations!!! Your application for the JOB: {${jobTitle}} is accepted. From now, you are an Employee of the library. Please communicate with the admin for further query.`;
+      request = await sendMessageDB(context);
+      if (!request) {
+        res.status(201).json({message: 'Successful but message not send'})
+      } else {
+        res.status(200).json({message: 'Successful'})
+      }
+    } else {
+      res.status(404).json({message: "Not Successful"})
+    }
+  } catch (e) {
+    next(e);
+  }
+}
+
 export async function bookToBookshelf(req, res, next) {
   try {
     let bookshelf = {
@@ -336,7 +374,18 @@ export async function postBook(req, res, next) {
       NUMBER_OF_PAGES: Number(req.body.NUMBER_OF_PAGES),
       LANGUAGE: req.body.LANGUAGE,
       DESCRIPTION: req.body.DESCRIPTION,
-      PUBLISHER_ID: req.body.PUBLISHER_ID
+      PUBLISHER_ID: req.body.PUBLISHER_ID,
+      AUTHORS: req.body.Authors,
+      GENRES: req.body.Genres,
+      EDITIONS: req.body.Editions
+    }
+    if(book.ISBN.length !== 13){
+      res.status(404).json({message: "ISBN must be 13 characters long"});
+      return;
+    }
+    if(book.AUTHORS.length === 0 || book.GENRES.length === 0 || book.Editions.length === 0){
+      res.status(404).json({message: "Authors, Genres and Editions can't be empty"});
+      return;
     }
     console.log(book);
     book = await createBookDB(book);
@@ -453,6 +502,24 @@ export async function addGenre(req, res, next) {
     genre = await addGenreDB(genre);
     if (genre) {
       res.status(201).json({message: "Successful", genre});
+    } else {
+      res.status(404).json({message: "Not successful"});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function addJob(req, res, next) {
+  try {
+    let job = {
+      JOB_TITLE: req.body.JOB_TITLE,
+      SALARY: req.body.SALARY
+    };
+    console.log(job);
+    job = await addJobDB(job);
+    if (job) {
+      res.status(201).json({message: "Successful", job});
     } else {
       res.status(404).json({message: "Not successful"});
     }

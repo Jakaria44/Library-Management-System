@@ -1,4 +1,6 @@
--- create sequence user_seq;
+drop sequence user_seq;
+
+create sequence user_seq;
 
 create
     or replace trigger user_insert_trig
@@ -50,50 +52,6 @@ BEGIN
         select user_seq.currval
         into ID
         from DUAL;
-    ELSE
-        raise_application_error(-20111, 'EMAIL IS NOT UNIQUE');
-    END IF;
-END ;
-/
-
-
-create or replace FUNCTION IS_VALID_ADMIN_INSERT(UEMAIL IN VARCHAR2)
-    return BOOLEAN IS
-    COUNTER NUMBER;
-BEGIN
-    SELECT COUNT(*)
-    INTO COUNTER
-    FROM "USER"
-    WHERE EMAIL = UEMAIL;
-    IF
-        COUNTER = 0 THEN
-        RETURN TRUE;
-    ELSE
-        RETURN FALSE;
-    END IF;
-END;
-/
-
-CREATE OR REPLACE PROCEDURE INSERT_ADMIN(A_FIRST_NAME IN VARCHAR2,
-                                         A_LAST_NAME VARCHAR2,
-                                         A_IMAGE VARCHAR2,
-                                         A_ADDRESS VARCHAR2,
-                                         A_EMAIL VARCHAR2,
-                                         A_PASSWORD VARCHAR2,
-                                         A_CONTACT_NO VARCHAR2,
-                                         A_GENDER CHAR)
-    IS
-    ID NUMBER;
-BEGIN
-    IF
-        IS_VALID_ADMIN_INSERT(A_EMAIL) THEN
-        INSERT INTO "USER" ("FIRST_NAME", "LAST_NAME", "IMAGE", "ADDRESS", "EMAIL", "PASSWORD", "CONTACT_NO", "GENDER")
-        VALUES (A_FIRST_NAME, A_LAST_NAME, A_IMAGE, A_ADDRESS, A_EMAIL, A_PASSWORD, A_CONTACT_NO, A_GENDER);
-        select user_seq.currval
-        into ID
-        from DUAL;
-        INSERT INTO "ADMIN" ("USER_ID")
-        VALUES (ID);
     ELSE
         raise_application_error(-20111, 'EMAIL IS NOT UNIQUE');
     END IF;
@@ -319,20 +277,21 @@ BEGIN
 END;
 /
 
--- BEGIN
---     DBMS_SCHEDULER.create_job (
---         job_name        => 'UPDATE_FINE_HISTORY_JOB',
---         job_type        => 'PLSQL_BLOCK',
---         job_action      => 'BEGIN update_fine_history; END;',
---         start_date      => SYSTIMESTAMP,
---         repeat_interval => 'FREQ=HOURLY; INTERVAL=24', -- Run every 24 hours
---         enabled         => TRUE
---     );
--- END;
--- /
+BEGIN
+    DBMS_SCHEDULER.create_job(
+            job_name => 'UPDATE_FINE_HISTORY_JOB',
+            job_type => 'PLSQL_BLOCK',
+            job_action => 'BEGIN update_fine_history; END;',
+            start_date => SYSTIMESTAMP,
+            repeat_interval => 'FREQ=HOURLY; INTERVAL=24', -- Run every 24 hours
+            enabled => TRUE
+        );
+END;
+/
 
+drop sequence history_seq;
 
--- create sequence history_seq;
+create sequence history_seq;
 
 CREATE
     OR REPLACE TRIGGER RENT_INSERT_TRIG
@@ -428,7 +387,9 @@ EXCEPTION
 END;
 /
 
--- create sequence msg_seq;
+drop sequence msg_seq;
+
+create sequence msg_seq;
 
 CREATE
     OR REPLACE TRIGGER MESSAGE_INSERT_TRIG
@@ -464,8 +425,9 @@ BEGIN
         END LOOP;
 END;
 /
+drop sequence news_seq;
 
--- create sequence news_seq;
+create sequence news_seq;
 
 CREATE
     OR REPLACE TRIGGER NEWS_INSERT_TRIG
@@ -510,8 +472,9 @@ EXCEPTION
         RAISE_APPLICATION_ERROR(-20003, 'UNKNOWN ERROR OCCURRED');
 END;
 /
+drop sequence genre_seq;
 
--- create sequence genre_seq;
+create sequence genre_seq;
 
 CREATE
     OR REPLACE TRIGGER GENRE_INSERT_TRIG
@@ -557,8 +520,9 @@ BEGIN
 END;
 /
 
+drop sequence author_seq;
 
--- create sequence author_seq;
+create sequence author_seq;
 
 CREATE
     OR REPLACE TRIGGER AUTHOR_INSERT_TRIG
@@ -612,8 +576,9 @@ BEGIN
     END IF;
 END ;
 /
+drop sequence publisher_seq;
 
--- create sequence publisher_seq;
+create sequence publisher_seq;
 
 CREATE
     OR REPLACE TRIGGER PUBLISHER_INSERT_TRIG
@@ -919,6 +884,7 @@ BEGIN
     END IF;
 END;
 /
+drop sequence edition_seq;
 
 create sequence edition_seq;
 
@@ -1031,15 +997,13 @@ CREATE OR REPLACE PROCEDURE UPDATE_EDITION(A_EDITION_ID VARCHAR2,
                                            A_EDITION_NUM NUMBER,
                                            A_NUM_OF_COPIES NUMBER,
                                            A_PUBLISH_YEAR NUMBER) IS
-    COPIES NUMBER;
     YEAR   NUMBER(4);
 BEGIN
-    SELECT NUM_OF_COPIES, PUBLISH_YEAR
-    INTO COPIES, YEAR
+    SELECT PUBLISH_YEAR
+    INTO YEAR
     FROM EDITION
     WHERE EDITION_ID = A_EDITION_ID;
-    COPIES := COPIES + A_NUM_OF_COPIES;
-    IF COPIES < 0 THEN
+    IF A_NUM_OF_COPIES < 0 THEN
         RAISE_APPLICATION_ERROR(-20001, 'COPIES CANNOT BE NEGATIVE');
     end if;
     IF A_PUBLISH_YEAR IS NOT NULL THEN
@@ -1048,7 +1012,7 @@ BEGIN
     IF
         (IS_VALID_EDITION(A_EDITION_ID, A_EDITION_NUM, YEAR)) THEN
         UPDATE EDITION
-        SET NUM_OF_COPIES = COPIES,
+        SET NUM_OF_COPIES = A_NUM_OF_COPIES,
             PUBLISH_YEAR  = YEAR,
             EDITION_NUM   = A_EDITION_NUM
         WHERE Edition_ID = A_EDITION_ID;
@@ -1093,6 +1057,7 @@ EXCEPTION
         raise_application_error(-20111, 'Some Error Occurred');
 END;
 /
+
 
 CREATE OR REPLACE FUNCTION IS_VALID_TITLE(GIVEN_ISBN VARCHAR2, GIVEN_TITLE IN VARCHAR2)
     RETURN BOOLEAN IS
@@ -1170,7 +1135,7 @@ END;
 /
 
 CREATE OR REPLACE PROCEDURE DELETE_BOOK(B_ISBN IN VARCHAR2) IS
-    P VARCHAR2;
+    P VARCHAR2(20);
 BEGIN
     SELECT ISBN
     INTO P
@@ -1222,22 +1187,318 @@ END;
 
 CREATE OR REPLACE PROCEDURE DELETE_WRITTEN_BY(B_ISBN IN VARCHAR2) IS
 BEGIN
-		DELETE
-		FROM WRITTEN_BY
-		WHERE ISBN = B_ISBN;
+    DELETE
+    FROM WRITTEN_BY
+    WHERE ISBN = B_ISBN;
 EXCEPTION
     WHEN OTHERS THEN
-        RAISE_APPLICATION_ERROR(-20001,'SOME ERROR OCCURRED');
+        RAISE_APPLICATION_ERROR(-20001, 'SOME ERROR OCCURRED');
 END;
 /
 
 CREATE OR REPLACE PROCEDURE DELETE_BOOK_GENRE(B_ISBN IN VARCHAR2) IS
 BEGIN
-   	DELETE
-		FROM BOOK_GENRE
-		WHERE ISBN = B_ISBN;
+    DELETE
+    FROM BOOK_GENRE
+    WHERE ISBN = B_ISBN;
 EXCEPTION
     WHEN OTHERS THEN
-        RAISE_APPLICATION_ERROR(-20001,'SOME ERROR OCCURRED');
+        RAISE_APPLICATION_ERROR(-20001, 'SOME ERROR OCCURRED');
+END;
+/
+
+
+CREATE OR REPLACE FUNCTION IS_VALID_DELETE_ADMIN(A_ID IN VARCHAR2)
+    RETURN BOOLEAN IS
+    COUNTER NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM ADMIN;
+    IF
+        COUNTER < 2 THEN
+        RETURN FALSE;
+    ELSE
+        SELECT COUNT(*)
+        INTO COUNTER
+        FROM ADMIN
+        WHERE USER_ID = A_ID;
+        IF COUNTER = 0 THEN
+            RETURN FALSE;
+        ELSE
+            RETURN TRUE;
+        END IF;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE DELETE_ADMIN(A_ID IN VARCHAR2) IS
+BEGIN
+    IF IS_VALID_DELETE_ADMIN(A_ID) THEN
+        DELETE
+        FROM ADMIN
+        WHERE USER_ID = A_ID;
+    ELSE
+        raise_application_error(-20111, 'No Data Found or Not Enough Admin');
+    END IF;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE DELETE_EMPLOYEE(A_USER_ID VARCHAR2) IS
+    ID VARCHAR2(50);
+BEGIN
+    SELECT USER_ID
+    INTO ID
+    FROM EMPLOYEE
+    WHERE USER_ID = A_USER_ID;
+    DELETE
+    FROM EMPLOYEE
+    WHERE User_ID = ID;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        raise_application_error(-20111, 'No Data Found');
+    WHEN OTHERS THEN
+        raise_application_error(-20111, 'Unknown Error Occurred');
+END;
+/
+
+create or replace FUNCTION IS_VALID_ADMIN_INSERT(U_ID IN VARCHAR2)
+    return BOOLEAN IS
+    COUNTER NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM "USER"
+    WHERE USER_ID = U_ID;
+    IF
+        COUNTER = 0 THEN
+        RETURN FALSE;
+    ELSE
+        RETURN TRUE;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE INSERT_ADMIN(A_ID VARCHAR2)
+    IS
+BEGIN
+    IF
+        IS_VALID_ADMIN_INSERT(A_ID) THEN
+        INSERT INTO ADMIN (USER_ID) VALUES (A_ID);
+				DELETE
+				FROM APPLY
+				WHERE USER_ID = A_ID;
+    ELSE
+        raise_application_error(-20111, 'USER DOES NOT EXIST');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        raise_application_error(-20111, 'SOME ERROR OCCURRED');
+END ;
+/
+
+drop sequence job_seq;
+create sequence job_seq;
+
+CREATE
+    OR REPLACE TRIGGER JOB_INSERT_TRIG
+    BEFORE INSERT
+    ON JOB
+    FOR EACH ROW
+BEGIN
+    IF
+        :NEW.JOB_ID IS NULL
+    THEN
+        :NEW.JOB_ID := job_seq.nextval;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE FUNCTION IS_VALID_INSERT_JOB(A_TITLE IN VARCHAR2)
+    RETURN BOOLEAN IS
+    COUNTER NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM JOB
+    WHERE UPPER(JOB_TITLE) = UPPER(A_TITLE);
+    IF
+        COUNTER = 0 THEN
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE INSERT_JOB(A_JOB_TITLE VARCHAR2, A_SALARY NUMBER) IS
+    ID NUMBER;
+BEGIN
+    IF
+        (IS_VALID_INSERT_JOB(A_JOB_TITLE)) THEN
+        IF A_SALARY < 0 THEN
+            RAISE_APPLICATION_ERROR(-20001, 'Salary must be positive');
+        end if;
+        INSERT INTO JOB(JOB_TITLE, SALARY)
+        VALUES (A_JOB_TITLE, A_SALARY);
+        select job_seq.currval
+        into ID
+        from DUAL;
+    ELSE
+        raise_application_error(-20111, 'JOB IS NOT UNIQUE');
+    END IF;
+END;
+/
+
+CREATE OR REPLACE FUNCTION IS_VALID_UPDATE_JOB(J_ID VARCHAR2, J_TITLE IN VARCHAR2)
+    RETURN BOOLEAN IS
+    COUNTER NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM JOB
+    WHERE UPPER(JOB_TITLE) = UPPER(J_TITLE)
+      AND JOB_ID <> J_ID;
+    IF
+        COUNTER = 0 THEN
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE UPDATE_JOB(A_JOB_ID VARCHAR2, A_JOB_TITLE VARCHAR2, A_SALARY NUMBER) IS
+BEGIN
+    IF
+        (IS_VALID_UPDATE_JOB(A_JOB_ID, A_JOB_TITLE)) THEN
+        IF A_SALARY < 0 THEN
+            RAISE_APPLICATION_ERROR(-20001, 'Salary must be positive');
+        end if;
+        UPDATE JOB
+        SET JOB_TITLE = A_JOB_TITLE,
+            SALARY    = A_SALARY
+        WHERE JOB_ID = A_JOB_ID;
+    ELSE
+        raise_application_error(-20111, 'JOB IS NOT UNIQUE');
+    END IF;
+END;
+/
+
+CREATE OR REPLACE FUNCTION IS_VALID_DELETE_JOB(J_ID VARCHAR2)
+    RETURN BOOLEAN IS
+    COUNTER NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM EMPLOYEE
+    WHERE JOB_ID = J_ID;
+    IF
+        COUNTER = 0 THEN
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE DELETE_JOB(A_JOB_ID VARCHAR2) IS
+BEGIN
+    IF
+        (IS_VALID_DELETE_JOB(A_JOB_ID)) THEN
+        DELETE
+        FROM JOB
+        WHERE JOB_ID = A_JOB_ID;
+    ELSE
+        raise_application_error(-20111, 'JOB CAN NOT BE DELETED');
+    END IF;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE INSERT_APPLY(U_ID VARCHAR2,
+                                         J_ID VARCHAR2) IS
+    COUNTER NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM APPLY
+    WHERE JOB_ID = J_ID
+      AND USER_ID = U_ID;
+    IF COUNTER > 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'ALREADY APPLIED');
+    END IF;
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM EMPLOYEE
+    WHERE USER_ID = U_ID
+      AND JOB_ID = J_ID;
+    IF COUNTER > 0 THEN
+        RAISE_APPLICATION_ERROR(-20002, 'ALREADY WORKING');
+    END IF;
+    INSERT INTO APPLY(USER_ID, Job_ID, Apply_Date)
+    VALUES (U_ID, J_ID, SYSDATE);
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE_APPLICATION_ERROR(-20003, 'Some Error Occurred');
+END;
+/
+
+CREATE OR REPLACE PROCEDURE DELETE_APPLY(U_ID VARCHAR2, J_ID VARCHAR2) IS
+    ID VARCHAR2(2000);
+BEGIN
+    SELECT USER_ID
+    INTO ID
+    FROM APPLY
+    WHERE JOB_ID = J_ID
+      AND USER_ID = U_ID;
+    DELETE
+    FROM APPLY
+    WHERE JOB_ID = J_ID
+      AND USER_ID = U_ID;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        raise_application_error(-20001, 'No Data Found');
+    WHEN OTHERS THEN
+        raise_application_error(-20001, 'Unknown Error Occurred');
+END;
+/
+
+
+CREATE OR REPLACE FUNCTION IS_VALID_INSERT_EMPLOYEE(A_USER_ID VARCHAR2)
+    RETURN BOOLEAN IS
+    COUNTER NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM ADMIN
+    WHERE USER_ID = A_USER_ID;
+    IF COUNTER > 0 THEN
+        RETURN FALSE;
+    ELSE
+        RETURN TRUE;
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        RETURN FALSE;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE INSERT_EMPLOYEE(A_USER_ID VARCHAR2, A_JOB_ID VARCHAR2) IS
+BEGIN
+    IF IS_VALID_INSERT_EMPLOYEE(A_USER_ID) THEN
+        DELETE
+        FROM EMPLOYEE
+        WHERE USER_ID = A_USER_ID;
+        DELETE
+        FROM APPLY
+        WHERE USER_ID = A_USER_ID;
+        INSERT INTO EMPLOYEE(USER_ID, JOB_ID, JOIN_DATE)
+        VALUES (A_USER_ID, A_JOB_ID, SYSDATE);
+    ELSE
+        RAISE_APPLICATION_ERROR(-20001, 'CAN NOT BE AN EMPLOYEE OF THE JOB');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE_APPLICATION_ERROR(-20001, 'SOME ERROR OCCURRED');
 END;
 /

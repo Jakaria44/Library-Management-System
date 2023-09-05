@@ -1,4 +1,3 @@
---TODO: RUN THIS
 DROP TABLE REVIEW_RATING;
 DROP TABLE WRITTEN_BY;
 DROP TABLE AUTHOR;
@@ -42,6 +41,7 @@ CREATE TABLE AUTHOR
     Image       VARCHAR2(200) DEFAULT 'https://previews.123rf.com/images/anatolir/anatolir1712/anatolir171201476/91832679-man-avatar-icon-flat-illustration-of-man-avatar-vector-icon-isolated-on-white-background.jpg'
 );
 
+--TODO: PUBLISH_YEAR DROP
 CREATE TABLE BOOK
 (
     ISBN            VARCHAR2(20) PRIMARY KEY,
@@ -51,17 +51,17 @@ CREATE TABLE BOOK
     Language        VARCHAR2(10),
     Description     VARCHAR2(2000),
     Publisher_ID    VARCHAR2(20),
-    Publish_Year    NUMBER(5)     NOT NULL,
     FOREIGN KEY (Publisher_ID) REFERENCES PUBLISHER (Publisher_ID)
 );
 
+--TODO: PUBLISH_YEAR NOT NULL
 CREATE TABLE EDITION
 (
     Edition_ID    VARCHAR2(20) PRIMARY KEY,
     ISBN          VARCHAR2(20) NOT NULL,
     Edition_Num   NUMBER       NOT NULL,
     Num_of_Copies NUMBER       NOT NULL,
-    Publish_Year  NUMBER(4),
+    Publish_Year  NUMBER(4)    NOT NULL,
     UNIQUE (ISBN, Edition_Num),
     FOREIGN KEY (ISBN) REFERENCES BOOK (ISBN)
         ON DELETE CASCADE
@@ -178,13 +178,12 @@ CREATE TABLE RENT_HISTORY
 (
     Rent_History_ID VARCHAR2(20) PRIMARY KEY,
     User_ID         VARCHAR2(20) NOT NULL,
-    Edition_ID      VARCHAR2(20) DEFAULT 'DELETED',
+    Edition_ID      VARCHAR2(20) NOT NULL,
     Rent_Date       DATE         NOT NULL,
     Return_Date     DATE         NOT NULL,
-    Status          NUMBER       DEFAULT 0,
+    Status          NUMBER DEFAULT 0,
     FOREIGN KEY (User_ID) REFERENCES "USER" (User_ID),
     FOREIGN KEY (Edition_ID) REFERENCES EDITION (Edition_ID)
-        ON DELETE SET NULL
 );
 
 CREATE TABLE FINE_HISTORY

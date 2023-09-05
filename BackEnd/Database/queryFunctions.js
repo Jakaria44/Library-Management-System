@@ -1,4 +1,5 @@
-import { queryExecute } from './database.js';
+import {queryExecute} from './database.js';
+import {deleteEmployee} from "../controllers/deleteController.js";
 
 // let result = null;
 //   try {
@@ -51,10 +52,10 @@ export async function postUserDB(user) {
   try {
     const result = await queryExecute(query, user);
     console.log('exec postUserDB ', result);
-    return user;
   } catch (err) {
     return err;
   }
+  return user;
 }
 
 export async function findUserDB(user) {
@@ -73,9 +74,13 @@ export async function findUserDB(user) {
 }
 
 export async function postAdminDB(admin) {
-  const procedure = 'INSERT_ADMIN(:FIRST_NAME,:LAST_NAME,:IMAGE,:ADDRESS,:EMAIL,:PASSWORD,:CONTACT_NO,:GENDER)';
+  const procedure = 'INSERT_ADMIN(:USER_ID)';
   const query = runProcedure(procedure);
-  const result = await queryExecute(query, admin);
+  try {
+    const result = await queryExecute(query, admin);
+  } catch (err) {
+    return null;
+  }
   return admin;
 }
 
@@ -106,7 +111,7 @@ export async function getBookDetailsByIDDB(context) {
     "(SELECT JSON_ARRAYAGG(DISTINCT JSON_OBJECT('NAME' VALUE A.NAME, 'ID' VALUE A.AUTHOR_ID)) FROM WRITTEN_BY WB JOIN AUTHOR A ON WB.AUTHOR_ID = A.AUTHOR_ID WHERE WB.ISBN = B.ISBN) AS AUTHOR, " +
     "(SELECT JSON_ARRAYAGG(DISTINCT JSON_OBJECT('NAME' VALUE G.GENRE_NAME, 'ID' VALUE G.GENRE_ID)) FROM BOOK_GENRE BG JOIN GENRE G ON BG.GENRE_ID = G.GENRE_ID WHERE BG.ISBN = B.ISBN) AS GENRE, " +
     "(SELECT JSON_ARRAYAGG(DISTINCT JSON_OBJECT('ID' VALUE E.EDITION_ID, 'NUM' VALUE E.EDITION_NUM, 'COUNT' VALUE E.NUM_OF_COPIES, 'YEAR' VALUE E.PUBLISH_YEAR)) FROM EDITION E WHERE E.ISBN = B.ISBN) AS EDITION, " +
-    "(SELECT  MIN(E.PUBLISH_YEAR) FROM EDITION E WHERE E.ISBN = B.ISBN) AS PUBLISH_YEAR, "+
+    "(SELECT  MIN(E.PUBLISH_YEAR) FROM EDITION E WHERE E.ISBN = B.ISBN) AS PUBLISH_YEAR, " +
     "P.PUBLISHER_ID, P.NAME AS PUBLISHER_NAME, B.TITLE, B.IMAGE, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE, " +
     "NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, NVL(COUNT(DISTINCT F.USER_ID), 0) AS FAVOURITE, B.DESCRIPTION";
   if (context.USER_ID) {
@@ -146,9 +151,15 @@ export async function getBookDetailsByIDDB(context) {
 // }
 
 export async function getAllBookDB() {
-  const query = 'SELECT ISBN, TITLE, IMAGE FROM BOOK';
+  const query = 'SELECT ISBN, TITLE, IMAGE FROM BOOK' +
+    '\nORDER BY TITLE ASC';
   console.log(query);
-  const result = await queryExecute(query, []);
+  let result = null;
+  try {
+    result = await queryExecute(query, []);
+  } catch (err) {
+    return [];
+  }
   return result.rows;
 }
 
@@ -160,11 +171,48 @@ export async function getBookDB() {
   return result.rows;
 }
 
+// export async function getAllBookSumDB(context) {
+//   console.log(context);
+//   let query =
+//     "SELECT B.ISBN, B.TITLE, B.IMAGE, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE, " +
+//     "(SELECT MAX(E.PUBLISH_YEAR) FROM EDITION E WHERE E.ISBN = B.ISBN) AS PUBLISH_YEAR, " +
+//     "(SELECT LISTAGG(A.NAME, ', ') FROM WRITTEN_BY WB JOIN AUTHOR A ON WB.AUTHOR_ID = A.AUTHOR_ID WHERE WB.ISBN = B.ISBN) AS AUTHORS, " +
+//     "NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, NVL(COUNT(DISTINCT F.USER_ID),0) AS FAVOURITE";
+//   if (context.USER_ID) {
+//     query += `, CASE WHEN B.ISBN = ANY(SELECT F.ISBN FROM FAVOURITE F WHERE F.USER_ID = ${context.USER_ID}) THEN 1 ELSE 0 END AS IS_FAVOURITE`
+//   }
+//   query +=
+//     '\nFROM BOOK B ' +
+//     'LEFT JOIN REVIEW_RATING R ON (B.ISBN = R.ISBN) ' +
+//     'LEFT JOIN FAVOURITE F ON(B.ISBN = F.ISBN)';
+//   query +=
+//     '\nGROUP BY B.ISBN, B.TITLE, B.IMAGE, B.NUMBER_OF_PAGES, B.LANGUAGE';
+//
+//   // Check for sorting and ordering options
+//   if (context.sort && context.order) {
+//     const validColumns = ['TITLE', 'PAGE', 'LANGUAGE', 'RATING', 'FAVOURITE', 'PUBLISH_YEAR'];
+//     const validOrders = ['ASC', 'DESC'];
+//
+//     if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
+//       query += `\nORDER BY ${context.sort} ${context.order}`;
+//       if (context.sort !== 'TITLE') {
+//         query += ', B.TITLE ASC';
+//       }
+//     } else {
+//       query += '\nORDER BY B.TITLE ASC';
+//     }
+//   }
+//
+//   console.log(query);
+//   const result = await queryExecute(query, []);
+//   return result.rows;
+// }
+
 export async function getAllBookSumDB(context) {
   console.log(context);
   let query =
     "SELECT B.ISBN, B.TITLE, B.IMAGE, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE, " +
-    "(SELECT  MIN(E.PUBLISH_YEAR) FROM EDITION E WHERE E.ISBN = B.ISBN) AS PUBLISH_YEAR, "+
+    "(SELECT MAX(E.PUBLISH_YEAR) FROM EDITION E WHERE E.ISBN = B.ISBN) AS PUBLISH_YEAR, " +
     "(SELECT LISTAGG(A.NAME, ', ') FROM WRITTEN_BY WB JOIN AUTHOR A ON WB.AUTHOR_ID = A.AUTHOR_ID WHERE WB.ISBN = B.ISBN) AS AUTHORS, " +
     "NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, NVL(COUNT(DISTINCT F.USER_ID),0) AS FAVOURITE";
   if (context.USER_ID) {
@@ -173,13 +221,57 @@ export async function getAllBookSumDB(context) {
   query +=
     '\nFROM BOOK B ' +
     'LEFT JOIN REVIEW_RATING R ON (B.ISBN = R.ISBN) ' +
-    'LEFT JOIN FAVOURITE F ON(B.ISBN = F.ISBN)';
+    'LEFT JOIN FAVOURITE F ON(B.ISBN = F.ISBN) ';
+  query += '\nWHERE 1 = 1 ';
+  if (context.USER_ID) {
+    if (context.MY_RAT === true) {
+      query += `\nAND B.ISBN IN (SELECT R.ISBN FROM REVIEW_RATING R WHERE R.USER_ID = ${context.USER_ID})`;
+    }
+    if (context.MY_FAV === true) {
+      query += `\nAND B.ISBN IN (SELECT F.ISBN FROM FAVOURITE F WHERE F.USER_ID = ${context.USER_ID})`;
+    }
+  }
+  if (context.ISBN) {
+    query += `\nAND B.ISBN = '${context.ISBN}'`;
+  }
+  if (context.TITLE) {
+    query += `\nAND UPPER(B.TITLE) LIKE '%${context.TITLE}%'`;
+  }
+  if (context.LANGUAGE) {
+    query += `\nAND UPPER(B.LANGUAGE) LIKE '${context.LANGUAGE}'`;
+  }
+  if (context.AUTHOR_ID) {
+    query += `\nAND B.ISBN IN (SELECT WB.ISBN FROM WRITTEN_BY WB WHERE WB.AUTHOR_ID = ${context.AUTHOR_ID})`;
+  }
+  if (context.GENRE_ID) {
+    query += `\nAND B.ISBN IN (SELECT BG.ISBN FROM BOOK_GENRE BG WHERE BG.GENRE_ID = ${context.GENRE_ID})`;
+  }
+  if (context.PUBLISHER_ID) {
+    query += `\nAND B.PUBLISHER_ID = ${context.PUBLISHER_ID}`;
+  }
+  if (context.PAGE_START) {
+    query += `\nAND B.NUMBER_OF_PAGES >= ${context.PAGE_START}`;
+  }
+  if (context.PAGE_END) {
+    query += `\nAND B.NUMBER_OF_PAGES <= ${context.PAGE_END}`;
+  }
+  if (context.YEAR_START) {
+    query += `\nAND B.ISBN IN (SELECT E.ISBN FROM EDITION E WHERE E.PUBLISH_YEAR >= ${context.YEAR_START})`;
+  }
+  if (context.YEAR_END) {
+    query += `\nAND B.ISBN IN (SELECT E.ISBN FROM EDITION E WHERE E.PUBLISH_YEAR <= ${context.YEAR_END})`;
+  }
+  if (context.RATING_START) {
+    query += `\nAND B.ISBN IN (SELECT R.ISBN FROM REVIEW_RATING R GROUP BY R.ISBN HAVING NVL(ROUND(AVG(R.RATING), 2), 0) >= ${context.RATING_START})`;
+  }
+  if (context.RATING_END) {
+    query += `\nAND B.ISBN IN (SELECT R.ISBN FROM REVIEW_RATING R GROUP BY R.ISBN HAVING NVL(ROUND(AVG(R.RATING), 2), 0) <= ${context.RATING_END})`;
+  }
   query +=
     '\nGROUP BY B.ISBN, B.TITLE, B.IMAGE, B.NUMBER_OF_PAGES, B.LANGUAGE';
-
   // Check for sorting and ordering options
   if (context.sort && context.order) {
-    const validColumns = ['TITLE', 'PAGE', 'LANGUAGE', 'RATING', 'FAVOURITE'];
+    const validColumns = ['TITLE', 'PAGE', 'LANGUAGE', 'RATING', 'FAVOURITE', 'PUBLISH_YEAR'];
     const validOrders = ['ASC', 'DESC'];
 
     if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
@@ -191,11 +283,152 @@ export async function getAllBookSumDB(context) {
       query += '\nORDER BY B.TITLE ASC';
     }
   }
-
-  console.log(query);
-  const result = await queryExecute(query, []);
+  let result = null;
+  try {
+    console.log(query);
+    result = await queryExecute(query, []);
+  } catch (err) {
+    return [];
+  }
   return result.rows;
 }
+
+export async function getAdvancedSearchedBookDB(context) {
+  let query01 =
+    'SELECT B.COVER_IMAGE, B.ISBN, B.TITLE, B.DESCRIPTION, B.LANGUAGE, B.NUMBER_OF_PAGES, B.ORIGINAL_PUBLICATION_YEAR, P.NAME FROM ';
+
+  let queryAuthor =
+    'SELECT WB.ISBN FROM PERSON PR JOIN AUTHOR A ON (PR.PERSON_ID = A.PERSON_ID) JOIN WRITTEN_BY WB ON (A.PERSON_ID = WB.PERSON_ID)';
+  queryAuthor += "\nWHERE UPPER(PR.FIRST_NAME||' '||PR.LAST_NAME) LIKE :AUTHOR";
+
+  let queryGenre = 'SELECT ISBN FROM BOOK_GENRE';
+  queryGenre += '\nWHERE GENRE_ID = :GENRE_ID';
+
+  let queryAward = 'SELECT ISBN FROM BOOK_AWARD';
+  queryAward += '\nWhere AWARDS = :AWARD';
+
+  let queryRating = 'SELECT B.ISBN FROM BOOK B LEFT JOIN RATING R ON (B.ISBN = R.ISBN)';
+  queryRating += '\nGROUP BY B.ISBN';
+  queryRating += '\nHAVING NVL(Round(AVG(R.VALUE),2), 0) BETWEEN :RATING_START AND :RATING_END';
+
+  const binds = {};
+
+  query01 += 'BOOK B JOIN PUBLISHER P ON (B.PUBLISHER_ID = P.PUBLISHER_ID)';
+  query01 += '\nWhere ';
+  if (context.TITLE) {
+    query01 += 'UPPER(B.TITLE) LIKE :TITLE AND ';
+    binds.TITLE = context.TITLE;
+  }
+  if (context.YEAR_START) {
+    query01 += 'B.ORIGINAL_PUBLICATION_YEAR BETWEEN :YEAR_START AND :YEAR_END AND ';
+    binds.YEAR_START = Number(context.YEAR_START);
+    binds.YEAR_END = Number(context.YEAR_END);
+  }
+  if (context.PAGE_START) {
+    query01 += 'B.NUMBER_OF_PAGES BETWEEN :PAGE_START AND :PAGE_END AND ';
+    binds.PAGE_START = Number(context.PAGE_START);
+    binds.PAGE_END = Number(context.PAGE_END);
+  }
+  if (context.LANGUAGE) {
+    query01 += 'B.LANGUAGE = :LANGUAGE AND ';
+    binds.LANGUAGE = context.LANGUAGE;
+  }
+  if (context.BINDING) {
+    query01 += 'B.BINDING = :BINDING AND ';
+    binds.BINDING = context.BINDING;
+  }
+  if (context.PUBLISHER) {
+    query01 += 'UPPER(P.NAME) LIKE :PUBLISHER AND ';
+    binds.PUBLISHER = context.PUBLISHER;
+  }
+  if (context.AUTHOR) {
+    query01 += `B.ISBN IN (${queryAuthor}) AND `;
+    binds.AUTHOR = context.AUTHOR;
+  }
+  if (context.GENRE_ID) {
+    query01 += `B.ISBN IN (${queryGenre}) AND `;
+    binds.GENRE_ID = context.GENRE_ID;
+  }
+  if (context.AWARD) {
+    query01 += `B.ISBN IN (${queryAward}) AND `;
+    binds.AWARD = context.AWARD;
+  }
+  if (context.RATING_START) {
+    query01 += `B.ISBN IN (${queryRating}) AND `;
+    binds.RATING_START = Number(context.RATING_START);
+    binds.RATING_END = Number(context.RATING_END);
+  }
+
+  query01 += ' 1=1';
+
+  if (context.SORT) {
+    if (context.SORT === 'title') {
+      if (context.SORT_TYPE) {
+        if (context.SORT_TYPE === 'desc') {
+          query01 += '\nORDER BY B.TITLE DESC';
+        } else {
+          query01 += '\nORDER BY B.TITLE  ASC';
+        }
+      } else {
+        query01 += '\nORDER BY B.TITLE ASC';
+      }
+    } else if (context.SORT === 'avg') {
+      const queryAvg =
+        'SELECT T.COVER_IMAGE, T.ISBN, T.TITLE, T.DESCRIPTION, T.LANGUAGE, T.NUMBER_OF_PAGES, T.ORIGINAL_PUBLICATION_YEAR, T.NAME';
+      query01 = `${queryAvg}\nFROM (${query01}) T LEFT JOIN RATING R ON (T.ISBN = R.ISBN)`;
+      query01 +=
+        '\nGROUP BY T.COVER_IMAGE, T.ISBN, T.TITLE, T.DESCRIPTION, T.LANGUAGE, T.NUMBER_OF_PAGES, T.ORIGINAL_PUBLICATION_YEAR, T.NAME';
+      if (context.SORT_TYPE) {
+        if (context.SORT_TYPE === 'desc') {
+          query01 += '\nORDER BY NVL(Round(AVG(R.VALUE),2), 0) DESC';
+        } else {
+          query01 += '\nORDER BY NVL(Round(AVG(R.VALUE),2), 0)  ASC';
+        }
+      } else {
+        query01 += '\nORDER BY NVL(Round(AVG(R.VALUE),2), 0)  DESC';
+      }
+    } else if (context.SORT === 'year') {
+      if (context.SORT_TYPE) {
+        if (context.SORT_TYPE === 'desc') {
+          query01 += '\nORDER BY B.ORIGINAL_PUBLICATION_YEAR DESC';
+        } else {
+          query01 += '\nORDER BY B.ORIGINAL_PUBLICATION_YEAR  ASC';
+        }
+      } else {
+        query01 += '\nORDER BY B.ORIGINAL_PUBLICATION_YEAR  ASC';
+      }
+    } else if (context.SORT === 'pages') {
+      if (context.SORT_TYPE) {
+        if (context.SORT_TYPE === 'desc') {
+          query01 += '\nORDER BY B.NUMBER_OF_PAGES DESC';
+        } else {
+          query01 += '\nORDER BY B.NUMBER_OF_PAGES  ASC';
+        }
+      } else {
+        query01 += '\nORDER BY B.NUMBER_OF_PAGES ASC';
+      }
+    }
+  } else {
+    query01 += '\nORDER BY B.TITLE ASC';
+  }
+
+  console.log(query01);
+  console.log(binds);
+
+  let books = await queryExecute(query01, binds);
+  books = books.rows;
+
+  for (let i = 0; i < books.length; i++) {
+    const binds02 = {
+      ISBN: books[i].ISBN,
+    };
+    const rating = await getAvgRatingDB(binds02);
+    books[i].AVG_RATING = rating[0].AVERAGE_RATING;
+  }
+
+  return await getAuthorGenreIntoBook(books);
+}
+
 
 export async function getBookByTitleDB(context) {
   let query =
@@ -308,6 +541,32 @@ export async function getPublisherDB(context) {
   return result.rows;
 }
 
+export async function getEmployeeDB(context) {
+  let query = "SELECT U.USER_ID, (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, U.IMAGE, E.JOIN_DATE, E.JOB_ID, J.JOB_TITLE " +
+    '\nFROM EMPLOYEE E LEFT JOIN "USER" U ON(U.USER_ID = E.USER_ID) LEFT JOIN JOB J ON(J.JOB_ID = E.JOB_ID)';
+  if (context.USER_ID) {
+    query += `\nWHERE E.USER_ID = ${context.USER_ID}`;
+  }
+  let flag = 1;
+  if (context.sort && context.order) {
+    const validColumns = ['USER_ID', 'NAME', 'JOB_TITLE', 'JOIN_DATE', 'JOB_ID'];
+    const validOrders = ['ASC', 'DESC'];
+
+    if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
+      query += `\nORDER BY ${context.sort} ${context.order}`;
+      if (context.sort !== 'NAME') {
+        query += ', NAME ASC';
+      }
+      flag = 0;
+    }
+  }
+  if (flag) {
+    query += '\nORDER BY NAME ASC';
+  }
+  const result = await queryExecute(query, []);
+  return result.rows;
+}
+
 export async function getMyMessagesDB(context) {
   // get all messages of a user
   let query = baseQuery('MESSAGE') +
@@ -336,9 +595,23 @@ export async function getAllNewsDB(context) {
 }
 
 export async function getAllUsersDB(context) {
-  // get all messages of a user
-  let query = "SELECT USER_ID, (FIRST_NAME || ' ' || LAST_NAME) AS NAME, IMAGE, ADDRESS, EMAIL, CONTACT_NO, GENDER" +
-    '\nFROM "USER"';
+  // Define the base query
+  let query = "SELECT U.USER_ID, (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, U.IMAGE, U.ADDRESS, U.EMAIL, U.CONTACT_NO, U.GENDER, " +
+    "CASE\nWHEN E.USER_ID IS NOT NULL THEN 'employee'\nWHEN A.USER_ID IS NOT NULL THEN 'admin'\nELSE 'user'\nEND AS ROLE" +
+    '\nFROM "USER" U LEFT JOIN EMPLOYEE E ON(U.USER_ID = E.USER_ID) LEFT JOIN ADMIN A ON(U.USER_ID = A.USER_ID) WHERE 1=1';
+  if (context.USER_ID) {
+    query += `\nAND U.USER_ID <> ${context.USER_ID}`;
+  }
+  if (!context.USER) {
+    query += `\nAND (A.USER_ID IS NOT NULL OR E.USER_ID IS NOT NULL)`;
+  }
+  if (!context.EMPLOYEE) {
+    query += `\nAND E.USER_ID IS NULL`;
+  }
+  if (!context.ADMIN) {
+    query += `\nAND A.USER_ID IS NULL`;
+  }
+
   let flag = 1;
   if (context.sort && context.order) {
     const validColumns = ['USER_ID', 'NAME', 'EMAIL'];
@@ -352,10 +625,12 @@ export async function getAllUsersDB(context) {
       flag = 0;
     }
   }
+
   if (flag) {
     query += '\nORDER BY NAME ASC';
   }
 
+  // Execute the query
   let result = null;
   try {
     result = await queryExecute(query, []);
@@ -374,10 +649,10 @@ export async function getMyRequestsDB(context) {
       `\nWHERE R.USER_ID = ${context.USER_ID}`;
   }
   let flag = 1;
-  console.log(context);
   if (context.sort && context.order) {
-    const validColumns = ['TITLE', 'EDITION_NUM', 'REQUEST_DATE', 'ISBN'];
+    const validColumns = ['TITLE', 'EDITION_NUM', 'REQUEST_DATE'];
     const validOrders = ['ASC', 'DESC'];
+
     if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
       query += `\nORDER BY ${context.sort} ${context.order}`;
       if (context.sort !== 'REQUEST_DATE') {
@@ -394,6 +669,32 @@ export async function getMyRequestsDB(context) {
   return result.rows;
 }
 
+export async function getApplicationsDB(context) {
+  let query = `SELECT (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, U.USER_ID, U.EMAIL, A.JOB_ID, J.JOB_TITLE, A.APPLY_DATE` +
+    '\nFROM APPLY A JOIN JOB J ON(A.JOB_ID = J.JOB_ID) JOIN "USER" U ON(A.USER_ID = U.USER_ID)';
+  if (context.USER_ID) {
+    query += `\nWHERE U.USER_ID = ${context.USER_ID}`;
+  }
+  let flag = 1;
+  if (context.sort && context.order) {
+    const validColumns = ['NAME', 'EMAIL', 'JOB_TITLE', 'APPLY_DATE'];
+    const validOrders = ['ASC', 'DESC'];
+
+    if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
+      query += `\nORDER BY ${context.sort} ${context.order}`;
+      if (context.sort !== 'APPLY_DATE') {
+        query += ', APPLY_DATE ASC';
+      }
+      flag = 0;
+    }
+  }
+  if (flag) {
+    query += '\nORDER BY APPLY_DATE ASC';
+  }
+
+  const result = await queryExecute(query, []);
+  return result.rows;
+}
 
 export async function getAllRequestsDB(context) {
   let query = `SELECT (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, R.USER_ID, U.EMAIL, B.ISBN, B.TITLE, R.EDITION_ID, E.EDITION_NUM, E.NUM_OF_COPIES, R.REQUEST_DATE` +
@@ -534,6 +835,18 @@ export async function addRequestDB(context) {
   return context;
 }
 
+export async function applyForJobDB(context) {
+  let query = runProcedure(`INSERT_APPLY(${context.USER_ID}, ${context.JOB_ID})`);
+  let result = null;
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return null;
+  }
+  return context;
+}
+
+
 export async function updateEditionDB(context) {
   let query = runProcedure(`UPDATE_EDITION('${context.EDITION_ID}', ${context.EDITION_NUM}, ${context.NUM_OF_COPIES}, ${context.PUBLISH_YEAR})`);
 
@@ -658,7 +971,48 @@ export async function getGenreDB(context) {
   if (context.GENRE_ID) {
     query += `\nWhere GENRE_ID = ${context.GENRE_ID}`;
   }
-  const result = await queryExecute(query, []);
+  let result = null;
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return []
+  }
+  return result.rows;
+}
+
+export async function getJobDB(context) {
+  let query = `SELECT JOB_TITLE, JOB_ID, SALARY`;
+  if (context.USER_ID) {
+    query += `, CASE\nWHEN JOB_ID IN (SELECT JOB_ID FROM EMPLOYEE WHERE USER_ID = ${context.USER_ID}) THEN 'working'` +
+      `\nWHEN JOB_ID IN (SELECT JOB_ID FROM APPLY WHERE USER_ID = ${context.USER_ID}) THEN 'applied'\nELSE null END\nAS STATUS`;
+  }
+  query += `\nFROM JOB`;
+  if (context.JOB_ID) {
+    query += `\nWhere JOB_ID = ${context.JOB_ID}`;
+  }
+  let flag = 1;
+  if (context.sort && context.order) {
+    const validColumns = ['JOB_TITLE', 'SALARY', 'STATUS'];
+    const validOrders = ['ASC', 'DESC'];
+
+    if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
+      query += `\nORDER BY ${context.sort} ${context.order}`;
+      if (context.sort !== 'SALARY') {
+        query += ', SALARY DESC';
+      }
+      flag = 0;
+    }
+  }
+
+  if (flag) {
+    query += '\nORDER BY SALARY DESC';
+  }
+  let result = null;
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return []
+  }
   return result.rows;
 }
 
@@ -799,142 +1153,6 @@ export async function findPersonDB(P_ID) {
   return result.rows;
 }
 
-export async function getAdvancedSearchedBookDB(context) {
-  let query01 =
-    'SELECT B.COVER_IMAGE, B.ISBN, B.TITLE, B.DESCRIPTION, B.LANGUAGE, B.NUMBER_OF_PAGES, B.ORIGINAL_PUBLICATION_YEAR, P.NAME FROM ';
-
-  let queryAuthor =
-    'SELECT WB.ISBN FROM PERSON PR JOIN AUTHOR A ON (PR.PERSON_ID = A.PERSON_ID) JOIN WRITTEN_BY WB ON (A.PERSON_ID = WB.PERSON_ID)';
-  queryAuthor += "\nWHERE UPPER(PR.FIRST_NAME||' '||PR.LAST_NAME) LIKE :AUTHOR";
-
-  let queryGenre = 'SELECT ISBN FROM BOOK_GENRE';
-  queryGenre += '\nWHERE GENRE_ID = :GENRE_ID';
-
-  let queryAward = 'SELECT ISBN FROM BOOK_AWARD';
-  queryAward += '\nWhere AWARDS = :AWARD';
-
-  let queryRating = 'SELECT B.ISBN FROM BOOK B LEFT JOIN RATING R ON (B.ISBN = R.ISBN)';
-  queryRating += '\nGROUP BY B.ISBN';
-  queryRating += '\nHAVING NVL(Round(AVG(R.VALUE),2), 0) BETWEEN :RATING_START AND :RATING_END';
-
-  const binds = {};
-
-  query01 += 'BOOK B JOIN PUBLISHER P ON (B.PUBLISHER_ID = P.PUBLISHER_ID)';
-  query01 += '\nWhere ';
-  if (context.TITLE) {
-    query01 += 'UPPER(B.TITLE) LIKE :TITLE AND ';
-    binds.TITLE = context.TITLE;
-  }
-  if (context.YEAR_START) {
-    query01 += 'B.ORIGINAL_PUBLICATION_YEAR BETWEEN :YEAR_START AND :YEAR_END AND ';
-    binds.YEAR_START = Number(context.YEAR_START);
-    binds.YEAR_END = Number(context.YEAR_END);
-  }
-  if (context.PAGE_START) {
-    query01 += 'B.NUMBER_OF_PAGES BETWEEN :PAGE_START AND :PAGE_END AND ';
-    binds.PAGE_START = Number(context.PAGE_START);
-    binds.PAGE_END = Number(context.PAGE_END);
-  }
-  if (context.LANGUAGE) {
-    query01 += 'B.LANGUAGE = :LANGUAGE AND ';
-    binds.LANGUAGE = context.LANGUAGE;
-  }
-  if (context.BINDING) {
-    query01 += 'B.BINDING = :BINDING AND ';
-    binds.BINDING = context.BINDING;
-  }
-  if (context.PUBLISHER) {
-    query01 += 'UPPER(P.NAME) LIKE :PUBLISHER AND ';
-    binds.PUBLISHER = context.PUBLISHER;
-  }
-  if (context.AUTHOR) {
-    query01 += `B.ISBN IN (${queryAuthor}) AND `;
-    binds.AUTHOR = context.AUTHOR;
-  }
-  if (context.GENRE_ID) {
-    query01 += `B.ISBN IN (${queryGenre}) AND `;
-    binds.GENRE_ID = context.GENRE_ID;
-  }
-  if (context.AWARD) {
-    query01 += `B.ISBN IN (${queryAward}) AND `;
-    binds.AWARD = context.AWARD;
-  }
-  if (context.RATING_START) {
-    query01 += `B.ISBN IN (${queryRating}) AND `;
-    binds.RATING_START = Number(context.RATING_START);
-    binds.RATING_END = Number(context.RATING_END);
-  }
-
-  query01 = query01.slice(0, -4);
-
-  if (context.SORT) {
-    if (context.SORT === 'title') {
-      if (context.SORT_TYPE) {
-        if (context.SORT_TYPE === 'desc') {
-          query01 += '\nORDER BY B.TITLE DESC';
-        } else {
-          query01 += '\nORDER BY B.TITLE  ASC';
-        }
-      } else {
-        query01 += '\nORDER BY B.TITLE ASC';
-      }
-    } else if (context.SORT === 'avg') {
-      const queryAvg =
-        'SELECT T.COVER_IMAGE, T.ISBN, T.TITLE, T.DESCRIPTION, T.LANGUAGE, T.NUMBER_OF_PAGES, T.ORIGINAL_PUBLICATION_YEAR, T.NAME';
-      query01 = `${queryAvg}\nFROM (${query01}) T LEFT JOIN RATING R ON (T.ISBN = R.ISBN)`;
-      query01 +=
-        '\nGROUP BY T.COVER_IMAGE, T.ISBN, T.TITLE, T.DESCRIPTION, T.LANGUAGE, T.NUMBER_OF_PAGES, T.ORIGINAL_PUBLICATION_YEAR, T.NAME';
-      if (context.SORT_TYPE) {
-        if (context.SORT_TYPE === 'desc') {
-          query01 += '\nORDER BY NVL(Round(AVG(R.VALUE),2), 0) DESC';
-        } else {
-          query01 += '\nORDER BY NVL(Round(AVG(R.VALUE),2), 0)  ASC';
-        }
-      } else {
-        query01 += '\nORDER BY NVL(Round(AVG(R.VALUE),2), 0)  DESC';
-      }
-    } else if (context.SORT === 'year') {
-      if (context.SORT_TYPE) {
-        if (context.SORT_TYPE === 'desc') {
-          query01 += '\nORDER BY B.ORIGINAL_PUBLICATION_YEAR DESC';
-        } else {
-          query01 += '\nORDER BY B.ORIGINAL_PUBLICATION_YEAR  ASC';
-        }
-      } else {
-        query01 += '\nORDER BY B.ORIGINAL_PUBLICATION_YEAR  ASC';
-      }
-    } else if (context.SORT === 'pages') {
-      if (context.SORT_TYPE) {
-        if (context.SORT_TYPE === 'desc') {
-          query01 += '\nORDER BY B.NUMBER_OF_PAGES DESC';
-        } else {
-          query01 += '\nORDER BY B.NUMBER_OF_PAGES  ASC';
-        }
-      } else {
-        query01 += '\nORDER BY B.NUMBER_OF_PAGES ASC';
-      }
-    }
-  } else {
-    query01 += '\nORDER BY B.TITLE ASC';
-  }
-
-  console.log(query01);
-  console.log(binds);
-
-  let books = await queryExecute(query01, binds);
-  books = books.rows;
-
-  for (let i = 0; i < books.length; i++) {
-    const binds02 = {
-      ISBN: books[i].ISBN,
-    };
-    const rating = await getAvgRatingDB(binds02);
-    books[i].AVG_RATING = rating[0].AVERAGE_RATING;
-  }
-
-  return await getAuthorGenreIntoBook(books);
-}
-
 export async function getSearchedBookDB(context) {
   // let query = "SELECT B.ISBN, B.TITLE, B.COVER_IMAGE, B.NUMBER_OF_PAGES, B.LANGUAGE, B.ORIGINAL_PUBLICATION_YEAR, B.DESCRIPTION, P.NAME, (PR.FIRST_NAME|| ' ' ||PR.LAST_NAME) AS AUTHOR_NAME from BOOK B join PUBLISHER P ON(B.PUBLISHER_ID = P.PUBLISHER_ID) JOIN WRITTEN_BY WB ON (B.ISBN = WB.ISBN) JOIN AUTHOR A ON (WB.PERSON_ID = A.PERSON_ID) JOIN PERSON PR ON (A.PERSON_ID = PR.PERSON_ID) JOIN BOOK_GENRE BG ON (B.ISBN = BG.ISBN) JOIN GENRE G ON (BG.GENRE_ID = G.GENRE_ID)";
   // let groupByString = " GROUP BY B.ISBN, B.TITLE, B.COVER_IMAGE, B.NUMBER_OF_PAGES, B.LANGUAGE, B.ORIGINAL_PUBLICATION_YEAR, B.DESCRIPTION, P.NAME, (PR.FIRST_NAME|| ' ' ||PR.LAST_NAME)";
@@ -1033,15 +1251,27 @@ async function getAuthorGenreIntoBook(books) {
 // }
 
 export async function createBookDB(book) {
-  const bookDB = {...book};
-  const query = runProcedure('INSERT_BOOK(:ISBN, :TITLE, :IMAGE, :NUMBER_OF_PAGES, INITCAP(LOWER(:LANGUAGE)), :DESCRIPTION, :PUBLISHER_ID)');
+  let query = 'BEGIN\nSAVEPOINT book_savepoint;' +
+    `\nINSERT_BOOK('${book.ISBN}', '${book.TITLE}', '${book.IMAGE}', ${book.NUMBER_OF_PAGES}, INITCAP(LOWER('${book.LANGUAGE}')), '${book.DESCRIPTION}', '${book.PUBLISHER_ID}');`;
+  // `\nDELETE_WRITTEN_BY('${book.ISBN}');`+
+  // `\nDELETE_BOOK_GENRE('${book.ISBN}');`;
+  for (const a of book.AUTHORS) {
+    query += `\nINSERT_WRITTEN_BY('${book.ISBN}', ${a.AUTHOR_ID});`;
+  }
+  for (const a of book.GENRES) {
+    query += `\nINSERT_BOOK_GENRE('${book.ISBN}', ${a.GENRE_ID});`;
+  }
+  for (const e of book.EDITIONS) {
+    query += `\nINSERT_EDITION('${book.ISBN}', ${e.EDITION_NUM}, ${e.NUM_OF_COPIES}, ${e.PUBLISH_YEAR});`;
+  }
+  query += `\nCOMMIT;\nEND;`;
+  console.log(query);
   try {
-    await queryExecute(query, bookDB);
-  } catch
-    (e) {
+    await queryExecute(query, []);
+  } catch (e) {
     return null;
   }
-  return bookDB;
+  return book;
 }
 
 // export async function getAuthorDB(context){
@@ -1252,17 +1482,30 @@ export async function addBookGenreDB(bookGenre) {
   return bookGenre;
 }
 
-
-export async function updateBookDB(context) {
-  const query = runProcedure('UPDATE_BOOK(:ISBN, :TITLE, :IMAGE, :NUMBER_OF_PAGES, INITCAP(LOWER(:LANGUAGE)), :DESCRIPTION, :PUBLISHER_ID)');
+export async function updateBookDB(book) {
+  let query = 'BEGIN\nSAVEPOINT book_savepoint2;' +
+    `\nUPDATE_BOOK('${book.ISBN}', '${book.TITLE}', '${book.IMAGE}', ${book.NUMBER_OF_PAGES}, INITCAP(LOWER('${book.LANGUAGE}')), '${book.DESCRIPTION}', '${book.PUBLISHER_ID}');` +
+    `\nDELETE_WRITTEN_BY('${book.ISBN}');` +
+    `\nDELETE_BOOK_GENRE('${book.ISBN}');`;
+  for (const a of book.AUTHORS) {
+    query += `\nINSERT_WRITTEN_BY('${book.ISBN}', ${a.AUTHOR_ID});`;
+  }
+  for (const a of book.GENRES) {
+    query += `\nINSERT_BOOK_GENRE('${book.ISBN}', ${a.GENRE_ID});`;
+  }
+  for (const e of book.EDITIONS) {
+    query += `\nINSERT_EDITION('${book.ISBN}', ${e.EDITION_NUM}, ${e.NUM_OF_COPIES}, ${e.PUBLISH_YEAR});`;
+  }
+  query += `\nCOMMIT;\nEND;`;
+  console.log(query);
   try {
-    await queryExecute(query, context);
-  } catch
-    (e) {
+    await queryExecute(query, []);
+  } catch (e) {
     return null;
   }
-  return context;
+  return book;
 }
+
 
 export async function deleteBookDB(context) {
   const query = runProcedure('DELETE_BOOK(:ISBN)');
@@ -1366,6 +1609,28 @@ export async function deleteAuthorDB(context) {
   return context;
 }
 
+export async function resignAdminDB(context) {
+  const query = runProcedure('DELETE_ADMIN(:USER_ID)');
+  let result = null;
+  try {
+    result = await queryExecute(query, context);
+  } catch (e) {
+    return null;
+  }
+  return context;
+}
+
+export async function deleteEmployeeDB(context) {
+  const query = runProcedure('DELETE_EMPLOYEE(:USER_ID)');
+  let result = null;
+  try {
+    result = await queryExecute(query, context);
+  } catch (e) {
+    return null;
+  }
+  return context;
+}
+
 export async function addPublisherDB(publisher) {
   const query = runProcedure('INSERT_PUBLISHER(:NAME ,:IMAGE ,:CITY ,:COUNTRY ,:POSTAL_CODE ,:CONTACT_NO ,LOWER(:EMAIL))');
   const query1 = baseQuery('PUBLISHER') +
@@ -1437,6 +1702,43 @@ export async function addGenreDB(genre) {
   return result.rows[0];
 }
 
+export async function addJobDB(job) {
+  const query = runProcedure('INSERT_JOB(:JOB_TITLE, :SALARY)');
+  console.log(query);
+  try {
+    console.log(job);
+    const result = await queryExecute(query, job);
+  } catch (e) {
+    return null;
+  }
+  return job;
+}
+
+export async function addEmployeeDB(employee) {
+  const query = runProcedure('INSERT_EMPLOYEE(:USER_ID, :JOB_ID)');
+  console.log(query);
+  try {
+    console.log(employee);
+    const result = await queryExecute(query, employee);
+  } catch (e) {
+    return null;
+  }
+  return employee;
+}
+
+
+export async function updateJobDB(job) {
+  const query = runProcedure('UPDATE_JOB(:JOB_ID, :JOB_TITLE, :SALARY)');
+  console.log(query);
+  try {
+    console.log(job);
+    const result = await queryExecute(query, job);
+  } catch (e) {
+    return null;
+  }
+  return job;
+}
+
 export async function addEditionDB(edition) {
   const query = runProcedure(`INSERT_EDITION('${edition.ISBN}', ${edition.EDITION_NUM}, ${edition.NUM_OF_COPIES}, ${edition.PUBLISH_YEAR})`);
   // const binds = {
@@ -1479,6 +1781,29 @@ export async function deleteGenreDB(genre) {
   }
   return genre;
 }
+
+export async function deleteJobDB(job) {
+  const query = runProcedure('DELETE_JOB(:JOB_ID)');
+  let result = null;
+  try {
+    result = await queryExecute(query, job);
+  } catch (e) {
+    return null;
+  }
+  return job;
+}
+
+export async function deleteApplyDB(job) {
+  const query = runProcedure('DELETE_APPLY(:USER_ID, :JOB_ID)');
+  let result = null;
+  try {
+    result = await queryExecute(query, job);
+  } catch (e) {
+    return null;
+  }
+  return job;
+}
+
 
 export async function deleteEditionDB(context) {
   const query = runProcedure(`DELETE_EDITION('${context.EDITION_ID}')`);
