@@ -38,7 +38,9 @@ import {
   getMyMessagesDB,
   getAllNewsDB,
   getAllUsersDB,
-  getEditionDB
+  getEditionDB,
+  getEmployeeDB,
+  getJobDB
 } from "../Database/queryFunctions.js";
 import {queryExecute} from "../Database/database.js";
 
@@ -343,12 +345,49 @@ export async function getAuthor(req, res, next) {
 
     const rows = await getAuthorDB(context);
 
-    if (rows.length === 1) {
-      res.status(200).json(rows[0]);
-    } else if (rows.length > 1) {
+    if (rows.length > 0) {
       res.status(200).json(rows);
     } else {
-      res.status(404).end();
+      res.status(404).json({message: "No Author Found"});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getJob(req, res, next) {
+  try {
+    const context = {};
+    context.JOB_ID = req.query.jid;
+    context.USER_ID = req.USER_ID;
+    context.sort = req.query.sort;
+    context.order = req.query.order;
+    console.log(context);
+
+    const rows = await getJobDB(context);
+
+    if (rows.length > 0) {
+      res.status(200).json(rows);
+    } else {
+      res.status(404).json({message: "No Job Found"});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getEmployee(req, res, next) {
+  try {
+    const context = {};
+    context.USER_ID = req.query.uid;
+    console.log(context);
+
+    const rows = await getEmployeeDB(context);
+
+    if (rows.length > 0) {
+      res.status(200).json(rows);
+    } else {
+      res.status(404).json({message: "No Employee Found"});
     }
   } catch (err) {
     next(err);
@@ -383,9 +422,7 @@ export async function getGenre(req, res, next) {
 
     const rows = await getGenreDB(context);
 
-    if (rows.length === 1) {
-      res.status(200).json(rows[0]);
-    } else if (rows.length > 1) {
+    if (rows.length > 0) {
       res.status(200).json(rows);
     } else {
       res.status(404).json({message: "Not Found"});
@@ -645,9 +682,12 @@ export async function getAllNews(req, res, next) {
 export async function getAllUsers(req, res, next) {
   try {
     const context = {};
-    // context.USER_ID = req.USER_ID;
+    context.USER_ID = req.USER_ID;
     context.sort = req.query.sort;
     context.order = req.query.order;
+    context.EMPLOYEE = req.body.EMPLOYEE;
+    context.ADMIN = req.body.ADMIN;
+    context.USER = req.body.USER;
     const rows = await getAllUsersDB(context);
 
     if (rows.length > 0) {

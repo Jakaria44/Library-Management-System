@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { secret } from '../Database/databaseConfiguration.js';
+import {secret} from '../Database/databaseConfiguration.js';
 import {
   findAdminDB,
   findEmployeeDB,
@@ -8,6 +8,9 @@ import {
   findUserDB,
   postAdminDB,
   postUserDB,
+  deleteEmployeeDB,
+  sendMessageDB,
+  getEmployeeDB
 } from '../Database/queryFunctions.js';
 
 export async function loginGeneral(req, res, next) {
@@ -161,14 +164,21 @@ export async function postUser(req, res, next) {
       CONTACT_NO: req.body.contactNo,
       GENDER: req.body.gender,
     };
-    let foundUser = null;
     const result = await postUserDB(user);
     if (user !== result) {
       throw new Error(result);
     }
 
-    foundUser = await findUserDB(user);
-
+    let foundUser = await findUserDB(user);
+    let welcome = {};
+    welcome.USER_ID = foundUser[0].USER_ID;
+    welcome.MESSAGE = `Hi!! ${foundUser[0].FIRST_NAME} ${foundUser[0].LAST_NAME}. Welcome to the library!!! Please explore the library and satisfy your thirst of knowledge.`;
+    welcome = await sendMessageDB(welcome);
+    // if (!welcome) {
+    //   res.status(201).json({message: 'Successful but message not send'})
+    // } else {
+    //   res.status(200).json({message: 'Successful'})
+    // }
     const token = jwt.sign(
       {
         USER_ID: foundUser[0].USER_ID,
@@ -192,45 +202,33 @@ export async function postUser(req, res, next) {
 
 export async function postAdmin(req, res, next) {
   try {
-    let emailToLow = null;
-    if (req.body.email) {
-      emailToLow = req.body.email.toLowerCase();
+    const user = {};
+    user.USER_ID = req.query.uid;
+    let admin = await postAdminDB(user);
+    if (admin) {
+      const result = await getEmployeeDB(user);
+      if (result.length > 0) {
+        admin = await deleteEmployeeDB(user);
+        const jobTitle = (result[0] ? result[0].JOB_TITLE : 'UNKNOWN');
+        const joinDate = (result[0] ? result[0].JOIN_DATE : 'UNKNOWN');
+        user.MESSAGE = `Congratulations!!! You are promoted to ADMIN. You have worked at the JOB: {${jobTitle}} since JOIN_DATE: {${joinDate}}. Welcome to the Admin Panel.`;
+        admin = await sendMessageDB(user);
+      } else {
+        res.status(404).json({message: 'Only Employee can be promoted to ADMIN'});
+        return;
+        // user.MESSAGE = `Congratulations!!! You are promoted to ADMIN. Welcome to the Admin Panel.`;
+        // admin = await sendMessageDB(user);
+      }
+      if (!admin) {
+        res.status(201).json({message: 'Successful but message not send'})
+      } else {
+        res.status(200).json({message: 'Successful'})
+      }
+    } else {
+      res.status(404).json({message: 'Failed to promote'});
     }
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    // :FIRST_NAME,:LAST_NAME,:IMAGE,:ADDRESS,:EMAIL,:PASSWORD,:CONTACT_NO,:GENDER
-    const user = {
-      FIRST_NAME: req.body.firstName,
-      LAST_NAME: req.body.lastName,
-      IMAGE: req.body.image,
-      ADDRESS: req.body.address,
-      EMAIL: emailToLow,
-      PASSWORD: hashedPassword,
-      CONTACT_NO: req.body.contactNo,
-      GENDER: req.body.gender,
-    };
-
-    const admin = await postAdminDB(user);
-    const foundUser = await findUserDB(admin);
-    const foundAdmin = await findAdminDB(foundUser[0]);
-
-    const token = jwt.sign(
-      {
-        USER_ID: foundAdmin[0].USER_ID,
-        ROLE: 'admin',
-      },
-      secret,
-      {
-        expiresIn: '20000h', // expires in 24 hours
-      },
-    );
-    res.status(200).json({auth: true, token, role: 'admin'});
   } catch (err) {
-    res.status(500).json({
-      message: 'Email already Exists.',
-      auth: false,
-      token: null,
-      role: null,
-    });
+    next(err);
   }
 }
 

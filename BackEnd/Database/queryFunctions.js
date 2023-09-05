@@ -1,4 +1,5 @@
 import {queryExecute} from './database.js';
+import {deleteEmployee} from "../controllers/deleteController.js";
 
 // let result = null;
 //   try {
@@ -73,9 +74,13 @@ export async function findUserDB(user) {
 }
 
 export async function postAdminDB(admin) {
-  const procedure = 'INSERT_ADMIN(:FIRST_NAME,:LAST_NAME,:IMAGE,:ADDRESS,:EMAIL,:PASSWORD,:CONTACT_NO,:GENDER)';
+  const procedure = 'INSERT_ADMIN(:USER_ID)';
   const query = runProcedure(procedure);
-  const result = await queryExecute(query, admin);
+  try {
+    const result = await queryExecute(query, admin);
+  } catch (err) {
+    return null;
+  }
   return admin;
 }
 
@@ -146,7 +151,7 @@ export async function getBookDetailsByIDDB(context) {
 // }
 
 export async function getAllBookDB() {
-  const query = 'SELECT ISBN, TITLE, IMAGE FROM BOOK'+
+  const query = 'SELECT ISBN, TITLE, IMAGE FROM BOOK' +
     '\nORDER BY TITLE ASC';
   console.log(query);
   let result = null;
@@ -536,6 +541,32 @@ export async function getPublisherDB(context) {
   return result.rows;
 }
 
+export async function getEmployeeDB(context) {
+  let query = "SELECT U.USER_ID, (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, U.IMAGE, E.JOIN_DATE, E.JOB_ID, J.JOB_TITLE " +
+    '\nFROM EMPLOYEE E LEFT JOIN "USER" U ON(U.USER_ID = E.USER_ID) LEFT JOIN JOB J ON(J.JOB_ID = E.JOB_ID)';
+  if (context.USER_ID) {
+    query += `\nWHERE E.USER_ID = ${context.USER_ID}`;
+  }
+  let flag = 1;
+  if (context.sort && context.order) {
+    const validColumns = ['USER_ID', 'NAME', 'JOB_TITLE', 'JOIN_DATE', 'JOB_ID'];
+    const validOrders = ['ASC', 'DESC'];
+
+    if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
+      query += `\nORDER BY ${context.sort} ${context.order}`;
+      if (context.sort !== 'NAME') {
+        query += ', NAME ASC';
+      }
+      flag = 0;
+    }
+  }
+  if (flag) {
+    query += '\nORDER BY NAME ASC';
+  }
+  const result = await queryExecute(query, []);
+  return result.rows;
+}
+
 export async function getMyMessagesDB(context) {
   // get all messages of a user
   let query = baseQuery('MESSAGE') +
@@ -564,9 +595,23 @@ export async function getAllNewsDB(context) {
 }
 
 export async function getAllUsersDB(context) {
-  // get all messages of a user
-  let query = "SELECT USER_ID, (FIRST_NAME || ' ' || LAST_NAME) AS NAME, IMAGE, ADDRESS, EMAIL, CONTACT_NO, GENDER" +
-    '\nFROM "USER"';
+  // Define the base query
+  let query = "SELECT U.USER_ID, (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, U.IMAGE, U.ADDRESS, U.EMAIL, U.CONTACT_NO, U.GENDER, " +
+    "CASE\nWHEN E.USER_ID IS NOT NULL THEN 'employee'\nWHEN A.USER_ID IS NOT NULL THEN 'admin'\nELSE 'user'\nEND AS ROLE" +
+    '\nFROM "USER" U LEFT JOIN EMPLOYEE E ON(U.USER_ID = E.USER_ID) LEFT JOIN ADMIN A ON(U.USER_ID = A.USER_ID) WHERE 1=1';
+  if (context.USER_ID) {
+    query += `\nAND U.USER_ID <> ${context.USER_ID}`;
+  }
+  if (!context.USER) {
+    query += `\nAND (A.USER_ID IS NOT NULL OR E.USER_ID IS NOT NULL)`;
+  }
+  if (!context.EMPLOYEE) {
+    query += `\nAND E.USER_ID IS NULL`;
+  }
+  if (!context.ADMIN) {
+    query += `\nAND A.USER_ID IS NULL`;
+  }
+
   let flag = 1;
   if (context.sort && context.order) {
     const validColumns = ['USER_ID', 'NAME', 'EMAIL'];
@@ -580,10 +625,12 @@ export async function getAllUsersDB(context) {
       flag = 0;
     }
   }
+
   if (flag) {
     query += '\nORDER BY NAME ASC';
   }
 
+  // Execute the query
   let result = null;
   try {
     result = await queryExecute(query, []);
@@ -622,6 +669,32 @@ export async function getMyRequestsDB(context) {
   return result.rows;
 }
 
+export async function getApplicationsDB(context) {
+  let query = `SELECT (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, U.USER_ID, U.EMAIL, A.JOB_ID, J.JOB_TITLE, A.APPLY_DATE` +
+    '\nFROM APPLY A JOIN JOB J ON(A.JOB_ID = J.JOB_ID) JOIN "USER" U ON(A.USER_ID = U.USER_ID)';
+  if (context.USER_ID) {
+    query += `\nWHERE U.USER_ID = ${context.USER_ID}`;
+  }
+  let flag = 1;
+  if (context.sort && context.order) {
+    const validColumns = ['NAME', 'EMAIL', 'JOB_TITLE', 'APPLY_DATE'];
+    const validOrders = ['ASC', 'DESC'];
+
+    if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
+      query += `\nORDER BY ${context.sort} ${context.order}`;
+      if (context.sort !== 'APPLY_DATE') {
+        query += ', APPLY_DATE ASC';
+      }
+      flag = 0;
+    }
+  }
+  if (flag) {
+    query += '\nORDER BY APPLY_DATE ASC';
+  }
+
+  const result = await queryExecute(query, []);
+  return result.rows;
+}
 
 export async function getAllRequestsDB(context) {
   let query = `SELECT (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, R.USER_ID, U.EMAIL, B.ISBN, B.TITLE, R.EDITION_ID, E.EDITION_NUM, E.NUM_OF_COPIES, R.REQUEST_DATE` +
@@ -762,6 +835,18 @@ export async function addRequestDB(context) {
   return context;
 }
 
+export async function applyForJobDB(context) {
+  let query = runProcedure(`INSERT_APPLY(${context.USER_ID}, ${context.JOB_ID})`);
+  let result = null;
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return null;
+  }
+  return context;
+}
+
+
 export async function updateEditionDB(context) {
   let query = runProcedure(`UPDATE_EDITION('${context.EDITION_ID}', ${context.EDITION_NUM}, ${context.NUM_OF_COPIES}, ${context.PUBLISH_YEAR})`);
 
@@ -886,7 +971,48 @@ export async function getGenreDB(context) {
   if (context.GENRE_ID) {
     query += `\nWhere GENRE_ID = ${context.GENRE_ID}`;
   }
-  const result = await queryExecute(query, []);
+  let result = null;
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return []
+  }
+  return result.rows;
+}
+
+export async function getJobDB(context) {
+  let query = `SELECT JOB_TITLE, JOB_ID, SALARY`;
+  if (context.USER_ID) {
+    query += `, CASE\nWHEN JOB_ID IN (SELECT JOB_ID FROM EMPLOYEE WHERE USER_ID = ${context.USER_ID}) THEN 'working'` +
+      `\nWHEN JOB_ID IN (SELECT JOB_ID FROM APPLY WHERE USER_ID = ${context.USER_ID}) THEN 'applied'\nELSE null END\nAS STATUS`;
+  }
+  query += `\nFROM JOB`;
+  if (context.JOB_ID) {
+    query += `\nWhere JOB_ID = ${context.JOB_ID}`;
+  }
+  let flag = 1;
+  if (context.sort && context.order) {
+    const validColumns = ['JOB_TITLE', 'SALARY', 'STATUS'];
+    const validOrders = ['ASC', 'DESC'];
+
+    if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
+      query += `\nORDER BY ${context.sort} ${context.order}`;
+      if (context.sort !== 'SALARY') {
+        query += ', SALARY DESC';
+      }
+      flag = 0;
+    }
+  }
+
+  if (flag) {
+    query += '\nORDER BY SALARY DESC';
+  }
+  let result = null;
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return []
+  }
   return result.rows;
 }
 
@@ -1125,15 +1251,27 @@ async function getAuthorGenreIntoBook(books) {
 // }
 
 export async function createBookDB(book) {
-  const bookDB = {...book};
-  const query = runProcedure('INSERT_BOOK(:ISBN, :TITLE, :IMAGE, :NUMBER_OF_PAGES, INITCAP(LOWER(:LANGUAGE)), :DESCRIPTION, :PUBLISHER_ID)');
+  let query = 'BEGIN\nSAVEPOINT book_savepoint;' +
+    `\nINSERT_BOOK('${book.ISBN}', '${book.TITLE}', '${book.IMAGE}', ${book.NUMBER_OF_PAGES}, INITCAP(LOWER('${book.LANGUAGE}')), '${book.DESCRIPTION}', '${book.PUBLISHER_ID}');`;
+  // `\nDELETE_WRITTEN_BY('${book.ISBN}');`+
+  // `\nDELETE_BOOK_GENRE('${book.ISBN}');`;
+  for (const a of book.AUTHORS) {
+    query += `\nINSERT_WRITTEN_BY('${book.ISBN}', ${a.AUTHOR_ID});`;
+  }
+  for (const a of book.GENRES) {
+    query += `\nINSERT_BOOK_GENRE('${book.ISBN}', ${a.GENRE_ID});`;
+  }
+  for (const e of book.EDITIONS) {
+    query += `\nINSERT_EDITION('${book.ISBN}', ${e.EDITION_NUM}, ${e.NUM_OF_COPIES}, ${e.PUBLISH_YEAR});`;
+  }
+  query += `\nCOMMIT;\nEND;`;
+  console.log(query);
   try {
-    await queryExecute(query, bookDB);
-  } catch
-    (e) {
+    await queryExecute(query, []);
+  } catch (e) {
     return null;
   }
-  return bookDB;
+  return book;
 }
 
 // export async function getAuthorDB(context){
@@ -1344,17 +1482,30 @@ export async function addBookGenreDB(bookGenre) {
   return bookGenre;
 }
 
-
-export async function updateBookDB(context) {
-  const query = runProcedure('UPDATE_BOOK(:ISBN, :TITLE, :IMAGE, :NUMBER_OF_PAGES, INITCAP(LOWER(:LANGUAGE)), :DESCRIPTION, :PUBLISHER_ID)');
+export async function updateBookDB(book) {
+  let query = 'BEGIN\nSAVEPOINT book_savepoint2;' +
+    `\nUPDATE_BOOK('${book.ISBN}', '${book.TITLE}', '${book.IMAGE}', ${book.NUMBER_OF_PAGES}, INITCAP(LOWER('${book.LANGUAGE}')), '${book.DESCRIPTION}', '${book.PUBLISHER_ID}');` +
+    `\nDELETE_WRITTEN_BY('${book.ISBN}');` +
+    `\nDELETE_BOOK_GENRE('${book.ISBN}');`;
+  for (const a of book.AUTHORS) {
+    query += `\nINSERT_WRITTEN_BY('${book.ISBN}', ${a.AUTHOR_ID});`;
+  }
+  for (const a of book.GENRES) {
+    query += `\nINSERT_BOOK_GENRE('${book.ISBN}', ${a.GENRE_ID});`;
+  }
+  for (const e of book.EDITIONS) {
+    query += `\nINSERT_EDITION('${book.ISBN}', ${e.EDITION_NUM}, ${e.NUM_OF_COPIES}, ${e.PUBLISH_YEAR});`;
+  }
+  query += `\nCOMMIT;\nEND;`;
+  console.log(query);
   try {
-    await queryExecute(query, context);
-  } catch
-    (e) {
+    await queryExecute(query, []);
+  } catch (e) {
     return null;
   }
-  return context;
+  return book;
 }
+
 
 export async function deleteBookDB(context) {
   const query = runProcedure('DELETE_BOOK(:ISBN)');
@@ -1458,6 +1609,28 @@ export async function deleteAuthorDB(context) {
   return context;
 }
 
+export async function resignAdminDB(context) {
+  const query = runProcedure('DELETE_ADMIN(:USER_ID)');
+  let result = null;
+  try {
+    result = await queryExecute(query, context);
+  } catch (e) {
+    return null;
+  }
+  return context;
+}
+
+export async function deleteEmployeeDB(context) {
+  const query = runProcedure('DELETE_EMPLOYEE(:USER_ID)');
+  let result = null;
+  try {
+    result = await queryExecute(query, context);
+  } catch (e) {
+    return null;
+  }
+  return context;
+}
+
 export async function addPublisherDB(publisher) {
   const query = runProcedure('INSERT_PUBLISHER(:NAME ,:IMAGE ,:CITY ,:COUNTRY ,:POSTAL_CODE ,:CONTACT_NO ,LOWER(:EMAIL))');
   const query1 = baseQuery('PUBLISHER') +
@@ -1529,6 +1702,43 @@ export async function addGenreDB(genre) {
   return result.rows[0];
 }
 
+export async function addJobDB(job) {
+  const query = runProcedure('INSERT_JOB(:JOB_TITLE, :SALARY)');
+  console.log(query);
+  try {
+    console.log(job);
+    const result = await queryExecute(query, job);
+  } catch (e) {
+    return null;
+  }
+  return job;
+}
+
+export async function addEmployeeDB(employee) {
+  const query = runProcedure('INSERT_EMPLOYEE(:USER_ID, :JOB_ID)');
+  console.log(query);
+  try {
+    console.log(employee);
+    const result = await queryExecute(query, employee);
+  } catch (e) {
+    return null;
+  }
+  return employee;
+}
+
+
+export async function updateJobDB(job) {
+  const query = runProcedure('UPDATE_JOB(:JOB_ID, :JOB_TITLE, :SALARY)');
+  console.log(query);
+  try {
+    console.log(job);
+    const result = await queryExecute(query, job);
+  } catch (e) {
+    return null;
+  }
+  return job;
+}
+
 export async function addEditionDB(edition) {
   const query = runProcedure(`INSERT_EDITION('${edition.ISBN}', ${edition.EDITION_NUM}, ${edition.NUM_OF_COPIES}, ${edition.PUBLISH_YEAR})`);
   // const binds = {
@@ -1571,6 +1781,29 @@ export async function deleteGenreDB(genre) {
   }
   return genre;
 }
+
+export async function deleteJobDB(job) {
+  const query = runProcedure('DELETE_JOB(:JOB_ID)');
+  let result = null;
+  try {
+    result = await queryExecute(query, job);
+  } catch (e) {
+    return null;
+  }
+  return job;
+}
+
+export async function deleteApplyDB(job) {
+  const query = runProcedure('DELETE_APPLY(:USER_ID, :JOB_ID)');
+  let result = null;
+  try {
+    result = await queryExecute(query, job);
+  } catch (e) {
+    return null;
+  }
+  return job;
+}
+
 
 export async function deleteEditionDB(context) {
   const query = runProcedure(`DELETE_EDITION('${context.EDITION_ID}')`);

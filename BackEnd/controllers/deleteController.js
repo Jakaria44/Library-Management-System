@@ -11,7 +11,14 @@ import {
   getEditionDB,
   sendMessageDB,
   deleteMessageDB,
-  deleteEditionDB
+  deleteEditionDB,
+  resignAdminDB,
+  deleteEmployeeDB,
+  getEmployeeDB,
+  findEmployeeDB,
+  deleteJobDB,
+  deleteApplyDB,
+  getJobDB
 } from "../Database/queryFunctions.js";
 
 export async function deleteBookOfBookshelf(req, res, next) {
@@ -166,6 +173,7 @@ export async function deleteBook(req, res, next) {
   }
 }
 
+
 export async function deleteAuthor(req, res, next) {
   try {
     let deleted = {};
@@ -176,6 +184,28 @@ export async function deleteAuthor(req, res, next) {
       res.status(200).json({message: 'Successfully deleted'});
     } else {
       res.status(404).json({message: 'Failed to delete'});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function resignAdmin(req, res, next) {
+  try {
+    let context = {};
+    context.USER_ID = req.USER_ID;
+
+    let deleted = await resignAdminDB(context);
+    if (deleted) {
+      context.MESSAGE = `You have successfully resigned from the ADMIN. You are still a user of the library. Thank you for your service to the library.`;
+      deleted = await sendMessageDB(context);
+      if (!deleted) {
+        res.status(201).json({message: 'Successful but message not send'})
+      } else {
+        res.status(200).json({message: 'Successful'})
+      }
+    } else {
+      res.status(404).json({message: 'Failed to resign'});
     }
   } catch (err) {
     next(err);
@@ -199,6 +229,59 @@ export async function deletePublisher(req, res, next) {
   }
 }
 
+export async function deleteEmployee(req, res, next) {
+  try {
+    let context = {};
+
+    context.USER_ID = req.query.uid;
+    const result = await getEmployeeDB(context);
+    let deleted = await deleteEmployeeDB(context);
+    if (deleted) {
+      console.log(result);
+      const jobTitle = (result[0] ? result[0].JOB_TITLE : 'UNKNOWN');
+      const joinDate = (result[0] ? result[0].JOIN_DATE : 'UNKNOWN');
+      context.MESSAGE = `You are fired from the JOB: {${jobTitle}}. You have worked at the Job since JOIN_DATE: {${joinDate}}. Please communicate with the admin for further query.`;
+      deleted = await sendMessageDB(context);
+      if (!deleted) {
+        res.status(201).json({message: 'Successful but message not send'})
+      } else {
+        res.status(200).json({message: 'Successful'})
+      }
+    } else {
+      res.status(404).json({message: 'Failed to delete'});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function resignEmployee(req, res, next) {
+  try {
+    let context = {};
+
+    context.USER_ID = req.USER_ID;
+    const result = await getEmployeeDB(context);
+    let deleted = await deleteEmployeeDB(context);
+    if (deleted) {
+      console.log(result);
+      const jobTitle = (result[0] ? result[0].JOB_TITLE : 'UNKNOWN');
+      const joinDate = (result[0] ? result[0].JOIN_DATE : 'UNKNOWN');
+      context.MESSAGE = `You have successfully resigned from the JOB: {${jobTitle}}. You have worked at the Job since JOIN_DATE: {${joinDate}}. Thank you for your service to the library.`;
+      deleted = await sendMessageDB(context);
+      if (!deleted) {
+        res.status(201).json({message: 'Successful but message not send'})
+      } else {
+        res.status(200).json({message: 'Successful'})
+      }
+    } else {
+      res.status(404).json({message: 'Failed to delete'});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+
 export async function deleteGenre(req, res, next) {
   try {
     let deleted = {};
@@ -206,6 +289,71 @@ export async function deleteGenre(req, res, next) {
     deleted.GENRE_ID = req.query.gid;
 
     deleted = await deleteGenreDB(deleted);
+
+    if (deleted) {
+      res.status(200).json({message: 'Successfully deleted'});
+    } else {
+      res.status(404).json({message: 'Failed to delete'});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function deleteApply(req, res, next) {
+  try {
+    let deleted = {};
+
+    deleted.USER_ID = req.USER_ID;
+    deleted.JOB_ID = req.query.jid;
+
+    deleted = await deleteApplyDB(deleted);
+
+    if (deleted) {
+      res.status(200).json({message: 'Successfully deleted'});
+    } else {
+      res.status(404).json({message: 'Failed to delete'});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function deleteApplication(req, res, next) {
+  try {
+    let deleted = {};
+
+    deleted.USER_ID = req.USER_ID;
+    deleted.JOB_ID = req.query.jid;
+
+    deleted = await deleteApplyDB(deleted);
+    if (deleted) {
+      const result = await getJobDB(deleted);
+      console.log(result);
+      const jobTitle = (result[0] ? result[0].JOB_TITLE : 'UNKNOWN');
+      deleted.MESSAGE = `Your application for the JOB: {${jobTitle}} is rejected. You can try again after sometime or can communicate with the admin. Please stay tuned with our library.`;
+      deleted = await sendMessageDB(deleted);
+      if (!deleted) {
+        res.status(201).json({message: 'Successful but message not send'})
+      } else {
+        res.status(200).json({message: 'Successful'})
+      }
+    } else {
+      res.status(404).json({message: 'Failed to delete'});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+
+export async function deleteJob(req, res, next) {
+  try {
+    let deleted = {};
+
+    deleted.JOB_ID = req.query.jid;
+
+    deleted = await deleteJobDB(deleted);
 
     if (deleted) {
       res.status(200).json({message: 'Successfully deleted'});

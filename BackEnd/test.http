@@ -765,15 +765,14 @@ Content-Type: application/json
 }
 
 #### --- UPDATE EDITION ---
-PUT http://localhost:3000/db-api/getEdition
+PUT http://localhost:3000/db-api/getEdition?eid=10
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
 Content-Type: application/json
 
 {
-  "EDITION_ID": "16",
   "EDITION_NUM": 0,
-  "ADD_COPIES": 10,
-  "PUBLISH_YEAR": 1910
+  "NUM_OF_COPIES": 10,
+  "PUBLISH_YEAR": 2007
 }
 
 ###OUTPUT
@@ -810,53 +809,6 @@ GET http://localhost:3000/db-api/getLanguage
     "LANGUAGE": "English"
   }
 ]
-
-#### --- POST one BOOK ---
-POST http://localhost:3000/db-api/book
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
-Content-Type: application/json
-
-{
-  "ISBN": "1111111111111",
-  "TITLE": "new book",
-  "IMAGE": null,
-  "NUMBER_OF_PAGES": 0,
-  "LANGUAGE": "Bangla",
-  "DESCRIPTION": "Most easy book",
-  "PUBLISHER_ID": "22"
-}
-###OUTPUT
-{
-  "message": "Successful"
-}
-
-#### --- PUT one BOOK ---
-PUT http://localhost:3000/db-api/book
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
-Content-Type: application/json
-
-{
-  "ISBN": "1111111111111",
-  "TITLE": "new book1",
-  "IMAGE": null,
-  "NUMBER_OF_PAGES": 0,
-  "LANGUAGE": "BangLa",
-  "DESCRIPTION": "Most easy book",
-  "PUBLISHER_ID": "22"
-}
-###OUTPUT
-{
-  "message": "Successful"
-}
-
-#### --- DELETE one BOOK ---
-DELETE http://localhost:3000/db-api/book?id=1111111111111
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
-
-###OUTDELETE
-{
-  "message": "Successfully deleted"
-}
 
 #### --- WRITTER ADD ---
 POST http://localhost:3000/db-api/writtenBy
@@ -951,3 +903,130 @@ GET http://localhost:3000/db-api/all-book
     "IMAGE":
   }
 ]
+
+#### ------ GET ALL USERS ----
+GET http://localhost:3000/db-api/all-users?sort=EMAIL&order=ASC
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "USER": false,
+  "EMPLOYEE" : true,
+  "ADMIN": true
+}
+
+###OUTPUT
+[
+  {
+    "USER_ID": "3",
+    "NAME": "jakaria hossain",
+    "IMAGE": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
+    "ADDRESS": "Ney York, USA",
+    "EMAIL": "mdjakaria442020@gmail.com",
+    "CONTACT_NO": "01712345678",
+    "GENDER": "M",
+    "ROLE": "admin"
+  },
+  {
+    "USER_ID": "1",
+    "NAME": "Ryan George",
+    "IMAGE": "https://img.freepik.com/free-icon/user_318-159711.jpg",
+    "ADDRESS": "England",
+    "EMAIL": "ryangeorge@gmail.com",
+    "CONTACT_NO": "854 526 8852",
+    "GENDER": "M",
+    "ROLE": "employee"
+  }
+]
+
+
+#### --- POST one BOOK ---
+POST http://localhost:3000/db-api/book
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "ISBN": "1111111111112",
+  "TITLE": "new book2",
+  "IMAGE": null,
+  "NUMBER_OF_PAGES": 0,
+  "LANGUAGE": "Bangla",
+  "DESCRIPTION": "Most easy book",
+  "PUBLISHER_ID": "1",
+  "Authors": [
+    {
+      "AUTHOR_ID": "1"
+    }
+  ],
+  "Genres": [
+    {
+      "GENRE_ID": "1"
+    }
+  ],
+  "Editions":[
+    {
+      "EDITION_NUM": 1,
+      "NUM_OF_COPIES": 10,
+      "PUBLISH_YEAR": 2022
+    },
+    {
+      "EDITION_NUM": 2,
+      "NUM_OF_COPIES": 10,
+      "PUBLISH_YEAR": 2023
+    }
+  ]
+}
+###OUTPUT
+{
+  "message": "Successful"
+}
+
+#### --- PUT one BOOK ---
+PUT http://localhost:3000/db-api/book
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "ISBN": "1111111111112",
+  "TITLE": "new book2",
+  "IMAGE": "https://img.freepik.com/premium-photo/book-library-with-old-open-textbook-stack-piles-literature-text-archive-reading-desk_779468-5822.jpg?w=2000",
+  "NUMBER_OF_PAGES": 0,
+  "LANGUAGE": "Bangla",
+  "DESCRIPTION": "Most easy book",
+  "PUBLISHER_ID": "1",
+  "Authors": [
+    {
+      "AUTHOR_ID": "1"
+    }
+  ],
+  "Genres": [
+    {
+      "GENRE_ID": "1"
+    },
+    {
+      "GENRE_ID": "2"
+    }
+  ],
+  "Editions":[
+    {
+      "EDITION_NUM": 3,
+      "NUM_OF_COPIES": 10,
+      "PUBLISH_YEAR": 2024
+    }
+  ]
+}
+
+#only added edition
+###OUTPUT
+{
+  "message": "Successful"
+}
+
+#### --- DELETE one BOOK ---
+DELETE http://localhost:3000/db-api/book?id=1111111111111
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+
+###OUTDELETE
+{
+  "message": "Successfully deleted"
+}

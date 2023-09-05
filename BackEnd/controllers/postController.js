@@ -24,30 +24,16 @@ import {
   getEditionDB,
   sendMessageDB,
   publishNewsDB,
-  addEditionDB, deleteBookGenreDB, deleteWittenByDB
+  addEditionDB,
+  deleteBookGenreDB,
+  deleteWittenByDB,
+  addJobDB,
+  getApplicationsDB,
+  applyForJobDB,
+  addEmployeeDB,
+  getEmployeeDB
 } from '../Database/queryFunctions.js';
 import {getMyRequests} from "./getController.js";
-
-
-export async function updateUserDetails(req, res, next) {
-  try {
-    let user = {
-      PERSON_ID: req.body.PERSON_ID,
-      FIRST_NAME: req.body.FIRST_NAME,
-      LAST_NAME: req.body.LAST_NAME,
-      ADDRESS: req.body.ADDRESS,
-      EMAIL: req.body.EMAIL,
-      PHONE_NUMBER: req.body.PHONE_NUMBER,
-      DETAILS: req.body.DETAILS,
-      WEB_ADDRESS: req.body.WEB_ADDRESS
-    };
-
-    user = await updateUserDB(user);
-    res.status(201).json(user);
-  } catch (err) {
-    next(err);
-  }
-}
 
 export async function postFavBook(req, res, next) {
 
@@ -242,6 +228,28 @@ export async function addRequest(req, res, next) {
   }
 }
 
+export async function applyForJob(req, res, next) {
+  try {
+    let request = {
+      USER_ID: req.USER_ID,
+      JOB_ID: req.query.jid
+    };
+    let result = await getApplicationsDB(request);
+    if (result.length >= 3) {
+      res.status(403).json({message: "MAXIMUM LIMIT REACHED"});
+      return;
+    }
+    request = await applyForJobDB(request);
+    if (request) {
+      res.status(200).json({message: "Successful"})
+    } else {
+      res.status(404).json({message: "Already Exists"})
+    }
+  } catch (e) {
+    next(e);
+  }
+}
+
 export async function sendMessage(req, res, next) {
   try {
     if (req.body.USER_ID === req.USER_ID) {
@@ -315,6 +323,33 @@ export async function acceptRequest(req, res, next) {
   }
 }
 
+export async function acceptApplication(req, res, next) {
+  try {
+    let context = {
+      USER_ID: req.body.USER_ID,
+      JOB_ID: req.body.JOB_ID
+    };
+    console.log(context);
+    let request = await addEmployeeDB(context);
+    if (request) {
+      const result = await getEmployeeDB(context);
+      console.log(result);
+      const jobTitle = (result[0] ? result[0].JOB_TITLE : 'UNKNOWN');
+      context.MESSAGE = `Congratulations!!! Your application for the JOB: {${jobTitle}} is accepted. From now, you are an Employee of the library. Please communicate with the admin for further query.`;
+      request = await sendMessageDB(context);
+      if (!request) {
+        res.status(201).json({message: 'Successful but message not send'})
+      } else {
+        res.status(200).json({message: 'Successful'})
+      }
+    } else {
+      res.status(404).json({message: "Not Successful"})
+    }
+  } catch (e) {
+    next(e);
+  }
+}
+
 export async function bookToBookshelf(req, res, next) {
   try {
     let bookshelf = {
@@ -339,7 +374,18 @@ export async function postBook(req, res, next) {
       NUMBER_OF_PAGES: Number(req.body.NUMBER_OF_PAGES),
       LANGUAGE: req.body.LANGUAGE,
       DESCRIPTION: req.body.DESCRIPTION,
-      PUBLISHER_ID: req.body.PUBLISHER_ID
+      PUBLISHER_ID: req.body.PUBLISHER_ID,
+      AUTHORS: req.body.Authors,
+      GENRES: req.body.Genres,
+      EDITIONS: req.body.Editions
+    }
+    if(book.ISBN.length !== 13){
+      res.status(404).json({message: "ISBN must be 13 characters long"});
+      return;
+    }
+    if(book.AUTHORS.length === 0 || book.GENRES.length === 0 || book.Editions.length === 0){
+      res.status(404).json({message: "Authors, Genres and Editions can't be empty"});
+      return;
     }
     console.log(book);
     book = await createBookDB(book);
@@ -456,6 +502,24 @@ export async function addGenre(req, res, next) {
     genre = await addGenreDB(genre);
     if (genre) {
       res.status(201).json({message: "Successful", genre});
+    } else {
+      res.status(404).json({message: "Not successful"});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function addJob(req, res, next) {
+  try {
+    let job = {
+      JOB_TITLE: req.body.JOB_TITLE,
+      SALARY: req.body.SALARY
+    };
+    console.log(job);
+    job = await addJobDB(job);
+    if (job) {
+      res.status(201).json({message: "Successful", job});
     } else {
       res.status(404).json({message: "Not successful"});
     }
