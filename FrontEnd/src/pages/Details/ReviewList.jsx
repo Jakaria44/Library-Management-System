@@ -39,7 +39,7 @@ const ReviewList = ({ id }) => {
           reviewText={review.REVIEW}
           fullName={review.NAME}
           profilePicture={review.IMAGE}
-          date={review.DATE}
+          date={review.EDIT_DATE}
         />
       ))}
       <Grid item xs={12} style={{ marginTop: "16px" }}>

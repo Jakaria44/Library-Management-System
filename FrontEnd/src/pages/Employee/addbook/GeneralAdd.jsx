@@ -13,8 +13,10 @@ import Languages from "./../../../utils/Languages";
 const defaultImage =
   "https://st2.depositphotos.com/5703046/12114/i/950/depositphotos_121142344-stock-photo-white-book-on-white-background.jpg";
 export default function GeneralAdd({ book, setBook }) {
-  const [isbnList, setisbnList] = React.useState("");
-  const [previewUrl, setPreviewUrl] = React.useState(defaultImage);
+  const [isbnList, setisbnList] = React.useState(["1234567890123"]);
+  const [previewUrl, setPreviewUrl] = React.useState(
+    book.image ?? defaultImage
+  );
 
   React.useEffect(() => {
     console.log(book);
@@ -22,16 +24,18 @@ export default function GeneralAdd({ book, setBook }) {
   const [uploading, setUploading] = React.useState(false);
 
   const uploadImage = (file) => {
-    const imageRef = ref(storage, `BookCoverPhoto/${v4()}`);
+    const imageRef = ref(storage, `bookCover/${v4()}`);
 
     uploadBytes(imageRef, file)
       .then((snapshot) => {
-        getDownloadURL(snapshot.ref).then((url) => {
-          console.log(url);
-          setBook((prev) => ({ ...prev, image: url }));
-          // console.log(updatedBook);
-          setUploading(false);
-        });
+        getDownloadURL(snapshot.ref)
+          .then((url) => {
+            console.log(url);
+            setBook((prev) => ({ ...prev, image: url }));
+            // console.log(updatedBook);
+            setUploading(false);
+          })
+          .catch((err) => setUploading(false));
       })
       .catch((error) => {
         console.log(error);
@@ -53,12 +57,12 @@ export default function GeneralAdd({ book, setBook }) {
     uploadImage(selectedFile);
   };
 
-  // const isbnAlreadyExists = useMemo(
-  //   () =>
-  //     book.isbn.length > 0 &&
-  //     isbnList.map((e) => e.toLowerCase()).includes(book.isbn.toLowerCase()),
-  //   [book.isbn]
-  // );
+  const isbnAlreadyExists = React.useMemo(
+    () =>
+      book.isbn.length > 0 &&
+      isbnList.map((e) => e.toLowerCase()).includes(book.isbn.toLowerCase()),
+    [book.isbn]
+  );
   return (
     <React.Fragment>
       <Grid container spacing={3} mt={3}>
@@ -121,14 +125,14 @@ export default function GeneralAdd({ book, setBook }) {
               label="ISBN"
               name="isbn"
               type="number"
-              // error={isbnAlreadyExists}
-              // helperText={
-              //   book.isbn.length > 0 && book.isbn.length !== 13
-              //     ? "ISBN must be 13 digits"
-              //     : isbnAlreadyExists
-              //     ? "ISBN already exists"
-              //     : "ISBN is unique"
-              // }
+              error={isbnAlreadyExists}
+              helperText={
+                book.isbn.length > 0 && book.isbn.length !== 13
+                  ? "ISBN must be 13 digits"
+                  : isbnAlreadyExists
+                  ? "ISBN already exists"
+                  : "ISBN is unique"
+              }
               onChange={(e) =>
                 setBook((prev) => ({ ...prev, isbn: e.target.value }))
               }
@@ -153,6 +157,9 @@ export default function GeneralAdd({ book, setBook }) {
                   language: value,
                 }));
               }}
+              isOptionEqualToValue={(option, value) =>
+                option.name === value.name
+              }
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -178,6 +185,23 @@ export default function GeneralAdd({ book, setBook }) {
                 setBook((prev) => ({
                   ...prev,
                   description: e.target.value,
+                }))
+              }
+            />
+          </Grid>
+          <Grid item xs>
+            <TextField
+              required
+              fullWidth
+              value={book.numOfPage}
+              id="numOfPage"
+              type="number"
+              label="Number of Pages"
+              name="numOfPage"
+              onChange={(e) =>
+                setBook((prev) => ({
+                  ...prev,
+                  numOfPage: e.target.value,
                 }))
               }
             />

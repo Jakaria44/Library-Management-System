@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-
+import TimeFormat from "./../../utils/TimeFormat";
 const ReviewCard = ({
   profilePicture,
   fullName,
@@ -32,7 +32,7 @@ const ReviewCard = ({
           <Grid item>
             <Typography variant="subtitle1">{fullName}</Typography>
             <Typography variant="body2" color="textSecondary">
-              {date}
+              {TimeFormat(date)}
             </Typography>
           </Grid>
           <Grid item>

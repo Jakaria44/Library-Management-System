@@ -11,38 +11,90 @@ import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
+import dayjs from "dayjs";
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
+import SpinnerWithBackdrop from "../../../component/SpinnerWithBackdrop";
+import Languages from "../../../utils/Languages";
+import server from "./../../../HTTP/httpCommonParam";
 import AuthorGenrePublisherAdd from "./AuthorGenrePublisherAdd";
 import EditionAdd from "./EditionAdd";
 import GeneralAdd from "./GeneralAdd";
+const defaultImage =
+  "https://st2.depositphotos.com/5703046/12114/i/950/depositphotos_121142344-stock-photo-white-book-on-white-background.jpg";
 const steps = [
   "General Information",
   "Add Author, Publisher and Category",
   "Set Edition Information",
 ];
-const defaultImage =
-  "https://st2.depositphotos.com/5703046/12114/i/950/depositphotos_121142344-stock-photo-white-book-on-white-background.jpg";
+let general = {
+  isbn: "",
+  title: "",
+  image: defaultImage,
+  language: null,
+  description: "",
+  numOfPage: 0,
+};
+let authorgenre = {
+  authors: [],
+  publisher: null,
+  genre: [],
+};
+let formField = [{ Edition: "", Publish_Year: "", Available: "" }];
 
-export default function AddBook() {
+export default function AddBook({ _isbn }) {
+  const navigate = useNavigate();
   const [direction, setDirection] = React.useState("left");
   const containerRef = React.useRef(null);
-  const [activeStep, setActiveStep] = React.useState(1);
-  const [generalInfo, setGeneralInfo] = React.useState({
-    isbn: "",
-    title: "",
-    image: defaultImage,
-    language: null,
-    description: "",
-  });
-  const [authorGenrePublisher, setAuthorGenrePublisher] = React.useState({
-    authors: [],
-    publisher: null,
-    genre: [],
-  });
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [uploading, setUploading] = React.useState(false);
+  const [generalInfo, setGeneralInfo] = React.useState(general);
+  const [authorGenrePublisher, setAuthorGenrePublisher] =
+    React.useState(authorgenre);
 
-  // React.useEffect(() => {
-  //   console.log(generalInfo);
-  // }, [generalInfo]);
+  const [formFields, setFormFields] = React.useState(formField);
+  const initialize = async () => {
+    // _isbn = "9781408855652";
+    if (_isbn) {
+      const res = server.get("/book?id=" + _isbn);
+      const data = (await res).data;
+      console.log(data);
+      general = {
+        isbn: data.ISBN,
+        title: data.TITLE,
+        image: data.IMAGE,
+        language: Languages.filter((item) => item.name === data.LANGUAGE)[0],
+        description: data.DESCRIPTION,
+        numOfPage: data.PAGE,
+      };
+      authorgenre = {
+        authors: JSON.parse(data.AUTHOR).map((item) => {
+          return { AUTHOR_ID: item.ID, NAME: item.NAME };
+        }),
+        publisher: {
+          PUBLISHER_ID: data.PUBLISHER_ID,
+          NAME: data.PUBLISHER_NAME,
+        },
+        genre: JSON.parse(data.GENRE).map((item) => {
+          return { GENRE_ID: item.ID, GENRE_NAME: item.NAME };
+        }),
+      };
+      formField = JSON.parse(data.EDITION).map((item) => {
+        return {
+          Edition: item.NUM,
+          Publish_Year: dayjs(new Date(item.YEAR)),
+          Available: item.COUNT,
+        };
+      });
+      console.log(general, authorgenre, formField);
+      setGeneralInfo(general);
+      setAuthorGenrePublisher(authorgenre);
+      setFormFields(formField);
+    }
+  };
+  React.useEffect(() => {
+    initialize();
+  }, []);
   function getStepContent(step) {
     switch (step) {
       case 0:
@@ -55,7 +107,9 @@ export default function AddBook() {
           />
         );
       case 2:
-        return <EditionAdd />;
+        return (
+          <EditionAdd formFields={formFields} setFormFields={setFormFields} />
+        );
       default:
         throw new Error("Unknown step");
     }
@@ -67,7 +121,72 @@ export default function AddBook() {
     // console.log(data);
 
     // setDirection("left");
-    setActiveStep(activeStep + 1);
+    if (activeStep !== 2) {
+      setActiveStep(activeStep + 1);
+    } else {
+      setUploading(true);
+      handleFinalSubmit();
+    }
+  };
+
+  const handleFinalSubmit = async () => {
+    // console.log(generalInfo, authorGenrePublisher, formFields);
+
+    const generalInfoSubmit = {
+      ISBN: generalInfo.isbn,
+      TITLE: generalInfo.title,
+      IMAGE: generalInfo.image,
+      DESCRIPTION: generalInfo.description,
+      LANGUAGE: generalInfo.language.name,
+      NUMBER_OF_PAGES: generalInfo.numOfPage,
+      PUBLISHER_ID: authorGenrePublisher.publisher.PUBLISHER_ID,
+    };
+    const authorInfoSubmit = {
+      ISBN: generalInfo.isbn,
+      Authors: authorGenrePublisher.authors.map((item) => {
+        return { AUTHOR_ID: item.AUTHOR_ID };
+      }),
+    };
+
+    const genreInfo = {
+      ISBN: generalInfo.isbn,
+      Genres: authorGenrePublisher.genre.map((item) => {
+        return { GENRE_ID: item.GENRE_ID };
+      }),
+    };
+    const editionInfo = {
+      ISBN: generalInfo.isbn,
+      Editions: formFields.map((item) => {
+        return {
+          EDITION_NUM: item.Edition,
+          NUM_OF_COPIES: item.Available,
+          PUBLISH_YEAR: item.Publish_Year.toDate().getFullYear(),
+        };
+      }),
+    };
+    console.log(authorInfoSubmit, genreInfo, editionInfo);
+    try {
+      const resGeneral = await server.post("/book", generalInfoSubmit);
+      const resAuthor = await server.post("/writtenBy", authorInfoSubmit);
+      const resGenre = await server.post("/book-genre", genreInfo);
+      const resEdition = await server.post("/getEdition", editionInfo);
+
+      console.log(
+        resGeneral.data,
+        resAuthor.data,
+        resGenre.data,
+        resEdition.data
+      );
+
+      setUploading(false);
+      navigate(`/details/${editionInfo.ISBN}`);
+    } catch (err) {
+      console.log(err);
+      alert(err.response.data.message);
+      setUploading(false);
+    }
+
+    // console.log(object);
   };
 
   const handleBack = () => {
@@ -199,6 +318,10 @@ export default function AddBook() {
           </React.Fragment>
         </Paper>
       </Container>
+      <SpinnerWithBackdrop
+        backdropOpen={uploading}
+        helperText="Please wait while we upload this book"
+      />
     </React.Fragment>
   );
 }
