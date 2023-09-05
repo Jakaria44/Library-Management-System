@@ -124,6 +124,7 @@ const Application = () => {
             EDITION_ID: row.EDITION_ID,
           },
         });
+      
         setSuccessMessage(res.data.message);
         setShowSuccessMessage(true);
       } catch (err) {
