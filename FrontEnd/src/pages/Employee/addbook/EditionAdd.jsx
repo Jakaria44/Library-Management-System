@@ -13,11 +13,7 @@ import * as React from "react";
 import ErrorModal from "../../../component/ErrorModal";
 import SuccessfulModal from "../../../component/SuccessfulModal";
 import server from "./../../../HTTP/httpCommonParam";
-export default function EditionAdd({
-  details = false,
-  formFields,
-  setFormFields,
-}) {
+export default function EditionAdd({ formFields, setFormFields }) {
   const [successMessage, setSuccessMessage] = React.useState("");
   const [showSuccessMessage, setShowSuccessMessage] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
@@ -80,8 +76,10 @@ export default function EditionAdd({
         const res = await server.delete(
           `getEdition?eid=${formFields[index].id}`
         );
+
         setSuccessMessage(res.data.message);
         setShowSuccessMessage(true);
+        removeFields(index);
       } catch (err) {
         setErrorMessage(err.response.data.message);
         setShowErrorMessage(true);
@@ -107,6 +105,7 @@ export default function EditionAdd({
                     placeholder="Edition"
                     label="Edition"
                     type="number"
+                    required
                     onChange={(event) => handleFormChange(event, index)}
                     value={form.Edition}
                   />
@@ -117,6 +116,7 @@ export default function EditionAdd({
                     name="Publish_Year"
                     label="Publish Year"
                     views={["year"]}
+                    required
                     value={form.Publish_Year}
                     onChange={(value) => handlePublishYearChange(index, value)}
                   />
@@ -128,6 +128,7 @@ export default function EditionAdd({
                     placeholder="Available number of copies"
                     label="Available Copies"
                     type="number"
+                    required
                     onChange={(event) => handleFormChange(event, index)}
                     value={form.Available}
                   />

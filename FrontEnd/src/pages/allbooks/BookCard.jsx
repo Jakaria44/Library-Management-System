@@ -1,4 +1,6 @@
 import {
+  Cancel,
+  DoneOutline,
   Edit,
   Favorite,
   FavoriteBorder,
@@ -12,6 +14,10 @@ import {
   Card,
   CardContent,
   CardMedia,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   IconButton,
   Menu,
   MenuItem,
@@ -20,12 +26,14 @@ import {
   alpha,
   styled,
 } from "@mui/material";
-import { useRef, useState } from "react";
+import dayjs from "dayjs";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ErrorModal from "../../component/ErrorModal";
 import SignupDialog from "../../component/SignupDialog";
 import SpinnerWithBackdrop from "../../component/SpinnerWithBackdrop";
 import SuccessfulModal from "../../component/SuccessfulModal";
+import EditionAdd from "../Employee/addbook/EditionAdd";
 import server from "./../../HTTP/httpCommonParam";
 
 const StyledMenu = styled((props) => (
@@ -72,10 +80,13 @@ const StyledMenu = styled((props) => (
 }));
 
 const BookCard = ({ book }) => {
+  const [manageEditionOpen, setManageEditionOpen] = useState(false);
+  const [newEditions, setNewEditions] = useState();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [isFavourite, setIsFavourite] = useState(book.IS_FAVOURITE);
   const [showMessage, setShowMessage] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("An Error Occured");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
@@ -83,6 +94,7 @@ const BookCard = ({ book }) => {
   const [isHovered, setHovered] = useState(false);
   const ref = useRef(null);
 
+  // console.log(book);
   const open = Boolean(anchorEl);
 
   const handleClick = (event) => {
@@ -150,6 +162,39 @@ const BookCard = ({ book }) => {
   const fullEditHandler = () => {
     handleClose();
     navigate(`/editbook/${book.ISBN}`);
+  };
+  const manageEdition = () => {
+    handleClose();
+    setManageEditionOpen(true);
+  };
+  const submitNewEditions = (e) => {
+    e.preventDefault();
+    setManageEditionOpen(false);
+    const newEd = newEditions
+      .filter((item) => item.id === null)
+      .map((item) => {
+        return {
+          EDITION_NUM: item.Edition,
+          NUM_OF_COPIES: item.Available,
+          PUBLISH_YEAR: item.Publish_Year.toDate().getFullYear(),
+        };
+      });
+    if (newEd.length) {
+      uploadNewEditions(newEd);
+    }
+  };
+  const uploadNewEditions = async (edition) => {
+    try {
+      const res = await server.post("/getEdition", {
+        ISBN: book.ISBN,
+        Editions: edition,
+      });
+      setSuccessMessage(res.data.message);
+      setShowSuccessMessage(true);
+    } catch (err) {
+      setErrorMessage(err.response.data.message);
+      setShowErrorMessage(true);
+    }
   };
   return (
     <>
@@ -241,7 +286,7 @@ const BookCard = ({ book }) => {
                   <Edit />
                   Full edit
                 </MenuItem>
-                <MenuItem onClick={handleClose} disableRipple>
+                <MenuItem onClick={manageEdition} disableRipple>
                   <FileCopy />
                   Manage Editions
                 </MenuItem>
@@ -266,9 +311,33 @@ const BookCard = ({ book }) => {
         </Backdrop>
       </Card>
 
+      <Dialog
+        component="form"
+        onSubmit={submitNewEditions}
+        open={manageEditionOpen}
+        onClose={(event, reason) => {
+          if (reason === "escapeKeyDown" || reason === "backdropClick") return;
+          setManageEditionOpen(false);
+        }}
+      >
+        <DialogTitle variant="h3">Manage Editions</DialogTitle>
+        <DialogContent>
+          You need to update or delete previous editions individually
+        </DialogContent>
+        <UpdateEdition isbn={book.ISBN} setNewEditions={setNewEditions} />
+        <DialogActions>
+          <IconButton onClick={() => setManageEditionOpen(false)}>
+            <Cancel />
+          </IconButton>
+          <IconButton type="submit">
+            <DoneOutline />
+          </IconButton>
+        </DialogActions>
+      </Dialog>
+
       <SuccessfulModal
         showSuccessMessage={showSuccessMessage}
-        successMessage="Added to Application List"
+        successMessage={successMessage}
         HandleModalClosed={() => {
           setShowSuccessMessage(false);
         }}
@@ -294,3 +363,41 @@ const BookCard = ({ book }) => {
 };
 
 export default BookCard;
+
+let formField = [{ id: null, Edition: "", Publish_Year: "", Available: "" }];
+
+const UpdateEdition = ({ isbn, setNewEditions }) => {
+  const [formFields, setFormFields] = useState(formField);
+  useEffect(() => {
+    laodAllEditions();
+  }, []);
+
+  useEffect(() => {
+    setNewEditions(formFields);
+  }, [formFields]);
+  const laodAllEditions = async () => {
+    try {
+      let data = [];
+      const res = await server.get(`/getEdition?id=${isbn}`);
+      if (!Array.isArray(res.data)) {
+        data = [res.data];
+      } else {
+        data = res.data;
+      }
+      setFormFields(
+        data.map((item) => {
+          return {
+            id: item.EDITION_ID,
+            Edition: item.EDITION_NUM,
+            Publish_Year: dayjs(new Date(`1/1/${item.PUBLISH_YEAR}`)),
+            Available: item.NUM_OF_COPIES,
+          };
+        })
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  return <EditionAdd formFields={formFields} setFormFields={setFormFields} />;
+};

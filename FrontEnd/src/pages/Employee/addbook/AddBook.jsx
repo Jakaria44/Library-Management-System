@@ -64,7 +64,7 @@ export default function AddBook({ bookDetails }) {
     // _isbn = "9781408855652";
     if (bookDetails) {
       const data = bookDetails;
-      console.log(data);
+      console.log(JSON.parse(data.EDITION));
       general = {
         isbn: data.ISBN,
         title: data.TITLE,
@@ -89,7 +89,7 @@ export default function AddBook({ bookDetails }) {
         return {
           id: item.ID,
           Edition: item.NUM,
-          Publish_Year: dayjs(new Date(item.YEAR)),
+          Publish_Year: dayjs(new Date(`1/1/${item.YEAR}`)),
           Available: item.COUNT,
         };
       });
@@ -122,11 +122,7 @@ export default function AddBook({ bookDetails }) {
         );
       case 2:
         return (
-          <EditionAdd
-            details={bookDetails}
-            formFields={formFields}
-            setFormFields={setFormFields}
-          />
+          <EditionAdd formFields={formFields} setFormFields={setFormFields} />
         );
       default:
         throw new Error("Unknown step");

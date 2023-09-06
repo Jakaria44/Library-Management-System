@@ -12,7 +12,7 @@ const GridForCard = styled(Grid)(({ theme }) => ({
 const BooksList = () => {
   const { data } = useAsyncValue();
   useEffect(() => {
-    console.log(data);
+    // console.log(data);
   }, []);
   return (
     <Grid item xs={12} md={9}>
