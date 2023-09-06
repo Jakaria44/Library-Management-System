@@ -69,28 +69,6 @@ Content-Type: application/json
   "role": "user"
 }
 
-#### ----POST admin ----
-POST http://localhost:3000/db-api/admin/signup
-Content-Type: application/json
-
-{
-  "firstName": "jakaria",
-  "lastName": "hossain",
-  "image": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
-  "address": "Ney York, USA",
-  "email": "mdjakaria442020@gmail.com",
-  "password": "Jakaria63",
-  "contactNo": "01712345678",
-  "gender": "M"
-}
-
-###OUTPUT
-{
-  "auth": true,
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMjMiLCJST0xFIjoiYWRtaW4iLCJpYXQiOjE2OTMxNDc3ODIsImV4cCI6MTY5MzIzNDE4Mn0.ukuIJVJYITXw5m7JRuiI2mVc5S66qdCYFAR8Srn_mq4",
-  "role": "admin"
-}
-
 #### ----GET ALL-RAT-REV of BOOK----
 GET http://localhost:3000/db-api/all-rat-rev?id=9781408855652
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
@@ -946,8 +924,8 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 Content-Type: application/json
 
 {
-  "ISBN": "1111111111112",
-  "TITLE": "new book2",
+  "ISBN": "1111111111115",
+  "TITLE": "NEW BOOK4",
   "IMAGE": null,
   "NUMBER_OF_PAGES": 0,
   "LANGUAGE": "Bangla",
@@ -987,8 +965,8 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 Content-Type: application/json
 
 {
-  "ISBN": "1111111111112",
-  "TITLE": "new book2",
+  "ISBN": "1111111111115",
+  "TITLE": "new book5",
   "IMAGE": "https://img.freepik.com/premium-photo/book-library-with-old-open-textbook-stack-piles-literature-text-archive-reading-desk_779468-5822.jpg?w=2000",
   "NUMBER_OF_PAGES": 0,
   "LANGUAGE": "Bangla",
@@ -1030,3 +1008,131 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 {
   "message": "Successfully deleted"
 }
+
+#### ----POST admin ----
+POST http://localhost:3000/db-api/admin/signup?uid=1
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+
+
+#### ----RESIGN admin ----
+DELETE http://localhost:3000/db-api/admin/resign
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3Nzg2MiwiZXhwIjoxNzY1OTc3ODYyfQ.F524sgjyfSoNb9LyDnLqv2fCdh8baoFSEtHuy9zZKYY
+
+#### ----- APPLY FOR JOB ----
+POST http://localhost:3000/db-api/apply?jid=1
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzOTc4OTMyLCJleHAiOjE3NjU5Nzg5MzJ9.QyucubclHSu2hlHThnfDP9b9zW9r4282DJA0koxKvk8
+
+#### -----  delete APPLY FOR JOB ----
+DELETE http://localhost:3000/db-api/apply?jid=1
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzOTc4OTMyLCJleHAiOjE3NjU5Nzg5MzJ9.QyucubclHSu2hlHThnfDP9b9zW9r4282DJA0koxKvk8
+
+#### -----  GET ALL APPLY FOR JOB ----
+GET http://localhost:3000/db-api/application?order=DESC&sort=APPLY_DATE
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+
+###OUTPUT
+[
+  {
+    "USER_ID": "1",
+    "NAME": "Ryan George",
+    "IMAGE": "https://img.freepik.com/free-icon/user_318-159711.jpg",
+    "EMAIL": "ryangeorge@gmail.com",
+    "JOB_ID": "1",
+    "JOB_TITLE": "Librarian",
+    "APPLY_DATE": "2023-09-06T05:45:22.000Z"
+  }
+]
+
+#### ---- Acceept Application ----
+POST http://localhost:3000/db-api/application
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+Content-Type: application/json
+
+{
+  "USER_ID": "1",
+  "JOB_ID": "2"
+}
+
+#### ---- Reject Application ----
+DELETE http://localhost:3000/db-api/application?uid=1&jid=1
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+Content-Type: application/json
+
+{
+  "USER_ID": "1",
+  "JOB_ID": "1"
+}
+
+#### ---- GET one/ALL JOB ---
+GET http://localhost:3000/db-api/getJob?sort=STATUS&order=ASC
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzOTc4OTMyLCJleHAiOjE3NjU5Nzg5MzJ9.QyucubclHSu2hlHThnfDP9b9zW9r4282DJA0koxKvk8
+
+###OUTPUT
+[
+  {
+    "JOB_TITLE": "Librarian",
+    "JOB_ID": "1",
+    "SALARY": 200,
+    "STATUS": "applied"
+  },
+  {
+    "JOB_TITLE": "Cleaner",
+    "JOB_ID": "2",
+    "SALARY": 150,
+    "STATUS": "working"
+  }
+]
+
+#### ---- POST one JOB ---
+POST http://localhost:3000/db-api/getJob
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+Content-Type: application/json
+
+{
+  "JOB_TITLE": "Dancer",
+  "SALARY": "100"
+}
+
+###OUTPUT
+{
+  "message": "Successful",
+  "job": {
+    "JOB_TITLE": "Dancer",
+    "SALARY": "100"
+  }
+}
+
+#### ---- UPDATE one JOB ---
+PUT http://localhost:3000/db-api/getJob?jid=3
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+Content-Type: application/json
+
+{
+  "JOB_TITLE": "Musician",
+  "SALARY": "10"
+}
+
+#### ---- DELETE one JOB ---
+DELETE http://localhost:3000/db-api/getJob?jid=4
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+
+#### ---- GET ONE/ALL EMPLOYEE ----
+GET http://localhost:3000/db-api/employee?uid=1&sort=NAME&order=DESC
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+
+###OUTPUT
+[
+  {
+    "USER_ID": "1",
+    "NAME": "Ryan George",
+    "EMAIL": "ryangeorge@gmail.com",
+    "IMAGE": "https://img.freepik.com/free-icon/user_318-159711.jpg",
+    "JOIN_DATE": "2023-09-06T06:46:26.000Z",
+    "JOB_ID": "2",
+    "JOB_TITLE": "Cleaner"
+  }
+]
+
+#### ---- DELETE one EMPLOYEE ----
+DELETE http://localhost:3000/db-api/employee?uid=1
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM

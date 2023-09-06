@@ -123,7 +123,7 @@ export async function updateJob(req, res, next) {
     };
     job = await updateJobDB(job);
     if (job) {
-      res.status(201).json({message: "Successful", job});
+      res.status(201).json({message: "Successful"});
     } else {
       res.status(404).json({message: "Not successful"});
     }

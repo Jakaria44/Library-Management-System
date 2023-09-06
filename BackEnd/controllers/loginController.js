@@ -204,28 +204,26 @@ export async function postAdmin(req, res, next) {
   try {
     const user = {};
     user.USER_ID = req.query.uid;
-    let admin = await postAdminDB(user);
-    if (admin) {
-      const result = await getEmployeeDB(user);
-      if (result.length > 0) {
+
+    const result = await getEmployeeDB(user);
+    if (result.length > 0) {
+      let admin = await postAdminDB(user);
+      if (admin) {
         admin = await deleteEmployeeDB(user);
         const jobTitle = (result[0] ? result[0].JOB_TITLE : 'UNKNOWN');
         const joinDate = (result[0] ? result[0].JOIN_DATE : 'UNKNOWN');
         user.MESSAGE = `Congratulations!!! You are promoted to ADMIN. You have worked at the JOB: {${jobTitle}} since JOIN_DATE: {${joinDate}}. Welcome to the Admin Panel.`;
         admin = await sendMessageDB(user);
+        if (!admin) {
+          res.status(201).json({message: 'Successful but message not send'})
+        } else {
+          res.status(200).json({message: 'Successful'})
+        }
       } else {
-        res.status(404).json({message: 'Only Employee can be promoted to ADMIN'});
-        return;
-        // user.MESSAGE = `Congratulations!!! You are promoted to ADMIN. Welcome to the Admin Panel.`;
-        // admin = await sendMessageDB(user);
-      }
-      if (!admin) {
-        res.status(201).json({message: 'Successful but message not send'})
-      } else {
-        res.status(200).json({message: 'Successful'})
+        res.status(404).json({message: 'Failed to promote'});
       }
     } else {
-      res.status(404).json({message: 'Failed to promote'});
+      res.status(404).json({message: 'Only Employee can be promoted to ADMIN'});
     }
   } catch (err) {
     next(err);

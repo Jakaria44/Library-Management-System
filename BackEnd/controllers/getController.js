@@ -40,7 +40,8 @@ import {
   getAllUsersDB,
   getEditionDB,
   getEmployeeDB,
-  getJobDB
+  getJobDB,
+  getApplicationDB
 } from "../Database/queryFunctions.js";
 import {queryExecute} from "../Database/database.js";
 
@@ -111,47 +112,47 @@ export async function getAllBookSum(req, res, next) {
     if (req.USER_ID) {
       context.USER_ID = req.USER_ID;
     }
-    if (req.body.MY_FAV) {
-      context.MY_FAV = req.body.MY_FAV;
+    if (req.query.MY_FAV) {
+      context.MY_FAV = req.query.MY_FAV;
     }
-    if (req.body.MY_RAT) {
-      context.MY_RAT = req.body.MY_RAT;
+    if (req.query.MY_RAT) {
+      context.MY_RAT = req.query.MY_RAT;
     }
-    if (req.body.ISBN) {
-      context.ISBN = req.body.ISBN;
+    if (req.query.ISBN) {
+      context.ISBN = req.query.ISBN;
     }
-    if (req.body.TITLE) {
-      context.TITLE = req.body.TITLE.toUpperCase();
+    if (req.query.TITLE) {
+      context.TITLE = req.query.TITLE.toUpperCase();
     }
-    if (req.body.LANGUAGE) {
-      context.LANGUAGE = req.body.LANGUAGE.toUpperCase();
+    if (req.query.LANGUAGE) {
+      context.LANGUAGE = req.query.LANGUAGE.toUpperCase();
     }
-    if (req.body.PAGE_START) {
-      context.PAGE_START = req.body.PAGE_START;
+    if (req.query.PAGE_START) {
+      context.PAGE_START = req.query.PAGE_START;
     }
-    if (req.body.PAGE_END) {
-      context.PAGE_END = req.body.PAGE_END;
+    if (req.query.PAGE_END) {
+      context.PAGE_END = req.query.PAGE_END;
     }
-    if (req.body.YEAR_START) {
-      context.YEAR_START = req.body.YEAR_START;
+    if (req.query.YEAR_START) {
+      context.YEAR_START = req.query.YEAR_START;
     }
-    if (req.body.YEAR_END) {
-      context.YEAR_END = req.body.YEAR_END;
+    if (req.query.YEAR_END) {
+      context.YEAR_END = req.query.YEAR_END;
     }
-    if (req.body.RATING_START) {
-      context.RATING_START = req.body.RATING_START;
+    if (req.query.RATING_START) {
+      context.RATING_START = req.query.RATING_START;
     }
-    if (req.body.RATING_END) {
-      context.RATING_END = req.body.RATING_END;
+    if (req.query.RATING_END) {
+      context.RATING_END = req.query.RATING_END;
     }
-    if (req.body.AUTHOR_ID) {
-      context.AUTHOR_ID = req.body.AUTHOR_ID;
+    if (req.query.AUTHOR_ID) {
+      context.AUTHOR_ID = req.query.AUTHOR_ID;
     }
-    if (req.body.PUBLISHER_ID) {
-      context.PUBLISHER_ID = req.body.PUBLISHER_ID;
+    if (req.query.PUBLISHER_ID) {
+      context.PUBLISHER_ID = req.query.PUBLISHER_ID;
     }
-    if (req.body.GENRE_ID) {
-      context.GENRE_ID = req.body.GENRE_ID;
+    if (req.query.GENRE_ID) {
+      context.GENRE_ID = req.query.GENRE_ID;
     }
     if (req.query.sort) {
       context.sort = req.query.sort;
@@ -685,9 +686,9 @@ export async function getAllUsers(req, res, next) {
     context.USER_ID = req.USER_ID;
     context.sort = req.query.sort;
     context.order = req.query.order;
-    context.EMPLOYEE = req.body.EMPLOYEE;
-    context.ADMIN = req.body.ADMIN;
-    context.USER = req.body.USER;
+    context.EMPLOYEE = req.query.EMPLOYEE;
+    context.ADMIN = req.query.ADMIN;
+    context.USER = req.query.USER;
     const rows = await getAllUsersDB(context);
 
     if (rows.length > 0) {
@@ -699,6 +700,26 @@ export async function getAllUsers(req, res, next) {
     next(err);
   }
 }
+
+export async function getApplication(req, res, next) {
+  try {
+    const context = {};
+    context.sort = req.query.sort;
+    context.order = req.query.order;
+    context.JOB_ID = req.query.JOB_ID;
+    const rows = await getApplicationDB(context);
+
+    if (rows.length > 0) {
+      res.status(200).json(rows);
+    } else {
+      res.status(404).json({message: "Not Found"});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+
 
 export async function getMyRentHistory(req, res, next) {
   try {

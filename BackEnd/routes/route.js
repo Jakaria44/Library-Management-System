@@ -60,7 +60,8 @@ import {
   getEdition,
   getAllBook,
   getEmployee,
-  getJob
+  getJob,
+  getApplication
 } from '../controllers/getController.js';
 import {decodeToken, loginGeneral, logout, postAdmin, postUser} from '../controllers/loginController.js';
 import {
@@ -151,7 +152,8 @@ router.route('/apply')
   .post(verifyUserToken, urlencodedParser, applyForJob)
   .delete(verifyUserToken, deleteApply);
 router.route('/application')
-  .post(verifyAdminToken, acceptApplication)
+  .get(verifyAdminToken, getApplication)
+  .post(verifyAdminToken, urlencodedParser, acceptApplication)
   .delete(verifyAdminToken, deleteApplication);
 router.route('/getJob')
   .get(verifyUserToken, getJob)

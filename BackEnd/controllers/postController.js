@@ -383,7 +383,7 @@ export async function postBook(req, res, next) {
       res.status(404).json({message: "ISBN must be 13 characters long"});
       return;
     }
-    if(book.AUTHORS.length === 0 || book.GENRES.length === 0 || book.Editions.length === 0){
+    if(book.AUTHORS.length === 0 || book.GENRES.length === 0 || book.EDITIONS.length === 0){
       res.status(404).json({message: "Authors, Genres and Editions can't be empty"});
       return;
     }

@@ -997,7 +997,7 @@ CREATE OR REPLACE PROCEDURE UPDATE_EDITION(A_EDITION_ID VARCHAR2,
                                            A_EDITION_NUM NUMBER,
                                            A_NUM_OF_COPIES NUMBER,
                                            A_PUBLISH_YEAR NUMBER) IS
-    YEAR   NUMBER(4);
+    YEAR NUMBER(4);
 BEGIN
     SELECT PUBLISH_YEAR
     INTO YEAR
@@ -1078,61 +1078,6 @@ EXCEPTION
 END;
 /
 
-CREATE OR REPLACE PROCEDURE INSERT_BOOK(A_ISBN VARCHAR2,
-                                        A_TITLE VARCHAR2,
-                                        A_IMAGE VARCHAR2,
-                                        A_NUMBER_OF_PAGES NUMBER,
-                                        A_LANGUAGE VARCHAR2,
-                                        A_DESCRIPTION VARCHAR2,
-                                        A_PUBLISHER_ID VARCHAR2) IS
-BEGIN
-    IF
-        (IS_VALID_TITLE(A_ISBN, A_TITLE)) THEN
-        INSERT INTO BOOK(ISBN, TITLE, IMAGE, NUMBER_OF_PAGES, LANGUAGE, DESCRIPTION, PUBLISHER_ID)
-        VALUES (A_ISBN, A_TITLE, A_IMAGE, A_NUMBER_OF_PAGES, A_LANGUAGE, A_DESCRIPTION, A_PUBLISHER_ID);
-    ELSE
-        raise_application_error(-20111, 'TITLE NOT UNIQUE');
-    END IF;
-EXCEPTION
-    WHEN OTHERS THEN
-        raise_application_error(-20111, 'ISBN NOT UNIQUE/ SOME DATA IS WRONG');
-END;
-/
-
-
-CREATE OR REPLACE PROCEDURE UPDATE_BOOK(A_ISBN VARCHAR2,
-                                        A_TITLE VARCHAR2,
-                                        A_IMAGE VARCHAR2,
-                                        A_NUMBER_OF_PAGES NUMBER,
-                                        A_LANGUAGE VARCHAR2,
-                                        A_DESCRIPTION VARCHAR2,
-                                        A_PUBLISHER_ID VARCHAR2) IS
-    F_ISBN VARCHAR2(20);
-BEGIN
-    SELECT ISBN
-    INTO F_ISBN
-    FROM BOOK
-    WHERE ISBN = A_ISBN;
-    IF
-        (IS_VALID_TITLE(A_ISBN, A_TITLE)) THEN
-        UPDATE BOOK
-        SET TITLE=A_TITLE,
-            IMAGE=A_IMAGE,
-            NUMBER_OF_PAGES=A_NUMBER_OF_PAGES,
-            LANGUAGE=A_LANGUAGE,
-            DESCRIPTION=A_DESCRIPTION,
-            PUBLISHER_ID=A_PUBLISHER_ID
-        WHERE ISBN = A_ISBN;
-    ELSE
-        raise_application_error(-20111, 'TITLE IS NOT VALID');
-    END IF;
-EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-        raise_application_error(-20111, 'DOESNOT EXISTS');
-    WHEN OTHERS THEN
-        raise_application_error(-20111, 'SOME DATA IS WRONG');
-END;
-/
 
 CREATE OR REPLACE PROCEDURE DELETE_BOOK(B_ISBN IN VARCHAR2) IS
     P VARCHAR2(20);
@@ -1285,9 +1230,9 @@ BEGIN
     IF
         IS_VALID_ADMIN_INSERT(A_ID) THEN
         INSERT INTO ADMIN (USER_ID) VALUES (A_ID);
-				DELETE
-				FROM APPLY
-				WHERE USER_ID = A_ID;
+        DELETE
+        FROM APPLY
+        WHERE USER_ID = A_ID;
     ELSE
         raise_application_error(-20111, 'USER DOES NOT EXIST');
     END IF;
@@ -1385,35 +1330,6 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE FUNCTION IS_VALID_DELETE_JOB(J_ID VARCHAR2)
-    RETURN BOOLEAN IS
-    COUNTER NUMBER;
-BEGIN
-    SELECT COUNT(*)
-    INTO COUNTER
-    FROM EMPLOYEE
-    WHERE JOB_ID = J_ID;
-    IF
-        COUNTER = 0 THEN
-        RETURN TRUE;
-    ELSE
-        RETURN FALSE;
-    END IF;
-END;
-/
-
-CREATE OR REPLACE PROCEDURE DELETE_JOB(A_JOB_ID VARCHAR2) IS
-BEGIN
-    IF
-        (IS_VALID_DELETE_JOB(A_JOB_ID)) THEN
-        DELETE
-        FROM JOB
-        WHERE JOB_ID = A_JOB_ID;
-    ELSE
-        raise_application_error(-20111, 'JOB CAN NOT BE DELETED');
-    END IF;
-END;
-/
 
 CREATE OR REPLACE PROCEDURE INSERT_APPLY(U_ID VARCHAR2,
                                          J_ID VARCHAR2) IS
@@ -1463,6 +1379,52 @@ EXCEPTION
 END;
 /
 
+------TODO: LAST UPDATE
+CREATE OR REPLACE PROCEDURE INSERT_BOOK(A_ISBN VARCHAR2,
+                                        A_TITLE VARCHAR2,
+                                        A_IMAGE VARCHAR2,
+                                        A_NUMBER_OF_PAGES NUMBER,
+                                        A_LANGUAGE VARCHAR2,
+                                        A_DESCRIPTION VARCHAR2,
+                                        A_PUBLISHER_ID VARCHAR2) IS
+BEGIN
+    INSERT INTO BOOK(ISBN, TITLE, IMAGE, NUMBER_OF_PAGES, LANGUAGE, DESCRIPTION, PUBLISHER_ID)
+    VALUES (A_ISBN, A_TITLE, A_IMAGE, A_NUMBER_OF_PAGES, A_LANGUAGE, A_DESCRIPTION, A_PUBLISHER_ID);
+EXCEPTION
+    WHEN OTHERS THEN
+        raise_application_error(-20111, 'ISBN NOT UNIQUE/ SOME DATA IS WRONG');
+END;
+/
+
+
+CREATE OR REPLACE PROCEDURE UPDATE_BOOK(A_ISBN VARCHAR2,
+                                        A_TITLE VARCHAR2,
+                                        A_IMAGE VARCHAR2,
+                                        A_NUMBER_OF_PAGES NUMBER,
+                                        A_LANGUAGE VARCHAR2,
+                                        A_DESCRIPTION VARCHAR2,
+                                        A_PUBLISHER_ID VARCHAR2) IS
+    F_ISBN VARCHAR2(20);
+BEGIN
+    SELECT ISBN
+    INTO F_ISBN
+    FROM BOOK
+    WHERE ISBN = A_ISBN;
+    UPDATE BOOK
+    SET TITLE=A_TITLE,
+        IMAGE=A_IMAGE,
+        NUMBER_OF_PAGES=A_NUMBER_OF_PAGES,
+        LANGUAGE=A_LANGUAGE,
+        DESCRIPTION=A_DESCRIPTION,
+        PUBLISHER_ID=A_PUBLISHER_ID
+    WHERE ISBN = A_ISBN;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        raise_application_error(-20111, 'DOESNOT EXISTS');
+    WHEN OTHERS THEN
+        raise_application_error(-20111, 'SOME DATA IS WRONG');
+END;
+/
 
 CREATE OR REPLACE FUNCTION IS_VALID_INSERT_EMPLOYEE(A_USER_ID VARCHAR2)
     RETURN BOOLEAN IS
@@ -1484,7 +1446,13 @@ END;
 /
 
 CREATE OR REPLACE PROCEDURE INSERT_EMPLOYEE(A_USER_ID VARCHAR2, A_JOB_ID VARCHAR2) IS
+    ID VARCHAR2(50);
 BEGIN
+    SELECT USER_ID
+    INTO ID
+    FROM APPLY
+    WHERE USER_ID = A_USER_ID
+      AND JOB_ID = A_JOB_ID;
     IF IS_VALID_INSERT_EMPLOYEE(A_USER_ID) THEN
         DELETE
         FROM EMPLOYEE
@@ -1498,7 +1466,49 @@ BEGIN
         RAISE_APPLICATION_ERROR(-20001, 'CAN NOT BE AN EMPLOYEE OF THE JOB');
     END IF;
 EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RAISE_APPLICATION_ERROR(-20001, 'NO APPLICATION FOUND');
     WHEN OTHERS THEN
         RAISE_APPLICATION_ERROR(-20001, 'SOME ERROR OCCURRED');
+END;
+/
+
+CREATE OR REPLACE FUNCTION IS_VALID_DELETE_JOB(J_ID VARCHAR2)
+    RETURN BOOLEAN IS
+    COUNTER NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO COUNTER
+    FROM EMPLOYEE
+    WHERE JOB_ID = J_ID;
+    IF
+        COUNTER = 0 THEN
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE DELETE_JOB(A_JOB_ID VARCHAR2) IS
+    ID VARCHAR2(50);
+BEGIN
+    SELECT JOB_ID
+    INTO ID
+    FROM JOB
+    WHERE JOB_ID = A_JOB_ID;
+    IF
+        (IS_VALID_DELETE_JOB(A_JOB_ID)) THEN
+        DELETE
+        FROM JOB
+        WHERE JOB_ID = A_JOB_ID;
+    ELSE
+        raise_application_error(-20111, 'JOB CAN NOT BE DELETED');
+    END IF;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        raise_application_error(-20001, 'No Data Found');
+    WHEN OTHERS THEN
+        raise_application_error(-20001, 'Unknown Error Occurred');
 END;
 /
