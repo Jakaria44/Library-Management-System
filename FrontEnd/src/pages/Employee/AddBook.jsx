@@ -32,7 +32,6 @@ const defaultImage =
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-const ISBN = ["123", "456", "789"];
 const AddBook = () => {
   const [book, setBook] = useState({
     isbn: "",
@@ -60,7 +59,7 @@ const AddBook = () => {
   ]);
   const [editingCategory, setEditingCategory] = useState("");
 
-  const [isbn, setisbn] = useState(ISBN);
+  const [isbn, setisbn] = useState([]);
   // const [edition, setEdition] = useState(0);
 
   // useMemo(()=>{

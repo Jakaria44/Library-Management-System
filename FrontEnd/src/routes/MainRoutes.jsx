@@ -5,7 +5,7 @@ import Loadable from "./../ui-component/Loadable";
 
 const Details = Loadable(lazy(() => import("../pages/Details/Details")));
 const AllDueList = Loadable(lazy(() => import("../pages/Employee/AllDueList")));
-const AllUsers = Loadable(lazy(() => import("../pages/Employee/AllUsers")));
+const Users = Loadable(lazy(() => import("../pages/Employee/Users")));
 const Requests = Loadable(lazy(() => import("../pages/Employee/Requests")));
 const LatestBooks = Loadable(lazy(() => import("../pages/LatestBooks")));
 const Collections = Loadable(lazy(() => import("../pages/Reader/Collections")));
@@ -14,10 +14,16 @@ const MyReviews = Loadable(lazy(() => import("../pages/Reader/MyReviews")));
 const AddBook = Loadable(
   lazy(() => import("../pages/Employee/addbook/AddBook"))
 );
+const EditBook = Loadable(
+  lazy(() => import("../pages/Employee/addbook/EditBook"))
+);
+
+import { loader as DetailsLoader } from "../pages/Employee/addbook/EditBook";
 
 import { loader as favouritesLoader } from "../pages/Reader/MyFavourites";
 import { loader as bookDetailsLoader } from "./../pages/Details/Details";
 import { loader as allBooksLoader } from "./../pages/allbooks/AllBooks";
+
 // main routing
 const Structure = Loadable(lazy(() => import("../layout/Structure.jsx")));
 
@@ -93,7 +99,7 @@ const MainRoutes = {
     },
     {
       path: "/allusers",
-      element: <AllUsers />,
+      element: <Users />,
     },
     {
       path: "/allrequests",
@@ -103,9 +109,15 @@ const MainRoutes = {
       path: "/allduelists",
       element: <AllDueList />,
     },
+
     {
       path: "/addbook",
       element: <AddBook />,
+    },
+    {
+      path: "/editbook/:id",
+      loader: DetailsLoader,
+      element: <EditBook />,
     },
   ],
 };

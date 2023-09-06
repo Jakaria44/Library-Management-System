@@ -1,10 +1,8 @@
 import {
-  Archive,
   Edit,
   Favorite,
   FavoriteBorder,
   FileCopy,
-  MoreHoriz,
   RemoveRedEye,
 } from "@mui/icons-material";
 import {
@@ -14,7 +12,6 @@ import {
   Card,
   CardContent,
   CardMedia,
-  Divider,
   IconButton,
   Menu,
   MenuItem,
@@ -24,7 +21,7 @@ import {
   styled,
 } from "@mui/material";
 import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ErrorModal from "../../component/ErrorModal";
 import SignupDialog from "../../component/SignupDialog";
 import SpinnerWithBackdrop from "../../component/SpinnerWithBackdrop";
@@ -75,6 +72,7 @@ const StyledMenu = styled((props) => (
 }));
 
 const BookCard = ({ book }) => {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [isFavourite, setIsFavourite] = useState(book.IS_FAVOURITE);
   const [showMessage, setShowMessage] = useState(false);
@@ -149,7 +147,10 @@ const BookCard = ({ book }) => {
       setShowMessage(true);
     }
   };
-
+  const fullEditHandler = () => {
+    handleClose();
+    navigate(`/editbook/${book.ISBN}`);
+  };
   return (
     <>
       <Card
@@ -213,43 +214,40 @@ const BookCard = ({ book }) => {
               {isFavourite ? <Favorite /> : <FavoriteBorder />}
             </IconButton>
           </Tooltip>
-          <Tooltip title="Edit Book" placement="top">
-            <IconButton
-              onClick={handleClick}
-              center
-              size="large"
-              color="primary"
-            >
-              <Edit />
-            </IconButton>
-          </Tooltip>
-          <StyledMenu
-            id="demo-customized-menu"
-            MenuListProps={{
-              "aria-labelledby": "demo-customized-button",
-            }}
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-          >
-            <MenuItem onClick={handleClose} disableRipple>
-              <Edit />
-              Edit
-            </MenuItem>
-            <MenuItem onClick={handleClose} disableRipple>
-              <FileCopy />
-              Duplicate
-            </MenuItem>
-            <Divider sx={{ my: 0.5 }} />
-            <MenuItem onClick={handleClose} disableRipple>
-              <Archive />
-              Archive
-            </MenuItem>
-            <MenuItem onClick={handleClose} disableRipple>
-              <MoreHoriz />
-              More
-            </MenuItem>
-          </StyledMenu>
+          {["employee", "admin"].includes(
+            localStorage.getItem("role").toLowerCase()
+          ) && (
+            <>
+              <Tooltip title="Edit Book" placement="top">
+                <IconButton
+                  onClick={handleClick}
+                  center
+                  size="large"
+                  color="primary"
+                >
+                  <Edit />
+                </IconButton>
+              </Tooltip>
+              <StyledMenu
+                id="demo-customized-menu"
+                MenuListProps={{
+                  "aria-labelledby": "demo-customized-button",
+                }}
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={fullEditHandler} disableRipple>
+                  <Edit />
+                  Full edit
+                </MenuItem>
+                <MenuItem onClick={handleClose} disableRipple>
+                  <FileCopy />
+                  Manage Editions
+                </MenuItem>
+              </StyledMenu>
+            </>
+          )}
         </div>
         <Backdrop
           ref={ref}

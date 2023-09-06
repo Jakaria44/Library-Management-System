@@ -685,9 +685,9 @@ export async function getAllUsers(req, res, next) {
     context.USER_ID = req.USER_ID;
     context.sort = req.query.sort;
     context.order = req.query.order;
-    context.EMPLOYEE = req.body.EMPLOYEE;
-    context.ADMIN = req.body.ADMIN;
-    context.USER = req.body.USER;
+    context.EMPLOYEE = req.query.EMPLOYEE;
+    context.ADMIN = req.query.ADMIN;
+    context.USER = req.query.USER;
     const rows = await getAllUsersDB(context);
 
     if (rows.length > 0) {

@@ -2,6 +2,7 @@ import { CheckCircle, Error } from "@mui/icons-material";
 import { Box, Tooltip, Typography } from "@mui/material";
 import {
   GridActionsCellItem,
+  GridToolbar,
   GridToolbarContainer,
   GridToolbarExport,
 } from "@mui/x-data-grid";
@@ -98,14 +99,6 @@ const Collections = () => {
     }
   };
 
-  function CustomToolbar() {
-    return (
-      <GridToolbarContainer sx={{ margin: "16px" }}>
-        {rows.length !== 0 && <GridToolbarExport />}
-      </GridToolbarContainer>
-    );
-  }
-
   const handleReturnBook = React.useCallback(
     (row) => async () => {
       if (row.STATUS === 1) return;
@@ -201,8 +194,15 @@ const Collections = () => {
         onSortModelChange={handleSortModelChange}
         slots={{
           noRowsOverlay: NoRowsOverlay,
-          toolbar: CustomToolbar,
+          toolbar: GridToolbar,
         }}
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
+        disableColumnFilter
+        disableDensitySelector
       />
       <SuccessfulModal
         showSuccessMessage={showSuccessMessage}

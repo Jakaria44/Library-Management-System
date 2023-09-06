@@ -9,20 +9,39 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import * as React from "react";
 import { v4 } from "uuid";
 import { storage } from "../../../firebaseConfig";
+import server from "./../../../HTTP/httpCommonParam";
 import Languages from "./../../../utils/Languages";
 const defaultImage =
   "https://st2.depositphotos.com/5703046/12114/i/950/depositphotos_121142344-stock-photo-white-book-on-white-background.jpg";
-export default function GeneralAdd({ book, setBook }) {
+
+export default function GeneralAdd({
+  editing = false,
+  setInvalidISBN,
+  book,
+  setBook,
+}) {
   const [isbnList, setisbnList] = React.useState(["1234567890123"]);
   const [previewUrl, setPreviewUrl] = React.useState(
     book.image ?? defaultImage
   );
 
   React.useEffect(() => {
+    loadAllIsbn();
     console.log(book);
   }, []);
   const [uploading, setUploading] = React.useState(false);
 
+  const loadAllIsbn = async () => {
+    try {
+      const res = await server.get("/all-book");
+      const data = res.data.map((item) => item.ISBN);
+      setisbnList(data);
+      // console.log(data);
+    } catch (err) {
+      console.log(err);
+      setisbnList([]);
+    }
+  };
   const uploadImage = (file) => {
     const imageRef = ref(storage, `bookCover/${v4()}`);
 
@@ -57,12 +76,20 @@ export default function GeneralAdd({ book, setBook }) {
     uploadImage(selectedFile);
   };
 
-  const isbnAlreadyExists = React.useMemo(
-    () =>
+  const isbnAlreadyExists = React.useMemo(() => {
+    setInvalidISBN(
+      !editing &&
+        (book.isbn.length !== 13 ||
+          isbnList
+            .map((e) => e.toLowerCase())
+            .includes(book.isbn.toLowerCase()))
+    );
+    return (
+      !editing &&
       book.isbn.length > 0 &&
-      isbnList.map((e) => e.toLowerCase()).includes(book.isbn.toLowerCase()),
-    [book.isbn]
-  );
+      isbnList.map((e) => e.toLowerCase()).includes(book.isbn.toLowerCase())
+    );
+  }, [book.isbn]);
   return (
     <React.Fragment>
       <Grid container spacing={3} mt={3}>
@@ -121,11 +148,15 @@ export default function GeneralAdd({ book, setBook }) {
               required
               value={book.isbn}
               fullWidth
+              disabled={editing}
               id="isbn"
               label="ISBN"
               name="isbn"
               type="number"
-              error={isbnAlreadyExists}
+              error={
+                isbnAlreadyExists ||
+                (book.isbn.length > 0 && book.isbn.length !== 13)
+              }
               helperText={
                 book.isbn.length > 0 && book.isbn.length !== 13
                   ? "ISBN must be 13 digits"

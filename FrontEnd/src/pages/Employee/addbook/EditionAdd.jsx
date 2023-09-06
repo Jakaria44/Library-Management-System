@@ -1,10 +1,27 @@
-import { Delete } from "@mui/icons-material";
-import { Button, IconButton, List, ListItem, TextField } from "@mui/material";
+import { ArrowCircleUp, Delete } from "@mui/icons-material";
+import {
+  Button,
+  IconButton,
+  List,
+  ListItem,
+  TextField,
+  Tooltip,
+} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { DatePicker } from "@mui/x-date-pickers";
 import * as React from "react";
-
-export default function EditionAdd({ formFields, setFormFields }) {
+import ErrorModal from "../../../component/ErrorModal";
+import SuccessfulModal from "../../../component/SuccessfulModal";
+import server from "./../../../HTTP/httpCommonParam";
+export default function EditionAdd({
+  details = false,
+  formFields,
+  setFormFields,
+}) {
+  const [successMessage, setSuccessMessage] = React.useState("");
+  const [showSuccessMessage, setShowSuccessMessage] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
+  const [showErrorMessage, setShowErrorMessage] = React.useState(false);
   const handleFormChange = (event, index) => {
     let data = [...formFields];
     data[index][event.target.name] = event.target.value;
@@ -22,6 +39,7 @@ export default function EditionAdd({ formFields, setFormFields }) {
 
   const addFields = () => {
     let object = {
+      id: null,
       Edition: "",
       Publish_Year: "",
       Available: "",
@@ -35,6 +53,41 @@ export default function EditionAdd({ formFields, setFormFields }) {
     let data = [...formFields];
     data.splice(index, 1);
     setFormFields(data);
+  };
+  const updateHandler = async (index) => {
+    const up = {
+      EDITION_NUM: formFields[index].Edition,
+      NUM_OF_COPIES: formFields[index].Available,
+      PUBLISH_YEAR: formFields[index].Publish_Year.toDate().getFullYear(),
+    };
+    try {
+      const res = await server.put(
+        `/getEdition?eid=${formFields[index].id}`,
+        up
+      );
+      setSuccessMessage(res.data.message);
+      setShowSuccessMessage(true);
+    } catch (err) {
+      setErrorMessage(err.response.data.message);
+      setShowErrorMessage(true);
+      console.log(err);
+    }
+  };
+  const deleteEditionHandler = async (index) => {
+    if (!formFields[index].id) removeFields(index);
+    else {
+      try {
+        const res = await server.delete(
+          `getEdition?eid=${formFields[index].id}`
+        );
+        setSuccessMessage(res.data.message);
+        setShowSuccessMessage(true);
+      } catch (err) {
+        setErrorMessage(err.response.data.message);
+        setShowErrorMessage(true);
+        console.log(err);
+      }
+    }
   };
   return (
     <React.Fragment>
@@ -59,7 +112,7 @@ export default function EditionAdd({ formFields, setFormFields }) {
                   />
                 </Grid>
                 {/* <DemoContainer components={["YearCalendar"]}> */}
-                <Grid item xs={4.25}>
+                <Grid item xs={3.75}>
                   <DatePicker
                     name="Publish_Year"
                     label="Publish Year"
@@ -68,7 +121,7 @@ export default function EditionAdd({ formFields, setFormFields }) {
                     onChange={(value) => handlePublishYearChange(index, value)}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3.25}>
                   {/* </DemoContainer> */}
                   <TextField
                     name="Available"
@@ -79,10 +132,36 @@ export default function EditionAdd({ formFields, setFormFields }) {
                     value={form.Available}
                   />
                 </Grid>
-                <Grid item xs={0.75} m="auto">
-                  <IconButton color="error" onClick={() => removeFields(index)}>
-                    <Delete />
-                  </IconButton>
+                <Grid
+                  item
+                  container
+                  spacing={2}
+                  direction="row"
+                  xs={2}
+                  justifyContent="space-evenly"
+                >
+                  {form.id && (
+                    <Grid m="auto" item xs={form.id ? 6 : 12}>
+                      <Tooltip title="Update">
+                        <IconButton
+                          color="success"
+                          onClick={() => updateHandler(index)}
+                        >
+                          <ArrowCircleUp />
+                        </IconButton>
+                      </Tooltip>
+                    </Grid>
+                  )}
+                  <Tooltip title="Delete">
+                    <Grid item m="auto" xs={form.id && 6}>
+                      <IconButton
+                        color="error"
+                        onClick={() => deleteEditionHandler(index)}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Grid>
+                  </Tooltip>
                 </Grid>
               </Grid>
             </ListItem>
@@ -92,6 +171,16 @@ export default function EditionAdd({ formFields, setFormFields }) {
       <Button margin="auto" onClick={addFields}>
         Add
       </Button>
+      <SuccessfulModal
+        showSuccessMessage={showSuccessMessage}
+        successMessage={successMessage}
+        HandleModalClosed={() => setShowSuccessMessage(false)}
+      />
+      <ErrorModal
+        showErrorMessage={showErrorMessage}
+        errorMessage={errorMessage}
+        HandleModalClosed={() => setShowErrorMessage(false)}
+      />
     </React.Fragment>
   );
 }

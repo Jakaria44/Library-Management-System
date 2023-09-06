@@ -1,6 +1,10 @@
 import { Delete } from "@mui/icons-material";
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
-import { GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
+import {
+  GridToolbar,
+  GridToolbarContainer,
+  GridToolbarExport,
+} from "@mui/x-data-grid";
 import { useConfirm } from "material-ui-confirm";
 import React, { useCallback, useEffect, useState } from "react";
 import ErrorModal from "../../component/ErrorModal";
@@ -153,8 +157,15 @@ const Application = () => {
         onSortModelChange={handleSortModelChange}
         slots={{
           noRowsOverlay: NoRequestOverlay,
-          toolbar: CustomToolbar,
+          toolbar: GridToolbar,
         }}
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
+        disableColumnFilter
+        disableDensitySelector
       />
       {showSuccessMessage && (
         <SuccessfullModal

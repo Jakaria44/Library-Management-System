@@ -14,7 +14,9 @@ import { styled } from "@mui/material/styles";
 import dayjs from "dayjs";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
+import ErrorModal from "../../../component/ErrorModal";
 import SpinnerWithBackdrop from "../../../component/SpinnerWithBackdrop";
+import SuccessfulModal from "../../../component/SuccessfulModal";
 import Languages from "../../../utils/Languages";
 import server from "./../../../HTTP/httpCommonParam";
 import AuthorGenrePublisherAdd from "./AuthorGenrePublisherAdd";
@@ -40,9 +42,14 @@ let authorgenre = {
   publisher: null,
   genre: [],
 };
-let formField = [{ Edition: "", Publish_Year: "", Available: "" }];
+let formField = [{ id: null, Edition: "", Publish_Year: "", Available: "" }];
 
-export default function AddBook({ _isbn }) {
+export default function AddBook({ bookDetails }) {
+  const [successMessage, setSuccessMessage] = React.useState("");
+  const [showSuccessMessage, setShowSuccessMessage] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
+  const [showErrorMessage, setShowErrorMessage] = React.useState(false);
+  const [invalidISBN, setInvalidISBN] = React.useState(true);
   const navigate = useNavigate();
   const [direction, setDirection] = React.useState("left");
   const containerRef = React.useRef(null);
@@ -55,9 +62,8 @@ export default function AddBook({ _isbn }) {
   const [formFields, setFormFields] = React.useState(formField);
   const initialize = async () => {
     // _isbn = "9781408855652";
-    if (_isbn) {
-      const res = server.get("/book?id=" + _isbn);
-      const data = (await res).data;
+    if (bookDetails) {
+      const data = bookDetails;
       console.log(data);
       general = {
         isbn: data.ISBN,
@@ -81,6 +87,7 @@ export default function AddBook({ _isbn }) {
       };
       formField = JSON.parse(data.EDITION).map((item) => {
         return {
+          id: item.ID,
           Edition: item.NUM,
           Publish_Year: dayjs(new Date(item.YEAR)),
           Available: item.COUNT,
@@ -98,7 +105,14 @@ export default function AddBook({ _isbn }) {
   function getStepContent(step) {
     switch (step) {
       case 0:
-        return <GeneralAdd book={generalInfo} setBook={setGeneralInfo} />;
+        return (
+          <GeneralAdd
+            editing={bookDetails ? true : false}
+            setInvalidISBN={setInvalidISBN}
+            book={generalInfo}
+            setBook={setGeneralInfo}
+          />
+        );
       case 1:
         return (
           <AuthorGenrePublisherAdd
@@ -108,7 +122,11 @@ export default function AddBook({ _isbn }) {
         );
       case 2:
         return (
-          <EditionAdd formFields={formFields} setFormFields={setFormFields} />
+          <EditionAdd
+            details={bookDetails}
+            formFields={formFields}
+            setFormFields={setFormFields}
+          />
         );
       default:
         throw new Error("Unknown step");
@@ -140,50 +158,41 @@ export default function AddBook({ _isbn }) {
       LANGUAGE: generalInfo.language.name,
       NUMBER_OF_PAGES: generalInfo.numOfPage,
       PUBLISHER_ID: authorGenrePublisher.publisher.PUBLISHER_ID,
-    };
-    const authorInfoSubmit = {
-      ISBN: generalInfo.isbn,
       Authors: authorGenrePublisher.authors.map((item) => {
         return { AUTHOR_ID: item.AUTHOR_ID };
       }),
-    };
-
-    const genreInfo = {
-      ISBN: generalInfo.isbn,
       Genres: authorGenrePublisher.genre.map((item) => {
         return { GENRE_ID: item.GENRE_ID };
       }),
+      Editions: formFields
+        .filter((item) => item.id === null)
+        .map((item) => {
+          return {
+            EDITION_NUM: item.Edition,
+            NUM_OF_COPIES: item.Available,
+            PUBLISH_YEAR: item.Publish_Year.toDate().getFullYear(),
+          };
+        }),
     };
-    const editionInfo = {
-      ISBN: generalInfo.isbn,
-      Editions: formFields.map((item) => {
-        return {
-          EDITION_NUM: item.Edition,
-          NUM_OF_COPIES: item.Available,
-          PUBLISH_YEAR: item.Publish_Year.toDate().getFullYear(),
-        };
-      }),
-    };
-    console.log(authorInfoSubmit, genreInfo, editionInfo);
-    try {
-      const resGeneral = await server.post("/book", generalInfoSubmit);
-      const resAuthor = await server.post("/writtenBy", authorInfoSubmit);
-      const resGenre = await server.post("/book-genre", genreInfo);
-      const resEdition = await server.post("/getEdition", editionInfo);
 
-      console.log(
-        resGeneral.data,
-        resAuthor.data,
-        resGenre.data,
-        resEdition.data
-      );
+    try {
+      let res;
+      if (bookDetails) {
+        res = await server.put("/book", generalInfoSubmit);
+      } else {
+        res = await server.post("/book", generalInfoSubmit);
+      }
+      // console.log(generalInfoSubmit);
+      console.log(res.data);
 
       setUploading(false);
-      navigate(`/details/${editionInfo.ISBN}`);
+      setSuccessMessage(res.data.message);
+      setShowSuccessMessage(true);
     } catch (err) {
       console.log(err);
-      alert(err.response.data.message);
+      setErrorMessage(err.response.data.message);
       setUploading(false);
+      setShowErrorMessage(true);
     }
 
     // console.log(object);
@@ -277,7 +286,7 @@ export default function AddBook({ _isbn }) {
           square
         >
           <Typography component="h1" gutterBottom variant="h2" align="center">
-            Add Book
+            {bookDetails ? "Edit Book" : "Add Book"}
           </Typography>
           <Stepper
             alternativeLabel
@@ -311,8 +320,17 @@ export default function AddBook({ _isbn }) {
                 </Button>
               )}
 
-              <Button type="submit" variant="contained" sx={{ mt: 3, ml: 1 }}>
-                {activeStep === steps.length - 1 ? "Add Book" : "Next"}
+              <Button
+                type="submit"
+                disabled={invalidISBN}
+                variant="contained"
+                sx={{ mt: 3, ml: 1 }}
+              >
+                {activeStep !== steps.length - 1
+                  ? "Next"
+                  : bookDetails
+                  ? "Update Book"
+                  : "Add Book"}
               </Button>
             </Box>
           </React.Fragment>
@@ -321,6 +339,20 @@ export default function AddBook({ _isbn }) {
       <SpinnerWithBackdrop
         backdropOpen={uploading}
         helperText="Please wait while we upload this book"
+      />
+      <SuccessfulModal
+        showSuccessMessage={showSuccessMessage}
+        successMessage={successMessage}
+        HandleModalClosed={() => {
+          setShowSuccessMessage(false);
+
+          navigate("/details/" + generalInfo.isbn);
+        }}
+      />
+      <ErrorModal
+        showErrorMessage={showErrorMessage}
+        errorMessage={errorMessage}
+        HandleModalClosed={() => setShowErrorMessage(false)}
       />
     </React.Fragment>
   );

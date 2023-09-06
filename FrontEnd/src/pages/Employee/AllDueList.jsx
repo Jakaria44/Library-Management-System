@@ -39,7 +39,7 @@ const Application = () => {
     try {
       setLoading(true);
       const response = await server.get("/all-fine", {
-        params: queryOptions,
+        params: { ...queryOptions, USER: false, EMPLOYEE: true, ADMIN: true },
       });
 
       console.log("all due data", response.data);

@@ -906,7 +906,7 @@ GET http://localhost:3000/db-api/all-book
 
 #### ------ GET ALL USERS ----
 GET http://localhost:3000/db-api/all-users?sort=EMAIL&order=ASC
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ3MjcwNywiZXhwIjoxNzY1NDcyNzA3fQ.DP801eMLJkQWZDWJw95B-Igaukx5G5x1rpX57JdzEoc
 Content-Type: application/json
 
 {
@@ -942,15 +942,15 @@ Content-Type: application/json
 
 #### --- POST one BOOK ---
 POST http://localhost:3000/db-api/book
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ3MjcwNywiZXhwIjoxNzY1NDcyNzA3fQ.DP801eMLJkQWZDWJw95B-Igaukx5G5x1rpX57JdzEoc
 Content-Type: application/json
 
 {
-  "ISBN": "1111111111112",
-  "TITLE": "new book2",
+  "ISBN": "1111111111111",
+  "TITLE": "demo book2323",
   "IMAGE": null,
-  "NUMBER_OF_PAGES": 0,
-  "LANGUAGE": "Bangla",
+  "NUMBER_OF_PAGES": 878,
+  "LANGUAGE": "Bengali",
   "DESCRIPTION": "Most easy book",
   "PUBLISHER_ID": "1",
   "Authors": [

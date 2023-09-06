@@ -2,6 +2,7 @@ import { CheckCircle, Error } from "@mui/icons-material";
 import { Box, Tooltip, Typography } from "@mui/material";
 import {
   GridActionsCellItem,
+  GridToolbar,
   GridToolbarContainer,
   GridToolbarExport,
 } from "@mui/x-data-grid";
@@ -164,15 +165,22 @@ const DueList = () => {
             width: 100,
           },
         ]}
-        disableRowSelectionOnClick
         loading={loading}
         pagination
         sortingMode="server"
         onSortModelChange={handleSortModelChange}
         slots={{
           noRowsOverlay: NoRowsOverlay,
-          toolbar: CustomToolbar,
+          toolbar: GridToolbar,
         }}
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
+        disableColumnFilter
+        disableDensitySelector
+        disableRowSelectionOnClick
       />
       <SuccessfulModal
         showSuccessMessage={showSuccessMessage}
