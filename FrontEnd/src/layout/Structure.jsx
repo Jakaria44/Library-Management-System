@@ -10,15 +10,13 @@ import { styled, useTheme } from "@mui/material/styles";
 import logo from "./../assets/IconChevronRight.svg";
 import Header from "./Header";
 
-import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { useMenu, useMenuDispatch } from "../contexts/MenuContextProvider.jsx";
+import { useMenu } from "../contexts/MenuContextProvider.jsx";
 import { actions } from "../contexts/actions.jsx";
-import server from "./../HTTP/httpCommonParam";
-import { drawerWidth } from "./../store/constants";
+
 import Sidebar from "./Sidebar/Sidebar";
 const IconChevronRight = logo;
-
+const drawerWidth = 220;
 // styles
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
@@ -61,11 +59,11 @@ const Structure = () => {
 
   const matchDownMd = useMediaQuery(theme.breakpoints.down("md"));
   // Handle left drawer
-  const leftDrawerOpened = useMenu();
+  const { menuOpened, dispatch } = useMenu();
+  console.log(menuOpened);
 
-  const dispatch = useMenuDispatch();
   const handleLeftDrawerToggle = () => {
-    dispatch({ type: actions.TOGGLE_SIDE_DRAWER, id: leftDrawerOpened });
+    dispatch({ type: actions.TOGGLE_SIDE_DRAWER, id: menuOpened });
   };
 
   return (
@@ -79,7 +77,7 @@ const Structure = () => {
         elevation={0}
         sx={{
           bgcolor: theme.palette.background.default,
-          transition: leftDrawerOpened.opened
+          transition: menuOpened.opened
             ? theme.transitions.create("width")
             : "none",
         }}
@@ -91,14 +89,12 @@ const Structure = () => {
 
       {/*/!* drawer *!/*/}
       <Sidebar
-        drawerOpen={
-          !matchDownMd ? leftDrawerOpened.opened : !leftDrawerOpened.opened
-        }
+        drawerOpen={!matchDownMd ? menuOpened.opened : !menuOpened.opened}
         drawerToggle={handleLeftDrawerToggle}
       />
 
       {/*/!* main content *!/*/}
-      <Main theme={theme} open={leftDrawerOpened.opened}>
+      <Main theme={theme} open={menuOpened.opened}>
         <Outlet />
       </Main>
     </Box>

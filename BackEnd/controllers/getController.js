@@ -108,7 +108,7 @@ export async function getAllBookSum(req, res, next) {
     console.log("in getControllers.js");
     let context = {};
 
-    const perPage = req.query.perPage || 100;
+    const perPage = req.query.perPage || 20;
     let page = req.query.page || 1;
     if (req.USER_ID) {
       context.USER_ID = req.USER_ID;

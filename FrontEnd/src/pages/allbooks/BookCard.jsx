@@ -1,5 +1,6 @@
 import {
   Cancel,
+  Delete,
   DoneOutline,
   Edit,
   Favorite,
@@ -27,6 +28,7 @@ import {
   styled,
 } from "@mui/material";
 import dayjs from "dayjs";
+import { useConfirm } from "material-ui-confirm";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ErrorModal from "../../component/ErrorModal";
@@ -35,7 +37,6 @@ import SpinnerWithBackdrop from "../../component/SpinnerWithBackdrop";
 import SuccessfulModal from "../../component/SuccessfulModal";
 import EditionAdd from "../Employee/addbook/EditionAdd";
 import server from "./../../HTTP/httpCommonParam";
-
 const StyledMenu = styled((props) => (
   <Menu
     elevation={0}
@@ -80,13 +81,14 @@ const StyledMenu = styled((props) => (
 }));
 
 const BookCard = ({ book }) => {
+  const confirm = useConfirm();
   const [manageEditionOpen, setManageEditionOpen] = useState(false);
   const [newEditions, setNewEditions] = useState();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [isFavourite, setIsFavourite] = useState(book.IS_FAVOURITE);
   const [showMessage, setShowMessage] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("success");
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("An Error Occured");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
@@ -131,22 +133,21 @@ const BookCard = ({ book }) => {
 
   const apply = async () => {
     setLoading(true);
-    // try {
-    //   const response = await server.post(`/request`, {
-    //     EDITION_ID: selectedEdition.id,
-    //   });
-    //   console.log(response.data);
-    //   setShowSuccessMessage(true);
-    // } catch (err) {
-    //   setShowErrorMessage(true);
-    //   if (err.response.status === 402) {
-    //     setErrorMessage("You have Due Books");
-    //   } else if (err.response.status === 404) {
-    //     setErrorMessage("You have already requested this book");
-    //   }
-    // } finally {
-    setLoading(false);
-    // }
+
+    try {
+      const response = await server.post(`/request`, {
+        EDITION_ID: book.EDITION_ID,
+      });
+      console.log(response.data);
+      setSuccessMessage(response.data.message);
+      setShowSuccessMessage(true);
+    } catch (err) {
+      setErrorMessage(err.response.data.message);
+      setShowErrorMessage(true);
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
   };
   const handleApplyToGet = () => {
     if (
@@ -166,6 +167,30 @@ const BookCard = ({ book }) => {
   const manageEdition = () => {
     handleClose();
     setManageEditionOpen(true);
+  };
+  const deleteBook = async () => {
+    handleClose();
+
+    try {
+      await confirm({
+        title: "Delete Book",
+        description: "Are you sure you want to delete this book?",
+        confirmationText: "Delete",
+        cancellationText: "Cancel",
+        confirmationButtonProps: { variant: "outlined", color: "error" },
+        cancellationButtonProps: { variant: "contained", color: "error" },
+      });
+      try {
+        const res = await server.delete(`/book?id=${book.ISBN}`);
+        setSuccessMessage(res.data.message);
+        setShowSuccessMessage(true);
+      } catch (err) {
+        setErrorMessage(err.response.data.message);
+        setShowErrorMessage(true);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
   const submitNewEditions = (e) => {
     e.preventDefault();
@@ -201,30 +226,35 @@ const BookCard = ({ book }) => {
       <Card
         onMouseLeave={handleMouseLeave}
         raised
-        sx={{ width: { xs: "100%" }, height: 370 }}
+        sx={{ width: { xs: "100%" }, height: 390 }}
         elevation={12}
       >
         <CardMedia
           onMouseEnter={handleMouseEnter}
           component="img"
-          sx={{ height: 220, maxWidth: 140, margin: "auto" }}
+          sx={{ height: 240, maxWidth: 150, margin: "auto" }}
           image={book.IMAGE}
           alt={book.TITLE}
         />
 
         <CardContent marginBottom="0px">
-          <Typography
-            gutterBottom
-            variant="h5"
-            component="div"
-            color="text.primary "
-            sx={{ maxHeight: 48 }}
-          >
-            {book.TITLE}
-          </Typography>
-          <Typography variant="body1" noWrap color="text.secondary">
-            {book.AUTHORS}
-          </Typography>
+          <Tooltip title={book.TITLE}>
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="div"
+              color="text.primary "
+              sx={{ maxHeight: 48 }}
+              maxRows={2}
+            >
+              {book.TITLE.length > 30
+                ? book.TITLE.slice(0, 30) + "..."
+                : book.TITLE}
+            </Typography>
+            <Typography variant="body1" noWrap color="text.secondary">
+              {book.AUTHORS}
+            </Typography>
+          </Tooltip>
         </CardContent>
         <div
           style={{
@@ -260,7 +290,7 @@ const BookCard = ({ book }) => {
             </IconButton>
           </Tooltip>
           {["employee", "admin"].includes(
-            localStorage.getItem("role").toLowerCase()
+            localStorage.getItem("role")?.toLowerCase()
           ) && (
             <>
               <Tooltip title="Edit Book" placement="top">
@@ -289,6 +319,10 @@ const BookCard = ({ book }) => {
                 <MenuItem onClick={manageEdition} disableRipple>
                   <FileCopy />
                   Manage Editions
+                </MenuItem>
+                <MenuItem onClick={deleteBook} disableRipple>
+                  <Delete color="error" />
+                  Delete Book
                 </MenuItem>
               </StyledMenu>
             </>

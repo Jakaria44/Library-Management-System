@@ -37,9 +37,11 @@ const Header = ({ handleLeftDrawerToggle }) => {
               ...theme.typography.commonAvatar,
               ...theme.typography.mediumAvatar,
             }}
-            onClick={handleLeftDrawerToggle}
           >
-            <MenuRoundedIcon fontSize="medium" />
+            <MenuRoundedIcon
+              onClick={handleLeftDrawerToggle}
+              fontSize="medium"
+            />
           </Avatar>
         </ButtonBase>
         <Box

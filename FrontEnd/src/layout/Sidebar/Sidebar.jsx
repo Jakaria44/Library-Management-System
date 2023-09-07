@@ -12,7 +12,7 @@ import { Stack } from "@mui/system";
 import LogoSection from "../Sections/LogoSection";
 import MenuList from "./MenuList/MenuList";
 
-const drawerWidth = 280;
+const drawerWidth = 220;
 // ==============================|| SIDEBAR DRAWER ||============================== //
 
 const Sidebar = ({ drawerOpen, drawerToggle, window }) => {

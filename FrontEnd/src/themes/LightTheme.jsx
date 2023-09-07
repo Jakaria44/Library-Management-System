@@ -45,8 +45,8 @@ export const Theme = (mode) => {
     typography: themeTypography(themeOption),
     transitions: {
       duration: {
-        enteringScreen: "0.5s",
-        leavingScreen: "0.5s",
+        enteringScreen: "0.2s",
+        leavingScreen: "0.2s",
       },
     },
   };

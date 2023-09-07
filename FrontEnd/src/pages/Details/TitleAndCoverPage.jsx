@@ -59,6 +59,7 @@ const TitleAndCoverPage = ({ book, editions }) => {
   const [isFavourite, setIsFavourite] = useState(book.IS_FAVOURITE);
   const [selectedEdition, setSelectedEdition] = useState(editions[0]);
   const [showMessage, setShowMessage] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("An Error Occured");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
@@ -97,14 +98,11 @@ const TitleAndCoverPage = ({ book, editions }) => {
         EDITION_ID: selectedEdition.id,
       });
       console.log(response.data);
+      setSuccessMessage(response.data.message);
       setShowSuccessMessage(true);
     } catch (err) {
+      setErrorMessage(err.response.data.message);
       setShowErrorMessage(true);
-      if (err.response.status === 402) {
-        setErrorMessage("You have Due Books");
-      } else if (err.response.status === 404) {
-        setErrorMessage("You have already requested this book");
-      }
     } finally {
       setLoading(false);
     }
@@ -284,7 +282,7 @@ const TitleAndCoverPage = ({ book, editions }) => {
 
       <SuccessfulModal
         showSuccessMessage={showSuccessMessage}
-        successMessage="Added to Application List"
+        successMessage={successMessage}
         HandleModalClosed={() => {
           setShowSuccessMessage(false);
         }}

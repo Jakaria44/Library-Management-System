@@ -6,13 +6,15 @@ import BookCard from "./BookCard";
 const GridForCard = styled(Grid)(({ theme }) => ({
   transition: "transform 0.3s", // Add a smooth transition
   "&:hover": {
-    transform: "scale(1.05)", // Scale up by 10% on hover
+    transform: "scale(1.03)", // Scale up by 10% on hover
   },
 }));
 
 const BooksList = ({ data, loading }) => {
-  const { opened } = useMenu();
+  // const { menuOpened } = useMenu();
 
+  const opened = useMenu().menuOpened.opened;
+  console.log(opened);
   return (
     <Grid
       item

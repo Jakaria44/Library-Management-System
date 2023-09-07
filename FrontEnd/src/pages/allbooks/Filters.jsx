@@ -27,15 +27,9 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useMenu } from "../../contexts/MenuContextProvider";
+import Languages from "../../utils/Languages";
 import server from "./../../HTTP/httpCommonParam";
-export const sortOptions = [
-  { query: "TITLE", name: "Title" },
-  { query: "PAGE", name: "Number of Page" },
-  { query: "RATING", name: "Rating" },
-  { query: "FAVOURITE", name: "Most Favourite" },
-  { query: "PUBLISH_YEAR", name: "Latest" },
-];
-
+import { defaultQueryOptions, sortOptions } from "./AllBooks";
 const minDistance = 400;
 const maxPage = 3000;
 const maxYear = new Date().getFullYear();
@@ -132,25 +126,13 @@ const PrettoSlider = styled(Slider)({
 });
 
 const Filters = ({ loadAllBooks }) => {
-  const [queryOptions, setQueryOptions] = useState({
-    sort: "TITLE",
-    order: "ASC",
-    PAGE_START: 0,
-    PAGE_END: 2000,
-    YEAR_START: 1900,
-    YEAR_END: maxYear,
-    RATING_START: 0,
-    RATING_END: 5,
-    GENRE_ID: null,
-    AUTHOR_ID: null,
-    PUBLISHER_ID: null,
-    MY_FAV: false,
-  });
-  const { opened } = useMenu();
+  const [queryOptions, setQueryOptions] = useState(defaultQueryOptions);
+
+  const opened = useMenu().menuOpened.opened;
   const [authors, setAuthors] = useState([]);
   const [publishers, setPublishers] = useState([]);
   const [genres, setGenres] = useState([]);
-
+  const [languages, setLanguages] = useState([]);
   const submit = () => {
     // setQ(queryOptions);
     loadAllBooks(queryOptions);
@@ -180,6 +162,20 @@ const Filters = ({ loadAllBooks }) => {
       if (!Array.isArray(res.data)) {
         GenreList = [res.data];
       }
+
+      let LanguageList = [];
+      res = await server.get("/getLanguage");
+      LanguageList = res.data;
+      if (!Array.isArray(res.data)) {
+        LanguageList = [res.data];
+      }
+
+      setLanguages(
+        LanguageList.map((item) => ({
+          NAME: Languages.filter((e) => e.code === item.LANGUAGE)[0].name,
+          code: item.LANGUAGE,
+        }))
+      );
       setAuthors(
         authorList.map((item) => ({
           NAME: item.NAME,
@@ -202,6 +198,7 @@ const Filters = ({ loadAllBooks }) => {
       setAuthors([]);
       setPublishers([]);
       setGenres([]);
+      setLanguages([]);
     }
   };
 
@@ -706,6 +703,54 @@ const Filters = ({ loadAllBooks }) => {
                   />
                 )}
                 noOptionsText="No Publisher Found"
+                loading
+                loadingText={<CircularProgress />}
+              />
+            </Grid>
+          </Grid>
+
+          {/* language select */}
+
+          <Divider sx={{ marginY: "2vh" }} />
+          <Grid container direction="row" spacing={2} justifyContent="center">
+            <Grid item xs={3} margin="auto">
+              <Typography variant="body2" margin="auto">
+                Language
+              </Typography>
+            </Grid>
+            <Grid item xs={9}>
+              <Autocomplete
+                options={languages}
+                id="category"
+                value={
+                  languages?.filter(
+                    (item) => item.code === queryOptions.LANGUAGE
+                  )[0] || ""
+                }
+                autoHighlight
+                getOptionLabel={(option) => option?.NAME || ""}
+                renderOption={(props, option) => (
+                  <li key={option.code} {...props}>
+                    ({option.code}) {option.NAME}
+                  </li>
+                )}
+                onChange={(e, value) => {
+                  setQueryOptions({
+                    ...queryOptions,
+                    LANGUAGE: value?.code || null,
+                  });
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Add Language"
+                    placeholder="Add Language"
+                  />
+                )}
+                // isOptionEqualToValue={(option, value) =>
+                //   option.AUTHOR_ID === value.AUTHOR_ID
+                // }
+                noOptionsText="No Category Found"
                 loading
                 loadingText={<CircularProgress />}
               />
