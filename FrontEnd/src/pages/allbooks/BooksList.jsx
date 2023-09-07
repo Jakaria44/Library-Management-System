@@ -1,6 +1,6 @@
 import { Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import SpinnerWithBackdrop from "../../component/SpinnerWithBackdrop";
+import CardSkeleton from "../../component/CardSkeleton";
 import { useMenu } from "./../../contexts/MenuContextProvider";
 import BookCard from "./BookCard";
 const GridForCard = styled(Grid)(({ theme }) => ({
@@ -23,7 +23,7 @@ const BooksList = ({ data, loading }) => {
       direction="row"
       spacing={2}
     >
-      {data.length === 0 && (
+      {data.length === 0 && !loading && (
         <Grid item xs={12} md={12} lg={12}>
           <h3>No Books Found</h3>
         </Grid>
@@ -43,7 +43,24 @@ const BooksList = ({ data, loading }) => {
           <BookCard book={books} />
         </GridForCard>
       ))}
-      <SpinnerWithBackdrop backdropOpen={loading} helperText="Loading..." />
+      {/* <SpinnerWithBackdrop backdropOpen={loading} helperText="Loading..." /> */}
+
+      {loading &&
+        new Array(8).fill(0).map((_, index) => (
+          <GridForCard
+            item
+            xs={12}
+            sm={6}
+            md={opened ? 6 : 4}
+            lg={3}
+            key={index}
+            margin="auto"
+            paddingX={2}
+            paddingY={2}
+          >
+            <CardSkeleton />
+          </GridForCard>
+        ))}
     </Grid>
   );
 };

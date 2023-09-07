@@ -21,6 +21,8 @@ import {
   MenuItem,
   Paper,
   Select,
+  Skeleton,
+  Stack,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -178,15 +180,22 @@ const TitleAndCoverPage = ({ book, editions }) => {
     <Grid container spacing={2}>
       {/* Left side: Book Image */}
       <Grid item xs={12} md={4}>
-        <Paper
-          elevation={3}
-          sx={{ padding: { md: "16px" }, textAlign: "center" }}
-        >
-          <img src={book.IMAGE} alt={book.TITLE} style={{ width: "100%" }} />
-          <Typography variant="body2" style={{ marginTop: "16px" }}>
-            ISBN: {book.ISBN}
-          </Typography>
-        </Paper>
+        {loading ? (
+          <Stack spacing={1} width="100%">
+            <Skeleton variant="rectangular" height="70%" width="100%" />
+            <Skeleton variant="text" height="30%" width="100%" />
+          </Stack>
+        ) : (
+          <Paper
+            elevation={3}
+            sx={{ padding: { md: "16px" }, textAlign: "center" }}
+          >
+            <img src={book.IMAGE} alt={book.TITLE} style={{ width: "100%" }} />
+            <Typography variant="body2" style={{ marginTop: "16px" }}>
+              ISBN: {book.ISBN}
+            </Typography>
+          </Paper>
+        )}
       </Grid>
 
       {/* Right side: Book Information */}
