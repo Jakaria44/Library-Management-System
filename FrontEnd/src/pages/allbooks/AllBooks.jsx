@@ -28,13 +28,13 @@ const AllBooks = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]); // [] is the initial state value
   useEffect(() => {
-    loadAllBooks();
+    loadAllBooks(queryOptions);
   }, []);
 
   // useEffect(() => {
   //   loadAllBooks();
   // }, []);
-  const loadAllBooks = async () => {
+  const loadAllBooks = async (queryOptions = queryOptions) => {
     setLoading(true);
     try {
       const res = await server.get("/all-books-sum", { params: queryOptions });
@@ -62,11 +62,7 @@ const AllBooks = () => {
       </Typography>
 
       <Grid container spacing={2}>
-        <Filters
-          queryOptions={queryOptions}
-          setQueryOptions={setQueryOptions}
-          loadAllBooks={loadAllBooks}
-        />
+        <Filters loadAllBooks={loadAllBooks} />
 
         {/* <React.Suspense fallback={<SpinnerWithBackdrop backdropOpen={true} helperText='Loading books. Plase wait'/>}> */}
 

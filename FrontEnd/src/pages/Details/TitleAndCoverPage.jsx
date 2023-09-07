@@ -1,5 +1,4 @@
 // need to add genre
-
 import { useTheme } from "@emotion/react";
 import {
   Book,
@@ -32,6 +31,7 @@ import SignupDialog from "../../component/SignupDialog";
 import SpinnerWithBackdrop from "../../component/SpinnerWithBackdrop";
 import SuccessfulModal from "../../component/SuccessfulModal";
 import server from "./../../HTTP/httpCommonParam";
+import Languages from "./../../utils//Languages";
 
 const CategoryList = ({ category }) => {
   return (
@@ -160,7 +160,13 @@ const TitleAndCoverPage = ({ book, editions }) => {
       label: `Available Copies: ${selectedEdition?.AVAILABLE_COPIES}`,
       variant: "h3",
     },
-    { icon: <Language />, label: `Language: ${book.LANGUAGE}`, variant: "h3" },
+    {
+      icon: <Language />,
+      label: `Language: ${
+        Languages.filter((item) => item.code === book.LANGUAGE)[0].name
+      }`,
+      variant: "h3",
+    },
     {
       icon: <CalendarMonth />,
       label: `Publish Year: ${selectedEdition?.YEAR}`,

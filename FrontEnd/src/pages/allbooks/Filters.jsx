@@ -131,12 +131,30 @@ const PrettoSlider = styled(Slider)({
   },
 });
 
-const Filters = ({ queryOptions, setQueryOptions, loadAllBooks }) => {
+const Filters = ({ loadAllBooks }) => {
+  const [queryOptions, setQueryOptions] = useState({
+    sort: "TITLE",
+    order: "ASC",
+    PAGE_START: 0,
+    PAGE_END: 2000,
+    YEAR_START: 1900,
+    YEAR_END: maxYear,
+    RATING_START: 0,
+    RATING_END: 5,
+    GENRE_ID: null,
+    AUTHOR_ID: null,
+    PUBLISHER_ID: null,
+    MY_FAV: false,
+  });
   const { opened } = useMenu();
   const [authors, setAuthors] = useState([]);
   const [publishers, setPublishers] = useState([]);
   const [genres, setGenres] = useState([]);
 
+  const submit = () => {
+    // setQ(queryOptions);
+    loadAllBooks(queryOptions);
+  };
   useEffect(() => {
     fetchAuthorGenrePublisher();
   }, []);
@@ -759,7 +777,7 @@ const Filters = ({ queryOptions, setQueryOptions, loadAllBooks }) => {
               width: "100%",
             }}
           >
-            <Button onClick={() => loadAllBooks()} variant="contained">
+            <Button onClick={submit} variant="contained">
               Submit
             </Button>
           </Box>

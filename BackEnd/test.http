@@ -1,5 +1,5 @@
 #### ----GET Single Book ----
-GET http://localhost:3000/db-api/book?id=1111111111111
+GET http://localhost:3000/db-api/book?id=101766692X
 ###OUTPUT
 {
   "ISBN": "9781408855652",
@@ -838,11 +838,10 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 Content-Type: application/json
 
 {
-  "MY_RAT": true,
+  "MY_RAT": false,
   "MY_FAV": true,
-  "ISBN":"9781408894743",
-  "TITLE": "DEATH",
-  "LANGUAGE": "EnGliSh",
+  "TITLE": "",
+  "LANGUAGE": "",
   "PUBLISHER_ID": "1",
   "AUTHOR_ID": "1",
   "GENRE_ID": "1",
@@ -1001,7 +1000,7 @@ Content-Type: application/json
 }
 
 #### --- DELETE one BOOK ---
-DELETE http://localhost:3000/db-api/book?id=1111111111111
+DELETE http://localhost:3000/db-api/book?id=101766692X
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
 
 ###OUTDELETE

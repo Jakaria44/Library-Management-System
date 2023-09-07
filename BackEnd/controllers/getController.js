@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import {secret} from "../Database/databaseConfiguration.js";
+import { secret } from "../Database/databaseConfiguration.js";
 import {
   getAllAuthorsDB,
   getAllAwardsDB,
@@ -8,8 +8,12 @@ import {
   getAllBookSumDB,
   getAllGenreDB,
   getAllLanguagesDB,
+  getAllNewsDB,
   getAllPublishersDB,
   getAllRatRevOfBookDB,
+  getAllRequestsDB,
+  getAllUsersDB,
+  getApplicationDB,
   getAuthorBooksDB,
   getAuthorDB,
   getAvgRatingDB,
@@ -19,31 +23,26 @@ import {
   getBookFromBookshelfDB,
   getBookshelvesDB,
   getCompleteBookDB,
+  getEditionDB,
+  getEmployeeDB,
   getGenreBookDB,
   getGenreDB,
+  getJobDB,
+  getMyFineHistoryDB,
+  getMyMessagesDB,
+  getMyRentHistoryDB,
+  getMyRequestsDB,
   getOwnRatRevDB,
   getPublisherBooksDB,
   getPublisherDB,
   getRatingDB,
   getRecentBookDB,
+  getRunningFineDB,
   getTopBookDB,
   getUserDetailsDB,
   getUserRatedBooksDB,
-  getUserReviewedBooksDB,
-  getMyRequestsDB,
-  getMyRentHistoryDB,
-  getMyFineHistoryDB,
-  getAllRequestsDB,
-  getRunningFineDB,
-  getMyMessagesDB,
-  getAllNewsDB,
-  getAllUsersDB,
-  getEditionDB,
-  getEmployeeDB,
-  getJobDB,
-  getApplicationDB
+  getUserReviewedBooksDB
 } from "../Database/queryFunctions.js";
-import {queryExecute} from "../Database/database.js";
 
 
 export async function getUserDetails(req, res, next) {
@@ -109,14 +108,16 @@ export async function getAllBookSum(req, res, next) {
     console.log("in getControllers.js");
     let context = {};
 
+    const perPage = req.query.perPage || 100;
+    let page = req.query.page || 1;
     if (req.USER_ID) {
       context.USER_ID = req.USER_ID;
     }
     if (req.query.MY_FAV) {
-      context.MY_FAV = req.query.MY_FAV;
+      context.MY_FAV = req.query.MY_FAV==='true';
     }
     if (req.query.MY_RAT) {
-      context.MY_RAT = req.query.MY_RAT;
+      context.MY_RAT = req.query.MY_RAT ==='true';
     }
     if (req.query.ISBN) {
       context.ISBN = req.query.ISBN;
@@ -128,22 +129,22 @@ export async function getAllBookSum(req, res, next) {
       context.LANGUAGE = req.query.LANGUAGE.toUpperCase();
     }
     if (req.query.PAGE_START) {
-      context.PAGE_START = req.query.PAGE_START;
+      context.PAGE_START = parseInt(req.query.PAGE_START);
     }
     if (req.query.PAGE_END) {
-      context.PAGE_END = req.query.PAGE_END;
+      context.PAGE_END = parseInt(req.query.PAGE_END);
     }
     if (req.query.YEAR_START) {
-      context.YEAR_START = req.query.YEAR_START;
+      context.YEAR_START =parseInt( req.query.YEAR_START);
     }
     if (req.query.YEAR_END) {
-      context.YEAR_END = req.query.YEAR_END;
+      context.YEAR_END = parseInt(req.query.YEAR_END);
     }
     if (req.query.RATING_START) {
-      context.RATING_START = req.query.RATING_START;
+      context.RATING_START = parseFloat( req.query.RATING_START, 2);
     }
     if (req.query.RATING_END) {
-      context.RATING_END = req.query.RATING_END;
+      context.RATING_END =parseFloat( req.query.RATING_END, 2);
     }
     if (req.query.AUTHOR_ID) {
       context.AUTHOR_ID = req.query.AUTHOR_ID;
@@ -164,7 +165,14 @@ export async function getAllBookSum(req, res, next) {
     const rows = await getAllBookSumDB(context);
 
     if (rows.length > 0) {
-      res.status(200).json(rows);
+      const total = rows.length;
+      const totalPages = Math.ceil(total / perPage);
+      page =  (page< totalPages? page: totalPages);
+      const start = (page - 1) * perPage;
+      const end = page * perPage;
+      res.status(200).json(rows.slice(start, end));
+
+      // res.status(200).json(rows);
     } else {
       res.status(404).json({message: "Not Found"});
     }

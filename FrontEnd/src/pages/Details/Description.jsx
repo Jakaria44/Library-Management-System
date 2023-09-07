@@ -166,7 +166,7 @@ const AuthorDetails = ({ id }) => {
   return (
     <Grid container direction="column" item xs={12} padding={2}>
       {author ? (
-        <AuthorComponent author={author} />
+        <AuthorComponent author={author[0]} />
       ) : (
         <p>Couldn't Find any Author</p>
       )}

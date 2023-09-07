@@ -1,6 +1,6 @@
 drop sequence user_seq;
 
-create sequence user_seq;
+create sequence user_seq start with 100;
 
 create
     or replace trigger user_insert_trig
@@ -277,21 +277,21 @@ BEGIN
 END;
 /
 
-BEGIN
-    DBMS_SCHEDULER.create_job(
-            job_name => 'UPDATE_FINE_HISTORY_JOB',
-            job_type => 'PLSQL_BLOCK',
-            job_action => 'BEGIN update_fine_history; END;',
-            start_date => SYSTIMESTAMP,
-            repeat_interval => 'FREQ=HOURLY; INTERVAL=24', -- Run every 24 hours
-            enabled => TRUE
-        );
-END;
-/
+-- BEGIN
+--     DBMS_SCHEDULER.create_job(
+--             job_name => 'UPDATE_FINE_HISTORY_JOB',
+--             job_type => 'PLSQL_BLOCK',
+--             job_action => 'BEGIN update_fine_history; END;',
+--             start_date => SYSTIMESTAMP,
+--             repeat_interval => 'FREQ=HOURLY; INTERVAL=24', -- Run every 24 hours
+--             enabled => TRUE
+--         );
+-- END;
+-- /
 
 drop sequence history_seq;
 
-create sequence history_seq;
+create sequence history_seq start with 100; 
 
 CREATE
     OR REPLACE TRIGGER RENT_INSERT_TRIG
@@ -389,7 +389,7 @@ END;
 
 drop sequence msg_seq;
 
-create sequence msg_seq;
+create sequence msg_seq start with 100;
 
 CREATE
     OR REPLACE TRIGGER MESSAGE_INSERT_TRIG
@@ -427,7 +427,7 @@ END;
 /
 drop sequence news_seq;
 
-create sequence news_seq;
+create sequence news_seq start with 100;
 
 CREATE
     OR REPLACE TRIGGER NEWS_INSERT_TRIG
@@ -474,7 +474,7 @@ END;
 /
 drop sequence genre_seq;
 
-create sequence genre_seq;
+create sequence genre_seq start with 100;
 
 CREATE
     OR REPLACE TRIGGER GENRE_INSERT_TRIG
@@ -522,7 +522,7 @@ END;
 
 drop sequence author_seq;
 
-create sequence author_seq;
+create sequence author_seq start with 100;
 
 CREATE
     OR REPLACE TRIGGER AUTHOR_INSERT_TRIG
@@ -578,7 +578,7 @@ END ;
 /
 drop sequence publisher_seq;
 
-create sequence publisher_seq;
+create sequence publisher_seq start with 100;
 
 CREATE
     OR REPLACE TRIGGER PUBLISHER_INSERT_TRIG
@@ -886,7 +886,7 @@ END;
 /
 drop sequence edition_seq;
 
-create sequence edition_seq;
+create sequence edition_seq start with 100;
 
 CREATE
     OR REPLACE TRIGGER EDITION_INSERT_TRIG
@@ -1243,7 +1243,7 @@ END ;
 /
 
 drop sequence job_seq;
-create sequence job_seq;
+create sequence job_seq start with 100;
 
 CREATE
     OR REPLACE TRIGGER JOB_INSERT_TRIG

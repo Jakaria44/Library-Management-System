@@ -44,6 +44,8 @@ const BookDetails = () => {
   const [myReview, setMyReview] = useState({});
   const [ratings, setRatings] = useState([]);
   const [reviewEditing, setReviewEditing] = useState(false);
+
+  console.log(data);
   const deleteReview = async () => {
     try {
       const response = await server.delete(`/del-rate-review?id=${data.ISBN}`);
@@ -127,7 +129,6 @@ const BookDetails = () => {
   }));
   useEffect(() => {
     getAllReviews({ id: data.ISBN });
-    console.log(data);
   }, []);
   return (
     <>

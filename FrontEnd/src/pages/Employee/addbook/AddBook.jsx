@@ -69,7 +69,7 @@ export default function AddBook({ bookDetails }) {
         isbn: data.ISBN,
         title: data.TITLE,
         image: data.IMAGE,
-        language: Languages.filter((item) => item.name === data.LANGUAGE)[0],
+        language: Languages.filter((item) => item.code === data.LANGUAGE)[0],
         description: data.DESCRIPTION,
         numOfPage: data.PAGE,
       };
@@ -151,7 +151,7 @@ export default function AddBook({ bookDetails }) {
       TITLE: generalInfo.title,
       IMAGE: generalInfo.image,
       DESCRIPTION: generalInfo.description,
-      LANGUAGE: generalInfo.language.name,
+      LANGUAGE: generalInfo.language.code,
       NUMBER_OF_PAGES: generalInfo.numOfPage,
       PUBLISHER_ID: authorGenrePublisher.publisher.PUBLISHER_ID,
       Authors: authorGenrePublisher.authors.map((item) => {

@@ -527,7 +527,9 @@ export async function getAuthorDB(context) {
   let query = baseQuery('AUTHOR');
   if (context.AUTHOR_ID) {
     query += `\nWHERE AUTHOR_ID = ${context.AUTHOR_ID}`;
+
   }
+  query+= '\nORDER BY NAME ASC';
   const result = await queryExecute(query, []);
   return result.rows;
 }
@@ -1003,10 +1005,12 @@ export async function getOwnRatRevDB(context) {
 
 export async function getGenreDB(context) {
   let query = baseQuery('GENRE');
+  
 
   if (context.GENRE_ID) {
     query += `\nWhere GENRE_ID = ${context.GENRE_ID}`;
   }
+  query  += ' order by GENRE_NAME asc';
   let result = null;
   try {
     result = await queryExecute(query, []);
@@ -1289,7 +1293,7 @@ async function getAuthorGenreIntoBook(books) {
 export async function createBookDB(book) {
   let query = `BEGIN
     SAVEPOINT book_savepoint;
-    INSERT_BOOK('${book.ISBN}', ${book.TITLE ? `'${book.TITLE}'` : 'null'}, ${book.IMAGE ? `'${book.IMAGE}'` : 'null'}, ${book.NUMBER_OF_PAGES}, ${book.LANGUAGE ? `INITCAP(LOWER('${book.LANGUAGE}'))` : 'null'}, ${book.DESCRIPTION ? `'${book.DESCRIPTION}'` : 'null'},${book.PUBLISHER_ID});`;
+    INSERT_BOOK('${book.ISBN}', ${book.TITLE ? `'${book.TITLE}'` : 'null'}, ${book.IMAGE ? `'${book.IMAGE}'` : 'null'}, ${book.NUMBER_OF_PAGES}, ${book.LANGUAGE ? `LOWER('${book.LANGUAGE}')` : 'null'}, ${book.DESCRIPTION ? `'${book.DESCRIPTION}'` : 'null'},${book.PUBLISHER_ID});`;
 
   for (const a of book.AUTHORS) {
     query += `\nINSERT_WRITTEN_BY('${book.ISBN}', ${a.AUTHOR_ID});`;
@@ -1572,7 +1576,7 @@ export async function addBookGenreDB(bookGenre) {
 export async function updateBookDB(book) {
   let query = `BEGIN
     SAVEPOINT book_savepoint2;
-    UPDATE_BOOK('${book.ISBN}', ${book.TITLE ? `'${book.TITLE}'` : 'null'}, ${book.IMAGE ? `'${book.IMAGE}'` : 'null'}, ${book.NUMBER_OF_PAGES}, ${book.LANGUAGE ? `INITCAP(LOWER('${book.LANGUAGE}'))` : 'null'}, ${book.DESCRIPTION ? `'${book.DESCRIPTION}'` : 'null'}, ${book.PUBLISHER_ID});`;
+    UPDATE_BOOK('${book.ISBN}', ${book.TITLE ? `'${book.TITLE}'` : 'null'}, ${book.IMAGE ? `'${book.IMAGE}'` : 'null'}, ${book.NUMBER_OF_PAGES}, ${book.LANGUAGE ? `LOWER('${book.LANGUAGE}')` : 'null'}, ${book.DESCRIPTION ? `'${book.DESCRIPTION}'` : 'null'}, ${book.PUBLISHER_ID});`;
 
   query += `\nDELETE_WRITTEN_BY('${book.ISBN}');`;
   query += `\nDELETE_BOOK_GENRE('${book.ISBN}');`;

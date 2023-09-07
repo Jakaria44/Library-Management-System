@@ -6,7 +6,7 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { TimeFormat2 } from "../../utils/TimeFormat";
 
 const AuthorCard = styled(Card)(({ theme }) => ({
@@ -28,6 +28,9 @@ const DescriptionCard = styled(Card)(({ theme }) => ({
 }));
 
 const AuthorComponent = ({ author }) => {
+  useEffect(() => {
+    console.log(author);
+  }, []);
   return (
     <div>
       <Grid container spacing={3}>
