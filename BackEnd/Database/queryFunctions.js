@@ -543,26 +543,26 @@ export async function getPublisherDB(context) {
 }
 
 export async function getEmployeeDB(context) {
-  let query = "SELECT U.USER_ID, (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, U.IMAGE, E.JOIN_DATE, E.JOB_ID, J.JOB_TITLE " +
+  let query = "SELECT U.USER_ID, (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, U.EMAIL, U.IMAGE, E.JOIN_DATE, E.JOB_ID, J.JOB_TITLE " +
     '\nFROM EMPLOYEE E LEFT JOIN "USER" U ON(U.USER_ID = E.USER_ID) LEFT JOIN JOB J ON(J.JOB_ID = E.JOB_ID)';
   if (context.USER_ID) {
     query += `\nWHERE E.USER_ID = ${context.USER_ID}`;
   }
   let flag = 1;
   if (context.sort && context.order) {
-    const validColumns = ['USER_ID', 'NAME', 'JOB_TITLE', 'JOIN_DATE', 'JOB_ID'];
+    const validColumns = ['EMAIL', 'NAME', 'JOB_TITLE', 'JOIN_DATE', 'JOB_ID'];
     const validOrders = ['ASC', 'DESC'];
 
     if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
       query += `\nORDER BY ${context.sort} ${context.order}`;
-      if (context.sort !== 'NAME') {
-        query += ', NAME ASC';
+      if (context.sort !== 'JOIN_DATE') {
+        query += ', JOIN_DATE ASC';
       }
       flag = 0;
     }
   }
   if (flag) {
-    query += '\nORDER BY NAME ASC';
+    query += '\nORDER BY JOIN_DATE ASC';
   }
   const result = await queryExecute(query, []);
   return result.rows;
@@ -629,6 +629,41 @@ export async function getAllUsersDB(context) {
 
   if (flag) {
     query += '\nORDER BY NAME ASC';
+  }
+
+  // Execute the query
+  let result = null;
+  try {
+    result = await queryExecute(query, []);
+  } catch (err) {
+    return [];
+  }
+  return result.rows;
+}
+
+export async function getApplicationDB(context) {
+  // Define the base query
+  let query = "SELECT U.USER_ID, (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, U.IMAGE, U.EMAIL, J.JOB_ID, J.JOB_TITLE, A.APPLY_DATE " +
+    '\nFROM APPLY A LEFT JOIN "USER" U ON(A.USER_ID = U.USER_ID) LEFT JOIN JOB J ON(J.JOB_ID = A.JOB_ID) ';
+  if (context.JOB_ID) {
+    query += `\nWHERE A.JOB_ID = ${context.JOB_ID}`;
+  }
+  let flag = 1;
+  if (context.sort && context.order) {
+    const validColumns = ['NAME', 'EMAIL', 'JOB_TITLE', 'APPLY_DATE'];
+    const validOrders = ['ASC', 'DESC'];
+
+    if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
+      query += `\nORDER BY ${context.sort} ${context.order}`;
+      if (context.sort !== 'APPLY_DATE') {
+        query += ', APPLY_DATE DESC';
+      }
+      flag = 0;
+    }
+  }
+
+  if (flag) {
+    query += '\nORDER BY APPLY_DATE DESC';
   }
 
   // Execute the query
@@ -985,7 +1020,7 @@ export async function getJobDB(context) {
   let query = `SELECT JOB_TITLE, JOB_ID, SALARY`;
   if (context.USER_ID) {
     query += `, CASE\nWHEN JOB_ID IN (SELECT JOB_ID FROM EMPLOYEE WHERE USER_ID = ${context.USER_ID}) THEN 'working'` +
-      `\nWHEN JOB_ID IN (SELECT JOB_ID FROM APPLY WHERE USER_ID = ${context.USER_ID}) THEN 'applied'\nELSE null END\nAS STATUS`;
+      `\nWHEN JOB_ID IN (SELECT JOB_ID FROM APPLY WHERE USER_ID = ${context.USER_ID}) THEN 'applied'\nELSE 'apply' END\nAS STATUS`;
   }
   query += `\nFROM JOB`;
   if (context.JOB_ID) {
@@ -1252,10 +1287,10 @@ async function getAuthorGenreIntoBook(books) {
 // }
 
 export async function createBookDB(book) {
-  let query = 'BEGIN\nSAVEPOINT book_savepoint;' +
-    `\nINSERT_BOOK('${book.ISBN}', '${book.TITLE}', '${book.IMAGE}', ${book.NUMBER_OF_PAGES}, INITCAP(LOWER('${book.LANGUAGE}')), '${book.DESCRIPTION}', '${book.PUBLISHER_ID}');`;
-  // `\nDELETE_WRITTEN_BY('${book.ISBN}');`+
-  // `\nDELETE_BOOK_GENRE('${book.ISBN}');`;
+  let query = `BEGIN
+    SAVEPOINT book_savepoint;
+    INSERT_BOOK('${book.ISBN}', ${book.TITLE ? `'${book.TITLE}'` : 'null'}, ${book.IMAGE ? `'${book.IMAGE}'` : 'null'}, ${book.NUMBER_OF_PAGES}, ${book.LANGUAGE ? `INITCAP(LOWER('${book.LANGUAGE}'))` : 'null'}, ${book.DESCRIPTION ? `'${book.DESCRIPTION}'` : 'null'},${book.PUBLISHER_ID});`;
+
   for (const a of book.AUTHORS) {
     query += `\nINSERT_WRITTEN_BY('${book.ISBN}', ${a.AUTHOR_ID});`;
   }
@@ -1265,7 +1300,9 @@ export async function createBookDB(book) {
   for (const e of book.EDITIONS) {
     query += `\nINSERT_EDITION('${book.ISBN}', ${e.EDITION_NUM}, ${e.NUM_OF_COPIES}, ${e.PUBLISH_YEAR});`;
   }
-  query += `\nCOMMIT;\nEND;`;
+
+  query += `\nCOMMIT;
+    END;`;
   console.log(query);
   try {
     await queryExecute(query, []);
@@ -1274,6 +1311,31 @@ export async function createBookDB(book) {
   }
   return book;
 }
+
+//
+// export async function createBookDB(book) {
+//   let query = 'BEGIN\nSAVEPOINT book_savepoint;' +
+//     `\nINSERT_BOOK('${book.ISBN}', '${book.TITLE}', ${book.IMAGE}, ${book.NUMBER_OF_PAGES}, INITCAP(LOWER('${book.LANGUAGE}')), '${book.DESCRIPTION}', ${book.PUBLISHER_ID});`;
+//   // `\nDELETE_WRITTEN_BY('${book.ISBN}');`+
+//   // `\nDELETE_BOOK_GENRE('${book.ISBN}');`;
+//   for (const a of book.AUTHORS) {
+//     query += `\nINSERT_WRITTEN_BY('${book.ISBN}', ${a.AUTHOR_ID});`;
+//   }
+//   for (const a of book.GENRES) {
+//     query += `\nINSERT_BOOK_GENRE('${book.ISBN}', ${a.GENRE_ID});`;
+//   }
+//   for (const e of book.EDITIONS) {
+//     query += `\nINSERT_EDITION('${book.ISBN}', ${e.EDITION_NUM}, ${e.NUM_OF_COPIES}, ${e.PUBLISH_YEAR});`;
+//   }
+//   query += `\nCOMMIT;\nEND;`;
+//   console.log(query);
+//   try {
+//     await queryExecute(query, []);
+//   } catch (e) {
+//     return null;
+//   }
+//   return book;
+// }
 
 // export async function getAuthorDB(context){
 //     let queryPerson = baseQuery("Person");
@@ -1483,11 +1545,38 @@ export async function addBookGenreDB(bookGenre) {
   return bookGenre;
 }
 
+// export async function updateBookDB(book) {
+//   let query = 'BEGIN\nSAVEPOINT book_savepoint2;' +
+//     `\nUPDATE_BOOK('${book.ISBN}', ${book.TITLE}, ${book.IMAGE}, ${book.NUMBER_OF_PAGES}, INITCAP(LOWER('${book.LANGUAGE}')), ${book.DESCRIPTION}, ${book.PUBLISHER_ID});` +
+//     `\nDELETE_WRITTEN_BY('${book.ISBN}');` +
+//     `\nDELETE_BOOK_GENRE('${book.ISBN}');`;
+//   for (const a of book.AUTHORS) {
+//     query += `\nINSERT_WRITTEN_BY('${book.ISBN}', ${a.AUTHOR_ID});`;
+//   }
+//   for (const a of book.GENRES) {
+//     query += `\nINSERT_BOOK_GENRE('${book.ISBN}', ${a.GENRE_ID});`;
+//   }
+//   for (const e of book.EDITIONS) {
+//     query += `\nINSERT_EDITION('${book.ISBN}', ${e.EDITION_NUM}, ${e.NUM_OF_COPIES}, ${e.PUBLISH_YEAR});`;
+//   }
+//   query += `\nCOMMIT;\nEND;`;
+//   console.log(query);
+//   try {
+//     await queryExecute(query, []);
+//   } catch (e) {
+//     return null;
+//   }
+//   return book;
+// }
+
 export async function updateBookDB(book) {
-  let query = 'BEGIN\nSAVEPOINT book_savepoint2;' +
-    `\nUPDATE_BOOK('${book.ISBN}', '${book.TITLE}', '${book.IMAGE}', ${book.NUMBER_OF_PAGES}, INITCAP(LOWER('${book.LANGUAGE}')), '${book.DESCRIPTION}', '${book.PUBLISHER_ID}');` +
-    `\nDELETE_WRITTEN_BY('${book.ISBN}');` +
-    `\nDELETE_BOOK_GENRE('${book.ISBN}');`;
+  let query = `BEGIN
+    SAVEPOINT book_savepoint2;
+    UPDATE_BOOK('${book.ISBN}', ${book.TITLE ? `'${book.TITLE}'` : 'null'}, ${book.IMAGE ? `'${book.IMAGE}'` : 'null'}, ${book.NUMBER_OF_PAGES}, ${book.LANGUAGE ? `INITCAP(LOWER('${book.LANGUAGE}'))` : 'null'}, ${book.DESCRIPTION ? `'${book.DESCRIPTION}'` : 'null'}, ${book.PUBLISHER_ID});`;
+
+  query += `\nDELETE_WRITTEN_BY('${book.ISBN}');`;
+  query += `\nDELETE_BOOK_GENRE('${book.ISBN}');`;
+
   for (const a of book.AUTHORS) {
     query += `\nINSERT_WRITTEN_BY('${book.ISBN}', ${a.AUTHOR_ID});`;
   }
@@ -1497,13 +1586,18 @@ export async function updateBookDB(book) {
   for (const e of book.EDITIONS) {
     query += `\nINSERT_EDITION('${book.ISBN}', ${e.EDITION_NUM}, ${e.NUM_OF_COPIES}, ${e.PUBLISH_YEAR});`;
   }
-  query += `\nCOMMIT;\nEND;`;
+
+  query += `\nCOMMIT;
+    END;`;
+
   console.log(query);
+
   try {
     await queryExecute(query, []);
   } catch (e) {
     return null;
   }
+
   return book;
 }
 

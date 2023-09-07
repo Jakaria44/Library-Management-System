@@ -235,20 +235,24 @@ export async function deleteEmployee(req, res, next) {
 
     context.USER_ID = req.query.uid;
     const result = await getEmployeeDB(context);
-    let deleted = await deleteEmployeeDB(context);
-    if (deleted) {
-      console.log(result);
-      const jobTitle = (result[0] ? result[0].JOB_TITLE : 'UNKNOWN');
-      const joinDate = (result[0] ? result[0].JOIN_DATE : 'UNKNOWN');
-      context.MESSAGE = `You are fired from the JOB: {${jobTitle}}. You have worked at the Job since JOIN_DATE: {${joinDate}}. Please communicate with the admin for further query.`;
-      deleted = await sendMessageDB(context);
-      if (!deleted) {
-        res.status(201).json({message: 'Successful but message not send'})
+    if(result.length > 0) {
+      let deleted = await deleteEmployeeDB(context);
+      if (deleted) {
+        console.log(result);
+        const jobTitle = (result[0] ? result[0].JOB_TITLE : 'UNKNOWN');
+        const joinDate = (result[0] ? result[0].JOIN_DATE : 'UNKNOWN');
+        context.MESSAGE = `You are fired from the JOB: {${jobTitle}}. You have worked at the Job since JOIN_DATE: {${joinDate}}. Please communicate with the admin for further query.`;
+        deleted = await sendMessageDB(context);
+        if (!deleted) {
+          res.status(201).json({message: 'Successful but message not send'})
+        } else {
+          res.status(200).json({message: 'Successful'})
+        }
       } else {
-        res.status(200).json({message: 'Successful'})
+        res.status(404).json({message: 'Failed to delete'});
       }
     } else {
-      res.status(404).json({message: 'Failed to delete'});
+      res.status(404).json({message: 'No employee found'});
     }
   } catch (err) {
     next(err);
@@ -261,20 +265,24 @@ export async function resignEmployee(req, res, next) {
 
     context.USER_ID = req.USER_ID;
     const result = await getEmployeeDB(context);
-    let deleted = await deleteEmployeeDB(context);
-    if (deleted) {
-      console.log(result);
-      const jobTitle = (result[0] ? result[0].JOB_TITLE : 'UNKNOWN');
-      const joinDate = (result[0] ? result[0].JOIN_DATE : 'UNKNOWN');
-      context.MESSAGE = `You have successfully resigned from the JOB: {${jobTitle}}. You have worked at the Job since JOIN_DATE: {${joinDate}}. Thank you for your service to the library.`;
-      deleted = await sendMessageDB(context);
-      if (!deleted) {
-        res.status(201).json({message: 'Successful but message not send'})
+    if(result.length > 0) {
+      let deleted = await deleteEmployeeDB(context);
+      if (deleted) {
+        console.log(result);
+        const jobTitle = (result[0] ? result[0].JOB_TITLE : 'UNKNOWN');
+        const joinDate = (result[0] ? result[0].JOIN_DATE : 'UNKNOWN');
+        context.MESSAGE = `You have successfully resigned from the JOB: {${jobTitle}}. You have worked at the Job since JOIN_DATE: {${joinDate}}. Thank you for your service to the library.`;
+        deleted = await sendMessageDB(context);
+        if (!deleted) {
+          res.status(201).json({message: 'Successful but message not send'})
+        } else {
+          res.status(200).json({message: 'Successful'})
+        }
       } else {
-        res.status(200).json({message: 'Successful'})
+        res.status(404).json({message: 'Failed to delete'});
       }
     } else {
-      res.status(404).json({message: 'Failed to delete'});
+      res.status(404).json({message: 'No employee found'});
     }
   } catch (err) {
     next(err);
@@ -323,8 +331,8 @@ export async function deleteApplication(req, res, next) {
   try {
     let deleted = {};
 
-    deleted.USER_ID = req.USER_ID;
-    deleted.JOB_ID = req.query.jid;
+    deleted.USER_ID = req.body.USER_ID;
+    deleted.JOB_ID = req.body.JOB_ID;
 
     deleted = await deleteApplyDB(deleted);
     if (deleted) {

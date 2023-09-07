@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { secret } from "../Database/databaseConfiguration.js";
+import {secret} from "../Database/databaseConfiguration.js";
 import {
   getAllAuthorsDB,
   getAllAwardsDB,
@@ -8,11 +8,8 @@ import {
   getAllBookSumDB,
   getAllGenreDB,
   getAllLanguagesDB,
-  getAllNewsDB,
   getAllPublishersDB,
   getAllRatRevOfBookDB,
-  getAllRequestsDB,
-  getAllUsersDB,
   getAuthorBooksDB,
   getAuthorDB,
   getAvgRatingDB,
@@ -22,26 +19,31 @@ import {
   getBookFromBookshelfDB,
   getBookshelvesDB,
   getCompleteBookDB,
-  getEditionDB,
-  getEmployeeDB,
   getGenreBookDB,
   getGenreDB,
-  getJobDB,
-  getMyFineHistoryDB,
-  getMyMessagesDB,
-  getMyRentHistoryDB,
-  getMyRequestsDB,
   getOwnRatRevDB,
   getPublisherBooksDB,
   getPublisherDB,
   getRatingDB,
   getRecentBookDB,
-  getRunningFineDB,
   getTopBookDB,
   getUserDetailsDB,
   getUserRatedBooksDB,
-  getUserReviewedBooksDB
+  getUserReviewedBooksDB,
+  getMyRequestsDB,
+  getMyRentHistoryDB,
+  getMyFineHistoryDB,
+  getAllRequestsDB,
+  getRunningFineDB,
+  getMyMessagesDB,
+  getAllNewsDB,
+  getAllUsersDB,
+  getEditionDB,
+  getEmployeeDB,
+  getJobDB,
+  getApplicationDB
 } from "../Database/queryFunctions.js";
+import {queryExecute} from "../Database/database.js";
 
 
 export async function getUserDetails(req, res, next) {
@@ -111,10 +113,10 @@ export async function getAllBookSum(req, res, next) {
       context.USER_ID = req.USER_ID;
     }
     if (req.query.MY_FAV) {
-      context.MY_FAV = (req.query.MY_FAV === 'true');
+      context.MY_FAV = req.query.MY_FAV;
     }
     if (req.query.MY_RAT) {
-      context.MY_RAT = (req.query.MY_RAT === 'true');
+      context.MY_RAT = req.query.MY_RAT;
     }
     if (req.query.ISBN) {
       context.ISBN = req.query.ISBN;
@@ -126,22 +128,22 @@ export async function getAllBookSum(req, res, next) {
       context.LANGUAGE = req.query.LANGUAGE.toUpperCase();
     }
     if (req.query.PAGE_START) {
-      context.PAGE_START = parseInt(req.query.PAGE_START);
+      context.PAGE_START = req.query.PAGE_START;
     }
     if (req.query.PAGE_END) {
-      context.PAGE_END = parseInt(req.query.PAGE_END);
+      context.PAGE_END = req.query.PAGE_END;
     }
     if (req.query.YEAR_START) {
-      context.YEAR_START = parseInt(req.query.YEAR_START);
+      context.YEAR_START = req.query.YEAR_START;
     }
     if (req.query.YEAR_END) {
-      context.YEAR_END = parseInt(req.query.YEAR_END);
+      context.YEAR_END = req.query.YEAR_END;
     }
     if (req.query.RATING_START) {
-      context.RATING_START = parseFloat(req.query.RATING_START,2);
+      context.RATING_START = req.query.RATING_START;
     }
     if (req.query.RATING_END) {
-      context.RATING_END =parseFloat( req.query.RATING_END, 2);
+      context.RATING_END = req.query.RATING_END;
     }
     if (req.query.AUTHOR_ID) {
       context.AUTHOR_ID = req.query.AUTHOR_ID;
@@ -699,6 +701,26 @@ export async function getAllUsers(req, res, next) {
   }
 }
 
+export async function getApplication(req, res, next) {
+  try {
+    const context = {};
+    context.sort = req.query.sort;
+    context.order = req.query.order;
+    context.JOB_ID = req.query.JOB_ID;
+    const rows = await getApplicationDB(context);
+
+    if (rows.length > 0) {
+      res.status(200).json(rows);
+    } else {
+      res.status(404).json({message: "Not Found"});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+
+
 export async function getMyRentHistory(req, res, next) {
   try {
     const context = {};
@@ -740,7 +762,7 @@ export async function getRunningFine(req, res, next) {
     const context = {};
     context.sort = req.query.sort;
     context.order = req.query.order;
-    context.CHECK = req.query.CHECK;
+    context.CHECK = req.body.CHECK;
     const rows = await getRunningFineDB(context);
 
     if (rows.length > 0) {
