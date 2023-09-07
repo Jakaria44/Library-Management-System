@@ -1,31 +1,16 @@
-import jwt from "jsonwebtoken";
-import { secret } from "../Database/databaseConfiguration.js";
 import {
-  getAllAuthorsDB,
-  getAllAwardsDB,
-  getAllBindsDB,
   getAllBookDB,
   getAllBookSumDB,
-  getAllGenreDB,
   getAllLanguagesDB,
   getAllNewsDB,
-  getAllPublishersDB,
   getAllRatRevOfBookDB,
   getAllRequestsDB,
   getAllUsersDB,
   getApplicationDB,
-  getAuthorBooksDB,
   getAuthorDB,
-  getAvgRatingDB,
-  getBookByTitleDB,
-  getBookDB,
   getBookDetailsByIDDB,
-  getBookFromBookshelfDB,
-  getBookshelvesDB,
-  getCompleteBookDB,
   getEditionDB,
   getEmployeeDB,
-  getGenreBookDB,
   getGenreDB,
   getJobDB,
   getMyFineHistoryDB,
@@ -33,15 +18,10 @@ import {
   getMyRentHistoryDB,
   getMyRequestsDB,
   getOwnRatRevDB,
-  getPublisherBooksDB,
   getPublisherDB,
-  getRatingDB,
-  getRecentBookDB,
   getRunningFineDB,
-  getTopBookDB,
   getUserDetailsDB,
-  getUserRatedBooksDB,
-  getUserReviewedBooksDB
+  getSearchBarDB
 } from "../Database/queryFunctions.js";
 
 
@@ -110,20 +90,21 @@ export async function getAllBookSum(req, res, next) {
 
     const perPage = req.query.perPage || 20;
     let page = req.query.page || 1;
+
     if (req.USER_ID) {
       context.USER_ID = req.USER_ID;
     }
     if (req.query.MY_FAV) {
-      context.MY_FAV = req.query.MY_FAV==='true';
+      context.MY_FAV = req.query.MY_FAV === 'true';
     }
     if (req.query.MY_RAT) {
-      context.MY_RAT = req.query.MY_RAT ==='true';
+      context.MY_RAT = req.query.MY_RAT === 'true';
     }
     if (req.query.ISBN) {
       context.ISBN = req.query.ISBN;
     }
     if (req.query.TITLE) {
-      context.TITLE = req.query.TITLE.toUpperCase();
+      context.TITLE = req.query.TITLE.toUpperCase().replace(/'/g, `''`);
     }
     if (req.query.LANGUAGE) {
       context.LANGUAGE = req.query.LANGUAGE.toUpperCase();
@@ -135,16 +116,16 @@ export async function getAllBookSum(req, res, next) {
       context.PAGE_END = parseInt(req.query.PAGE_END);
     }
     if (req.query.YEAR_START) {
-      context.YEAR_START =parseInt( req.query.YEAR_START);
+      context.YEAR_START = parseInt(req.query.YEAR_START);
     }
     if (req.query.YEAR_END) {
       context.YEAR_END = parseInt(req.query.YEAR_END);
     }
     if (req.query.RATING_START) {
-      context.RATING_START = parseFloat( req.query.RATING_START, 2);
+      context.RATING_START = parseFloat(req.query.RATING_START, 2);
     }
     if (req.query.RATING_END) {
-      context.RATING_END =parseFloat( req.query.RATING_END, 2);
+      context.RATING_END = parseFloat(req.query.RATING_END, 2);
     }
     if (req.query.AUTHOR_ID) {
       context.AUTHOR_ID = req.query.AUTHOR_ID;
@@ -167,10 +148,10 @@ export async function getAllBookSum(req, res, next) {
     if (rows.length > 0) {
       const total = rows.length;
       const totalPages = Math.ceil(total / perPage);
-      page =  (page< totalPages? page: totalPages);
+      page = (page < totalPages ? page : totalPages);
       const start = (page - 1) * perPage;
       const end = page * perPage;
-      res.status(200).json(rows.slice(start, end));
+      res.status(200).json({rows: rows.slice(start, end), totalPages});
 
       // res.status(200).json(rows);
     } else {
@@ -181,151 +162,36 @@ export async function getAllBookSum(req, res, next) {
   }
 }
 
-
-export async function getBookByTitle(req, res, next) {
+export async function getSearchBar(req, res, next) {
   try {
-    const context = {};
+    console.log("in getControllers.js");
+    let context = {};
 
-    context.Title = req.query.Title;
+    const count = req.query.count || 5;
 
-    const rows = await getBookByTitleDB(context);
+    if (req.query.text?.length > 0) {
+      context.text = req.query.text.toUpperCase().replace(/'/g, `''`);
+    } else{
+      res.status(404).json({message: "Not Found"});
+      return;
+    }
 
-    if (req.query.Title) {
-      if (rows.length > 0) {
-        res.status(200).json(rows);
-      } else {
-        res.status(404).end();
-      }
-    } else {
-      res.status(404).end();
+    if (req.query.sort) {
+      context.sort = req.query.sort;
+    }
+    if (req.query.order) {
+      context.order = req.query.order;
+    }
+
+    const rows = await getSearchBarDB(context);
+
+    if (rows.length > 0) {
+      const total = rows.length;
+      res.status(200).json(rows.slice(0, (total < count) ? total : count));
+
       // res.status(200).json(rows);
-    }
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function getTopBook(req, res, next) {
-  try {
-    const context = {};
-
-    context.COUNT = req.query.COUNT;
-
-    const rows = await getTopBookDB(context);
-
-    if (req.query.ISBN || req.query.Title) {
-      if (rows.length === 1) {
-        res.status(200).json(rows[0]);
-      } else {
-        res.status(404).end();
-      }
     } else {
-      res.status(200).json(rows);
-    }
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function getRecentBook(req, res, next) {
-  try {
-    const context = {};
-
-    context.COUNT = req.query.COUNT;
-
-    const rows = await getRecentBookDB(context);
-
-    if (req.query.ISBN || req.query.Title) {
-      if (rows.length === 1) {
-        res.status(200).json(rows[0]);
-      } else {
-        res.status(404).end();
-      }
-    } else {
-      res.status(200).json(rows);
-    }
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function getAvgRating(req, res, next) {
-  try {
-    const context = {};
-
-    context.ISBN = req.query.ISBN;
-
-    const rows = await getAvgRatingDB(context);
-
-    if (rows.length > 0) {
-      res.status(200).json(rows);
-    } else {
-      res.status(404).end();
-    }
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function getBook(req, res, next) {
-  try {
-    const context = {};
-
-    context.ISBN = req.query.ISBN;
-    context.TITLE = req.query.TITLE;
-
-    const rows = await getBookDB(context);
-
-    if (req.query.ISBN || req.query.Title) {
-      if (rows.length === 1) {
-        res.status(200).json(rows[0]);
-      } else {
-        res.status(404).end();
-      }
-    } else {
-      res.status(200).json(rows);
-    }
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function getAllAuthors(req, res, next) {
-  try {
-    const rows = await getAllAuthorsDB();
-
-    if (rows.length > 0) {
-      res.status(200).json(rows);
-    } else {
-      res.status(404).end();
-    }
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function getAllPublishers(req, res, next) {
-  try {
-    const rows = await getAllPublishersDB();
-
-    if (rows.length > 0) {
-      res.status(200).json(rows);
-    } else {
-      res.status(404).end();
-    }
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function getAllGenre(req, res, next) {
-  try {
-    const rows = await getAllGenreDB();
-
-    if (rows.length > 0) {
-      res.status(200).json(rows);
-    } else {
-      res.status(404).end();
+      res.status(404).json({message: "Not Found"});
     }
   } catch (err) {
     next(err);
@@ -481,145 +347,6 @@ export async function getMyMessages(req, res, next) {
   }
 }
 
-export async function getAuthorBooks(req, res, next) {
-  try {
-    const context = {};
-
-    context.AUTHOR_ID = req.query.AUTHOR_ID;
-
-    const rows = await getAuthorBooksDB(context);
-
-    if (rows.length > 0) {
-      res.status(200).json(rows);
-    } else {
-      res.status(404).end();
-    }
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function getPublisherBooks(req, res, next) {
-  try {
-    const context = {};
-    console.log(req.query);
-
-    context.PUBLISHER_ID = req.query.PUBLISHER_ID;
-
-    const rows = await getPublisherBooksDB(context);
-
-    if (rows.length > 0) {
-      res.status(200).json(rows);
-    } else {
-      res.status(404).end();
-    }
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function getUserRatedBooks(req, res, next) {
-  try {
-    //   let token = req.headers['x-access-token'];
-    //   jwt.verify(token, secret, async function(err, decoded) {
-    const context = {
-      USER_ID: req.query.USER_ID,
-    };
-
-    try {
-      const rows = await getUserRatedBooksDB(context);
-
-      if (rows.length > 0) {
-        res.status(200).json(rows);
-      } else {
-        res.status(404).end();
-      }
-    } catch (err) {
-      next(err);
-    }
-
-    // });
-    //
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function getUserReviewedBooks(req, res, next) {
-  try {
-    //   let token = req.headers['x-access-token'];
-    //   jwt.verify(token, secret, async function(err, decoded) {
-    //     let context = {
-    //       USER_ID: decoded.USER_ID,
-    //     };
-    context.USER_ID = req.query.USER_ID;
-
-    try {
-      const rows = await getUserReviewedBooksDB(context);
-
-      if (rows.length > 0) {
-        res.status(200).json(rows);
-      } else {
-        res.status(404).end();
-      }
-    } catch (err) {
-      next(err);
-    }
-
-    // });
-    //
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function getGenreBook(req, res, next) {
-  try {
-    const context = {};
-
-    context.ID = req.query.ID;
-    context.name = req.query.name;
-
-    const rows = await getGenreBookDB(context);
-
-    if (rows.length > 0) {
-      res.status(200).json(rows);
-    } else {
-      res.status(404).end();
-    }
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function getRating(req, res, next) {
-  try {
-    // let token = req.headers['x-access-token'];
-    // jwt.verify(token, secret, async function(err, decoded) {
-    //     let rate = {
-    //         USER_ID: decoded.USER_ID,
-    //         ISBN: req.query.ISBN
-    //     };
-    let rate = {};
-    rate.USER_ID = req.query.USER_ID;
-    rate.ISBN = req.query.ISBN;
-
-    try {
-      rate = await getRatingDB(rate);
-      if (rate.length > 0) {
-        res.status(201).json(rate);
-      } else {
-        res.status(404).end();
-      }
-    } catch (error) {
-      res.status(501).json(error);
-    }
-    // });
-  } catch (err) {
-    next(err);
-  }
-}
-
 export async function getOwnRatRev(req, res, next) {
   let ratrev = {};
   ratrev.USER_ID = req.USER_ID;
@@ -728,7 +455,6 @@ export async function getApplication(req, res, next) {
 }
 
 
-
 export async function getMyRentHistory(req, res, next) {
   try {
     const context = {};
@@ -802,124 +528,3 @@ export async function getAllRatRevOfBook(req, res, next) {
     next(err);
   }
 }
-
-export async function getCompleteBook(req, res, next) {
-  try {
-    const context = {};
-
-    context.ISBN = req.query.ISBN;
-    context.Title = req.query.Title;
-
-    const rows = await getCompleteBookDB(context);
-
-    if (rows.length >= 1) {
-      res.status(200).json(rows);
-    } else {
-      res.status(404).end();
-    }
-  } catch (err) {
-    next(err);
-  }
-}
-
-/// ////////////////////////
-
-export async function getBookshelves(req, res, next) {
-  try {
-    const token = req.headers["x-access-token"];
-    jwt.verify(token, secret, async (err, decoded) => {
-      let bookshelves = {
-        PERSON_ID: decoded.PERSON_ID,
-      };
-      if (req.query.BOOKSHELF_ID) {
-        bookshelves.BOOKSHELF_ID = req.query.BOOKSHELF_ID;
-      }
-      try {
-        bookshelves = await getBookshelvesDB(bookshelves);
-        if (bookshelves.length > 0) {
-          res.status(201).json(bookshelves);
-        } else {
-          res.status(404).end();
-        }
-      } catch (error) {
-        res.status(501).json(error);
-      }
-    });
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function getBooksFromBookshelf(req, res, next) {
-  try {
-    const token = req.headers["x-access-token"];
-    jwt.verify(token, secret, async (err, decoded) => {
-      let book = {
-        PERSON_ID: decoded.PERSON_ID,
-        BOOKSHELF_ID: req.query.BOOKSHELF_ID,
-      };
-
-      try {
-        book = await getBookFromBookshelfDB(book);
-        if (book.length > 0) {
-          res.status(201).json(book);
-        } else {
-          res.status(404).end();
-        }
-      } catch (error) {
-        res.status(501).json(error);
-      }
-    });
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function getAllAwards(req, res, next) {
-  try {
-    const rows = await getAllAwardsDB();
-
-    if (rows.length > 0) {
-      res.status(200).json(rows);
-    } else {
-      res.status(404).end();
-    }
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function getAllBinds(req, res, next) {
-  try {
-    const rows = await getAllBindsDB();
-
-    if (rows.length > 0) {
-      res.status(200).json(rows);
-    } else {
-      res.status(404).end();
-    }
-  } catch (err) {
-    next(err);
-  }
-}
-
-// export async function getAuthor(req, res, next){
-//     try {
-//         const context = {};
-//         context.ID = Number(req.query.ID);
-
-//         const rows = await getAuthorDB(context);
-
-//         if (req.query.ID) {
-//           if (rows.length === 1) {
-//             res.status(200).json(rows[0]);
-//           } else {
-//             res.status(404).end();
-//           }
-//         } else {
-//           res.status(200).json(rows);
-//         }
-//       } catch (err) {
-//         next(err);
-//       }
-// }
