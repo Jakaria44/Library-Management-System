@@ -132,6 +132,18 @@ INSERT INTO c##library.JOB(JOB_ID, SALARY, JOB_TITLE)
 VALUES (1, 200, 'Librarian');
 INSERT INTO c##library.JOB(JOB_ID, SALARY, JOB_TITLE)
 VALUES (2, 150, 'Cleaner');
+INSERT INTO c##library.JOB(SALARY, JOB_TITLE)
+VALUES (500, 'Computer Operator');
+INSERT INTO c##library.JOB(SALARY, JOB_TITLE)
+VALUES (50, 'Cheer Leader');
+INSERT INTO c##library.JOB(SALARY, JOB_TITLE)
+VALUES (150, 'Driver');
+INSERT INTO c##library.JOB(SALARY, JOB_TITLE)
+VALUES (200, 'Communicator');
+INSERT INTO c##library.JOB(SALARY, JOB_TITLE)
+VALUES (50, 'Binder');
+INSERT INTO c##library.JOB(SALARY, JOB_TITLE)
+VALUES (200, 'Cashier');
 
 --EMPLOYEE
 INSERT INTO c##library.EMPLOYEE(USER_ID, JOB_ID, JOIN_DATE, END_DATE)
@@ -157,6 +169,6 @@ VALUES (1, 'WELCOME TO THE LIBRARY', SYSDATE);
 INSERT INTO c##library.MESSAGE(MESSAGE_ID, USER_ID, MESSAGE_DATE, MESSAGE)
 VALUES (1, 1, SYSDATE + 9, 'Please, return the book as soon as possible or you will be fined.');
 
---TODO: INSERT HOY NAI
 --APPLY
 --ADMIN
+
