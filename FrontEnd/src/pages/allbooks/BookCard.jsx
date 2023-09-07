@@ -201,7 +201,7 @@ const BookCard = ({ book }) => {
       <Card
         onMouseLeave={handleMouseLeave}
         raised
-        sx={{ width: { sm: 200, xs: "100%" }, height: 370 }}
+        sx={{ width: { xs: "100%" }, height: 370 }}
         elevation={12}
       >
         <CardMedia

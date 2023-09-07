@@ -22,7 +22,6 @@ import { loader as DetailsLoader } from "../pages/Employee/addbook/EditBook";
 
 import { loader as favouritesLoader } from "../pages/Reader/MyFavourites";
 import { loader as bookDetailsLoader } from "./../pages/Details/Details";
-import { loader as allBooksLoader } from "./../pages/allbooks/AllBooks";
 
 // main routing
 const Structure = Loadable(lazy(() => import("../layout/Structure.jsx")));
@@ -53,7 +52,6 @@ const MainRoutes = {
     {
       path: "/allbooks",
       element: <AllBooks />,
-      loader: allBooksLoader,
     },
     {
       path: "/details/:id",

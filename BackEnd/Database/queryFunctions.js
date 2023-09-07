@@ -1,5 +1,4 @@
-import {queryExecute} from './database.js';
-import {deleteEmployee} from "../controllers/deleteController.js";
+import { queryExecute } from './database.js';
 
 // let result = null;
 //   try {
@@ -213,6 +212,7 @@ export async function getAllBookSumDB(context) {
   let query =
     "SELECT B.ISBN, B.TITLE, B.IMAGE, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE, " +
     "(SELECT MAX(E.PUBLISH_YEAR) FROM EDITION E WHERE E.ISBN = B.ISBN) AS PUBLISH_YEAR, " +
+    "(SELECT EDITION_ID FROM EDITION E WHERE E.ISBN = B.ISBN AND PUBLISH_YEAR >= ALL (SELECT PUBLISH_YEAR FROM EDITION E2 WHERE E2.ISBN = B.ISBN)) AS EDITION_ID, "+
     "(SELECT LISTAGG(A.NAME, ', ') FROM WRITTEN_BY WB JOIN AUTHOR A ON WB.AUTHOR_ID = A.AUTHOR_ID WHERE WB.ISBN = B.ISBN) AS AUTHORS, " +
     "NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, NVL(COUNT(DISTINCT F.USER_ID),0) AS FAVOURITE";
   if (context.USER_ID) {
@@ -261,11 +261,12 @@ export async function getAllBookSumDB(context) {
   if (context.YEAR_END) {
     query += `\nAND B.ISBN IN (SELECT E.ISBN FROM EDITION E WHERE E.PUBLISH_YEAR <= ${context.YEAR_END})`;
   }
-  if (context.RATING_START) {
+  if (context.RATING_START > 0) {
     query += `\nAND B.ISBN IN (SELECT R.ISBN FROM REVIEW_RATING R GROUP BY R.ISBN HAVING NVL(ROUND(AVG(R.RATING), 2), 0) >= ${context.RATING_START})`;
   }
   if (context.RATING_END) {
-    query += `\nAND B.ISBN IN (SELECT R.ISBN FROM REVIEW_RATING R GROUP BY R.ISBN HAVING NVL(ROUND(AVG(R.RATING), 2), 0) <= ${context.RATING_END})`;
+    query += `\nAND (B.ISBN IN (SELECT R.ISBN FROM REVIEW_RATING R GROUP BY R.ISBN HAVING NVL(ROUND(AVG(R.RATING), 2), 0) <= ${context.RATING_END})`+
+      `\nOR B.ISBN NOT IN (SELECT R.ISBN FROM REVIEW_RATING R GROUP BY R.ISBN))`;
   }
   query +=
     '\nGROUP BY B.ISBN, B.TITLE, B.IMAGE, B.NUMBER_OF_PAGES, B.LANGUAGE';

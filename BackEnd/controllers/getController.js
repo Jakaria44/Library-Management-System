@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import {secret} from "../Database/databaseConfiguration.js";
+import { secret } from "../Database/databaseConfiguration.js";
 import {
   getAllAuthorsDB,
   getAllAwardsDB,
@@ -8,8 +8,11 @@ import {
   getAllBookSumDB,
   getAllGenreDB,
   getAllLanguagesDB,
+  getAllNewsDB,
   getAllPublishersDB,
   getAllRatRevOfBookDB,
+  getAllRequestsDB,
+  getAllUsersDB,
   getAuthorBooksDB,
   getAuthorDB,
   getAvgRatingDB,
@@ -19,30 +22,26 @@ import {
   getBookFromBookshelfDB,
   getBookshelvesDB,
   getCompleteBookDB,
+  getEditionDB,
+  getEmployeeDB,
   getGenreBookDB,
   getGenreDB,
+  getJobDB,
+  getMyFineHistoryDB,
+  getMyMessagesDB,
+  getMyRentHistoryDB,
+  getMyRequestsDB,
   getOwnRatRevDB,
   getPublisherBooksDB,
   getPublisherDB,
   getRatingDB,
   getRecentBookDB,
+  getRunningFineDB,
   getTopBookDB,
   getUserDetailsDB,
   getUserRatedBooksDB,
-  getUserReviewedBooksDB,
-  getMyRequestsDB,
-  getMyRentHistoryDB,
-  getMyFineHistoryDB,
-  getAllRequestsDB,
-  getRunningFineDB,
-  getMyMessagesDB,
-  getAllNewsDB,
-  getAllUsersDB,
-  getEditionDB,
-  getEmployeeDB,
-  getJobDB
+  getUserReviewedBooksDB
 } from "../Database/queryFunctions.js";
-import {queryExecute} from "../Database/database.js";
 
 
 export async function getUserDetails(req, res, next) {
@@ -111,47 +110,47 @@ export async function getAllBookSum(req, res, next) {
     if (req.USER_ID) {
       context.USER_ID = req.USER_ID;
     }
-    if (req.body.MY_FAV) {
-      context.MY_FAV = req.body.MY_FAV;
+    if (req.query.MY_FAV) {
+      context.MY_FAV = (req.query.MY_FAV === 'true');
     }
-    if (req.body.MY_RAT) {
-      context.MY_RAT = req.body.MY_RAT;
+    if (req.query.MY_RAT) {
+      context.MY_RAT = (req.query.MY_RAT === 'true');
     }
-    if (req.body.ISBN) {
-      context.ISBN = req.body.ISBN;
+    if (req.query.ISBN) {
+      context.ISBN = req.query.ISBN;
     }
-    if (req.body.TITLE) {
-      context.TITLE = req.body.TITLE.toUpperCase();
+    if (req.query.TITLE) {
+      context.TITLE = req.query.TITLE.toUpperCase();
     }
-    if (req.body.LANGUAGE) {
-      context.LANGUAGE = req.body.LANGUAGE.toUpperCase();
+    if (req.query.LANGUAGE) {
+      context.LANGUAGE = req.query.LANGUAGE.toUpperCase();
     }
-    if (req.body.PAGE_START) {
-      context.PAGE_START = req.body.PAGE_START;
+    if (req.query.PAGE_START) {
+      context.PAGE_START = parseInt(req.query.PAGE_START);
     }
-    if (req.body.PAGE_END) {
-      context.PAGE_END = req.body.PAGE_END;
+    if (req.query.PAGE_END) {
+      context.PAGE_END = parseInt(req.query.PAGE_END);
     }
-    if (req.body.YEAR_START) {
-      context.YEAR_START = req.body.YEAR_START;
+    if (req.query.YEAR_START) {
+      context.YEAR_START = parseInt(req.query.YEAR_START);
     }
-    if (req.body.YEAR_END) {
-      context.YEAR_END = req.body.YEAR_END;
+    if (req.query.YEAR_END) {
+      context.YEAR_END = parseInt(req.query.YEAR_END);
     }
-    if (req.body.RATING_START) {
-      context.RATING_START = req.body.RATING_START;
+    if (req.query.RATING_START) {
+      context.RATING_START = parseFloat(req.query.RATING_START,2);
     }
-    if (req.body.RATING_END) {
-      context.RATING_END = req.body.RATING_END;
+    if (req.query.RATING_END) {
+      context.RATING_END =parseFloat( req.query.RATING_END, 2);
     }
-    if (req.body.AUTHOR_ID) {
-      context.AUTHOR_ID = req.body.AUTHOR_ID;
+    if (req.query.AUTHOR_ID) {
+      context.AUTHOR_ID = req.query.AUTHOR_ID;
     }
-    if (req.body.PUBLISHER_ID) {
-      context.PUBLISHER_ID = req.body.PUBLISHER_ID;
+    if (req.query.PUBLISHER_ID) {
+      context.PUBLISHER_ID = req.query.PUBLISHER_ID;
     }
-    if (req.body.GENRE_ID) {
-      context.GENRE_ID = req.body.GENRE_ID;
+    if (req.query.GENRE_ID) {
+      context.GENRE_ID = req.query.GENRE_ID;
     }
     if (req.query.sort) {
       context.sort = req.query.sort;
@@ -741,7 +740,7 @@ export async function getRunningFine(req, res, next) {
     const context = {};
     context.sort = req.query.sort;
     context.order = req.query.order;
-    context.CHECK = req.body.CHECK;
+    context.CHECK = req.query.CHECK;
     const rows = await getRunningFineDB(context);
 
     if (rows.length > 0) {

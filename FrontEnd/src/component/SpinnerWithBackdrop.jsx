@@ -14,6 +14,7 @@ const SpinnerWithBackdrop = ({ backdropOpen, helperText }) => {
           flexDirection: "column",
           alignItems: "center",
         }}
+        margin="auto"
       >
         <CircularProgress color="inherit" />
         <Typography variant="body2" color="inherit" mt={2}>

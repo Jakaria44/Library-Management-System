@@ -158,7 +158,7 @@ GET http://localhost:3000/db-api/getPublisher?pid=1
 }
 
 #### --- GET one/all GENRE ---
-GET http://localhost:3000/db-api/getGenre?gid=1
+GET http://localhost:3000/db-api/getGenre
 
 ###OUTPUT
 {
