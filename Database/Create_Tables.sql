@@ -41,7 +41,6 @@ CREATE TABLE AUTHOR
     Image       VARCHAR2(200) DEFAULT 'https://previews.123rf.com/images/anatolir/anatolir1712/anatolir171201476/91832679-man-avatar-icon-flat-illustration-of-man-avatar-vector-icon-isolated-on-white-background.jpg'
 );
 
---TODO: PUBLISH_YEAR DROP
 CREATE TABLE BOOK
 (
     ISBN            VARCHAR2(20) PRIMARY KEY,
@@ -54,7 +53,6 @@ CREATE TABLE BOOK
     FOREIGN KEY (Publisher_ID) REFERENCES PUBLISHER (Publisher_ID)
 );
 
---TODO: PUBLISH_YEAR NOT NULL
 CREATE TABLE EDITION
 (
     Edition_ID    VARCHAR2(20) PRIMARY KEY,
