@@ -1050,7 +1050,7 @@ Content-Type: application/json
 
 {
   "USER_ID": "1",
-  "JOB_ID": "2"
+  "JOB_ID": "1"
 }
 
 #### ---- Reject Application ----
@@ -1117,7 +1117,7 @@ DELETE http://localhost:3000/db-api/getJob?jid=4
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
 
 #### ---- GET ONE/ALL EMPLOYEE ----
-GET http://localhost:3000/db-api/employee?uid=1&sort=NAME&order=DESC
+GET http://localhost:3000/db-api/employee?sort=NAME&order=DESC
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
 
 ###OUTPUT
@@ -1136,3 +1136,7 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUi
 #### ---- DELETE one EMPLOYEE ----
 DELETE http://localhost:3000/db-api/employee?uid=1
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+
+#### ----- resign employee ----
+DELETE http://localhost:3000/db-api/employee/resign
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5NDA1ODMzNSwiZXhwIjoxNzY2MDU4MzM1fQ.y6nQKzajOs33K-s7xBiYc06F5rqxopBRXUpUWlJRkMk
