@@ -201,6 +201,7 @@ const dbConfig = {
           let editions = await getEditionsId(isbn);
           let eid = editions[Math.floor(Math.random() * editions.length)];
           let date = getRandomDate();
+          
           let date2 = new Date(date + Math.floor(Math.random() * 1000 * 60 * 60 * 24 * 30))
           console.log(i, date, date2);
           let status = Math.floor(Math.random() * 2 + 0.2);

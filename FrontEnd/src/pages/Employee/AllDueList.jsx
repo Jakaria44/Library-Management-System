@@ -16,30 +16,32 @@ const NoRequestOverlay = () => (
 const Application = () => {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [queryOptions, setQueryOptions] = useState({
-    sort: "STATUS",
-    order: "DESC",
-  });
-
   useEffect(() => {
-    fetchData();
-  }, [queryOptions]);
+    fetchData({
+      sort: "STATUS",
+      order: "DESC",
+    });
+  }, []);
 
   const handleSortModelChange = useCallback((sortModel) => {
     // Here you save the data you need from the sort model
     console.log(sortModel);
-    setQueryOptions({
-      sort:
-        sortModel[0].field === "STATUS" ? "PAYMENT_DATE" : sortModel[0].field,
+    const query = {
+      sort: sortModel[0]?.field || "STATUS",
       order: sortModel[0]?.sort === "asc" ? "ASC" : "DESC",
-    });
+    };
+
+    fetchData(query);
   }, []);
 
-  const fetchData = async () => {
+  const fetchData = async (queryOptions) => {
     try {
       setLoading(true);
       const response = await server.get("/all-fine", {
-        params: { ...queryOptions, USER: false, EMPLOYEE: true, ADMIN: true },
+        params: {
+          ...queryOptions,
+          CHECK: true,
+        },
       });
 
       console.log("all due data", response.data);
@@ -141,8 +143,8 @@ const Application = () => {
         ]}
         loading={loading}
         pagination
-        sortingMode="server"
-        onSortModelChange={handleSortModelChange}
+        sortingMode={rows.length > 100 ? "server" : "client"}
+        onSortModelChange={rows.length > 100 ? handleSortModelChange : null}
         slots={{
           noRowsOverlay: NoRequestOverlay,
           toolbar: GridToolbar,

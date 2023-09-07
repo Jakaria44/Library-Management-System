@@ -69,8 +69,8 @@ const TitleAndCoverPage = ({ book, editions }) => {
 
   const initializeCategory = () => {
     const category = [];
-    const genre = JSON.parse(book.GENRE);
-    genre.forEach((element) => {
+    const genre = JSON.parse(book?.GENRE);
+    genre?.forEach((element) => {
       category.push({ name: element.NAME, id: element.ID });
     });
     setCategory(category);

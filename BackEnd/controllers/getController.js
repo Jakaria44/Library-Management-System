@@ -770,7 +770,7 @@ export async function getRunningFine(req, res, next) {
     const context = {};
     context.sort = req.query.sort;
     context.order = req.query.order;
-    context.CHECK = req.body.CHECK;
+    context.CHECK = req.query.CHECK === 'true';
     const rows = await getRunningFineDB(context);
 
     if (rows.length > 0) {

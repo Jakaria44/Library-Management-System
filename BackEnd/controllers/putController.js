@@ -1,30 +1,28 @@
 import jwt from 'jsonwebtoken';
-import {secret} from '../Database/databaseConfiguration.js';
+import { secret } from '../Database/databaseConfiguration.js';
 import {
   updateAdminDB,
   updateAuthorDB,
   updateBookDB,
-  updateGenreDB,
-  updatePublisherDB,
-  updateUserDB,
-  updateHistoryDB,
-  updateMessageDB,
   updateEditionDB,
-  createBookDB,
-  updateJobDB
+  updateGenreDB,
+  updateHistoryDB,
+  updateJobDB,
+  updateMessageDB,
+  updatePublisherDB,
+  updateUserDB
 } from '../Database/queryFunctions.js';
-import bcrypt from "bcrypt";
 
 
 export async function updateBook(req, res, next) {
   try {
     let book = {
       ISBN: req.body.ISBN,
-      TITLE: req.body.TITLE,
+      TITLE: req.body.TITLE.replace(/'/g, '"'),
       IMAGE: req.body?.IMAGE,
       NUMBER_OF_PAGES: Number(req.body.NUMBER_OF_PAGES),
       LANGUAGE: req.body.LANGUAGE,
-      DESCRIPTION: req.body.DESCRIPTION,
+      DESCRIPTION: req.body.DESCRIPTION.replace(/'/g, '"'),
       PUBLISHER_ID: req.body.PUBLISHER_ID,
       AUTHORS: req.body.Authors,
       GENRES: req.body.Genres,
@@ -55,11 +53,11 @@ export async function updateAuthor(req, res, next) {
   try {
     let author = {
       AUTHOR_ID: req.body.AUTHOR_ID,
-      NAME: req.body.NAME,
+      NAME: req.body.NAME.replace(/'/g, '"'),
       DoB: new Date(req.body.DoB),
       DoD: req.body.DoD ? new Date(req.body.DoD) : null,
       NATIONALITY: req.body.NATIONALITY,
-      BIO: req.body.BIO,
+      BIO: req.body.BIO.replace(/'/g, '"'),
       IMAGE: req.body.IMAGE
     };
     author = await updateAuthorDB(author);

@@ -173,6 +173,7 @@ export default function AddBook({ bookDetails }) {
 
     try {
       let res;
+      console.log(generalInfo.language.code, bookDetails);
       if (bookDetails) {
         res = await server.put("/book", generalInfoSubmit);
       } else {

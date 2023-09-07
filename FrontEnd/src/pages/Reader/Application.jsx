@@ -1,19 +1,15 @@
 import { Delete } from "@mui/icons-material";
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
-import {
-  GridToolbar,
-  GridToolbarContainer,
-  GridToolbarExport,
-} from "@mui/x-data-grid";
+import { GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
 import { useConfirm } from "material-ui-confirm";
 import React, { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import ErrorModal from "../../component/ErrorModal";
 import StyledDataGrid from "../../component/StyledDataGrid";
 import SuccessfullModal from "../../component/SuccessfulModal";
 import TimeFormat from "../../utils/TimeFormat";
 import server from "./../../HTTP/httpCommonParam";
 import CustomNoRowsOverlay from "./../../component/CustomNoRowsOverlay";
-import { Link } from "react-router-dom";
 const NoRequestOverlay = () => (
   <CustomNoRowsOverlay text="No Pending Requests" />
 );
@@ -23,25 +19,26 @@ const Application = () => {
   const [rows, setRows] = useState([]);
   const [selected, setSelected] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [queryOptions, setQueryOptions] = useState({
-    sort: "REQUEST_DATE",
-    order: "DESC",
-  });
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   useEffect(() => {
-    fetchData();
-  }, [queryOptions]);
+    fetchData({
+      sort: "STATUS",
+      order: "DESC",
+    });
+  }, []);
 
   const handleSortModelChange = useCallback((sortModel) => {
     // Here you save the data you need from the sort model
     console.log(sortModel);
-    setQueryOptions({
-      sort: sortModel[0]?.field || "REQUEST_DATE",
+    const query = {
+      sort: sortModel[0]?.field || "STATUS",
       order: sortModel[0]?.sort === "asc" ? "ASC" : "DESC",
-    });
+    };
+
+    fetchData(query);
   }, []);
-  const fetchData = async () => {
+  const fetchData = async (queryOptions) => {
     try {
       setLoading(true);
       const response = await server.get(
@@ -100,7 +97,6 @@ const Application = () => {
   function CustomToolbar() {
     return (
       <GridToolbarContainer sx={{ margin: "16px" }}>
-        {rows.length !== 0 && <GridToolbarExport />}
         <IconButton
           sx={{ display: `${selected.length === 0 ? "none" : "block"}` }}
           onClick={handleDelete}
@@ -109,6 +105,8 @@ const Application = () => {
         >
           <Delete />
         </IconButton>
+        <GridToolbar showQuickFilter />
+        {/* {rows.length !== 0 && <GridToolbarExport />} */}
       </GridToolbarContainer>
     );
   }
@@ -119,10 +117,10 @@ const Application = () => {
         variant="h2"
         textAlign="center"
         gutterBottom
-        p={2}
+        // pb={2}
         component="div"
       >
-        My Requests
+        My Application for Books
       </Typography>
       <StyledDataGrid
         rows={rows}
@@ -153,17 +151,17 @@ const Application = () => {
         pagination
         checkboxSelection
         onRowSelectionModelChange={(newSelection) => setSelected(newSelection)}
-        sortingMode="server"
-        onSortModelChange={handleSortModelChange}
+        sortingMode={rows.length > 100 ? "server" : "client"}
+        onSortModelChange={rows.length > 100 ? handleSortModelChange : null}
         slots={{
           noRowsOverlay: NoRequestOverlay,
-          toolbar: GridToolbar,
+          toolbar: CustomToolbar,
         }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
+        // slotProps={{
+        //   toolbar: {
+        //     showQuickFilter: true,
+        //   },
+        // }}
         disableColumnFilter
         disableDensitySelector
       />

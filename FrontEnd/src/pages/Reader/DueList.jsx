@@ -27,23 +27,24 @@ const DueList = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [queryOptions, setQueryOptions] = useState({
-    sort: "STATUS",
-    order: "DESC",
-  });
   useEffect(() => {
-    fetchData();
-  }, [queryOptions]);
+    fetchData({
+      sort: "STATUS",
+      order: "DESC",
+    });
+  }, []);
 
   const handleSortModelChange = useCallback((sortModel) => {
     // Here you save the data you need from the sort model
     console.log(sortModel);
-    setQueryOptions({
+    const query = {
       sort: sortModel[0]?.field || "STATUS",
       order: sortModel[0]?.sort === "asc" ? "ASC" : "DESC",
-    });
+    };
+
+    fetchData(query);
   }, []);
-  const fetchData = async () => {
+  const fetchData = async (queryOptions) => {
     try {
       setLoading(true);
       const response = await server.get("/my-fine-history", {
@@ -167,8 +168,8 @@ const DueList = () => {
         ]}
         loading={loading}
         pagination
-        sortingMode="server"
-        onSortModelChange={handleSortModelChange}
+        sortingMode={rows.length > 100 ? "server" : "client"}
+        onSortModelChange={rows.length > 100 ? handleSortModelChange : null}
         slots={{
           noRowsOverlay: NoRowsOverlay,
           toolbar: GridToolbar,

@@ -14,28 +14,36 @@ const Users = () => {
   const confirm = useConfirm();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [queryOptions, setQueryOptions] = useState({
-    sort: "NAME",
-    order: "DESC",
-  });
+  // const [queryOptions, setQueryOptions] = useState({
+  //   sort: "NAME",
+  //   order: "DESC",
+  // });
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  // useEffect(() => {
+  //   fetchData();
+  // }, [queryOptions]);
   useEffect(() => {
-    fetchData();
-  }, [queryOptions]);
+    fetchData({
+      sort: "STATUS",
+      order: "DESC",
+    });
+  }, []);
 
   const handleSortModelChange = useCallback((sortModel) => {
     // Here you save the data you need from the sort model
     console.log(sortModel);
-    setQueryOptions({
-      sort: sortModel[0]?.field || "REQUEST_DATE",
+    const query = {
+      sort: sortModel[0]?.field || "STATUS",
       order: sortModel[0]?.sort === "asc" ? "ASC" : "DESC",
-    });
+    };
+
+    fetchData(query);
   }, []);
 
-  const fetchData = async () => {
+  const fetchData = async (queryOptions) => {
     try {
       setLoading(true);
       const response = await server.get("/all-users", {
@@ -115,8 +123,8 @@ const Users = () => {
         ]}
         loading={loading}
         pagination
-        sortingMode="server"
-        onSortModelChange={handleSortModelChange}
+        sortingMode={rows.length > 100 ? "server" : "client"}
+        onSortModelChange={rows.length > 100 ? handleSortModelChange : null}
         slots={{
           noRowsOverlay: NoRequestOverlay,
           toolbar: GridToolbar,

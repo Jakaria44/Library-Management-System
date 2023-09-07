@@ -1,20 +1,15 @@
 import { CheckCircle, Error } from "@mui/icons-material";
 import { Box, Tooltip, Typography } from "@mui/material";
-import {
-  GridActionsCellItem,
-  GridToolbar,
-  GridToolbarContainer,
-  GridToolbarExport,
-} from "@mui/x-data-grid";
+import { GridActionsCellItem, GridToolbar } from "@mui/x-data-grid";
 import { useConfirm } from "material-ui-confirm";
 import React, { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import ErrorModal from "../../component/ErrorModal";
 import StyledDataGrid from "../../component/StyledDataGrid";
 import SuccessfulModal from "../../component/SuccessfulModal";
 import TimeFormat from "../../utils/TimeFormat";
 import server from "./../../HTTP/httpCommonParam";
 import CustomNoRowsOverlay from "./../../component/CustomNoRowsOverlay";
-import { Link } from "react-router-dom";
 
 // import { alpha, styled } from "@mui/material/styles";
 // import { gridClasses } from "@mui/x-data-grid";
@@ -57,27 +52,28 @@ const Collections = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [queryOptions, setQueryOptions] = useState({
-    sort: "STATUS",
-    order: "DESC",
-  });
   useEffect(() => {
-    fetchData();
-  }, [queryOptions]);
+    fetchData({
+      sort: "STATUS",
+      order: "DESC",
+    });
+  }, []);
 
   const handleSortModelChange = useCallback((sortModel) => {
     // Here you save the data you need from the sort model
     console.log(sortModel);
-    setQueryOptions({
+    const query = {
       sort: sortModel[0]?.field || "STATUS",
       order: sortModel[0]?.sort === "asc" ? "ASC" : "DESC",
-    });
+    };
+
+    fetchData(query);
   }, []);
-  const fetchData = async () => {
+  const fetchData = async (query) => {
     try {
       setLoading(true);
       const response = await server.get("/my-rent-history", {
-        params: queryOptions,
+        params: query,
       });
 
       const data = response.data.map((item) => ({
@@ -190,8 +186,8 @@ const Collections = () => {
         loading={loading}
         pagination
         disableRowSelectionOnClick
-        sortingMode="server"
-        onSortModelChange={handleSortModelChange}
+        sortingMode={rows.length > 100 ? "server" : "client"}
+        onSortModelChange={rows.length > 100 ? handleSortModelChange : null}
         slots={{
           noRowsOverlay: NoRowsOverlay,
           toolbar: GridToolbar,
@@ -206,7 +202,7 @@ const Collections = () => {
       />
       <SuccessfulModal
         showSuccessMessage={showSuccessMessage}
-        successMessage="We've recieved the book. Thanks"
+        successMessage={successMessage}
         HandleModalClosed={() => {
           setShowSuccessMessage(false);
           fetchData();

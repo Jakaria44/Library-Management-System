@@ -28,10 +28,6 @@ const Application = () => {
   const confirm = useConfirm();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [queryOptions, setQueryOptions] = useState({
-    sort: "REQUEST_DATE",
-    order: "DESC",
-  });
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
@@ -39,9 +35,6 @@ const Application = () => {
   const [returnDate, setReturnDate] = useState(
     dayjs(dayjs(new Date()).add(7, "days").format("YYYY-MM-DD"))
   );
-  useEffect(() => {
-    fetchData();
-  }, [queryOptions]);
 
   const handleAcceptRequest = useCallback((row) => async () => {
     try {
@@ -72,7 +65,7 @@ const Application = () => {
                   onChange={(newValue) => {
                     date = newValue.toDate();
                     console.log(date);
-                    return setReturnDate(newValue);
+                    setReturnDate(newValue);
                   }}
                 />
               </DemoItem>
@@ -82,11 +75,11 @@ const Application = () => {
       });
 
       try {
-        console.log(row.USER_ID, row.EDITION_ID, date);
+        console.log(row.USER_ID, row.EDITION_ID, returnDate);
         const res = await server.post("/handle-request", {
           USER_ID: row.USER_ID,
           EDITION_ID: row.EDITION_ID,
-          RETURN_DATE: date,
+          RETURN_DATE: returnDate,
         });
         setSuccessMessage(res.data.message);
         setShowSuccessMessage(true);
@@ -124,7 +117,7 @@ const Application = () => {
             EDITION_ID: row.EDITION_ID,
           },
         });
-      
+
         setSuccessMessage(res.data.message);
         setShowSuccessMessage(true);
       } catch (err) {
@@ -136,17 +129,25 @@ const Application = () => {
       console.log(err);
     }
   });
+  useEffect(() => {
+    fetchData({
+      sort: "STATUS",
+      order: "DESC",
+    });
+  }, []);
 
   const handleSortModelChange = useCallback((sortModel) => {
     // Here you save the data you need from the sort model
     console.log(sortModel);
-    setQueryOptions({
-      sort: sortModel[0]?.field || "REQUEST_DATE",
+    const query = {
+      sort: sortModel[0]?.field || "STATUS",
       order: sortModel[0]?.sort === "asc" ? "ASC" : "DESC",
-    });
+    };
+
+    fetchData(query);
   }, []);
 
-  const fetchData = async () => {
+  const fetchData = async (queryOptions) => {
     try {
       setLoading(true);
       const response = await server.get("/all-requests", {
@@ -265,8 +266,8 @@ const Application = () => {
         ]}
         loading={loading}
         pagination
-        sortingMode="server"
-        onSortModelChange={handleSortModelChange}
+        sortingMode={rows.length > 100 ? "server" : "client"}
+        onSortModelChange={rows.length > 100 ? handleSortModelChange : null}
         slots={{
           noRowsOverlay: NoRequestOverlay,
           toolbar: GridToolbar,
