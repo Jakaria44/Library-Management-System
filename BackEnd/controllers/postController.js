@@ -213,7 +213,7 @@ export async function addRequest(req, res, next) {
       return;
     }
     result = await getMyRequestsDB(request);
-    if (result.length >= 5) {
+    if (result.length >= 20) {
       res.status(403).json({message: "MAXIMUM LIMIT REACHED"});
       return;
     }

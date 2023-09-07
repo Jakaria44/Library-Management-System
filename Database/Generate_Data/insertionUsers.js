@@ -19,16 +19,6 @@ const dbConfig = {
     // Establish a database connection
     connection = await oracledb.getConnection(dbConfig);
 
-    async function updateEdition() {
-      await connection.execute(
-        `UPDATE EDITION
-         SET NUM_OF_COPIES = ${Math.floor(Math.random() * 11)}`,
-        {}
-      );
-    }
-
-    await updateEdition();
-
     async function getUserId(data) {
       let result = await connection.execute(`SELECT USER_ID
                                              FROM "USER"
@@ -46,6 +36,22 @@ const dbConfig = {
         return result.rows[0][0];
       }
       return null;
+    }
+
+    async function updateUser(data) {
+      let result = await connection.execute(`SELECT USER_ID
+                                             FROM "USER"
+                                             WHERE LOWER(EMAIL) = LOWER('${data.email}')`, {});
+      if (result.rows.length > 0) {
+        const address = data.address.address?data.address.address:'address';
+        const city = data.address.city?data.address.city:'city';
+        const state = data.address.state?data.address.state:'state';
+        await connection.execute(
+          `UPDATE "USER"
+          SET ADDRESS = '${address}'||', '||'${city}'||', '||'${state}'|| ', USA'
+          WHERE LOWER(EMAIL) = LOWER('${data.email}')`,
+          {})
+      }
     }
 
     async function getIsbns() {
@@ -119,10 +125,13 @@ const dbConfig = {
       console.log(user.id, count);
 
       try {
-        let uid = await getUserId(user);
-        if (uid === null) {
+        await updateUser(user);
+        await connection.commit();
+
+        // let uid = await getUserId(user);
+        // if (uid === null) {
           continue;
-        }
+        // }
 
         console.log('a', uid);
 
