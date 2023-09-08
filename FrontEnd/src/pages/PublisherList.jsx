@@ -179,7 +179,10 @@ const PublisherCard = ({ author = null }) => {
           <Skeleton animation="wave" variant="text" width="100%" height={50} />
         </Box>
       ) : (
-        <CardActionArea>
+        <CardActionArea
+          component={Link}
+          to={"/publishers/" + author.PUBLISHER_ID + "/" + author.NAME}
+        >
           <CardMedia
             component="img"
             height="240"
@@ -188,8 +191,6 @@ const PublisherCard = ({ author = null }) => {
           />
           <CardContent>
             <Box
-              component={Link}
-              to={"/publishers/" + author.PUBLISHER_ID + "/" + author.NAME}
               sx={{
                 textDecoration: "none",
                 display: "flex",

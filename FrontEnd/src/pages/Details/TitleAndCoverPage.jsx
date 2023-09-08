@@ -151,7 +151,7 @@ const TitleAndCoverPage = ({ book, editions }) => {
                 textDecoration: "none",
               }}
             >
-              {author.NAME}
+              {author.NAME + ", "}
             </Link>
           ))}
         </>

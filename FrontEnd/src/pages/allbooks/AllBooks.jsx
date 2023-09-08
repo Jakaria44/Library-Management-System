@@ -15,7 +15,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import server from "./../../HTTP/httpCommonParam";
 export const sortOptions = [
   { query: "TITLE", name: "Title" },
@@ -25,7 +25,7 @@ export const sortOptions = [
   { query: "PUBLISH_YEAR", name: "Latest" },
 ];
 export const defaultQueryOptions = {
-  perPage: 24,
+  perPage: 32,
   page: 1,
   sort: sortOptions[0].query,
   order: "ASC",
@@ -49,10 +49,11 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
   const [queryOptions, setQueryOptions] = useState(defaultQueryOptions);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]); // [] is the initial state value
-
+  const [total, setTotal] = useState(0); // 0 is the initial state value
   // const count = Math.ceil(data.length / queryOptions.perPage);
-  const count = Math.ceil(2325 / queryOptions.perPage);
+  // const count = Math.ceil(total / queryOptions.perPage);
 
+  const count = useMemo(() => total, [total]);
   const handleChange = (e, p) => {
     setQueryOptions({ queries, page: p });
     loadAllBooks({ queries, page: p });
@@ -67,8 +68,10 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
     try {
       const res = await server.get("/all-books-sum", { params: queryOptions });
       console.log("res");
+      setTotal(res.data.totalPages);
+      console.log(res.data.totalPages);
       setData(
-        res.data.map((e) => ({
+        res.data.rows?.map((e) => ({
           ISBN: e.ISBN,
           TITLE: e.TITLE,
           IMAGE: e.IMAGE,
@@ -202,8 +205,8 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
       >
         <Pagination
           sx={{ margin: "auto" }}
-          showFirstButton
-          showLastButton
+          // showFirstButton
+          // showLastButton
           count={count}
           color="primary"
           page={queryOptions.page}

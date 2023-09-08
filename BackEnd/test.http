@@ -70,7 +70,7 @@ Content-Type: application/json
 }
 
 #### ----GET ALL-RAT-REV of BOOK----
-GET http://localhost:3000/db-api/all-rat-rev?id=9788726647693
+GET http://localhost:3000/db-api/all-rat-rev?id=9780521256032
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjk0MTE4NjgyLCJleHAiOjE3NjYxMTg2ODJ9.t4Hu3R60IuE6T0KwXk5VBg_Tvxj08la_Zw-DL8hiZm0
 ###output
 {
@@ -836,20 +836,24 @@ GET http://localhost:3000/db-api/all-books-sum?sort=RATING&order=DESC
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
 
 ###OUTPUT
-[
-  {
-    "ISBN": "9781408894743",
-    "TITLE": "Harry Potter and the Deathly Hallows",
-    "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/Harry_Potter_and_the_Deathly_Hallows_(Se-J.K_Rowling-699a7-122325.jpg",
-    "PAGE": 608,
-    "LANGUAGE": "English",
-    "PUBLISH_YEAR": 2010,
-    "AUTHORS": "J. K. Rowling",
-    "RATING": 5,
-    "FAVOURITE": 1,
-    "IS_FAVOURITE": 1
-  }
-]
+{
+  [
+    {
+      "ISBN": "9781408894743",
+      "TITLE": "Harry Potter and the Deathly Hallows",
+      "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/Harry_Potter_and_the_Deathly_Hallows_(Se-J.K_Rowling-699a7-122325.jpg",
+      "PAGE": 608,
+      "LANGUAGE": "en",
+      "PUBLISH_YEAR": 2010,
+      "EDITION_ID": "11",
+      "AUTHORS": "J. K. Rowling",
+      "RATING": 5,
+      "FAVOURITE": 1,
+      "IS_FAVOURITE": 1
+    }
+  ]
+  "totalPages": 117
+}
 
 ##### ----GET All Books (sorted AND advanced searched) ----
 GET http://localhost:3000/db-api/all-book
