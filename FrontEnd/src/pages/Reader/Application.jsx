@@ -23,7 +23,7 @@ const Application = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   useEffect(() => {
     fetchData({
-      sort: "STATUS",
+      sort: "REQUEST_DATE",
       order: "DESC",
     });
   }, []);
@@ -32,7 +32,7 @@ const Application = () => {
     // Here you save the data you need from the sort model
     console.log(sortModel);
     const query = {
-      sort: sortModel[0]?.field || "STATUS",
+      sort: sortModel[0]?.field || "REQUEST_DATE",
       order: sortModel[0]?.sort === "asc" ? "ASC" : "DESC",
     };
 
@@ -41,12 +41,10 @@ const Application = () => {
   const fetchData = async (queryOptions) => {
     try {
       setLoading(true);
-      const response = await server.get(
-        "http://localhost:3000/db-api/my-requests",
-        {
-          params: queryOptions,
-        }
-      );
+      const response = await server.get("/my-requests", {
+        params: queryOptions,
+      });
+      console.log(response.data);
       const data = response.data.map((item) => ({
         id: item.EDITION_ID,
         ISBN: item.ISBN,

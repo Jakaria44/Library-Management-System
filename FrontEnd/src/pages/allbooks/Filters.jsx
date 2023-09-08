@@ -137,7 +137,7 @@ const Filters = ({ queries, loadAllBooks }) => {
   const fetchAuthorGenrePublisher = async () => {
     try {
       let PublisherList = [];
-      res = await server.get("/getPublisher");
+      let res = await server.get("/getPublisher");
       PublisherList = res.data;
       if (!Array.isArray(res.data)) {
         PublisherList = [res.data];
@@ -150,6 +150,7 @@ const Filters = ({ queries, loadAllBooks }) => {
         GenreList = [res.data];
       }
 
+      console.log(GenreList);
       let LanguageList = [];
       res = await server.get("/getLanguage");
       LanguageList = res.data;
@@ -547,8 +548,6 @@ const Filters = ({ queries, loadAllBooks }) => {
                 //   option.AUTHOR_ID === value.AUTHOR_ID
                 // }
                 noOptionsText="No Category Found"
-                loading
-                loadingText={<CircularProgress />}
               />
             </Grid>
           </Grid>

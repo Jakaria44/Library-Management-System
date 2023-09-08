@@ -27,7 +27,7 @@ const Users = () => {
   // }, [queryOptions]);
   useEffect(() => {
     fetchData({
-      sort: "STATUS",
+      sort: "NAME",
       order: "DESC",
     });
   }, []);
@@ -36,7 +36,7 @@ const Users = () => {
     // Here you save the data you need from the sort model
     console.log(sortModel);
     const query = {
-      sort: sortModel[0]?.field || "STATUS",
+      sort: sortModel[0]?.field || "NAME",
       order: sortModel[0]?.sort === "asc" ? "ASC" : "DESC",
     };
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // material-ui
 import {
@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 
+import server from "./../../HTTP/httpCommonParam";
 // third-party
 import PopupState, { bindPopper, bindToggle } from "material-ui-popup-state";
 
@@ -135,6 +136,21 @@ const SearchSection = () => {
   const theme = useTheme();
   const [value, setValue] = useState("");
 
+  useEffect(() => {
+    console.log(value);
+    getSearchResults(value.replaceAll(/ /g, ""));
+  }, [value]);
+
+  const getSearchResults = async (value) => {
+    const queryOptions = {
+      text: value,
+      count: 6,
+      sort: "TITLE",
+      order: "ASC",
+    };
+    const response = await server.get("/search-bar", { params: queryOptions });
+    console.log(response.data);
+  };
   const searchClickHandler = () => {
     console.log(value);
   };
