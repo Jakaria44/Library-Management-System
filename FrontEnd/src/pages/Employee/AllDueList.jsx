@@ -75,10 +75,10 @@ const Application = () => {
         variant="h2"
         textAlign="center"
         gutterBottom
-        p={2}
+        // p={2}
         component="div"
       >
-        Fine List
+        All Fine List
       </Typography>
       <StyledDataGrid
         rows={rows}

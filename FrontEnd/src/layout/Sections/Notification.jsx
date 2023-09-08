@@ -8,7 +8,7 @@ import {
   Card,
   Chip,
   ClickAwayListener,
-  Fade,
+  Grow,
   IconButton,
   List,
   ListItem,
@@ -157,6 +157,7 @@ const Notification = () => {
     // else if ( )
     return <Comment />;
   }
+
   function SingleNotification({ id, date, msg, seen }) {
     return (
       <ListItem divider>
@@ -244,7 +245,12 @@ const Notification = () => {
         }}
       >
         {({ TransitionProps }) => (
-          <Fade {...TransitionProps}>
+          <Grow
+            style={{
+              transformOrigin: "top right", // Set the transform origin to top right
+            }}
+            {...TransitionProps}
+          >
             <Paper
               sx={{
                 width: "100%",
@@ -317,7 +323,7 @@ const Notification = () => {
                 </Card>
               </ClickAwayListener>
             </Paper>
-          </Fade>
+          </Grow>
         )}
       </Popper>
 

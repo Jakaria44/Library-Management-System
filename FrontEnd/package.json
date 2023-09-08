@@ -36,6 +36,7 @@
     "react-icons": "^4.10.1",
     "react-perfect-scrollbar": "^1.5.8",
     "react-router-dom": "^6.15.0",
+    "react-window": "^1.8.9",
     "tss-react": "^4.8.8",
     "uuid": "^9.0.0"
   },

@@ -17,23 +17,6 @@ import PublicationComponent from "./PublicationComponent";
 const Description = ({ book }) => {
   const [tabValue, setTabValue] = useState(0);
 
-  const [publisher, setPublisher] = useState();
-  useEffect(() => {
-    getPublisherDetails();
-  }, []);
-
-  const getPublisherDetails = async () => {
-    try {
-      const response = await server.get(
-        `/getPublisher?pid=${book.PUBLISHER_ID}`
-      );
-      console.log(response.data);
-      setPublisher(response.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
@@ -54,7 +37,7 @@ const Description = ({ book }) => {
           <Tab icon={<Business />} label="Publication" />
         </Tabs>
         {tabValue === 0 && <BookDescription book={book} />}
-        {tabValue === 2 && <PublicationDetails publisher={publisher} />}
+        {tabValue === 2 && <PublicationDetails id={book.PUBLISHER_ID} />}
         {tabValue === 1 && <AuthorList authors={JSON.parse(book.AUTHOR)} />}
       </Grid>
     </Grid>
@@ -145,7 +128,7 @@ const AuthorList = ({ authors }) => {
   );
 };
 
-const AuthorDetails = ({ id }) => {
+export const AuthorDetails = ({ id }) => {
   const [author, setAuthor] = useState();
 
   const getAuthorDetails = async (id) => {
@@ -174,10 +157,10 @@ const AuthorDetails = ({ id }) => {
   );
 };
 
-const PublicationDetails = ({ publisher }) => {
+export const PublicationDetails = ({ id }) => {
   return (
     <Grid container direction="column" item xs={12} padding={2}>
-      <PublicationComponent publication={publisher} />
+      <PublicationComponent id={id} />
     </Grid>
   );
 };

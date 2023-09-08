@@ -13,38 +13,31 @@ const GridForCard = styled(Grid)(({ theme }) => ({
 const BooksList = ({ data, loading }) => {
   // const { menuOpened } = useMenu();
 
-  const opened = useMenu().menuOpened.opened;
-  console.log(opened);
+  // const opened = useMenu().menuOpened.opened;
+  // console.log(opened);
   return (
-    <Grid
-      item
-      xs={12}
-      md={opened ? 12 : 8}
-      lg={opened ? 9 : 8}
-      container
-      direction="row"
-      spacing={2}
-    >
+    <Grid item xs={12} md={8} lg={9} container direction="row" spacing={2}>
       {data.length === 0 && !loading && (
         <Grid item xs={12} md={12} lg={12}>
           <h3>No Books Found</h3>
         </Grid>
       )}
-      {data?.map((books) => (
-        <GridForCard
-          item
-          xs={12}
-          sm={6}
-          md={opened ? 6 : 4}
-          lg={3}
-          key={books.ISBN}
-          margin="auto"
-          paddingX={2}
-          paddingY={2}
-        >
-          <BookCard book={books} />
-        </GridForCard>
-      ))}
+      {!loading &&
+        data?.map((books) => (
+          <GridForCard
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            lg={3}
+            key={books.ISBN}
+            margin="auto"
+            paddingX={2}
+            paddingY={2}
+          >
+            <BookCard book={books} />
+          </GridForCard>
+        ))}
       {/* <SpinnerWithBackdrop backdropOpen={loading} helperText="Loading..." /> */}
 
       {loading &&
@@ -53,7 +46,7 @@ const BooksList = ({ data, loading }) => {
             item
             xs={12}
             sm={6}
-            md={opened ? 6 : 4}
+            md={4}
             lg={3}
             key={index}
             margin="auto"

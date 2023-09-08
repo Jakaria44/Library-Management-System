@@ -1,4 +1,3 @@
-import { ArrowCircleDown, ArrowCircleUp } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
@@ -9,27 +8,22 @@ import {
   CardHeader,
   CircularProgress,
   Divider,
-  FormControl,
   FormControlLabel,
   FormGroup,
   Grid,
-  IconButton,
   Input,
-  InputLabel,
-  MenuItem,
-  Select,
   Slider,
   Switch,
   TextField,
-  Tooltip,
   Typography,
   styled,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useMenu } from "../../contexts/MenuContextProvider";
 import Languages from "../../utils/Languages";
+import AuthorInput from "../VirtualisedAuthorAutoComplete";
 import server from "./../../HTTP/httpCommonParam";
-import { defaultQueryOptions, sortOptions } from "./AllBooks";
+import { defaultQueryOptions } from "./AllBooks";
 const minDistance = 400;
 const maxPage = 3000;
 const maxYear = new Date().getFullYear();
@@ -125,11 +119,11 @@ const PrettoSlider = styled(Slider)({
   },
 });
 
-const Filters = ({ loadAllBooks }) => {
-  const [queryOptions, setQueryOptions] = useState(defaultQueryOptions);
+const Filters = ({ queries, loadAllBooks }) => {
+  const [queryOptions, setQueryOptions] = useState(queries);
 
-  const opened = useMenu().menuOpened.opened;
-  const [authors, setAuthors] = useState([]);
+  // const opened = useMenu().menuOpened.opened;
+
   const [publishers, setPublishers] = useState([]);
   const [genres, setGenres] = useState([]);
   const [languages, setLanguages] = useState([]);
@@ -142,13 +136,6 @@ const Filters = ({ loadAllBooks }) => {
   }, []);
   const fetchAuthorGenrePublisher = async () => {
     try {
-      let authorList = [];
-      let res = await server.get("/getAuthor");
-      authorList = res.data;
-      if (!Array.isArray(res.data)) {
-        authorList = [res.data];
-      }
-
       let PublisherList = [];
       res = await server.get("/getPublisher");
       PublisherList = res.data;
@@ -176,12 +163,7 @@ const Filters = ({ loadAllBooks }) => {
           code: item.LANGUAGE,
         }))
       );
-      setAuthors(
-        authorList.map((item) => ({
-          NAME: item.NAME,
-          AUTHOR_ID: item.AUTHOR_ID,
-        }))
-      );
+
       setPublishers(
         PublisherList.map((item) => ({
           NAME: item.NAME,
@@ -195,7 +177,6 @@ const Filters = ({ loadAllBooks }) => {
         }))
       );
     } catch (err) {
-      setAuthors([]);
       setPublishers([]);
       setGenres([]);
       setLanguages([]);
@@ -292,56 +273,11 @@ const Filters = ({ loadAllBooks }) => {
   };
 
   return (
-    <Grid item xs={12} md={opened ? 12 : 4} lg={opened ? 3 : 4}>
+    <Grid item xs={12} md={4} lg={3}>
       <Card sx={{ paddingX: { xs: 2, md: 0 } }} elevation={5}>
-        <CardHeader title="Filters" />
-        <CardContent sx={{ pt: 2 }}>
-          <Box sx={{ display: "flex", flexDirection: "row" }}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Sort By</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={queryOptions.sort}
-                label="Sort By"
-                onChange={(e) =>
-                  setQueryOptions({ ...queryOptions, sort: e.target.value })
-                }
-              >
-                {sortOptions.map((item, index) => (
-                  <MenuItem key={index} value={item.query}>
-                    {item.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <Tooltip title="Ascending">
-              <IconButton
-                onClick={() =>
-                  setQueryOptions({ ...queryOptions, order: "ASC" })
-                }
-                color={queryOptions.order === "ASC" ? "success" : "inherit"}
-              >
-                <ArrowCircleUp
-                  fontSize={queryOptions.order === "ASC" ? "large" : "small"}
-                />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Descending">
-              <IconButton
-                onClick={() =>
-                  setQueryOptions({ ...queryOptions, order: "DESC" })
-                }
-                color={queryOptions.order === "DESC" ? "success" : "inherit"}
-              >
-                <ArrowCircleDown
-                  fontSize={queryOptions.order === "DESC" ? "large" : "small"}
-                />
-              </IconButton>
-            </Tooltip>
-          </Box>
-          <Divider sx={{ marginTop: "2vh" }} />
-          <Typography mt={1}>Number of Pages</Typography>
+        <CardHeader margin="auto" title="Filters" />
+        <CardContent>
+          <Typography>Number of Pages</Typography>
           <Box
             sx={{
               display: "flex",
@@ -627,7 +563,7 @@ const Filters = ({ loadAllBooks }) => {
               </Typography>
             </Grid>
             <Grid item xs={9}>
-              <Autocomplete
+              {/* <Autocomplete
                 options={authors}
                 id="authorin"
                 value={
@@ -661,6 +597,10 @@ const Filters = ({ loadAllBooks }) => {
                 noOptionsText="No Author Found"
                 loading
                 loadingText={<CircularProgress />}
+              /> */}
+              <AuthorInput
+                value={queryOptions.AUTHOR_ID}
+                setAuthor={setQueryOptions}
               />
             </Grid>
           </Grid>

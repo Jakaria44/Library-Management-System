@@ -56,8 +56,8 @@ export default function themePalette(theme, mode) {
                 },
                   primary: {
                       light: theme.colors?.primaryLight,
-                      main: theme.colors?.primaryLight,
-                      dark: theme.colors?.primaryDark,
+                      dark: theme.colors?.primaryLight,
+                      main: theme.colors?.primaryDark,
                       200: theme.colors?.primary200,
                       800: theme.colors?.primary800,
                   },

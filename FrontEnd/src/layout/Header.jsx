@@ -30,16 +30,17 @@ const Header = ({ handleLeftDrawerToggle }) => {
           },
         }}
       >
-        <ButtonBase sx={{ borderRadius: "12px", overflow: "hidden" }}>
+        <ButtonBase disableRipple>
           <Avatar
-            variant="rounded"
-            sx={{
-              ...theme.typography.commonAvatar,
-              ...theme.typography.mediumAvatar,
-            }}
+            onClick={handleLeftDrawerToggle}
+            variant="circular"
+            // sx={{
+            //   ...theme.typography.commonAvatar,
+            //   ...theme.typography.mediumAvatar,
+            // }}
           >
             <MenuRoundedIcon
-              onClick={handleLeftDrawerToggle}
+              // onClick={handleLeftDrawerToggle}
               fontSize="medium"
             />
           </Avatar>

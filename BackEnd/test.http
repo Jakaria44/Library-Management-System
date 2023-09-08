@@ -70,7 +70,7 @@ Content-Type: application/json
 }
 
 #### ----GET ALL-RAT-REV of BOOK----
-GET http://localhost:3000/db-api/all-rat-rev?id=9781408855652
+GET http://localhost:3000/db-api/all-rat-rev?id=9788726647693
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
 
 ###output

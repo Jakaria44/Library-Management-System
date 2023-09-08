@@ -14,6 +14,10 @@ import {
 import Autocomplete from "@mui/material/Autocomplete";
 import Checkbox from "@mui/material/Checkbox";
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  ListboxComponent,
+  StyledPopper,
+} from "../../VirtualisedAuthorAutoComplete";
 import server from "./../../../HTTP/httpCommonParam";
 import AddAuthor from "./AddAuthor";
 import AddPublisher from "./AddPublisher";
@@ -91,6 +95,11 @@ export default function AuthorGenrePublisherAdd({
       setPublishers([]);
     }
   };
+  const OPTIONS = useMemo(() => authors.map((item) => item), [authors]);
+  const selectedAuthor = useMemo(
+    () => authorGenrePublisher.authors.map((item) => item),
+    [authorGenrePublisher.authors]
+  );
   return (
     <React.Fragment>
       <Grid item container direction="column" spacing={2} xs={12} mt={2}>
@@ -165,7 +174,7 @@ export default function AuthorGenrePublisherAdd({
           justifyItems="center"
         >
           <Grid item xs={12} sm={9}>
-            <Autocomplete
+            {/* <Autocomplete
               multiple
               id="checkboxes-tags-demo"
               options={authors}
@@ -205,6 +214,58 @@ export default function AuthorGenrePublisherAdd({
               }
               loading
               loadingText={<CircularProgress />}
+            /> */}
+            <Autocomplete
+              id="virtualize-demo"
+              options={OPTIONS}
+              autoHighlight
+              value={selectedAuthor}
+              disableCloseOnSelect
+              multiple
+              getOptionLabel={(option) => option.NAME}
+              PopperComponent={StyledPopper}
+              ListboxComponent={ListboxComponent}
+              onChange={(e, value) => {
+                setAuthorGenrePublisher((prev) => ({
+                  ...prev,
+                  authors: value.map((v) => v),
+                }));
+              }}
+              // groupBy={(option) => option[0].NAME.toUpperCase()}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  required={authorGenrePublisher?.authors?.length === 0}
+                  label="Authors"
+                />
+              )}
+              isOptionEqualToValue={(option, value) =>
+                option.AUTHOR_ID === value.AUTHOR_ID
+              }
+              loading
+              renderOption={(props, option, state) => [
+                props,
+                option.NAME,
+                state.index,
+              ]}
+              // renderOption={(props, option, { selected }) => {
+              //   console.log(option.NAME); //gives name
+              //   return (
+              //     <li {...props} key={option.AUTHOR_ID}>
+              //       <Checkbox
+              //         icon={icon}
+              //         checkedIcon={checkedIcon}
+              //         style={{ marginRight: 8 }}
+              //         checked={selected}
+              //       />
+              //       {/* <ListItemText primary={option.NAME} /> */}
+              //       {/* {option.NAME} */}
+              //       <Chip label={option.NAME} />
+              //     </li>
+              //   );
+              // }}
+              // TODO: Post React 18 update - validate this conversion, look like a hidden bug
+              renderGroup={(params) => params}
             />
           </Grid>
           <Grid item xs={12} sm={3} m="auto">

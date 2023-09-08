@@ -82,7 +82,7 @@ const Users = () => {
         variant="h2"
         textAlign="center"
         gutterBottom
-        p={2}
+        // p={2}
         component="div"
       >
         ALL Users
@@ -113,13 +113,13 @@ const Users = () => {
                 </Grid>
               </Grid>
             ),
-            width: 240,
+            width: 200,
           },
-          { field: "EMAIL", headerName: "Email", width: 220 },
+          { field: "EMAIL", headerName: "Email", width: 240 },
           { field: "ROLE", headerName: "Role", width: 100 },
-          { field: "ADDRESS", headerName: "Address", width: 220 },
+          { field: "ADDRESS", headerName: "Address", width: 290 },
           { field: "CONTACT_NO", headerName: "Contact No.", width: 170 },
-          { field: "GENDER", headerName: "Gender", width: 80 },
+          { field: "GENDER", headerName: "Gender", width: 120 },
         ]}
         loading={loading}
         pagination

@@ -47,7 +47,7 @@ const CategoryList = ({ category }) => {
               color="info"
               style={{ margin: "4px" }}
               component={Link}
-              to={`/categories/${element.id}`}
+              to={`/categories/${element.id}/${element.name}`}
             />
           </Tooltip>
         </Grid>
@@ -133,21 +133,47 @@ const TitleAndCoverPage = ({ book, editions }) => {
   const changeFavouriteStatus = async () => {
     // remove from favourite
     const response = await server.post(`/edit-favourite?id=${book.ISBN}`);
-    console.log(response);
+    console.log(response.data);
     setIsFavourite(response.data.IS_FAVOURITE);
   };
   const bookInfoList = [
     { icon: <Book />, label: book.TITLE, variant: "h1" },
     {
       icon: <Person />,
-      label: `Author: ${JSON.parse(book.AUTHOR)
-        .map((author) => author.NAME)
-        .join(", ")}`,
+      label: (
+        <>
+          Authors:{" "}
+          {JSON.parse(book.AUTHOR).map((author) => (
+            <Link
+              key={author.ID}
+              to={`/authors/${author.ID}/${author.NAME}`}
+              style={{
+                textDecoration: "none",
+              }}
+            >
+              {author.NAME}
+            </Link>
+          ))}
+        </>
+      ),
       variant: "h3",
     },
     {
       icon: <LocalLibrary />,
-      label: `Publisher: ${book.PUBLISHER_NAME}`,
+      // label: `Publisher: ${book.PUBLISHER_NAME}`,
+      label: (
+        <>
+          Publisher:{" "}
+          <Link
+            to={`/publishers/${book.PUBLISHER_ID}/${book.PUBLISHER_NAME}`}
+            style={{
+              textDecoration: "none",
+            }}
+          >
+            {book.PUBLISHER_NAME}
+          </Link>
+        </>
+      ),
       variant: "h3",
     },
     {
@@ -173,6 +199,8 @@ const TitleAndCoverPage = ({ book, editions }) => {
       variant: "h3",
     },
   ];
+
+  // console.log("author", bookInfoList);
 
   return (
     <Grid container spacing={2}>

@@ -8,6 +8,14 @@ const AllDueList = Loadable(lazy(() => import("../pages/Employee/AllDueList")));
 const Users = Loadable(lazy(() => import("../pages/Employee/Users")));
 const Requests = Loadable(lazy(() => import("../pages/Employee/Requests")));
 const LatestBooks = Loadable(lazy(() => import("../pages/LatestBooks")));
+const Categories = Loadable(lazy(() => import("../pages/Categories")));
+const AuthorList = Loadable(lazy(() => import("../pages/AuthorList")));
+const SingleCategory = Loadable(lazy(() => import("../pages/SingleCategory")));
+const PublisherList = Loadable(lazy(() => import("../pages/PublisherList")));
+const SinglePublisher = Loadable(
+  lazy(() => import("../pages/SinglePublisher"))
+);
+const SingleAuthor = Loadable(lazy(() => import("../pages/SingleAuthor")));
 const Collections = Loadable(lazy(() => import("../pages/Reader/Collections")));
 const DueList = Loadable(lazy(() => import("../pages/Reader/DueList")));
 const MyReviews = Loadable(lazy(() => import("../pages/Reader/MyReviews")));
@@ -21,6 +29,7 @@ const EditBook = Loadable(
 import { loader as DetailsLoader } from "../pages/Employee/addbook/EditBook";
 
 import { loader as favouritesLoader } from "../pages/Reader/MyFavourites";
+import VirtualizedAutocomplete from "../pages/VirtualisedAuthorAutoComplete";
 import { loader as bookDetailsLoader } from "./../pages/Details/Details";
 
 // main routing
@@ -63,11 +72,39 @@ const MainRoutes = {
       element: <LatestBooks />,
     },
     {
+      path: "/categories",
+      element: <Categories />,
+    },
+    {
+      path: "/categories/:id/:name",
+      element: <SingleCategory />,
+    },
+    {
+      path: "/authors",
+      element: <AuthorList />,
+    },
+    {
+      path: "/authors/:id/:name",
+      element: <SingleAuthor />,
+    },
+    {
+      path: "/publishers",
+      element: <PublisherList />,
+    },
+    {
+      path: "/publishers/:id/:name",
+      element: <SinglePublisher />,
+    },
+    {
       path: "/profile",
       element: <ReaderProfile />,
       errorElement: (
         <p style={{ margin: "auto" }}>Error loading user Details!</p>
       ),
+    },
+    {
+      path: "/test",
+      element: <VirtualizedAutocomplete />,
     },
     {
       path: "/favourites",

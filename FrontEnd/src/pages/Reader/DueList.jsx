@@ -114,7 +114,7 @@ const DueList = () => {
         variant="h2"
         textAlign="center"
         gutterBottom
-        p={2}
+        // p={2}
         component="div"
       >
         My Fine History

@@ -1,9 +1,21 @@
 import BooksList from "./BooksList";
 import Filters from "./Filters";
 
-import { Grid, Typography } from "@mui/material";
+import { ArrowCircleDown, ArrowCircleUp } from "@mui/icons-material";
+import {
+  Box,
+  FormControl,
+  Grid,
+  IconButton,
+  MenuItem,
+  Pagination,
+  Select,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { useEffect, useState } from "react";
-import { useMenu } from "../../contexts/MenuContextProvider";
 import server from "./../../HTTP/httpCommonParam";
 export const sortOptions = [
   { query: "TITLE", name: "Title" },
@@ -13,6 +25,8 @@ export const sortOptions = [
   { query: "PUBLISH_YEAR", name: "Latest" },
 ];
 export const defaultQueryOptions = {
+  perPage: 24,
+  page: 1,
   sort: sortOptions[0].query,
   order: "ASC",
   MY_RAT: false,
@@ -29,15 +43,26 @@ export const defaultQueryOptions = {
   RATING_START: 0,
   RATING_END: 5,
 };
-const AllBooks = () => {
+const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
+  const theme = useTheme();
+  const matchesXs = useMediaQuery(theme.breakpoints.down("sm"));
   const [queryOptions, setQueryOptions] = useState(defaultQueryOptions);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]); // [] is the initial state value
+
+  // const count = Math.ceil(data.length / queryOptions.perPage);
+  const count = Math.ceil(2325 / queryOptions.perPage);
+
+  const handleChange = (e, p) => {
+    setQueryOptions({ queries, page: p });
+    loadAllBooks({ queries, page: p });
+  };
+
   useEffect(() => {
-    loadAllBooks(queryOptions);
+    loadAllBooks(queries);
   }, []);
 
-  const loadAllBooks = async (queryOptions = queryOptions) => {
+  const loadAllBooks = async (queryOptions = queries) => {
     setLoading(true);
     try {
       const res = await server.get("/all-books-sum", { params: queryOptions });
@@ -64,22 +89,93 @@ const AllBooks = () => {
     }
   };
 
-  // console.log(allBooks.data);
   return (
     <>
-      <Typography
-        variant="h2"
-        textAlign="center"
-        gutterBottom
-        // px={2}
+      <Box
         pb={1}
-        component="div"
+        display="flex"
+        flexDirection={matchesXs ? "column" : "row"} // Change flex direction on small devices
+        justifyContent="space-between"
+        alignItems={matchesXs ? "center" : "center"} // Align items differently on small devices
       >
-        ALL Books
-      </Typography>
+        <Box flexGrow={1} />
+        <Box>
+          <Typography
+            variant="h2"
+            textAlign="center"
+            gutterBottom
+            component="div"
+          >
+            {title}
+          </Typography>
+        </Box>
+
+        {/* Place your components to be displayed at the right end here */}
+        <Box
+          id="sort-by"
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            flexGrow: 1,
+            justifyContent: "flex-end",
+          }}
+        >
+          <Box flexGrow={10} />
+          <Box paddingRight={1}>
+            <Typography variant="subtitle1">Sort by</Typography>
+          </Box>
+          <Box flexGrow={1}>
+            <FormControl fullWidth>
+              <Select
+                id="demo-simple-select"
+                value={queryOptions.sort}
+                onChange={(e) => {
+                  setQueryOptions({ ...queryOptions, sort: e.target.value });
+                  loadAllBooks({ ...queryOptions, sort: e.target.value });
+                }}
+              >
+                {sortOptions.map((item, index) => (
+                  <MenuItem key={index} value={item.query}>
+                    {item.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+          <Box flexGrow={1}>
+            <Tooltip title="Ascending">
+              <IconButton
+                onClick={() => {
+                  setQueryOptions({ ...queryOptions, order: "ASC" });
+                  loadAllBooks({ ...queryOptions, order: "DESC" });
+                }}
+                color={queryOptions.order === "ASC" ? "success" : "inherit"}
+              >
+                <ArrowCircleUp
+                  fontSize={queryOptions.order === "ASC" ? "large" : "small"}
+                />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Descending">
+              <IconButton
+                onClick={() => {
+                  setQueryOptions({ ...queryOptions, order: "DESC" });
+                  loadAllBooks({ ...queryOptions, order: "DESC" });
+                }}
+                color={queryOptions.order === "DESC" ? "success" : "inherit"}
+              >
+                <ArrowCircleDown
+                  fontSize={queryOptions.order === "DESC" ? "large" : "small"}
+                />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Box>
+      </Box>
 
       <Grid container spacing={2}>
-        <Filters loadAllBooks={loadAllBooks} />
+        <Filters queries={queries} loadAllBooks={loadAllBooks} />
 
         {/* <React.Suspense fallback={<SpinnerWithBackdrop backdropOpen={true} helperText='Loading books. Plase wait'/>}> */}
 
@@ -95,6 +191,27 @@ const AllBooks = () => {
         }}
       /> */}
       </Grid>
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          my: 2,
+        }}
+      >
+        <Pagination
+          sx={{ margin: "auto" }}
+          showFirstButton
+          showLastButton
+          count={count}
+          color="primary"
+          page={queryOptions.page}
+          variant="outlined"
+          shape="rounded"
+          onChange={handleChange}
+        />
+      </Box>
     </>
   );
 };
