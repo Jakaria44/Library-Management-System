@@ -41,7 +41,9 @@ import {
   getEmployee,
   getJob,
   getApplication,
-  getSearchBar
+  getSearchBar,
+  getNews,
+  getRentHistory
 } from '../controllers/getController.js';
 import {loginGeneral, logout, postAdmin, postUser} from '../controllers/loginController.js';
 import {
@@ -112,7 +114,7 @@ router.route('/getLanguage').get(verifyGeneralToken, getAllLanguages);
 
 router.route('/user/signup').post(urlencodedParser, postUser);
 router.route('/user/login').post(urlencodedParser, loginGeneral);
-router.route('/user/update').put(verifyGeneralToken, urlencodedParser, updateUser);
+router.route('/user/update').put(verifyUserToken, urlencodedParser, updateUser);
 router.route('/user/details').get(verifyUserToken, getUserDetails);
 router.route('/all-users').get(verifyUserToken, getAllUsers);
 router.route('/admin/signup').post(verifyAdminToken, urlencodedParser, postAdmin);
@@ -139,21 +141,23 @@ router.route('/all-book').get(verifyGeneralToken, getAllBook);
 router.route('/all-books-sum').get(verifyGeneralToken, urlencodedParser, getAllBookSum);
 router.route('/search-bar').get(verifyGeneralToken, urlencodedParser, getSearchBar);
 router.route('/all-rat-rev').get(verifyGeneralToken, getAllRatRevOfBook);
-router.route('/edit-favourite').post(verifyGeneralToken, urlencodedParser, postFavBook);
-router.route('/rate-review').post(verifyGeneralToken, urlencodedParser, ratrevBook).get(verifyGeneralToken, getOwnRatRev);
-router.route('/del-rate-review').delete(verifyGeneralToken, deleteRatRevBook)
-router.route('/my-requests').get(verifyGeneralToken, getMyRequests);
-router.route('/request').post(verifyGeneralToken, urlencodedParser, addRequest);
-router.route('/del-requests').delete(verifyGeneralToken, deleteRequests);
-router.route('/my-rent-history').get(verifyGeneralToken, getMyRentHistory);
-router.route('/my-fine-history').get(verifyGeneralToken, getMyFineHistory);
-router.route('/return-book').put(verifyGeneralToken, urlencodedParser, updateHistory);
+router.route('/edit-favourite').post(verifyUserToken, urlencodedParser, postFavBook);
+router.route('/rate-review').post(verifyUserToken, urlencodedParser, ratrevBook).get(verifyUserToken, getOwnRatRev);
+router.route('/del-rate-review').delete(verifyUserToken, deleteRatRevBook)
+router.route('/my-requests').get(verifyUserToken, getMyRequests);
+router.route('/request').post(verifyUserToken, urlencodedParser, addRequest);
+router.route('/del-requests').delete(verifyUserToken, deleteRequests);
+router.route('/my-rent-history').get(verifyUserToken, getMyRentHistory);
+router.route('/my-fine-history').get(verifyUserToken, getMyFineHistory);
+router.route('/return-book').put(verifyUserToken, urlencodedParser, updateHistory);
 router.route('/all-requests').get(verifyEmployeeToken, getAllRequests);
 router.route('/handle-request').post(verifyEmployeeToken, urlencodedParser, acceptRequest).delete(verifyEmployeeToken, deleteRequest);
 router.route('/message').post(verifyEmployeeToken, urlencodedParser, sendMessage).get(verifyGeneralToken, getMyMessages)
-router.route('/edit-message').put(verifyGeneralToken, updateMessage).delete(verifyGeneralToken, deleteMessage);
+router.route('/edit-message').put(verifyUserToken, updateMessage).delete(verifyUserToken, deleteMessage);
 router.route('/publish-news').post(verifyEmployeeToken, urlencodedParser, publishNews).get(verifyEmployeeToken, getAllNews)
+router.route('/show-news').get(verifyGeneralToken, getNews);
 router.route('/all-fine').get(verifyEmployeeToken, getRunningFine);
+router.route('/all-rent').get(verifyEmployeeToken, getRentHistory);
 
 // router.route('/logout').get(verifyGeneralToken, logout);
 

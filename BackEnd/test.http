@@ -273,7 +273,7 @@ Content-Type: application/json
   "message": "Does not Exist"
 }
 
-#### ----GET RENT_HISTORY----
+#### ----GET my RENT_HISTORY----
 GET http://localhost:3000/db-api/my-rent-history?sort=STATUS&order=DESC
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
 
@@ -312,7 +312,7 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 ]
 
 
-#### ----GET FINE_HISTORY----
+#### ----GET my FINE_HISTORY----
 GET http://localhost:3000/db-api/my-fine-history
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzIxNTgzOCwiZXhwIjoxNjkzMzAyMjM4fQ.rFEEmdv_2ranW11_QfAo4MZiR9W5ms15aUL3HHJADL8
 
@@ -1129,8 +1129,7 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 GET http://localhost:3000/db-api/search-bar?text=9780439321624&count=10&sort=TITLE&order=ASC
 
 
-# output
-
+### output
 [
   {
     "ISBN": "9781402081163",
@@ -1140,3 +1139,19 @@ GET http://localhost:3000/db-api/search-bar?text=9780439321624&count=10&sort=TIT
     "AUTHORS": "Saul I. Gass, Arjang A. Assad"
   }
 ]
+
+#### --- Show latest news ----
+GET http://localhost:3000/db-api/show-news?count=3
+
+###OUTPUT
+[
+  {
+    "NEWS_ID": "1",
+    "NEWS_TEXT": "WELCOME TO THE LIBRARY",
+    "NEWS_DATE": "2023-09-02T08:43:02.000Z"
+  }
+]
+
+#### ----GET all rent----
+GET http://localhost:3000/db-api/all-rent?sort=STATUS&order=ASC
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5NDE3NDcxOSwiZXhwIjoxNzY2MTc0NzE5fQ._N0W7UHScoqEvmdjFCkIOaiXkiw1YgbCKVsDLAeKez0

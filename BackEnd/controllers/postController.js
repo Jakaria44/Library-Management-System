@@ -21,10 +21,10 @@ import {
   deleteBookGenreDB,
   deleteWittenByDB,
   addJobDB,
-  getApplicationsDB,
   applyForJobDB,
   addEmployeeDB,
-  getEmployeeDB
+  getEmployeeDB,
+  getApplicationDB,
 } from '../Database/queryFunctions.js';
 
 export async function postFavBook(req, res, next) {
@@ -59,7 +59,6 @@ export async function ratrevBook(req, res, next) {
       RATING: req.body.RATING,
       REVIEW: req.body.REVIEW.replace(/'/g, `''`),
     };
-
 
     try {
       let my = await ratrevBookDB(ratrev);
@@ -112,7 +111,7 @@ export async function applyForJob(req, res, next) {
       USER_ID: req.USER_ID,
       JOB_ID: req.query.jid
     };
-    let result = await getApplicationsDB(request);
+    let result = await getApplicationDB(request);
     if (result.length >= 3) {
       res.status(403).json({message: "MAXIMUM LIMIT REACHED"});
       return;

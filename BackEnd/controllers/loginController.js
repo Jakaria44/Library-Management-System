@@ -4,7 +4,6 @@ import {secret} from '../Database/databaseConfiguration.js';
 import {
   findAdminDB,
   findEmployeeDB,
-  findPersonDB,
   findUserDB,
   postAdminDB,
   postUserDB,
@@ -90,27 +89,31 @@ export async function postUser(req, res, next) {
       throw new Error(result);
     }
 
-    let foundUser = await findUserDB(user);
-    let welcome = {};
-    welcome.USER_ID = foundUser[0].USER_ID;
-    welcome.MESSAGE = `Hi!! ${foundUser[0].FIRST_NAME} ${foundUser[0].LAST_NAME}. Welcome to the library!!! Please explore the library and satisfy your thirst of knowledge.`;
-    welcome = await sendMessageDB(welcome);
-    // if (!welcome) {
-    //   res.status(201).json({message: 'Successful but message not send'})
-    // } else {
-    //   res.status(200).json({message: 'Successful'})
-    // }
-    const token = jwt.sign(
-      {
-        USER_ID: foundUser[0].USER_ID,
-        ROLE: 'user',
-      },
-      secret,
-      {
-        expiresIn: '20000h', // expires in 24 hours
-      },
-    );
-    res.status(200).json({auth: true, token, role: 'user'});
+    const foundUser = await findUserDB(user);
+    if(foundUser.length > 0) {
+      let welcome = {};
+      welcome.USER_ID = foundUser[0].USER_ID;
+      welcome.MESSAGE = `Hi!! ${foundUser[0].FIRST_NAME} ${foundUser[0].LAST_NAME}. Welcome to the library!!! Please explore the library and satisfy your thirst of knowledge.`;
+      welcome = await sendMessageDB(welcome);
+      if (!welcome) {
+        console.log({message: 'Successful but message not send'})
+      } else {
+        console.log({message: 'Successful and message send'})
+      }
+      const token = jwt.sign(
+        {
+          USER_ID: foundUser[0].USER_ID,
+          ROLE: 'user',
+        },
+        secret,
+        {
+          expiresIn: '20000h', // expires in 24 hours
+        },
+      );
+      res.status(200).json({auth: true, token, role: 'user'});
+    } else {
+      res.status(404).json({message: 'Failed to create user'});
+    }
   } catch (err) {
     res.status(500).json({
       message: 'Email already Exists.',
@@ -150,64 +153,64 @@ export async function postAdmin(req, res, next) {
     next(err);
   }
 }
-
-export async function decodeToken(req, res) {
-  try {
-    const token = req.headers['x-access-token'];
-    if (!token) return res.status(401).json({auth: false, message: 'No token provided.'});
-
-    jwt.verify(token, secret, async (err, decoded) => {
-      if (err) {
-        return res.status(500).json({auth: false, message: 'Failed to authenticate token.'});
-      }
-      if (decoded.ROLE === 'user') {
-        const user = {
-          USER_NAME: decoded.USER_NAME,
-        };
-
-        const foundUser = await findUserDB(user);
-        foundUser[0].PASSWORD = null;
-
-        if (foundUser.length === 0) {
-          return res.status(400).send('Cannot find user');
-        }
-
-        const foundPerson = await findPersonDB(foundUser[0].PERSON_ID);
-
-        if (foundPerson.length === 0) {
-          return res.status(400).send('Cannot find user');
-        }
-
-        foundPerson[0].USER_NAME = foundUser[0].USER_NAME;
-
-        res.status(200).json(foundPerson);
-      } else {
-        const admin = {
-          ADMIN_NAME: decoded.ADMIN_NAME,
-        };
-
-        const foundAdmin = await findAdminDB(admin);
-        foundAdmin[0].PASSWORD = null;
-
-        if (foundAdmin.length === 0) {
-          return res.status(400).send('Cannot find admin');
-        }
-
-        const foundPerson = await findPersonDB(foundAdmin[0].PERSON_ID);
-
-        if (foundPerson.length === 0) {
-          return res.status(400).send('Cannot find admin');
-        }
-
-        foundPerson[0].ADMIN_NAME = foundAdmin[0].ADMIN_NAME;
-
-        res.status(200).json(foundPerson);
-      }
-    });
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
-}
+//
+// export async function decodeToken(req, res) {
+//   try {
+//     const token = req.headers['x-access-token'];
+//     if (!token) return res.status(401).json({auth: false, message: 'No token provided.'});
+//
+//     jwt.verify(token, secret, async (err, decoded) => {
+//       if (err) {
+//         return res.status(500).json({auth: false, message: 'Failed to authenticate token.'});
+//       }
+//       if (decoded.ROLE === 'user') {
+//         const user = {
+//           USER_NAME: decoded.USER_NAME,
+//         };
+//
+//         const foundUser = await findUserDB(user);
+//         foundUser[0].PASSWORD = null;
+//
+//         if (foundUser.length === 0) {
+//           return res.status(400).send('Cannot find user');
+//         }
+//
+//         const foundPerson = await findPersonDB(foundUser[0].PERSON_ID);
+//
+//         if (foundPerson.length === 0) {
+//           return res.status(400).send('Cannot find user');
+//         }
+//
+//         foundPerson[0].USER_NAME = foundUser[0].USER_NAME;
+//
+//         res.status(200).json(foundPerson);
+//       } else {
+//         const admin = {
+//           ADMIN_NAME: decoded.ADMIN_NAME,
+//         };
+//
+//         const foundAdmin = await findAdminDB(admin);
+//         foundAdmin[0].PASSWORD = null;
+//
+//         if (foundAdmin.length === 0) {
+//           return res.status(400).send('Cannot find admin');
+//         }
+//
+//         const foundPerson = await findPersonDB(foundAdmin[0].PERSON_ID);
+//
+//         if (foundPerson.length === 0) {
+//           return res.status(400).send('Cannot find admin');
+//         }
+//
+//         foundPerson[0].ADMIN_NAME = foundAdmin[0].ADMIN_NAME;
+//
+//         res.status(200).json(foundPerson);
+//       }
+//     });
+//   } catch (err) {
+//     res.status(500).send(err.message);
+//   }
+// }
 
 export function logout(req, res) {
   res.status(200).json({auth: false, token: null});
