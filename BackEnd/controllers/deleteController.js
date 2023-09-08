@@ -1,9 +1,6 @@
 import {
-  deleteAllBooksBookshelfDB,
   deleteAuthorDB,
   deleteBookDB,
-  deleteBookOfBookshelfDB,
-  deleteBookshelfDB,
   deleteGenreDB,
   deletePublisherDB,
   deleteRatRevBookDB,
@@ -15,26 +12,10 @@ import {
   resignAdminDB,
   deleteEmployeeDB,
   getEmployeeDB,
-  findEmployeeDB,
   deleteJobDB,
   deleteApplyDB,
   getJobDB
 } from "../Database/queryFunctions.js";
-
-export async function deleteBookOfBookshelf(req, res, next) {
-  try {
-    const context = {};
-
-    context.ISBN = req.query.ISBN;
-    context.BOOKSHELF_ID = req.query.BOOKSHELF_ID;
-
-    const deleted = await deleteBookOfBookshelfDB(context);
-
-    res.status(201).json(deleted);
-  } catch (err) {
-    next(err);
-  }
-}
 
 export async function deleteRatRevBook(req, res, next) {
   const context = {};
@@ -126,36 +107,6 @@ export async function deleteMessage(req, res, next) {
   }
 }
 
-
-export async function deleteAllBooksBookshelf(req, res, next) {
-  try {
-    const context = {};
-
-    context.BOOKSHELF_ID = req.query.BOOKSHELF_ID;
-
-    const deleted = await deleteAllBooksBookshelfDB(context);
-
-    res.status(201).json(deleted);
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function deleteBookshelf(req, res, next) {
-  try {
-    const context = {};
-
-    context.BOOKSHELF_ID = req.query.BOOKSHELF_ID;
-
-    let deleted = await deleteAllBooksBookshelfDB(context);
-
-    deleted = await deleteBookshelfDB(context);
-
-    res.status(201).json(deleted);
-  } catch (err) {
-    next(err);
-  }
-}
 
 export async function deleteBook(req, res, next) {
   try {

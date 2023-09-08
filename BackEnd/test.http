@@ -71,8 +71,7 @@ Content-Type: application/json
 
 #### ----GET ALL-RAT-REV of BOOK----
 GET http://localhost:3000/db-api/all-rat-rev?id=9788726647693
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
-
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjk0MTE4NjgyLCJleHAiOjE3NjYxMTg2ODJ9.t4Hu3R60IuE6T0KwXk5VBg_Tvxj08la_Zw-DL8hiZm0
 ###output
 {
   "allRatRev": [
@@ -833,25 +832,8 @@ Content-Type: application/json
 }
 
 ##### ----GET All Books (sorted AND advanced searched) ----
-GET http://localhost:3000/db-api/all-books-sum?sort=TITLE&order=DESC
+GET http://localhost:3000/db-api/all-books-sum?sort=RATING&order=DESC
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
-Content-Type: application/json
-
-{
-  "MY_RAT": false,
-  "MY_FAV": true,
-  "TITLE": "",
-  "LANGUAGE": "",
-  "PUBLISHER_ID": "1",
-  "AUTHOR_ID": "1",
-  "GENRE_ID": "1",
-  "PAGE_START": 600,
-  "PAGE_END": 700,
-  "YEAR_START": 2000,
-  "YEAR_END": 2020,
-  "RATING_START": 4,
-  "RATING_END": 5
-}
 
 ###OUTPUT
 [
@@ -1139,3 +1121,6 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUi
 #### ----- resign employee ----
 DELETE http://localhost:3000/db-api/employee/resign
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5NDA1ODMzNSwiZXhwIjoxNzY2MDU4MzM1fQ.y6nQKzajOs33K-s7xBiYc06F5rqxopBRXUpUWlJRkMk
+
+#### ---- SEARCH BAR ----
+GET http://localhost:3000/db-api/search-bar?text=9781402081163&count=5&sort=TITLE&order=ASC
