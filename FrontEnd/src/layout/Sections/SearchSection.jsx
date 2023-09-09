@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // material-ui
 import {
@@ -7,9 +7,11 @@ import {
   ButtonBase,
   Card,
   Grid,
+  Grow,
   InputAdornment,
   OutlinedInput,
   Popper,
+  useMediaQuery,
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 
@@ -24,6 +26,7 @@ import Transitions from "../../ui-component/extended/Transitions";
 import ClearIcon from "@mui/icons-material/Clear";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { shouldForwardProp } from "@mui/system";
+import CardForSearchbar from "../../component/CardForSearchbar";
 
 // styles
 const PopperStyle = styled(Popper, { shouldForwardProp })(({ theme }) => ({
@@ -135,25 +138,43 @@ const MobileSearch = ({ value, setValue, popupState, searchClickHandler }) => {
 const SearchSection = () => {
   const theme = useTheme();
   const [value, setValue] = useState("");
-
+  const [anchorEl, setAnchorEl] = useState(null);
+  const small = useMediaQuery(theme.breakpoints.down("md"));
+  const [result, setResult] = useState([]);
   useEffect(() => {
     console.log(value);
-    getSearchResults(value.replaceAll(/ /g, ""));
+    if (value !== "") getSearchResults(value.replaceAll(/ /g, ""));
   }, [value]);
-
+  const handleSearchChange = (e) => {
+    setValue(e.target.value);
+    setAnchorEl(e.currentTarget);
+  };
   const getSearchResults = async (value) => {
     const queryOptions = {
       text: value,
-      count: 6,
+      count: small ? 5 : 5,
       sort: "TITLE",
       order: "ASC",
     };
-    const response = await server.get("/search-bar", { params: queryOptions });
-    console.log(response.data);
+    try {
+      const response = await server.get("/search-bar", {
+        params: queryOptions,
+      });
+      console.log(response.data);
+      setResult(response.data);
+    } catch (err) {
+      setResult([]);
+      console.log(err);
+    }
   };
+
+  const searchResults = useMemo(() => result.map((item) => item), [result]);
+
   const searchClickHandler = () => {
     console.log(value);
   };
+  const canBeOpen = value.length && Boolean(anchorEl);
+  const id = canBeOpen ? "transition-popper" : undefined;
   return (
     <>
       <Box sx={{ display: { xs: "block", md: "none" } }}>
@@ -218,7 +239,7 @@ const SearchSection = () => {
         <OutlineInputStyle
           id="input-search-header"
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={handleSearchChange}
           placeholder="Search"
           startAdornment={
             <InputAdornment position="start">
@@ -261,6 +282,38 @@ const SearchSection = () => {
           aria-describedby="search-helper-text"
           inputProps={{ "aria-label": "weight" }}
         />
+        {/* <CardForSearchbar /> */}
+        <Popper
+          sx={{ zIndex: 1800 }}
+          id={id}
+          open={searchResults.length}
+          anchorEl={anchorEl}
+          placement="bottom"
+          transition
+        >
+          {({ TransitionProps }) => (
+            <Grow
+              style={{
+                transformOrigin: "top", // Set the transform origin to top
+              }}
+              {...TransitionProps}
+              timeout={350}
+            >
+              <Box
+                display="flex"
+                flexDirection="column"
+                justifyContent="left"
+                alignItems="left"
+                width={648}
+                height={small ? 300 : 400}
+                overflowY="scroll"
+                sx={{ p: 1, bgcolor: "background.default" }}
+              >
+                <CardForSearchbar book={searchResults} />
+              </Box>
+            </Grow>
+          )}
+        </Popper>
       </Box>
     </>
   );

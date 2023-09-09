@@ -1,5 +1,5 @@
 import { CheckCircleOutline, DeleteForever } from "@mui/icons-material";
-import { Box, Grid, Tooltip, Typography } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
 import {
   GridActionsCellItem,
   GridToolbar,
@@ -200,23 +200,33 @@ const Application = () => {
             field: "NAME",
             headerName: "Name",
             renderCell: (params) => (
-              <Grid container direction="row" alignItems="center" spacing={1}>
-                <Grid item xs={8}>
-                  <Typography variant="body2">{params.row.NAME}</Typography>
-                </Grid>
+              // <Grid container direction="row" alignItems="center" spacing={1}>
+              //   <Grid item xs={8}>
+              //     <Typography variant="body2">{params.row.NAME}</Typography>
+              //   </Grid>
 
-                <Grid item xs={2}>
-                  <Message user={params.row} />
-                </Grid>
-              </Grid>
+              //   <Grid item xs={2}>
+              //     <Message user={params.row} />
+              //   </Grid>
+              // </Grid>
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                flexDirection="row"
+              >
+                <Typography variant="body2">{params.row.NAME}</Typography>
+                <Message user={params.row} />
+              </Box>
             ),
-            width: 240,
+            width: 210,
           },
-          { field: "EMAIL", headerName: "Email", width: 220 },
+          { field: "EMAIL", headerName: "Email", width: 200 },
+          { field: "ISBN", headerName: "ISBN", width: 120 },
           {
             field: "TITLE",
             headerName: "Title",
-            minWidth: 320,
+            minWidth: 300,
             renderCell: (params) => (
               <Tooltip title="see this book">
                 <Typography
@@ -240,7 +250,7 @@ const Application = () => {
           },
           { field: "REQUEST_DATE", headerName: "Request Date", width: 160 },
           {
-            field: "ISBN",
+            field: "EDITION_ID",
             headerName: "Action",
             type: "actions",
             getActions: (params) => [

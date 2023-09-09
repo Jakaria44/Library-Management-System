@@ -47,6 +47,7 @@ const AddPublisher = ({ onSubmit, onClose }) => {
     POSTAL_CODE: "",
     CONTACT_NO: "",
     EMAIL: "",
+    CITY: "",
   });
 
   const isEmailValid = useMemo(
@@ -223,6 +224,7 @@ const AddPublisher = ({ onSubmit, onClose }) => {
                 value={publisher?.POSTAL_CODE}
               />
             </Grid>
+
             <Grid item xs>
               <TextField
                 autoFocus
@@ -241,7 +243,20 @@ const AddPublisher = ({ onSubmit, onClose }) => {
               />
             </Grid>
           </Grid>
-
+          <Grid item xs>
+            <TextField
+              required
+              fullWidth
+              label="City"
+              name="CITY"
+              error={error === fields.CITY}
+              helperText={error === fields.CITY && "This field is required"}
+              onChange={(e) =>
+                setPublisher({ ...publisher, CITY: e.target.value })
+              }
+              value={publisher?.CITY}
+            />
+          </Grid>
           <Grid item xs={12}>
             <Autocomplete
               autoHighlight

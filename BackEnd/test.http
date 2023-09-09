@@ -543,15 +543,26 @@ POST http://localhost:3000/db-api/getPublisher
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzU1NzMyOCwiZXhwIjoxNzY1NTU3MzI4fQ.OWzBW1GTgnYmm8q49j_mcge89WXpLG6KHK6I_jLqWaM
 Content-Type: application/json
 
+
 {
-  "NAME": "A",
-  "IMAGE": null,
-  "CITY": "a",
-  "COUNTRY": "a",
-  "EMAIL": "a@gmail.com",
-  "CONTACT_NO": "01",
-  "POSTAL_CODE": "M"
-}
+"CONTACT_NO"
+: 
+"242423424",
+"COUNTRY"
+: 
+"Bangladesh",
+"EMAIL"
+: 
+"a@gmail.com",
+"IMAGE"
+: 
+"https://ds.rokomari.store/rokomari110/company/publisher.png",
+"NAME"
+: 
+"abcd",
+"POSTAL_CODE"
+: 
+"23"}
 ###OUTPUT
 {
   "message": "Successful",

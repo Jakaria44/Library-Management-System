@@ -1,4 +1,4 @@
-import { Avatar, Box, Grid, Typography } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import { GridToolbar } from "@mui/x-data-grid";
 import { useConfirm } from "material-ui-confirm";
 import React, { useCallback, useEffect, useState } from "react";
@@ -103,15 +103,24 @@ const Users = () => {
             field: "NAME",
             headerName: "Name",
             renderCell: (params) => (
-              <Grid container direction="row" alignItems="center" spacing={1}>
-                <Grid item xs={8}>
-                  <Typography variant="body2">{params.row.NAME}</Typography>
-                </Grid>
+              // <Grid container direction="row" alignItems="center" spacing={1}>
+              //   <Grid item xs={8}>
+              //     <Typography variant="body2">{params.row.NAME}</Typography>
+              //   </Grid>
 
-                <Grid item xs={2}>
-                  <Message user={params.row} />
-                </Grid>
-              </Grid>
+              //   <Grid item xs={2}>
+              //     <Message user={params.row} />
+              //   </Grid>
+              // </Grid>
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                flexDirection="row"
+              >
+                <Typography variant="body2">{params.row.NAME}</Typography>
+                <Message user={params.row} />
+              </Box>
             ),
             width: 200,
           },

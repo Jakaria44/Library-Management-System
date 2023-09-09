@@ -1,4 +1,4 @@
-import { Box, Grid, IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import { GridToolbar } from "@mui/x-data-grid";
 // import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { CheckCircle, Error } from "@mui/icons-material";
@@ -87,15 +87,24 @@ const Application = () => {
             field: "NAME",
             headerName: "Name",
             renderCell: (params) => (
-              <Grid container direction="row" alignItems="center" spacing={1}>
-                <Grid item xs={8}>
-                  <Typography variant="body2">{params.row.NAME}</Typography>
-                </Grid>
+              // <Grid container direction="row" alignItems="center" spacing={1}>
+              //   <Grid item xs={8}>
+              //     <Typography variant="body2">{params.row.NAME}</Typography>
+              //   </Grid>
 
-                <Grid item xs={2}>
-                  <Message user={params.row} />
-                </Grid>
-              </Grid>
+              //   <Grid item xs={2}>
+              //     <Message user={params.row} />
+              //   </Grid>
+              // </Grid>
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                flexDirection="row"
+              >
+                <Typography variant="body2">{params.row.NAME}</Typography>
+                <Message user={params.row} />
+              </Box>
             ),
             width: 200,
           },

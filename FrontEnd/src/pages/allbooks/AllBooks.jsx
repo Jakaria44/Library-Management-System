@@ -151,11 +151,11 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
               <IconButton
                 onClick={() => {
                   setQueryOptions({ ...queryOptions, order: "ASC" });
-                  loadAllBooks({ ...queryOptions, order: "DESC" });
+                  loadAllBooks({ ...queryOptions, order: "ASC" });
                 }}
                 color={queryOptions.order === "ASC" ? "success" : "inherit"}
               >
-                <ArrowCircleUp
+                <ArrowCircleDown
                   fontSize={queryOptions.order === "ASC" ? "large" : "small"}
                 />
               </IconButton>
@@ -168,7 +168,7 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
                 }}
                 color={queryOptions.order === "DESC" ? "success" : "inherit"}
               >
-                <ArrowCircleDown
+                <ArrowCircleUp
                   fontSize={queryOptions.order === "DESC" ? "large" : "small"}
                 />
               </IconButton>
