@@ -329,7 +329,6 @@ export async function getEdition(req, res, next) {
 export async function getMyMessages(req, res, next) {
   try {
     const context = {};
-
     context.USER_ID = req.USER_ID;
     console.log(context)
 

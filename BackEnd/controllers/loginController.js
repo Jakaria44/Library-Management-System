@@ -23,7 +23,7 @@ export async function loginGeneral(req, res, next) {
     const foundUser = await findUserDB(user);
     console.log(foundUser);
     if (foundUser.length === 0) {
-      return res.status(401).json({message: 'Email does not exist', auth: false, token: null, role: null});
+      return res.status(401).json({message: 'Email does not Exist', auth: false, token: null, role: null});
     }
     let foundAdmin, foundEmployee;
     let passwordIsValid = false;

@@ -11,8 +11,9 @@ function runProcedure(procedure) {
 
 export async function updateUserDB(context) {
   const query = runProcedure(
-    `UPDATE_USER(${context.USER_ID}, '${context.FIRST_NAME}', '${context.LAST_NAME}', '${context.ADDRESS}', '${context.EMAIL}', '${context.CONTACT_NO}', '${context.IMAGE}', ${context.GENDER}, '${context.PASSWORD}')`
+    `UPDATE_USER(${context.USER_ID}, '${context.FIRST_NAME}', '${context.LAST_NAME}', '${context.ADDRESS}', '${context.EMAIL}', '${context.CONTACT_NO}', '${context.IMAGE}', '${context.GENDER}', '${context.PASSWORD}')`
   );
+  console.log(query);
   let result = null;
   try {
     result = await queryExecute(query, []);
@@ -40,12 +41,12 @@ export async function getUserDetailsDB(context) {
 export async function postUserDB(user) {
   console.log("postUserDB");
   const query = runProcedure(
-    `INSERT_USER('${user.FIRST_NAME}','${user.LAST_NAME}','${user.IMAGE}','${user.ADDRESS}',${user.EMAIL},'${user.PASSWORD}','${user.CONTACT_NO}',${user.GENDER})`
+    `INSERT_USER('${user.FIRST_NAME}','${user.LAST_NAME}','${user.IMAGE}','${user.ADDRESS}','${user.EMAIL}','${user.PASSWORD}','${user.CONTACT_NO}','${user.GENDER}')`
   );
   console.log("procedure postUserDB");
+    console.log(query);
   try {
     const result = await queryExecute(query, []);
-    // console.log('exec postUserDB ', result);
   } catch (err) {
     return null;
   }
@@ -841,11 +842,11 @@ export async function getAllRatRevOfBookDB(context) {
   // console.log(query);
   // console.log(query1);
   let result, result1;
-  try{
+  try {
     result = await queryExecute(query, []);
     if (context.USER_ID) result1 = await queryExecute(query1, []);
     return {allRatRev: result?.rows || [], myRatRev: result1?.rows || []};
-  } catch(e) {
+  } catch (e) {
     return {allRatRev: [], myRatRev: []};
   }
 }
@@ -879,11 +880,7 @@ export async function postFavouriteDB(review) {
 export async function createBookDB(book) {
   let query = `BEGIN
     SAVEPOINT book_savepoint;
-    INSERT_BOOK('${book.ISBN}', ${book.TITLE ? `'${book.TITLE}'` : "null"}, ${
-    book.IMAGE ? `'${book.IMAGE}'` : "null"
-  }, ${book.NUMBER_OF_PAGES}, ${book.LANGUAGE ? `LOWER('${book.LANGUAGE}')` : "null"}, ${
-    book.DESCRIPTION ? `'${book.DESCRIPTION}'` : "null"
-  },${book.PUBLISHER_ID});`;
+    INSERT_BOOK('${book.ISBN}', ${book.TITLE ? `'${book.TITLE}'` : 'null'}, ${book.IMAGE ? `'${book.IMAGE}'` : 'null'}, ${book.NUMBER_OF_PAGES}, ${book.LANGUAGE ? `LOWER('${book.LANGUAGE}')` : 'null'}, ${book.DESCRIPTION ? `'${book.DESCRIPTION}'` : 'null'},${book.PUBLISHER_ID});`;
 
   for (const a of book.AUTHORS) {
     query += `\nINSERT_WRITTEN_BY('${book.ISBN}', ${a.AUTHOR_ID});`;
@@ -1057,11 +1054,7 @@ export async function addBookGenreDB(bookGenre) {
 export async function updateBookDB(book) {
   let query = `BEGIN
     SAVEPOINT book_savepoint2;
-    UPDATE_BOOK('${book.ISBN}', ${book.TITLE ? `'${book.TITLE}'` : "null"}, ${
-    book.IMAGE ? `'${book.IMAGE}'` : "null"
-  }, ${book.NUMBER_OF_PAGES}, ${book.LANGUAGE ? `LOWER('${book.LANGUAGE}')` : "null"}, ${
-    book.DESCRIPTION ? `'${book.DESCRIPTION}'` : "null"
-  }, ${book.PUBLISHER_ID});`;
+    UPDATE_BOOK('${book.ISBN}', ${book.TITLE ? `'${book.TITLE}'` : 'null'}, ${book.IMAGE ? `'${book.IMAGE}'` : 'null'}, ${book.NUMBER_OF_PAGES}, ${book.LANGUAGE ? `LOWER('${book.LANGUAGE}')` : 'null'}, ${book.DESCRIPTION ? `'${book.DESCRIPTION}'` : 'null'}, ${book.PUBLISHER_ID});`;
 
   query += `\nDELETE_WRITTEN_BY('${book.ISBN}');`;
   query += `\nDELETE_BOOK_GENRE('${book.ISBN}');`;

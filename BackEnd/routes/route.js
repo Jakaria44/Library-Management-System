@@ -1,6 +1,6 @@
 import bodyParser from 'body-parser';
 import Express from 'express';
-import {verifyAdminToken, verifyGeneralToken, verifyUserToken, verifyEmployeeToken} from '../authentication/auth.js';
+import {verifyAdminToken, verifyGeneralToken, verifyUserToken, verifyEmployeeToken, verifyEmpAdmToken} from '../authentication/auth.js';
 import {
   deleteAuthor,
   deleteBook,
@@ -116,7 +116,7 @@ router.route('/user/signup').post(urlencodedParser, postUser);
 router.route('/user/login').post(urlencodedParser, loginGeneral);
 router.route('/user/update').put(verifyUserToken, urlencodedParser, updateUser);
 router.route('/user/details').get(verifyUserToken, getUserDetails);
-router.route('/all-users').get(verifyUserToken, getAllUsers);
+router.route('/all-users').get(verifyEmpAdmToken, getAllUsers);
 router.route('/admin/signup').post(verifyAdminToken, urlencodedParser, postAdmin);
 router.route('/admin/resign').delete(verifyAdminToken, resignAdmin);
 
@@ -150,14 +150,14 @@ router.route('/del-requests').delete(verifyUserToken, deleteRequests);
 router.route('/my-rent-history').get(verifyUserToken, getMyRentHistory);
 router.route('/my-fine-history').get(verifyUserToken, getMyFineHistory);
 router.route('/return-book').put(verifyUserToken, urlencodedParser, updateHistory);
-router.route('/all-requests').get(verifyEmployeeToken, getAllRequests);
+router.route('/all-requests').get(verifyEmpAdmToken, getAllRequests);
 router.route('/handle-request').post(verifyEmployeeToken, urlencodedParser, acceptRequest).delete(verifyEmployeeToken, deleteRequest);
-router.route('/message').post(verifyEmployeeToken, urlencodedParser, sendMessage).get(verifyGeneralToken, getMyMessages)
+router.route('/message').post(verifyEmpAdmToken, urlencodedParser, sendMessage).get(verifyUserToken, getMyMessages)
 router.route('/edit-message').put(verifyUserToken, updateMessage).delete(verifyUserToken, deleteMessage);
-router.route('/publish-news').post(verifyEmployeeToken, urlencodedParser, publishNews).get(verifyEmployeeToken, getAllNews)
+router.route('/publish-news').post(verifyEmployeeToken, urlencodedParser, publishNews).get(verifyUserToken, getAllNews)
 router.route('/show-news').get(verifyGeneralToken, getNews);
-router.route('/all-fine').get(verifyEmployeeToken, getRunningFine);
-router.route('/all-rent').get(verifyEmployeeToken, getRentHistory);
+router.route('/all-fine').get(verifyEmpAdmToken, getRunningFine);
+router.route('/all-rent').get(verifyEmpAdmToken, getRentHistory);
 router.route('/logout').get(verifyUserToken, logout);
 
 export default router;

@@ -1126,7 +1126,7 @@ DELETE http://localhost:3000/db-api/employee/resign
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5NDA1ODMzNSwiZXhwIjoxNzY2MDU4MzM1fQ.y6nQKzajOs33K-s7xBiYc06F5rqxopBRXUpUWlJRkMk
 
 #### ---- SEARCH BAR ----
-GET http://localhost:3000/db-api/search-bar?text=9780439321624&count=10&sort=TITLE&order=ASC
+GET http://localhost:3000/db-api/search-bar?text=Saul&count=10&sort=TITLE&order=ASC
 
 
 ### output
