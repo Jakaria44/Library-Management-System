@@ -15,8 +15,9 @@ import {
 export async function loginGeneral(req, res, next) {
   try {
     console.log(req.body);
+    const emailToLow = req.body.email?.toLowerCase();
     const user = {
-      EMAIL: req.body.email,
+      EMAIL: emailToLow?.replace(/'/g, `''`),
       PASSWORD: req.body.password,
     };
     console.log(user);
@@ -64,7 +65,7 @@ export async function postUser(req, res, next) {
       LAST_NAME: req.body.lastName,
       IMAGE: req.body.image,
       ADDRESS: req.body.address,
-      EMAIL: emailToLow,
+      EMAIL: emailToLow?.replace(/'/g, `''`),
       PASSWORD: hashedPassword,
       CONTACT_NO: req.body.contactNo,
       GENDER: req.body.gender,

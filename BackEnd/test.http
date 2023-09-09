@@ -1,24 +1,3 @@
-#### ----GET Single Book ----
-GET http://localhost:3000/db-api/book?id=101766692X
-###OUTPUT
-{
-  "ISBN": "9781408855652",
-  "AUTHOR": "[{\"NAME\":\"J. K. Rowling\",\"ID\":\"1\"}]",
-  "GENRE": "[{\"NAME\":\"Fantasy\",\"ID\":\"1\"}]",
-  "EDITION": "[{\"ID\":\"1\",\"NUM\":1,\"COUNT\":3,\"YEAR\":1997},{\"ID\":\"2\",\"NUM\":2,\"COUNT\":3,\"YEAR\":1999}]",
-  "PUBLISH_YEAR": 1910,
-  "PUBLISHER_ID": "1",
-  "PUBLISHER_NAME": "Bloomsbury Publishing",
-  "TITLE": "Harry Potter and the Philosophers Stone",
-  "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/4cf25a33d8a4_86392.gif",
-  "PAGE": 352,
-  "LANGUAGE": "English",
-  "RATING": 4.5,
-  "FAVOURITE": 0,
-  "DESCRIPTION": "Harry Potter discovers he's a wizard on his eleventh birthday and is invited to attend Hogwarts School of Witchcraft and Wizardry. There, he makes friends, learns magic, and uncovers the mystery of the Sorcerer's Stone.",
-  "IS_FAVOURITE": 0
-}
-
 #### ----POST user ----
 POST http://localhost:3000/db-api/user/signup
 Content-Type: application/json
@@ -1155,3 +1134,24 @@ GET http://localhost:3000/db-api/show-news?count=3
 #### ----GET all rent----
 GET http://localhost:3000/db-api/all-rent?sort=STATUS&order=ASC
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5NDE3NDcxOSwiZXhwIjoxNzY2MTc0NzE5fQ._N0W7UHScoqEvmdjFCkIOaiXkiw1YgbCKVsDLAeKez0
+
+#### ----GET Single Book ----
+GET http://localhost:3000/db-api/book?id=1111111111115
+###OUTPUT
+{
+  "ISBN": "9781408855652",
+  "PUBLISHER_ID": "1",
+  "PUBLISHER_NAME": "Bloomsbury Publishing",
+  "TITLE": "Harry Potter and the Philosophers Stone",
+  "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/4cf25a33d8a4_86392.gif",
+  "PAGE": 352,
+  "LANGUAGE": "en",
+  "AUTHOR": "[{\"NAME\":\"J. K. Rowling\",\"ID\":\"1\"}]",
+  "GENRE": "[{\"NAME\":\"Fantasy\",\"ID\":\"1\"}]",
+  "EDITION": "[{\"ID\":\"1\",\"NUM\":1,\"COUNT\":0,\"YEAR\":1997},{\"ID\":\"2\",\"NUM\":2,\"COUNT\":9,\"YEAR\":1999}]",
+  "PUBLISH_YEAR": 1997,
+  "PREVIEWLINK": "https://canonburyprimaryschool.co.uk/wp-content/uploads/2016/01/Joanne-K.-Rowling-Harry-Potter-Book-1-Harry-Potter-and-the-Philosophers-Stone-EnglishOnlineClub.com_.pdf",
+  "RATING": 3.5,
+  "FAVOURITE": 1,
+  "DESCRIPTION": "Harry Potter discovers he's a wizard on his eleventh birthday and is invited to attend Hogwarts School of Witchcraft and Wizardry. There, he makes friends, learns magic, and uncovers the mystery of the Sorcerer's Stone."
+}

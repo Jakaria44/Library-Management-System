@@ -50,6 +50,7 @@ CREATE TABLE BOOK
     Language        VARCHAR2(10),
     Description     VARCHAR2(2000),
     Publisher_ID    VARCHAR2(20),
+    PreviewLink     VARCHAR2(200),
     FOREIGN KEY (Publisher_ID) REFERENCES PUBLISHER (Publisher_ID)
 );
 

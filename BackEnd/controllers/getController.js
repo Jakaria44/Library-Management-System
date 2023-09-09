@@ -98,10 +98,10 @@ export async function getAllBookSum(req, res, next) {
       context.ISBN = req.query.ISBN;
     }
     if (req.query.TITLE) {
-      context.TITLE = req.query.TITLE.toUpperCase().replace(/'/g, `''`);
+      context.TITLE = req.query.TITLE?.toUpperCase()?.replace(/'/g, `''`);
     }
     if (req.query.LANGUAGE) {
-      context.LANGUAGE = req.query.LANGUAGE.toUpperCase();
+      context.LANGUAGE = req.query.LANGUAGE?.toUpperCase();
     }
     if (req.query.PAGE_START) {
       context.PAGE_START = parseInt(req.query.PAGE_START);
@@ -162,7 +162,7 @@ export async function getSearchBar(req, res, next) {
     const count = req.query.count || 5;
 
     if (req.query.text?.length > 0) {
-      context.text = req.query.text.toUpperCase().replace(/'/g, `''`);
+      context.text = req.query.text?.toUpperCase()?.replace(/'/g, `''`);
     } else{
       res.status(404).json({message: "No text provided"});
       return;

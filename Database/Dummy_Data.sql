@@ -172,3 +172,88 @@ VALUES (1, 1, SYSDATE + 9, 'Please, return the book as soon as possible or you w
 --APPLY
 --ADMIN
 
+
+DECLARE
+DT DATE;
+COUNTER NUMBER;
+BEGIN
+	FOR R IN (SELECT RENT_HISTORY_ID, RENT_DATE FROM RENT_HISTORY) LOOP
+		DT := R.RENT_DATE + 7;
+		UPDATE RENT_HISTORY
+		SET RETURN_DATE = DT
+		WHERE RENT_HISTORY_ID = R.RENT_HISTORY_ID;
+		SELECT COUNT(*) INTO COUNTER FROM FINE_HISTORY
+		WHERE RENT_HISTORY_ID = R.RENT_HISTORY_ID;
+		IF COUNTER > 0 THEN
+			UPDATE FINE_HISTORY
+			SET START_DATE = DT
+			WHERE RENT_HISTORY_ID = R.RENT_HISTORY_ID;
+		END IF;
+	END LOOP;
+END;
+/
+
+DECLARE
+  DT DATE;
+  COUNTER NUMBER;
+BEGIN
+  FOR R IN (SELECT RENT_HISTORY_ID, START_DATE FROM FINE_HISTORY) LOOP
+    SELECT ROUND(DBMS_RANDOM.VALUE, 2) INTO COUNTER FROM DUAL;
+    DT := R.START_DATE + CEIL(30 * COUNTER);
+    SELECT COUNT(*) INTO COUNTER
+    FROM FINE_HISTORY
+    WHERE RENT_HISTORY_ID = R.RENT_HISTORY_ID
+      AND PAYMENT_DATE IS NOT NULL; -- Corrected condition
+    IF COUNTER > 0 THEN
+      UPDATE FINE_HISTORY
+      SET PAYMENT_DATE = DT,
+          FEE_AMOUNT = (DT - R.START_DATE) * 0.1
+      WHERE RENT_HISTORY_ID = R.RENT_HISTORY_ID;
+    END IF;
+  END LOOP;
+END;
+/
+
+
+DECLARE
+  COUNTER NUMBER;
+BEGIN
+  FOR R IN (SELECT EDITION_ID FROM EDITION) LOOP
+    SELECT ROUND(DBMS_RANDOM.VALUE, 2) INTO COUNTER FROM DUAL;
+    COUNTER := FLOOR(COUNTER*11);
+    UPDATE EDITION
+		SET NUM_OF_COPIES = COUNTER
+		WHERE EDITION_ID = R.EDITION_ID;
+  END LOOP;
+END;
+/
+
+INSERT INTO c##library.GENRE (GENRE_ID, GENRE_NAME)
+VALUES (10000, 'Others');
+
+DECLARE
+  COUNTER NUMBER;
+BEGIN
+  FOR R IN (SELECT ISBN FROM BOOK) LOOP
+    SELECT COUNT(*)
+		INTO COUNTER
+		FROM BOOK_GENRE
+		WHERE ISBN = R.ISBN;
+		IF COUNTER = 0 THEN
+			INSERT INTO BOOK_GENRE(ISBN, GENRE_ID) VALUES (R.ISBN, 10000);
+		END IF;
+  END LOOP;
+END;
+/
+
+alter table BOOK add PreviewLink VARCHAR2(500);
+select * from book;
+update book set PreviewLink = 'https://canonburyprimaryschool.co.uk/wp-content/uploads/2016/01/Joanne-K.-Rowling-Harry-Potter-Book-1-Harry-Potter-and-the-Philosophers-Stone-EnglishOnlineClub.com_.pdf' where isbn = '9781408855652';
+update book set PreviewLink = 'https://readerslibrary.org/wp-content/uploads/Harry-Potter-and-the-Chamber-of-Secrets.pdf' where isbn = '9781408855669';
+update book set PreviewLink = 'http://vidyaprabodhinicollege.edu.in/VPCCECM/ebooks/ENGLISH%20LITERATURE/Harry%20potter/(Book%203)%20Harry%20Potter%20And%20The%20Prisoner%20Of%20Azkaban_001.pdf' where isbn = '9781408855676';
+update book set PreviewLink = 'https://ebookpresssite.files.wordpress.com/2017/10/4_harry_potter_and_the_goblet_of_fire.pdf' where isbn = '9781408834992';
+
+update book set PreviewLink = 'https://www.oasisacademysouthbank.org/uploaded/South_Bank/Curriculum/Student_Learning/Online_Library/KS3/Harry_potter/05_Harry_Potter_and_the_Order_of_the_Phoenix_by_J.K._Rowling.pdf' where isbn = '9780747591269';
+
+update book set PreviewLink = 'https://bayanbox.ir/view/1900879915236196677/Harry-Potter-and-the-Half-Blood-Prince-www.libpdf.blog.ir.pdf' where isbn = '9780439785969';
+update book set PreviewLink = 'https://vidyaprabodhinicollege.edu.in/VPCCECM/ebooks/ENGLISH%20LITERATURE/Harry%20potter/(Book%207)%20Harry%20Potter%20And%20The%20Deathly%20Hallows.pdf' where isbn = '9781408894743';

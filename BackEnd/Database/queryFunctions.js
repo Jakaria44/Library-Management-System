@@ -55,13 +55,10 @@ export async function postUserDB(user) {
 
 export async function findUserDB(user) {
   let query = baseQuery('"USER"');
-  const binds = {};
-  // console.log(user);
-  binds.EMAIL = user.EMAIL;
-  query += "\nWhere UPPER(EMAIL) = UPPER(:EMAIL)";
+  query += `\nWhere UPPER(EMAIL) = UPPER('${user.EMAIL}')`;
   let result = null;
   try {
-    result = await queryExecute(query, binds);
+    result = await queryExecute(query, []);
   } catch (err) {
     return [];
   }
@@ -112,12 +109,11 @@ export async function findEmployeeDB(employee) {
 export async function getBookDetailsByIDDB(context) {
   console.log(context);
   let query =
-    "SELECT B.ISBN, " +
+    "SELECT B.ISBN, P.PUBLISHER_ID, P.NAME AS PUBLISHER_NAME, B.TITLE, B.IMAGE, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE, " +
     "(SELECT JSON_ARRAYAGG(DISTINCT JSON_OBJECT('NAME' VALUE A.NAME, 'ID' VALUE A.AUTHOR_ID)) FROM WRITTEN_BY WB JOIN AUTHOR A ON WB.AUTHOR_ID = A.AUTHOR_ID WHERE WB.ISBN = B.ISBN) AS AUTHOR, " +
     "(SELECT JSON_ARRAYAGG(DISTINCT JSON_OBJECT('NAME' VALUE G.GENRE_NAME, 'ID' VALUE G.GENRE_ID)) FROM BOOK_GENRE BG JOIN GENRE G ON BG.GENRE_ID = G.GENRE_ID WHERE BG.ISBN = B.ISBN) AS GENRE, " +
     "(SELECT JSON_ARRAYAGG(DISTINCT JSON_OBJECT('ID' VALUE E.EDITION_ID, 'NUM' VALUE E.EDITION_NUM, 'COUNT' VALUE E.NUM_OF_COPIES, 'YEAR' VALUE E.PUBLISH_YEAR)) FROM EDITION E WHERE E.ISBN = B.ISBN) AS EDITION, " +
-    "(SELECT  MIN(E.PUBLISH_YEAR) FROM EDITION E WHERE E.ISBN = B.ISBN) AS PUBLISH_YEAR, " +
-    "P.PUBLISHER_ID, P.NAME AS PUBLISHER_NAME, B.TITLE, B.IMAGE, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE, " +
+    "(SELECT  MIN(E.PUBLISH_YEAR) FROM EDITION E WHERE E.ISBN = B.ISBN) AS PUBLISH_YEAR, B.PREVIEWLINK, " +
     "NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, NVL(COUNT(DISTINCT F.USER_ID), 0) AS FAVOURITE, B.DESCRIPTION";
   if (context.USER_ID) {
     query += `, CASE WHEN B.ISBN = ANY(SELECT F.ISBN FROM FAVOURITE F WHERE F.USER_ID = ${context.USER_ID}) THEN 1 ELSE 0 END AS IS_FAVOURITE`;
@@ -129,7 +125,7 @@ export async function getBookDetailsByIDDB(context) {
     "LEFT JOIN FAVOURITE F ON (B.ISBN = F.ISBN)";
   query += `\nWHERE B.ISBN = '${context.ISBN}'`;
   query +=
-    "\nGROUP BY B.ISBN, B.TITLE, B.IMAGE, P.PUBLISHER_ID, P.NAME, B.NUMBER_OF_PAGES, B.LANGUAGE, B.DESCRIPTION";
+    "\nGROUP BY B.ISBN, B.TITLE, B.IMAGE, P.PUBLISHER_ID, P.NAME, B.NUMBER_OF_PAGES, B.LANGUAGE, B.DESCRIPTION, B.PREVIEWLINK";
   console.log(query);
   let result = null;
   try {

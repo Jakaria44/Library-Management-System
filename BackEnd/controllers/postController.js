@@ -51,7 +51,7 @@ export async function ratrevBook(req, res, next) {
     ISBN: req.query.id,
     USER_ID: req.USER_ID,
     RATING: req.body.RATING,
-    REVIEW: req.body.REVIEW.replace(/'/g, `''`),
+    REVIEW: req.body.REVIEW?.replace(/'/g, `''`),
   };
 
   try {
@@ -125,7 +125,7 @@ export async function sendMessage(req, res, next) {
     }
     let request = {
       USER_ID: req.body.USER_ID,
-      MESSAGE: req.body.MESSAGE.replace(/'/g, `''`)
+      MESSAGE: req.body.MESSAGE?.replace(/'/g, `''`)
     };
     request = await sendMessageDB(request);
     if (request) {
@@ -141,7 +141,7 @@ export async function sendMessage(req, res, next) {
 export async function publishNews(req, res, next) {
   try {
     let request = {
-      NEWS: req.body.NEWS.replace(/'/g, `''`)
+      NEWS: req.body.NEWS?.replace(/'/g, `''`)
     };
     request = await publishNewsDB(request);
     if (request) {
@@ -222,11 +222,11 @@ export async function postBook(req, res, next) {
   try {
     let book = {
       ISBN: req.body.ISBN,
-      TITLE: req.body.TITLE.replace(/'/g, `''`),
-      IMAGE: req.body?.IMAGE.replace(/'/g, `''`),
+      TITLE: req.body.TITLE?.replace(/'/g, `''`),
+      IMAGE: req.body?.IMAGE?.replace(/'/g, `''`),
       NUMBER_OF_PAGES: Number(req.body.NUMBER_OF_PAGES),
-      LANGUAGE: req.body.LANGUAGE.replace(/'/g, `''`),
-      DESCRIPTION: req.body.DESCRIPTION.replace(/'/g, `''`),
+      LANGUAGE: req.body.LANGUAGE?.replace(/'/g, `''`),
+      DESCRIPTION: req.body.DESCRIPTION?.replace(/'/g, `''`),
       PUBLISHER_ID: req.body.PUBLISHER_ID,
       AUTHORS: req.body.Authors,
       GENRES: req.body.Genres,
@@ -259,7 +259,7 @@ export async function addAuthor(req, res, next) {
       NAME: req.body.NAME,
       DoB: new Date(req.body.DoB),
       DoD: req.body.DoD ? new Date(req.body.DoD) : null,
-      NATIONALITY: req.body.NATIONALITY.replace(/'/g, `''`),
+      NATIONALITY: req.body.NATIONALITY?.replace(/'/g, `''`),
       BIO: req.body.BIO,
       IMAGE: req.body.IMAGE
     };
@@ -275,15 +275,16 @@ export async function addAuthor(req, res, next) {
 }
 
 export async function addPublisher(req, res, next) {
+  let emailToLow = req.body.EMAIL?.toLowerCase();
   try {
     let publisher = {
-      NAME: req.body.NAME.replace(/'/g, `''`),
-      IMAGE: req.body.IMAGE.replace(/'/g, `''`),
-      CITY: req.body.CITY.replace(/'/g, `''`),
-      COUNTRY: req.body.COUNTRY.replace(/'/g, `''`),
-      POSTAL_CODE: req.body.POSTAL_CODE.replace(/'/g, `''`),
+      NAME: req.body.NAME?.replace(/'/g, `''`),
+      IMAGE: req.body.IMAGE?.replace(/'/g, `''`),
+      CITY: req.body.CITY?.replace(/'/g, `''`),
+      COUNTRY: req.body.COUNTRY?.replace(/'/g, `''`),
+      POSTAL_CODE: req.body.POSTAL_CODE?.replace(/'/g, `''`),
       CONTACT_NO: req.body.CONTACT_NO,
-      EMAIL: req.body.EMAIL.replace(/'/g, `''`)
+      EMAIL: emailToLow?.replace(/'/g, `''`)
     };
     publisher = await addPublisherDB(publisher);
     if (publisher) {
@@ -299,7 +300,7 @@ export async function addPublisher(req, res, next) {
 export async function addGenre(req, res, next) {
   try {
     let genre = {
-      GENRE_NAME: req.body.GENRE_NAME.replace(/'/g, `''`)
+      GENRE_NAME: req.body.GENRE_NAME?.replace(/'/g, `''`)
     };
     console.log(genre);
     genre = await addGenreDB(genre);
@@ -316,7 +317,7 @@ export async function addGenre(req, res, next) {
 export async function addJob(req, res, next) {
   try {
     let job = {
-      JOB_TITLE: req.body.JOB_TITLE.replace(/'/g, `''`),
+      JOB_TITLE: req.body.JOB_TITLE?.replace(/'/g, `''`),
       SALARY: req.body.SALARY
     };
     console.log(job);
