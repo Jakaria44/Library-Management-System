@@ -28,52 +28,42 @@ import {
 } from '../Database/queryFunctions.js';
 
 export async function postFavBook(req, res, next) {
-
-  if (req.USER_ID) {
-    let fav = {
-      ISBN: req.query.id,
-      USER_ID: req.USER_ID
-    };
-    console.log(fav);
-    try {
-      const favBook = await getFavouriteDB(fav);
-      if (!favBook) {
-        res.status(404).json({message: "Not Found"});
-        return;
-      }
-      await postFavouriteDB(fav);
+  let fav = {
+    ISBN: req.query.id,
+    USER_ID: req.USER_ID
+  };
+  console.log(fav);
+  try {
+    const favBook = await getFavouriteDB(fav);
+    fav = await postFavouriteDB(fav);
+    if (fav) {
       res.status(201).json({IS_FAVOURITE: favBook.length === 0});
-    } catch (error) {
-      res.status(501).json(error);
+    } else {
+      res.status(404).json({message: 'Failed to edit'})
     }
-  } else {
-    res.status(501).json('Not an User/Employee');
+  } catch (e) {
+    next(e);
   }
 }
 
 export async function ratrevBook(req, res, next) {
+  let ratrev = {
+    ISBN: req.query.id,
+    USER_ID: req.USER_ID,
+    RATING: req.body.RATING,
+    REVIEW: req.body.REVIEW.replace(/'/g, `''`),
+  };
+
   try {
-    let ratrev = {
-      ISBN: req.query.id,
-      USER_ID: req.USER_ID,
-      RATING: req.body.RATING,
-      REVIEW: req.body.REVIEW.replace(/'/g, `''`),
-    };
-
-    try {
-      let my = await ratrevBookDB(ratrev);
-      console.log(my);
-      my = await getOwnRatRevDB(my);
-      console.log(my[0]);
-      const avg = await getAvgRatingDB(ratrev);
-      console.log(avg);
-      res.status(201).json({my: my[0], avg});
-    } catch (error) {
-      res.status(501).json(error);
-    }
-
-  } catch (err) {
-    res.status(501).json(err);
+    let my = await ratrevBookDB(ratrev);
+    console.log(my);
+    my = await getOwnRatRevDB(my);
+    console.log(my[0]);
+    const avg = await getAvgRatingDB(ratrev);
+    console.log(avg);
+    res.status(201).json({my: my[0], avg});
+  } catch (e) {
+    next(e);
   }
 }
 
@@ -86,19 +76,19 @@ export async function addRequest(req, res, next) {
     };
     let result = await getMyFineHistoryDB(request);
     if (result.length > 0) {
-      res.status(402).json({message: "PAY FIRST"})
+      res.status(402).json({message: "Please Clear your fine first"})
       return;
     }
     result = await getMyRequestsDB(request);
     if (result.length >= 20) {
-      res.status(403).json({message: "MAXIMUM LIMIT REACHED"});
+      res.status(403).json({message: "Maximum Limit Reached"});
       return;
     }
     request = await addRequestDB(request);
     if (request) {
-      res.status(200).json({message: "Successful"})
+      res.status(200).json({message: "Successfully added"})
     } else {
-      res.status(404).json({message: "Already Exists"})
+      res.status(404).json({message: "Already Exists Data"})
     }
   } catch (e) {
     next(e);
@@ -113,14 +103,14 @@ export async function applyForJob(req, res, next) {
     };
     let result = await getApplicationDB(request);
     if (result.length >= 3) {
-      res.status(403).json({message: "MAXIMUM LIMIT REACHED"});
+      res.status(403).json({message: "Maximum Limit Reached"});
       return;
     }
     request = await applyForJobDB(request);
     if (request) {
-      res.status(200).json({message: "Successful"})
+      res.status(200).json({message: "Successfully applied"})
     } else {
-      res.status(404).json({message: "Already Exists"})
+      res.status(404).json({message: "Already Exists Data"})
     }
   } catch (e) {
     next(e);
@@ -139,9 +129,9 @@ export async function sendMessage(req, res, next) {
     };
     request = await sendMessageDB(request);
     if (request) {
-      res.status(200).json({message: "Successful"})
+      res.status(200).json({message: "Successfully send"})
     } else {
-      res.status(404).json({message: "Message send Failed"})
+      res.status(404).json({message: "Failed to send"})
     }
   } catch (e) {
     next(e);
@@ -155,9 +145,9 @@ export async function publishNews(req, res, next) {
     };
     request = await publishNewsDB(request);
     if (request) {
-      res.status(200).json({message: "Successful"})
+      res.status(200).json({message: "Successfully published"})
     } else {
-      res.status(404).json({message: "Message send Failed"})
+      res.status(404).json({message: "Failed to publish"})
     }
   } catch (e) {
     next(e);
@@ -188,12 +178,12 @@ export async function acceptRequest(req, res, next) {
       console.log(context);
       request = await sendMessageDB(context);
       if (!request) {
-        res.status(201).json({message: 'Successful but message not send'})
+        res.status(201).json({message: 'Successfully accepted but message not send'})
       } else {
-        res.status(200).json({message: 'Successful'})
+        res.status(200).json({message: 'Successfully accepted'})
       }
     } else {
-      res.status(404).json({message: "Not Enough Copies"})
+      res.status(404).json({message: "Failed to accept"})
     }
   } catch (e) {
     next(e);
@@ -215,12 +205,12 @@ export async function acceptApplication(req, res, next) {
       context.MESSAGE = `Congratulations!!! Your application for the JOB: {${jobTitle}} is accepted. From now, you are an Employee of the library. Please communicate with the admin for further query.`;
       request = await sendMessageDB(context);
       if (!request) {
-        res.status(201).json({message: 'Successful but message not send'})
+        res.status(201).json({message: 'Successfully accepted but message not send'})
       } else {
-        res.status(200).json({message: 'Successful'})
+        res.status(200).json({message: 'Successfully accepted'})
       }
     } else {
-      res.status(404).json({message: "Not Successful"})
+      res.status(404).json({message: "Failed to accept"})
     }
   } catch (e) {
     next(e);
@@ -242,20 +232,20 @@ export async function postBook(req, res, next) {
       GENRES: req.body.Genres,
       EDITIONS: req.body.Editions
     }
-    if(book.ISBN.length !== 13){
+    if (book.ISBN.length !== 13) {
       res.status(404).json({message: "ISBN must be 13 characters long"});
       return;
     }
-    if(book.AUTHORS.length === 0 || book.GENRES.length === 0 || book.EDITIONS.length === 0){
+    if (book.AUTHORS.length === 0 || book.GENRES.length === 0 || book.EDITIONS.length === 0) {
       res.status(404).json({message: "Authors, Genres and Editions can't be empty"});
       return;
     }
     console.log(book);
     book = await createBookDB(book);
     if (book) {
-      res.status(201).json({message: "Successful"});
+      res.status(201).json({message: "Successfully added"});
     } else {
-      res.status(404).json({message: "Not successful"});
+      res.status(404).json({message: "Failed to add"});
     }
   } catch (err) {
     next(err);
@@ -275,9 +265,9 @@ export async function addAuthor(req, res, next) {
     };
     author = await addAuthorDB(author);
     if (author) {
-      res.status(201).json({message: "Successful", author});
+      res.status(201).json({message: "Successfully added", author});
     } else {
-      res.status(404).json({message: "Not successful"});
+      res.status(404).json({message: "Failed to add"});
     }
   } catch (err) {
     next(err);
@@ -297,9 +287,9 @@ export async function addPublisher(req, res, next) {
     };
     publisher = await addPublisherDB(publisher);
     if (publisher) {
-      res.status(201).json({message: "Successful", publisher});
+      res.status(201).json({message: "Successfully added", publisher});
     } else {
-      res.status(404).json({message: "Not successful"});
+      res.status(404).json({message: "Failed to add"});
     }
   } catch (err) {
     next(err);
@@ -314,9 +304,9 @@ export async function addGenre(req, res, next) {
     console.log(genre);
     genre = await addGenreDB(genre);
     if (genre) {
-      res.status(201).json({message: "Successful", genre});
+      res.status(201).json({message: "Successfully added", genre});
     } else {
-      res.status(404).json({message: "Not successful"});
+      res.status(404).json({message: "Failed to add"});
     }
   } catch (err) {
     next(err);
@@ -332,9 +322,9 @@ export async function addJob(req, res, next) {
     console.log(job);
     job = await addJobDB(job);
     if (job) {
-      res.status(201).json({message: "Successful", job});
+      res.status(201).json({message: "Successfully added", job});
     } else {
-      res.status(404).json({message: "Not successful"});
+      res.status(404).json({message: "Failed to add"});
     }
   } catch (err) {
     next(err);
@@ -362,9 +352,9 @@ export async function addEdition(req, res, next) {
     }
   }
   if (success) {
-    res.status(201).json({message: 'All Successful'});
+    res.status(201).json({message: 'All Editions successfully added'});
   } else {
-    res.status(404).json({message: 'INTERRUPTED BY ERROR'});
+    res.status(404).json({message: 'Failed to add all Editions'});
   }
 }
 
@@ -389,9 +379,9 @@ export async function addWrittenBy(req, res, next) {
     }
   }
   if (success) {
-    res.status(201).json({message: 'All Successful'});
+    res.status(201).json({message: 'All Authors Successfully added'});
   } else {
-    res.status(404).json({message: 'INTERRUPTED BY ERROR'});
+    res.status(404).json({message: 'Failed to add all Authors'});
   }
 }
 
@@ -415,8 +405,8 @@ export async function addBookGenre(req, res, next) {
     }
   }
   if (success) {
-    res.status(201).json({message: 'All Successful'});
+    res.status(201).json({message: 'All Genres Successfully added'});
   } else {
-    res.status(404).json({message: 'INTERRUPTED BY ERROR'});
+    res.status(404).json({message: 'Failed to add all Genres'});
   }
 }

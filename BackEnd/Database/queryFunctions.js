@@ -736,7 +736,7 @@ export async function getFavouriteDB(fav) {
   try {
     result = await queryExecute(query, favDB);
   } catch (e) {
-    return null;
+    return [];
   }
   return result.rows;
 }
@@ -818,7 +818,6 @@ export async function getJobDB(context) {
 export async function getAllRatRevOfBookDB(context) {
   console.log(context);
   let query1 = "";
-  let result, result1;
   if (context.USER_ID) {
     query1 =
       `SELECT U.USER_ID,
@@ -841,9 +840,14 @@ export async function getAllRatRevOfBookDB(context) {
   }
   // console.log(query);
   // console.log(query1);
-  result = await queryExecute(query, []);
-  if (context.USER_ID) result1 = await queryExecute(query1, []);
-  return {allRatRev: result?.rows || [], myRatRev: result1?.rows || []};
+  let result, result1;
+  try{
+    result = await queryExecute(query, []);
+    if (context.USER_ID) result1 = await queryExecute(query1, []);
+    return {allRatRev: result?.rows || [], myRatRev: result1?.rows || []};
+  } catch(e) {
+    return {allRatRev: [], myRatRev: []};
+  }
 }
 
 export async function ratrevBookDB(ratRev) {

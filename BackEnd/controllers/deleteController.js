@@ -25,9 +25,9 @@ export async function deleteRatRevBook(req, res, next) {
   try {
     const deleted = await deleteRatRevBookDB(context);
     if (deleted) {
-      res.status(201).json({message: 'Successful'});
+      res.status(201).json({message: "Successfully deleted"});
     } else {
-      res.status(404).json({message: "Does not Exist"});
+      res.status(404).json({message: "Failed to delete"});
     }
   } catch (err) {
     next(err);
@@ -53,16 +53,16 @@ export async function deleteRequests(req, res, next) {
   }
 
   if (success) {
-    res.status(201).json({message: 'All Successful'});
+    res.status(201).json({message: 'All Request Successful'});
   } else {
-    res.status(404).json({message: 'Does not Exist'});
+    res.status(404).json({message: 'Failed to delete all Request'});
   }
 }
 
 export async function deleteRequest(req, res, next) {
   try {
     if (req.body.USER_ID === req.USER_ID) {
-      res.status(402).json({message: "Can't reject own request"})
+      res.status(402).json({message: "Can't Reject own Request"})
       return
     }
     let context = {};
@@ -77,12 +77,12 @@ export async function deleteRequest(req, res, next) {
       context.MESSAGE = `Your request for the book, ISBN : {${isbn}} and EDITION_NUM = {${edition}} has been rejected. Please communicate with the manager for further query.`;
       deleted = await sendMessageDB(context);
       if (!deleted) {
-        res.status(201).json({message: 'Successful but message not send'})
+        res.status(201).json({message: 'Successfully deleted but message not send'})
       } else {
-        res.status(200).json({message: 'Successful'})
+        res.status(200).json({message: 'Successfully deleted'})
       }
     } else {
-      res.status(404).json({message: 'Does not Exist'});
+      res.status(404).json({message: 'Failed to delete'});
     }
   } catch (err) {
     next(err);
@@ -151,9 +151,9 @@ export async function resignAdmin(req, res, next) {
       context.MESSAGE = `You have successfully resigned from the ADMIN. You are still a user of the library. Thank you for your service to the library.`;
       deleted = await sendMessageDB(context);
       if (!deleted) {
-        res.status(201).json({message: 'Successful but message not send'})
+        res.status(201).json({message: 'Successfully resigned but message not send'})
       } else {
-        res.status(200).json({message: 'Successful'})
+        res.status(200).json({message: 'Successfully resigned'})
       }
     } else {
       res.status(404).json({message: 'Failed to resign'});
@@ -195,12 +195,12 @@ export async function deleteEmployee(req, res, next) {
         context.MESSAGE = `You are fired from the JOB: {${jobTitle}}. You have worked at the Job since JOIN_DATE: {${joinDate}}. Please communicate with the admin for further query.`;
         deleted = await sendMessageDB(context);
         if (!deleted) {
-          res.status(201).json({message: 'Successful but message not send'})
+          res.status(201).json({message: 'Successfully fired but message not send'})
         } else {
-          res.status(200).json({message: 'Successful'})
+          res.status(200).json({message: 'Successfully fired'})
         }
       } else {
-        res.status(404).json({message: 'Failed to delete'});
+        res.status(404).json({message: 'Failed to fire the employee'});
       }
     } else {
       res.status(404).json({message: 'No employee found'});
@@ -225,15 +225,15 @@ export async function resignEmployee(req, res, next) {
         context.MESSAGE = `You have successfully resigned from the JOB: {${jobTitle}}. You have worked at the Job since JOIN_DATE: {${joinDate}}. Thank you for your service to the library.`;
         deleted = await sendMessageDB(context);
         if (!deleted) {
-          res.status(201).json({message: 'Successful but message not send'})
+          res.status(201).json({message: 'Successfully resign but message not send'})
         } else {
-          res.status(200).json({message: 'Successful'})
+          res.status(200).json({message: 'Successfully resign'})
         }
       } else {
-        res.status(404).json({message: 'Failed to delete'});
+        res.status(404).json({message: 'Failed to resign'});
       }
     } else {
-      res.status(404).json({message: 'No employee found'});
+      res.status(404).json({message: 'You are not an employee'});
     }
   } catch (err) {
     next(err);
@@ -293,9 +293,9 @@ export async function deleteApplication(req, res, next) {
       deleted.MESSAGE = `Your application for the JOB: {${jobTitle}} is rejected. You can try again after sometime or can communicate with the admin. Please stay tuned with our library.`;
       deleted = await sendMessageDB(deleted);
       if (!deleted) {
-        res.status(201).json({message: 'Successful but message not send'})
+        res.status(201).json({message: 'Successfully deleted but message not send'})
       } else {
-        res.status(200).json({message: 'Successful'})
+        res.status(200).json({message: 'Successfully deleted'})
       }
     } else {
       res.status(404).json({message: 'Failed to delete'});

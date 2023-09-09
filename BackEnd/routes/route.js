@@ -158,7 +158,6 @@ router.route('/publish-news').post(verifyEmployeeToken, urlencodedParser, publis
 router.route('/show-news').get(verifyGeneralToken, getNews);
 router.route('/all-fine').get(verifyEmployeeToken, getRunningFine);
 router.route('/all-rent').get(verifyEmployeeToken, getRentHistory);
-
-// router.route('/logout').get(verifyGeneralToken, logout);
+router.route('/logout').get(verifyUserToken, logout);
 
 export default router;

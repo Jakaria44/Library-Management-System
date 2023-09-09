@@ -38,9 +38,9 @@ export async function updateBook(req, res, next) {
     console.log(book);
     book = await updateBookDB(book);
     if (book) {
-      res.status(201).json({message: "Successful"});
+      res.status(201).json({message: "Successfully updated"});
     } else {
-      res.status(404).json({message: "Not successful"});
+      res.status(404).json({message: "Failed to update"});
     }
   } catch (err) {
     next(err);
@@ -61,9 +61,9 @@ export async function updateAuthor(req, res, next) {
     };
     author = await updateAuthorDB(author);
     if (author) {
-      res.status(201).json({message: "Successful", author});
+      res.status(201).json({message: "Successfully updated", author});
     } else {
-      res.status(404).json({message: "Not successful"});
+      res.status(404).json({message: "Failed to update"});
     }
   } catch (err) {
     next(err);
@@ -85,9 +85,9 @@ export async function updatePublisher(req, res, next) {
     };
     publisher = await updatePublisherDB(publisher);
     if (publisher) {
-      res.status(201).json({message: "Successful", publisher});
+      res.status(201).json({message: "Successfully updated", publisher});
     } else {
-      res.status(404).json({message: "Not successful"});
+      res.status(404).json({message: "Failed to update"});
     }
   } catch (err) {
     next(err);
@@ -102,9 +102,9 @@ export async function updateGenre(req, res, next) {
     };
     genre = await updateGenreDB(genre);
     if (genre) {
-      res.status(201).json({message: "Successful", genre});
+      res.status(201).json({message: "Successfully updated", genre});
     } else {
-      res.status(404).json({message: "Not successful"});
+      res.status(404).json({message: "Failed to update"});
     }
   } catch (err) {
     next(err);
@@ -120,9 +120,9 @@ export async function updateJob(req, res, next) {
     };
     job = await updateJobDB(job);
     if (job) {
-      res.status(201).json({message: "Successful"});
+      res.status(201).json({message: "Successfully updated"});
     } else {
-      res.status(404).json({message: "Not successful"});
+      res.status(404).json({message: "Failed to update"});
     }
   } catch (err) {
     next(err);
@@ -139,9 +139,9 @@ export async function updateEdition(req, res, next) {
     edition.EDITION_ID = req.query.eid;
     edition = await updateEditionDB(edition);
     if (edition) {
-      res.status(201).json({message: "Successful", edition});
+      res.status(201).json({message: "Successfully updated", edition});
     } else {
-      res.status(404).json({message: "Not successful"});
+      res.status(404).json({message: "Failed to update"});
     }
   } catch (err) {
     next(err);
