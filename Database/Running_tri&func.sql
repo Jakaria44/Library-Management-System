@@ -1,6 +1,77 @@
-drop sequence user_seq;
+DECLARE
+    st NUMBER;
+BEGIN
+    SELECT MAX(TO_NUMBER(user_id)) + 1 INTO st FROM "USER";
+    EXECUTE IMMEDIATE 'drop sequence user_seq';
+    EXECUTE IMMEDIATE 'CREATE SEQUENCE user_seq START WITH ' || st || ' INCREMENT BY 1';
+END;
+/
+DECLARE
+    st NUMBER;
+BEGIN
+    SELECT MAX(TO_NUMBER(rent_history_id)) + 1 INTO st FROM rent_history;
+    EXECUTE IMMEDIATE 'drop sequence history_seq';
+    EXECUTE IMMEDIATE 'CREATE SEQUENCE history_seq START WITH ' || st || ' INCREMENT BY 1';
+END;
+/
+DECLARE
+    st NUMBER;
+BEGIN
+    SELECT MAX(TO_NUMBER(message_id)) + 1 INTO st FROM message;
+    EXECUTE IMMEDIATE 'drop sequence msg_seq';
+    EXECUTE IMMEDIATE 'CREATE SEQUENCE msg_seq START WITH ' || st || ' INCREMENT BY 1';
+END;
+/
+DECLARE
+    st NUMBER;
+BEGIN
+    SELECT MAX(TO_NUMBER(news_id)) + 1 INTO st FROM news;
+    EXECUTE IMMEDIATE 'drop sequence news_seq';
+    EXECUTE IMMEDIATE 'CREATE SEQUENCE news_seq START WITH ' || st || ' INCREMENT BY 1';
+END;
+/
+DECLARE
+    st NUMBER;
+BEGIN
+    SELECT MAX(TO_NUMBER(genre_id)) + 1 INTO st FROM genre;
+    EXECUTE IMMEDIATE 'drop sequence genre_seq';
+    EXECUTE IMMEDIATE 'CREATE SEQUENCE genre_seq START WITH ' || st || ' INCREMENT BY 1';
+END;
+/
+DECLARE
+    st NUMBER;
+BEGIN
+    SELECT MAX(TO_NUMBER(author_id)) + 1 INTO st FROM author;
+    EXECUTE IMMEDIATE 'drop sequence author_seq';
+    EXECUTE IMMEDIATE 'CREATE SEQUENCE author_seq START WITH ' || st || ' INCREMENT BY 1';
+END;
+/
+DECLARE
+    st NUMBER;
+BEGIN
+    SELECT MAX(TO_NUMBER(publisher_id)) + 1 INTO st FROM publisher;
+    EXECUTE IMMEDIATE 'drop sequence publisher_seq';
+    EXECUTE IMMEDIATE 'CREATE SEQUENCE publisher_seq START WITH ' || st || ' INCREMENT BY 1';
+END;
+/
+DECLARE
+    st NUMBER;
+BEGIN
+    SELECT MAX(TO_NUMBER(edition_id)) + 1 INTO st FROM edition;
+    EXECUTE IMMEDIATE 'drop sequence edition_seq';
+    EXECUTE IMMEDIATE 'CREATE SEQUENCE edition_seq START WITH ' || st || ' INCREMENT BY 1';
+END;
+/
+DECLARE
+    st NUMBER;
+BEGIN
+    SELECT MAX(TO_NUMBER(job_id)) + 1 INTO st FROM job;
+    EXECUTE IMMEDIATE 'drop sequence job_seq';
+    EXECUTE IMMEDIATE 'CREATE SEQUENCE job_seq START WITH ' || st || ' INCREMENT BY 1';
+END;
+/
 
-create sequence user_seq start with 100;
+
 
 create
     or replace trigger user_insert_trig
@@ -277,21 +348,18 @@ BEGIN
 END;
 /
 
--- BEGIN
---     DBMS_SCHEDULER.create_job(
---             job_name => 'UPDATE_FINE_HISTORY_JOB',
---             job_type => 'PLSQL_BLOCK',
---             job_action => 'BEGIN update_fine_history; END;',
---             start_date => SYSTIMESTAMP,
---             repeat_interval => 'FREQ=HOURLY; INTERVAL=24', -- Run every 24 hours
---             enabled => TRUE
---         );
--- END;
--- /
-
-drop sequence history_seq;
-
-create sequence history_seq start with 100; 
+BEGIN
+    DBMS_SCHEDULER.DROP_JOB('UPDATE_FINE_HISTORY_JOB');
+    DBMS_SCHEDULER.create_job(
+            job_name => 'UPDATE_FINE_HISTORY_JOB',
+            job_type => 'PLSQL_BLOCK',
+            job_action => 'BEGIN update_fine_history; END;',
+            start_date => SYSTIMESTAMP,
+            repeat_interval => 'FREQ=HOURLY; INTERVAL=24', -- Run every 24 hours
+            enabled => TRUE
+        );
+END;
+/
 
 CREATE
     OR REPLACE TRIGGER RENT_INSERT_TRIG
@@ -374,7 +442,8 @@ BEGIN
         END IF;
     END IF;
     UPDATE RENT_HISTORY
-    SET Status = 1
+    SET Status      = 1,
+        RETURN_DATE = SYSDATE
     WHERE Rent_History_ID = A_ID;
     UPDATE EDITION
     SET NUM_OF_COPIES = NUM_OF_COPIES + 1
@@ -387,9 +456,6 @@ EXCEPTION
 END;
 /
 
-drop sequence msg_seq;
-
-create sequence msg_seq start with 100;
 
 CREATE
     OR REPLACE TRIGGER MESSAGE_INSERT_TRIG
@@ -425,9 +491,6 @@ BEGIN
         END LOOP;
 END;
 /
-drop sequence news_seq;
-
-create sequence news_seq start with 100;
 
 CREATE
     OR REPLACE TRIGGER NEWS_INSERT_TRIG
@@ -472,9 +535,6 @@ EXCEPTION
         RAISE_APPLICATION_ERROR(-20003, 'UNKNOWN ERROR OCCURRED');
 END;
 /
-drop sequence genre_seq;
-
-create sequence genre_seq start with 100;
 
 CREATE
     OR REPLACE TRIGGER GENRE_INSERT_TRIG
@@ -520,9 +580,6 @@ BEGIN
 END;
 /
 
-drop sequence author_seq;
-
-create sequence author_seq start with 100;
 
 CREATE
     OR REPLACE TRIGGER AUTHOR_INSERT_TRIG
@@ -576,9 +633,6 @@ BEGIN
     END IF;
 END ;
 /
-drop sequence publisher_seq;
-
-create sequence publisher_seq start with 100;
 
 CREATE
     OR REPLACE TRIGGER PUBLISHER_INSERT_TRIG
@@ -884,9 +938,6 @@ BEGIN
     END IF;
 END;
 /
-drop sequence edition_seq;
-
-create sequence edition_seq start with 100;
 
 CREATE
     OR REPLACE TRIGGER EDITION_INSERT_TRIG
@@ -1078,7 +1129,6 @@ EXCEPTION
 END;
 /
 
-
 CREATE OR REPLACE PROCEDURE DELETE_BOOK(B_ISBN IN VARCHAR2) IS
     P VARCHAR2(20);
 BEGIN
@@ -1242,8 +1292,6 @@ EXCEPTION
 END ;
 /
 
-drop sequence job_seq;
-create sequence job_seq start with 100;
 
 CREATE
     OR REPLACE TRIGGER JOB_INSERT_TRIG
@@ -1379,7 +1427,7 @@ EXCEPTION
 END;
 /
 
-------TODO: LAST UPDATE
+
 CREATE OR REPLACE PROCEDURE INSERT_BOOK(A_ISBN VARCHAR2,
                                         A_TITLE VARCHAR2,
                                         A_IMAGE VARCHAR2,

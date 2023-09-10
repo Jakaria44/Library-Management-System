@@ -44,7 +44,7 @@ export async function postUserDB(user) {
     `INSERT_USER('${user.FIRST_NAME}','${user.LAST_NAME}','${user.IMAGE}','${user.ADDRESS}','${user.EMAIL}','${user.PASSWORD}','${user.CONTACT_NO}','${user.GENDER}')`
   );
   console.log("procedure postUserDB");
-    console.log(query);
+  console.log(query);
   try {
     const result = await queryExecute(query, []);
   } catch (err) {
@@ -399,9 +399,9 @@ export async function getAllUsersDB(context) {
     "SELECT U.USER_ID, (U.FIRST_NAME || ' ' || U.LAST_NAME) AS NAME, U.IMAGE, U.ADDRESS, U.EMAIL, U.CONTACT_NO, U.GENDER, " +
     "CASE\nWHEN E.USER_ID IS NOT NULL THEN 'employee'\nWHEN A.USER_ID IS NOT NULL THEN 'admin'\nELSE 'user'\nEND AS ROLE" +
     '\nFROM "USER" U LEFT JOIN EMPLOYEE E ON(U.USER_ID = E.USER_ID) LEFT JOIN ADMIN A ON(U.USER_ID = A.USER_ID) WHERE 1=1';
-  if (context.USER_ID) {
-    query += `\nAND U.USER_ID <> ${context.USER_ID}`;
-  }
+  // if (context.USER_ID) {
+  //   query += `\nAND U.USER_ID <> ${context.USER_ID}`;
+  // }
   if (!context.USER) {
     query += `\nAND (A.USER_ID IS NOT NULL OR E.USER_ID IS NOT NULL)`;
   }
@@ -640,6 +640,60 @@ export async function getRentHistoryDB(context) {
     query += "\nORDER BY RENT_DATE DESC";
   }
 
+  let result = [];
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return [];
+  }
+  return result.rows;
+}
+
+export async function getRentDataDB() {
+  let query =`SELECT D.YEAR,
+                     JSON_ARRAYAGG(
+                             JSON_OBJECT('MONTH' VALUE D.MONTH, 'RENT_COUNT' VALUE NVL(D.COUNT, 0), 'RETURN_COUNT' VALUE
+                                         NVL(D1.COUNT, 0))
+                             ORDER BY TO_NUMBER(D.MONTH)) AS DATA
+              FROM (SELECT TO_CHAR(R.RENT_DATE, 'YYYY') YEAR, TO_CHAR(R.RENT_DATE, 'MM') MONTH, COUNT(*) COUNT
+                    FROM RENT_HISTORY R
+                    GROUP BY TO_CHAR(R.RENT_DATE, 'YYYY'), TO_CHAR(R.RENT_DATE, 'MM')) D
+                       FULL OUTER JOIN (SELECT TO_CHAR(R.RETURN_DATE, 'YYYY') YEAR,
+                                               TO_CHAR(R.RETURN_DATE, 'MM')   MONTH,
+                                               COUNT(*)                       COUNT
+                                        FROM RENT_HISTORY R
+                                        WHERE R.STATUS = 1
+                                        GROUP BY TO_CHAR(R.RETURN_DATE, 'YYYY'), TO_CHAR(R.RETURN_DATE, 'MM')) D1
+                                       ON (D.YEAR = D1.YEAR AND D.MONTH = D1.MONTH)
+              GROUP BY D.YEAR
+              ORDER BY TO_NUMBER(D.YEAR)`
+  let result = [];
+  try {
+    result = await queryExecute(query, []);
+  } catch (e) {
+    return [];
+  }
+  return result.rows;
+}
+
+export async function getFineDataDB() {
+  let query =`SELECT D.YEAR,
+                     JSON_ARRAYAGG(
+                             JSON_OBJECT('MONTH' VALUE D.MONTH, 'FINE_COUNT' VALUE NVL(D.COUNT, 0), 'PAYMENT_COUNT'
+                                         VALUE NVL(D1.COUNT, 0))
+                             ORDER BY TO_NUMBER(D.MONTH)) AS DATA
+              FROM (SELECT TO_CHAR(R.START_DATE, 'YYYY') YEAR, TO_CHAR(R.START_DATE, 'MM') MONTH, COUNT(*) COUNT
+                    FROM FINE_HISTORY R
+                    GROUP BY TO_CHAR(R.START_DATE, 'YYYY'), TO_CHAR(R.START_DATE, 'MM')) D
+                       FULL OUTER JOIN (SELECT TO_CHAR(R.PAYMENT_DATE, 'YYYY') YEAR,
+                                               TO_CHAR(R.PAYMENT_DATE, 'MM')   MONTH,
+                                               COUNT(*)                        COUNT
+                                        FROM FINE_HISTORY R
+                                        WHERE R.PAYMENT_DATE IS NOT NULL
+                                        GROUP BY TO_CHAR(R.PAYMENT_DATE, 'YYYY'), TO_CHAR(R.PAYMENT_DATE, 'MM')) D1
+                                       ON (D.YEAR = D1.YEAR AND D.MONTH = D1.MONTH)
+              GROUP BY D.YEAR
+              ORDER BY TO_NUMBER(D.YEAR)`
   let result = [];
   try {
     result = await queryExecute(query, []);

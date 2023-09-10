@@ -24,17 +24,15 @@ Content-Type: application/json
 POST http://localhost:3000/db-api/user/login
 Content-Type: application/json
 
-{
-  "email": "ryangeorge@gmail.com",
-  "password": "ryanMonster300"
-}
-
-#eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzU1NzMyOCwiZXhwIjoxNzY1NTU3MzI4fQ.OWzBW1GTgnYmm8q49j_mcge89WXpLG6KHK6I_jLqWaM
-
 # {
-#   "email": "mdjakaria442020@gmail.com",
-#   "password": "Jakaria63"
+#   "email": "ryangeorge@gmail.com",
+#   "password": "ryanMonster300"
 # }
+
+{
+  "email": "mdjakaria442020@gmail.com",
+  "password": "Jakaria63"
+}
 
 # {
 #   "email": "a.n.swapnil2003@gmail.com",
@@ -1166,3 +1164,34 @@ GET http://localhost:3000/db-api/book?id=1111111111115
   "FAVOURITE": 1,
   "DESCRIPTION": "Harry Potter discovers he's a wizard on his eleventh birthday and is invited to attend Hogwarts School of Witchcraft and Wizardry. There, he makes friends, learns magic, and uncovers the mystery of the Sorcerer's Stone."
 }
+
+#### ----GET rent data ----
+GET http://localhost:3000/db-api/rent-data
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5NDMzMjc0NiwiZXhwIjoxNzY2MzMyNzQ2fQ.O3RDyPRsLunmbDul2SxGuqWi8NAfhN81K8_bK55sygc
+###OUTPUT
+[
+  {
+    "YEAR": "2022",
+    "DATA": "[{\"MONTH\":\"09\",\"RENT_COUNT\":33,\"RETURN_COUNT\":9},{\"MONTH\":\"10\",\"RENT_COUNT\":46,\"RETURN_COUNT\":26},{\"MONTH\":\"11\",\"RENT_COUNT\":35,\"RETURN_COUNT\":17},{\"MONTH\":\"12\",\"RENT_COUNT\":33,\"RETURN_COUNT\":22}]"
+  },
+  {
+    "YEAR": "2023",
+    "DATA": "[{\"MONTH\":\"01\",\"RENT_COUNT\":33,\"RETURN_COUNT\":18},{\"MONTH\":\"02\",\"RENT_COUNT\":39,\"RETURN_COUNT\":21},{\"MONTH\":\"03\",\"RENT_COUNT\":50,\"RETURN_COUNT\":25},{\"MONTH\":\"04\",\"RENT_COUNT\":40,\"RETURN_COUNT\":23},{\"MONTH\":\"05\",\"RENT_COUNT\":43,\"RETURN_COUNT\":21},{\"MONTH\":\"06\",\"RENT_COUNT\":42,\"RETURN_COUNT\":22},{\"MONTH\":\"07\",\"RENT_COUNT\":34,\"RETURN_COUNT\":20},{\"MONTH\":\"08\",\"RENT_COUNT\":52,\"RETURN_COUNT\":28},{\"MONTH\":\"09\",\"RENT_COUNT\":12,\"RETURN_COUNT\":14}]"
+  }
+]
+
+
+#### ----GET fine data ----
+GET http://localhost:3000/db-api/fine-data
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5NDMzMjc0NiwiZXhwIjoxNzY2MzMyNzQ2fQ.O3RDyPRsLunmbDul2SxGuqWi8NAfhN81K8_bK55sygc
+###OUTPUT
+[
+  {
+    "YEAR": "2022",
+    "DATA": "[{\"MONTH\":\"09\",\"FINE_COUNT\":19,\"PAYMENT_COUNT\":0},{\"MONTH\":\"10\",\"FINE_COUNT\":19,\"PAYMENT_COUNT\":1},{\"MONTH\":\"11\",\"FINE_COUNT\":19,\"PAYMENT_COUNT\":2},{\"MONTH\":\"12\",\"FINE_COUNT\":15,\"PAYMENT_COUNT\":3}]"
+  },
+  {
+    "YEAR": "2023",
+    "DATA": "[{\"MONTH\":\"01\",\"FINE_COUNT\":19,\"PAYMENT_COUNT\":1},{\"MONTH\":\"02\",\"FINE_COUNT\":11,\"PAYMENT_COUNT\":2},{\"MONTH\":\"03\",\"FINE_COUNT\":23,\"PAYMENT_COUNT\":1},{\"MONTH\":\"04\",\"FINE_COUNT\":24,\"PAYMENT_COUNT\":0},{\"MONTH\":\"05\",\"FINE_COUNT\":18,\"PAYMENT_COUNT\":2},{\"MONTH\":\"06\",\"FINE_COUNT\":26,\"PAYMENT_COUNT\":0},{\"MONTH\":\"07\",\"FINE_COUNT\":13,\"PAYMENT_COUNT\":1},{\"MONTH\":\"08\",\"FINE_COUNT\":25,\"PAYMENT_COUNT\":1},{\"MONTH\":\"09\",\"FINE_COUNT\":9,\"PAYMENT_COUNT\":2}]"
+  }
+]
