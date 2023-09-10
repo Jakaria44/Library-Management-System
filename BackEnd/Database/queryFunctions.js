@@ -934,7 +934,7 @@ export async function postFavouriteDB(review) {
 export async function createBookDB(book) {
   let query = `BEGIN
     SAVEPOINT book_savepoint;
-    INSERT_BOOK('${book.ISBN}', ${book.TITLE ? `'${book.TITLE}'` : 'null'}, ${book.IMAGE ? `'${book.IMAGE}'` : 'null'}, ${book.NUMBER_OF_PAGES}, ${book.LANGUAGE ? `LOWER('${book.LANGUAGE}')` : 'null'}, ${book.DESCRIPTION ? `'${book.DESCRIPTION}'` : 'null'},${book.PUBLISHER_ID});`;
+    INSERT_BOOK('${book.ISBN}', ${book.TITLE ? `'${book.TITLE}'` : 'null'}, ${book.IMAGE ? `'${book.IMAGE}'` : 'null'}, ${book.NUMBER_OF_PAGES}, ${book.LANGUAGE ? `LOWER('${book.LANGUAGE}')` : 'null'}, ${book.DESCRIPTION ? `'${book.DESCRIPTION}'` : 'null'},${book.PUBLISHER_ID}, ${book.PREVIEWLINK ? `'${book.PREVIEWLINK}'` : 'null'});`;
 
   for (const a of book.AUTHORS) {
     query += `\nINSERT_WRITTEN_BY('${book.ISBN}', ${a.AUTHOR_ID});`;
@@ -1053,7 +1053,7 @@ export async function sendMessageDB(context) {
 }
 
 export async function updateMessageDB(context) {
-  let query = runProcedure(`UPDATE_MESSAGE(${context.USER_ID}, ${context.MESSAGE_ID})`);
+  let query = runProcedure(`UPDATE_MESSAGE(${context.USER_ID}, ${context.MESSAGE_ID? context.MESSAGE_ID : 'null'})`);
   console.log(context);
   let result = null;
   try {
@@ -1115,7 +1115,7 @@ export async function addBookGenreDB(bookGenre) {
 export async function updateBookDB(book) {
   let query = `BEGIN
     SAVEPOINT book_savepoint2;
-    UPDATE_BOOK('${book.ISBN}', ${book.TITLE ? `'${book.TITLE}'` : 'null'}, ${book.IMAGE ? `'${book.IMAGE}'` : 'null'}, ${book.NUMBER_OF_PAGES}, ${book.LANGUAGE ? `LOWER('${book.LANGUAGE}')` : 'null'}, ${book.DESCRIPTION ? `'${book.DESCRIPTION}'` : 'null'}, ${book.PUBLISHER_ID});`;
+    UPDATE_BOOK('${book.ISBN}', ${book.TITLE ? `'${book.TITLE}'` : 'null'}, ${book.IMAGE ? `'${book.IMAGE}'` : 'null'}, ${book.NUMBER_OF_PAGES}, ${book.LANGUAGE ? `LOWER('${book.LANGUAGE}')` : 'null'}, ${book.DESCRIPTION ? `'${book.DESCRIPTION}'` : 'null'}, ${book.PUBLISHER_ID}, ${book.PREVIEWLINK ? `'${book.PREVIEWLINK}'` : 'null'});`;
 
   query += `\nDELETE_WRITTEN_BY('${book.ISBN}');`;
   query += `\nDELETE_BOOK_GENRE('${book.ISBN}');`;
