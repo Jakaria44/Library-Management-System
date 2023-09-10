@@ -29,6 +29,16 @@ const dbConfig = {
             return false;
         }
 
+        async function update_book(isbn, previewLink) {
+            let result = await connection.execute("SELECT ISBN FROM BOOK WHERE ISBN = :isbn", { isbn: isbn });
+            if (result.rows.length > 0) {
+                let result = await connection.execute("UPDATE BOOK SET PREVIEWLINK = :preview WHERE ISBN = :isbn", {
+                    isbn: isbn,
+                    preview: previewLink
+                });
+            }
+        }
+
         // Helper function to insert a new publisher or get the existing one
         async function getPublisherId(publisherName) {
             let result = await connection.execute(
@@ -92,15 +102,14 @@ const dbConfig = {
 
             try {
                 connection = await oracledb.getConnection(dbConfig);
-                // Get ISBN
-                // let isbn = String(bookData['industryIdentifiers'][0]['identifier'])?? null;
-                // console.log(isbn)
-                // if already inserted
                 let t = 0;
                 if (bookData["industryIdentifiers"][0]["type"] === "ISBN_13") t = 0;
                 else if (bookData["industryIdentifiers"][1]["type"] === "ISBN_13") t = 1;
                 else continue;
-
+                await update_book(String(bookData["industryIdentifiers"][t]["identifier"]),String(bookData['previewLink']));
+                await connection.commit();
+                count += 1;
+                continue;
                 if (
                     !(await check_isbn(String(bookData["industryIdentifiers"][t]["identifier"]))) ||
                     bookData.language === "ko"
