@@ -35,6 +35,7 @@ import { loader as DetailsLoader } from "../pages/Employee/addbook/EditBook";
 import CardForSearchbar from "../component/CardForSearchbar";
 import { loader as favouritesLoader } from "../pages/Reader/MyFavourites";
 import { loader as bookDetailsLoader } from "./../pages/Details/Details";
+import Statistics from "../pages/Admin/Statistics";
 
 // main routing
 const Structure = Loadable(lazy(() => import("../layout/Structure.jsx")));
@@ -111,9 +112,9 @@ const MainRoutes = {
       ),
     },
     {
-      path: "/test",
+      path: "/stat",
       // element: <VirtualizedAutocomplete />,
-      element: <CardForSearchbar />,
+      element: <Statistics />,
     },
     {
       path: "/favourites",

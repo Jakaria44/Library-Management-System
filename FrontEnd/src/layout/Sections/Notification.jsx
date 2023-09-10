@@ -29,6 +29,7 @@ import {
   Close,
   Comment,
   NotificationsNone,
+  WorkspacePremium,
 } from "@mui/icons-material";
 import { useConfirm } from "material-ui-confirm";
 import ErrorModal from "../../component/ErrorModal";
@@ -153,6 +154,8 @@ const Notification = () => {
       return <CheckCircleOutline color="success" />;
     } else if (msg?.includes("rejected")) {
       return <Close color="error" />;
+    } else if (msg?.includes("Congratulations")) {
+      return <WorkspacePremium color="success" />;
     }
     // else if ( )
     return <Comment />;

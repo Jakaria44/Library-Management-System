@@ -59,6 +59,7 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
 
   return (
     <Box
+      elevation={4}
       component="nav"
       sx={{ flexShrink: { md: 0 }, width: matchUpMd ? drawerWidth : "auto" }}
       aria-label="mailbox folders"
