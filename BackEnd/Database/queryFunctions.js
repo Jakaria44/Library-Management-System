@@ -1042,7 +1042,7 @@ export async function sendMessageDB(context) {
 }
 
 export async function updateMessageDB(context) {
-  let query = runProcedure(`UPDATE_MESSAGE(${context.USER_ID})`);
+  let query = runProcedure(`UPDATE_MESSAGE(${context.USER_ID}, ${context.MESSAGE_ID})`);
   console.log(context);
   let result = null;
   try {

@@ -171,8 +171,9 @@ export async function updateHistory(req, res, next) {
 
 export async function updateMessage(req, res, next) {
   try {
-    var context = {
-      USER_ID: req.USER_ID
+    let context = {
+      USER_ID: req.USER_ID,
+      MESSAGE_ID: req.query.mid
     };
     context = await updateMessageDB(context);
     if (context) {

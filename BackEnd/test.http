@@ -24,15 +24,15 @@ Content-Type: application/json
 POST http://localhost:3000/db-api/user/login
 Content-Type: application/json
 
-# {
-#   "email": "ryangeorge@gmail.com",
-#   "password": "ryanMonster300"
-# }
-
 {
-  "email": "mdjakaria442020@gmail.com",
-  "password": "Jakaria63"
+  "email": "ryangeorge@gmail.com",
+  "password": "ryanMonster300"
 }
+
+# {
+#   "email": "mdjakaria442020@gmail.com",
+#   "password": "Jakaria63"
+# }
 
 # {
 #   "email": "a.n.swapnil2003@gmail.com",
@@ -398,8 +398,8 @@ Content-Type: application/json
 }
 
 #### ---Update Message---
-PUT http://localhost:3000/db-api/edit-message
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzMzExMjEyLCJleHAiOjE2OTMzOTc2MTJ9.EnwV75NbGK3S8_M75MlMB0dCZWaEzgTUZ6RvqSGhkZA
+PUT http://localhost:3000/db-api/edit-message?mid=1
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5NDM0MDgyNCwiZXhwIjoxNzY2MzQwODI0fQ.WmldPm1WFqirkLgBeIcQ54kHxAoNb08a7s6CdvkQIsk
 
 ###OUTPUT
 {
