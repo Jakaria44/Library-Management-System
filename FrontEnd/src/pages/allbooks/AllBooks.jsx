@@ -1,6 +1,3 @@
-import BooksList from "./BooksList";
-import Filters from "./Filters";
-
 import { ArrowCircleDown, ArrowCircleUp } from "@mui/icons-material";
 import {
   Box,
@@ -17,6 +14,8 @@ import {
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import server from "./../../HTTP/httpCommonParam";
+import BooksList from "./BooksList";
+import Filters from "./Filters";
 export const sortOptions = [
   { query: "TITLE", name: "Title" },
   { query: "PAGE", name: "Number of Page" },
@@ -52,37 +51,17 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
   const [total, setTotal] = useState(0); // 0 is the initial state value
   // const count = Math.ceil(data.length / queryOptions.perPage);
   // const count = Math.ceil(total / queryOptions.perPage);
-
   const count = useMemo(() => total, [total]);
   const handleChange = (e, p) => {
     setQueryOptions({ queries, page: p });
     loadAllBooks({ queries, page: p });
   };
-
   useEffect(() => {
     loadAllBooks(queries);
   }, []);
-  // useEffect(() => {
-  //   const a = Object.fromEntries(
-  //     Array.from(searchParams.entries()).filter(
-  //       ([key, value]) => value !== "null"
-  //     )
-  //   );
-
-  //   console.log(a);
-
-  //   loadAllBooks(a);
-  // }, [searchParams]);
-
   const loadAllBooks = async (queryOptions = queries) => {
     setLoading(true);
     try {
-      // const a = Array.from(searchParams.entries())
-      //   .filter(([key, value]) => value !== "null")
-      //   .map((item) => item[0] + "=" + item[1])
-      //   .join("&");
-      // console.log(a);
-      setSearchParams(queryOptions);
       const res = await server.get("/all-books-sum", { params: queryOptions });
       console.log("res");
       setTotal(res.data.totalPages);
@@ -108,7 +87,6 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
       setLoading(false);
     }
   };
-
   return (
     <>
       <Box
@@ -129,7 +107,6 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
             {title}
           </Typography>
         </Box>
-
         {/* Place your components to be displayed at the right end here */}
         <Box
           id="sort-by"
@@ -189,18 +166,15 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
                   fontSize={queryOptions.order === "DESC" ? "large" : "small"}
                 />
               </IconButton>
+              Expand Down
             </Tooltip>
           </Box>
         </Box>
       </Box>
-
       <Grid container spacing={2}>
         <Filters queries={queries} loadAllBooks={loadAllBooks} />
-
         {/* <React.Suspense fallback={<SpinnerWithBackdrop backdropOpen={true} helperText='Loading books. Plase wait'/>}> */}
-
         <BooksList data={data.map((e) => e)} loading={loading} />
-
         {/* </React.Suspense> */}
         {/* <SignupDialog /> */}
         {/* <SignupDialog
@@ -211,7 +185,6 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
         }}
       /> */}
       </Grid>
-
       <Box
         sx={{
           display: "flex",
@@ -235,5 +208,4 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
     </>
   );
 };
-
 export default AllBooks;
