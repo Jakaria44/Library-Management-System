@@ -143,7 +143,7 @@ const Users = () => {
             showQuickFilter: true,
           },
         }}
-        disableColumnFilter
+        // disableColumnFilter
         disableDensitySelector
         disableRowSelectionOnClick
       />

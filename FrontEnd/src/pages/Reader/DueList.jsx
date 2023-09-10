@@ -60,7 +60,7 @@ const DueList = () => {
         START_DATE: TimeFormat(item.START_DATE),
         PAYMENT_DATE: item.PAYMENT_DATE ? TimeFormat(item.PAYMENT_DATE) : "-",
         STATUS: item.PAYMENT_DATE ? 1 : 0,
-        FEE_AMOUNT: item.FEE_AMOUNT,
+        FEE_AMOUNT: item.FEE_AMOUNT.toFixed(3),
       }));
       console.log(data);
       setRows(data);
@@ -179,7 +179,7 @@ const DueList = () => {
             showQuickFilter: true,
           },
         }}
-        disableColumnFilter
+        // disableColumnFilter
         disableDensitySelector
         disableRowSelectionOnClick
       />

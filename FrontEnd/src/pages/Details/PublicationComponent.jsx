@@ -59,57 +59,59 @@ const PublicationComponent = ({ id }) => {
               <CardMediaStyled
                 component="img"
                 alt={`${publication.NAME} Logo`}
-                image={publication.IMAGE}
+                image={publication[0].IMAGE}
               />
               <div>
-                <Typography variant="h3">{publication.NAME}</Typography>
+                <Typography variant="h3">{publication[0].NAME}</Typography>
               </div>
             </PublicationCard>
           </Grid>
           <Grid item xs={12} sm={6}>
             <InfoList>
-              {publication.POSTAL_CODE && (
+              {publication[0].POSTAL_CODE && (
                 <ListItemStyled>
                   <ListItemIcon>
                     <LocationOn />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`Postal Code: ${publication.POSTAL_CODE}`}
+                    primary={`Postal Code: ${publication[0].POSTAL_CODE}`}
                   />
                 </ListItemStyled>
               )}
-              {publication.CITY && (
+              {publication[0].CITY && (
                 <ListItemStyled>
                   <ListItemIcon>
                     <LocationOn />
                   </ListItemIcon>
-                  <ListItemText primary={`City: ${publication.CITY}`} />
+                  <ListItemText primary={`City: ${publication[0].CITY}`} />
                 </ListItemStyled>
               )}
-              {publication.COUNTRY && (
+              {publication[0].COUNTRY && (
                 <ListItemStyled>
                   <ListItemIcon>
                     <LocationOn />
                   </ListItemIcon>
-                  <ListItemText primary={`Country: ${publication.COUNTRY}`} />
+                  <ListItemText
+                    primary={`Country: ${publication[0].COUNTRY}`}
+                  />
                 </ListItemStyled>
               )}
-              {publication.CONTACT_NO && (
+              {publication[0].CONTACT_NO && (
                 <ListItemStyled>
                   <ListItemIcon>
                     <Phone />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`Contact: ${publication.CONTACT_NO}`}
+                    primary={`Contact: ${publication[0].CONTACT_NO}`}
                   />
                 </ListItemStyled>
               )}
-              {publication.EMAIL && (
+              {publication[0].EMAIL && (
                 <ListItemStyled>
                   <ListItemIcon>
                     <Email />
                   </ListItemIcon>
-                  <ListItemText primary={`Email: ${publication.EMAIL}`} />
+                  <ListItemText primary={`Email: ${publication[0].EMAIL}`} />
                 </ListItemStyled>
               )}
             </InfoList>

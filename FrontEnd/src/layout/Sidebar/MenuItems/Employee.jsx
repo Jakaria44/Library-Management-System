@@ -1,6 +1,12 @@
 // assets
 
-import { Checklist, NoteAdd, PeopleSharp } from "@mui/icons-material";
+import {
+  Checklist,
+  NoteAdd,
+  People,
+  PeopleSharp,
+  Work,
+} from "@mui/icons-material";
 
 // constant
 
@@ -42,6 +48,22 @@ const Employee = {
       type: "item",
       url: "/addbook",
       icon: <NoteAdd />,
+      breadcrumbs: false,
+    },
+    {
+      id: "joblist",
+      title: "Job list",
+      type: "item",
+      url: "/joblist",
+      icon: <Work />,
+      breadcrumbs: false,
+    },
+    {
+      id: "manageemployees",
+      title: "Manage Employees",
+      type: "item",
+      url: "/manageemployees",
+      icon: <People />,
       breadcrumbs: false,
     },
   ],

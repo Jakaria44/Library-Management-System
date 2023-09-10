@@ -40,7 +40,7 @@ const Application = () => {
       const response = await server.get("/all-fine", {
         params: {
           ...queryOptions,
-          CHECK: true,
+          CHECK: false,
         },
       });
 
@@ -56,7 +56,7 @@ const Application = () => {
         EDITION_NUM: item.EDITION_NUM,
         PAYMENT_DATE: item.PAYMENT_DATE ? TimeFormat(item.PAYMENT_DATE) : "-",
         START_DATE: TimeFormat(item.START_DATE),
-        FEE_AMOUNT: item.FEE_AMOUNT,
+        FEE_AMOUNT: item.FEE_AMOUNT.toFixed(3),
         STATUS: item.PAYMENT_DATE ? 1 : 0,
       }));
       console.log(data);
@@ -163,7 +163,7 @@ const Application = () => {
             showQuickFilter: true,
           },
         }}
-        disableColumnFilter
+        // disableColumnFilter
         disableDensitySelector
         disableRowSelectionOnClick
       />

@@ -1,18 +1,9 @@
-import { CheckCircleOutline, DeleteForever } from "@mui/icons-material";
-import { Box, Tooltip, Typography } from "@mui/material";
-import {
-  GridActionsCellItem,
-  GridToolbar,
-  GridToolbarContainer,
-  GridToolbarExport,
-} from "@mui/x-data-grid";
+import { ArrowUpwardRounded, DeleteForever } from "@mui/icons-material";
+import { Avatar, Box, Tooltip, Typography } from "@mui/material";
+import { GridActionsCellItem, GridToolbar } from "@mui/x-data-grid";
 import { useConfirm } from "material-ui-confirm";
-// import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import { DateTimePicker } from "@mui/x-date-pickers";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
-import dayjs from "dayjs";
+
 import React, { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import ErrorModal from "../../component/ErrorModal";
 import StyledDataGrid from "../../component/StyledDataGrid";
 import SuccessfullModal from "../../component/SuccessfulModal";
@@ -24,66 +15,37 @@ const NoRequestOverlay = () => (
   <CustomNoRowsOverlay text="No Pending Requests" />
 );
 
-const Application = () => {
+const ManageEmployees = () => {
   const confirm = useConfirm();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [queryOptions, setQueryOptions] = useState({
+    sort: "NAME",
+    order: "DESC",
+  });
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [returnDate, setReturnDate] = useState(
-    dayjs(dayjs(new Date()).add(7, "days").format("YYYY-MM-DD"))
-  );
 
-  const handleAcceptRequest = useCallback((row) => async () => {
+  const handlePromoteRequest = useCallback((row) => async () => {
     try {
-      let date = new Date();
       await confirm({
         title: (
           <Typography variant="h3" gutterBottom>
-            Accept This Request?
+            Promote This Employee?
           </Typography>
         ),
         content: (
-          <Box>
-            <Typography variant="body2">
-              Select Return Date for "{row.NAME}"
-            </Typography>
-            <DemoContainer components={["DateTimePicker"]}>
-              <DemoItem>
-                <DateTimePicker
-                  disablePast
-                  formatDensity="spacious"
-                  format="DD-MMMM-YYYY HH:mm"
-                  // viewRenderers={{
-                  //   hours: renderTimeViewClock,
-                  //   minutes: renderTimeViewClock,
-                  //   seconds: renderTimeViewClock,
-                  // }}
-                  value={returnDate}
-                  onChange={(newValue) => {
-                    date = newValue.toDate();
-                    console.log(date);
-                    setReturnDate(newValue);
-                  }}
-                />
-              </DemoItem>
-            </DemoContainer>
-          </Box>
+          <Typography variant="body1">
+            Are you sure you want to promote "{row.NAME}" to admin?
+          </Typography>
         ),
       });
-
       try {
-        console.log(row.USER_ID, row.EDITION_ID, returnDate);
-        const res = await server.post("/handle-request", {
-          USER_ID: row.USER_ID,
-          EDITION_ID: row.EDITION_ID,
-          RETURN_DATE: returnDate,
-        });
+        const res = await server.post("/admin/signup?uid=" + row.USER_ID);
         setSuccessMessage(res.data.message);
         setShowSuccessMessage(true);
-        fetchData();
       } catch (err) {
         setErrorMessage(err.response.data.message);
         setShowErrorMessage(true);
@@ -99,25 +61,18 @@ const Application = () => {
       await confirm({
         title: (
           <Typography variant="h3" gutterBottom>
-            Delete This Request?
+            Delete This Employee😔?
           </Typography>
         ),
         content: (
           <Typography variant="body1">
-            Are you sure you want to delete {row.NAME}'s request?
+            Are you sure you want to delete "{row.NAME}" from employee list?
           </Typography>
         ),
       });
 
       try {
-        console.log(row.EDITION_ID, row.USER_ID);
-        const res = await server.delete("/handle-request", {
-          data: {
-            USER_ID: row.USER_ID,
-            EDITION_ID: row.EDITION_ID,
-          },
-        });
-
+        const res = await server.delete("/employee?uid=" + row.USER_ID);
         setSuccessMessage(res.data.message);
         setShowSuccessMessage(true);
       } catch (err) {
@@ -130,40 +85,36 @@ const Application = () => {
     }
   });
   useEffect(() => {
-    fetchData({
-      sort: "REQUEST_DATE",
-      order: "DESC",
-    });
+    fetchData();
   }, []);
 
   const handleSortModelChange = useCallback((sortModel) => {
     // Here you save the data you need from the sort model
     console.log(sortModel);
     const query = {
-      sort: sortModel[0]?.field || "REQUEST_DATE",
+      sort: sortModel[0]?.field || "NAME",
       order: sortModel[0]?.sort === "asc" ? "ASC" : "DESC",
     };
+    setQueryOptions(query);
 
     fetchData(query);
   }, []);
 
-  const fetchData = async (queryOptions) => {
+  const fetchData = async (query = queryOptions) => {
     try {
       setLoading(true);
-      const response = await server.get("/all-requests", {
-        params: queryOptions,
+      const response = await server.get("/employee", {
+        params: query,
       });
       const data = response.data.map((item) => ({
-        id: item.EDITION_ID + item.USER_ID,
+        id: item.USER_ID,
         USER_ID: item.USER_ID,
-        ISBN: item.ISBN,
+        IMAGE: item.IMAGE,
         EMAIL: item.EMAIL,
-        TITLE: item.TITLE,
         NAME: item.NAME,
-        EDITION_ID: item.EDITION_ID,
-        EDITION_NUM: item.EDITION_NUM,
-        NUM_OF_COPIES: item.NUM_OF_COPIES,
-        REQUEST_DATE: TimeFormat(item.REQUEST_DATE),
+        JOIN_DATE: TimeFormat(item.JOIN_DATE),
+        JOB_ID: item.JOB_ID,
+        JOB_TITLE: item.JOB_TITLE,
       }));
       setRows(data);
     } catch (error) {
@@ -174,14 +125,6 @@ const Application = () => {
     }
   };
 
-  function CustomToolbar() {
-    return (
-      <GridToolbarContainer sx={{ margin: "16px" }}>
-        {rows.length !== 0 && <GridToolbarExport />}
-      </GridToolbarContainer>
-    );
-  }
-
   return (
     <Box height="85%">
       <Typography
@@ -191,24 +134,24 @@ const Application = () => {
         // p={2}
         component="div"
       >
-        ALL Requests
+        Employees
       </Typography>
       <StyledDataGrid
         rows={rows}
         columns={[
           {
+            field: "IMAGE",
+            headerName: "Avatar",
+            renderCell: (params) => (
+              <Avatar alt={params.row.NAME} src={params.row.IMAGE} />
+            ),
+            width: 100,
+            sortable: false,
+          },
+          {
             field: "NAME",
             headerName: "Name",
             renderCell: (params) => (
-              // <Grid container direction="row" alignItems="center" spacing={1}>
-              //   <Grid item xs={8}>
-              //     <Typography variant="body2">{params.row.NAME}</Typography>
-              //   </Grid>
-
-              //   <Grid item xs={2}>
-              //     <Message user={params.row} />
-              //   </Grid>
-              // </Grid>
               <Box
                 display="flex"
                 alignItems="center"
@@ -219,55 +162,35 @@ const Application = () => {
                 <Message user={params.row} />
               </Box>
             ),
-            width: 210,
+            width: 240,
           },
-          { field: "EMAIL", headerName: "Email", width: 200 },
-          { field: "ISBN", headerName: "ISBN", width: 120 },
+          { field: "EMAIL", headerName: "Email", width: 300 },
+
           {
-            field: "TITLE",
-            headerName: "Title",
-            minWidth: 300,
-            renderCell: (params) => (
-              <Tooltip title="see this book">
-                <Typography
-                  component={Link}
-                  to={`/details/${params.row.ISBN}`}
-                  variant="body2"
-                  color="primary"
-                  sx={{ cursor: "pointer", textDecoration: "none" }}
-                >
-                  {params.row.TITLE}
-                </Typography>
-              </Tooltip>
-            ),
+            field: "JOB_TITLE",
+            headerName: "Job Title",
+            minWidth: 120,
           },
-          { field: "EDITION_NUM", headerName: "Edition", width: 80 },
+          { field: "JOIN_DATE", headerName: "Join Date", width: 160 },
           {
-            field: "NUM_OF_COPIES",
-            headerName: "Available",
-            renderCell: (params) => <strong>{params.row.NUM_OF_COPIES}</strong>,
-            width: 80,
-          },
-          { field: "REQUEST_DATE", headerName: "Request Date", width: 160 },
-          {
-            field: "EDITION_ID",
+            field: "USER_ID",
             headerName: "Action",
             type: "actions",
             getActions: (params) => [
-              <Tooltip title="Delete Request">
+              <Tooltip title="Promote to Admin">
+                <GridActionsCellItem
+                  icon={<ArrowUpwardRounded />}
+                  label="Promote"
+                  color="success"
+                  onClick={handlePromoteRequest(params.row)}
+                />
+              </Tooltip>,
+              <Tooltip title="Delete Employee">
                 <GridActionsCellItem
                   icon={<DeleteForever />}
                   label="Delete"
                   color="error"
                   onClick={handleDeleteRequest(params.row)}
-                />
-              </Tooltip>,
-              <Tooltip title="Accept Request">
-                <GridActionsCellItem
-                  icon={<CheckCircleOutline />}
-                  label="Accept"
-                  color="success"
-                  onClick={handleAcceptRequest(params.row)}
                 />
               </Tooltip>,
             ],
@@ -312,4 +235,4 @@ const Application = () => {
   );
 };
 
-export default Application;
+export default ManageEmployees;

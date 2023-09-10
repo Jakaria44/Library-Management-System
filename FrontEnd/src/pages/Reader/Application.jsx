@@ -160,7 +160,7 @@ const Application = () => {
         //     showQuickFilter: true,
         //   },
         // }}
-        disableColumnFilter
+        // disableColumnFilter
         disableDensitySelector
       />
       {showSuccessMessage && (

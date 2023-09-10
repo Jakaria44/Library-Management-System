@@ -166,7 +166,6 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
                   fontSize={queryOptions.order === "DESC" ? "large" : "small"}
                 />
               </IconButton>
-              Expand Down
             </Tooltip>
           </Box>
         </Box>

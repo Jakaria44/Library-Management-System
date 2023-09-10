@@ -7,6 +7,10 @@ const Details = Loadable(lazy(() => import("../pages/Details/Details")));
 const AllDueList = Loadable(lazy(() => import("../pages/Employee/AllDueList")));
 const Users = Loadable(lazy(() => import("../pages/Employee/Users")));
 const Requests = Loadable(lazy(() => import("../pages/Employee/Requests")));
+const JobList = Loadable(lazy(() => import("../pages/Employee/JobList")));
+const ManageEmployees = Loadable(
+  lazy(() => import("../pages/Employee/ManageEmployees"))
+);
 const LatestBooks = Loadable(lazy(() => import("../pages/LatestBooks")));
 const Categories = Loadable(lazy(() => import("../pages/Categories")));
 const AuthorList = Loadable(lazy(() => import("../pages/AuthorList")));
@@ -148,6 +152,14 @@ const MainRoutes = {
     {
       path: "/allduelists",
       element: <AllDueList />,
+    },
+    {
+      path: "/joblist",
+      element: <JobList />,
+    },
+    {
+      path: "/manageemployees",
+      element: <ManageEmployees />,
     },
 
     {

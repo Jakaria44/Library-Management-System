@@ -197,7 +197,7 @@ const Collections = () => {
             showQuickFilter: true,
           },
         }}
-        disableColumnFilter
+        // disableColumnFilter
         disableDensitySelector
       />
       <SuccessfulModal

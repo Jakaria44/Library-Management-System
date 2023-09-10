@@ -231,6 +231,7 @@ export async function getJob(req, res, next) {
     context.USER_ID = req.USER_ID;
     context.sort = req.query.sort;
     context.order = req.query.order;
+
     console.log(context);
 
     const rows = await getJobDB(context);

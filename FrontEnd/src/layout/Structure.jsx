@@ -14,9 +14,9 @@ import { Outlet } from "react-router-dom";
 import { useMenu } from "../contexts/MenuContextProvider.jsx";
 import { actions } from "../contexts/actions.jsx";
 
+import { drawerWidth } from "./../store/constants";
 import Sidebar from "./Sidebar/Sidebar";
 const IconChevronRight = logo;
-const drawerWidth = 220;
 // styles
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({

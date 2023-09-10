@@ -246,7 +246,7 @@ export async function getSearchBarDB(context) {
   query +=
     "\nFROM BOOK B LEFT JOIN WRITTEN_BY WB ON (WB.ISBN = B.ISBN) " +
     "LEFT JOIN AUTHOR A ON(WB.AUTHOR_ID = A.AUTHOR_ID) ";
-  query += `\nWHERE B.ISBN = '${context.text}' OR UPPER(B.TITLE) LIKE '%${context.text}%' OR UPPER(A.NAME) LIKE '%${context.text}%'`;
+  query += `\nWHERE B.ISBN LIKE '%${context.text}%' OR UPPER(B.TITLE) LIKE '%${context.text}%' OR UPPER(A.NAME) LIKE '%${context.text}%'`;
   query += "\nGROUP BY B.TITLE, B.IMAGE, B.ISBN, B.LANGUAGE";
   if (context.sort && context.order) {
     // const validColumns = ["ISBN", "TITLE", "IMAGE", "LANGUAGE", "AUTHORS"];
@@ -776,13 +776,13 @@ export async function getGenreDB(context) {
 }
 
 export async function getJobDB(context) {
-  let query = `SELECT JOB_TITLE, JOB_ID, SALARY`;
+  let query = `SELECT JOB_TITLE, JOB_ID, SALARY, (SELECT COUNT(*) FROM EMPLOYEE E WHERE E.JOB_ID = J.JOB_ID) AS NUM_OF_EMPLOYEES`;
   if (context.USER_ID) {
     query +=
       `, CASE\nWHEN JOB_ID IN (SELECT JOB_ID FROM EMPLOYEE WHERE USER_ID = ${context.USER_ID}) THEN 'working'` +
       `\nWHEN JOB_ID IN (SELECT JOB_ID FROM APPLY WHERE USER_ID = ${context.USER_ID}) THEN 'applied'\nELSE 'apply' END\nAS STATUS`;
   }
-  query += `\nFROM JOB`;
+  query += `\nFROM JOB J`;
   if (context.JOB_ID) {
     query += `\nWhere JOB_ID = ${context.JOB_ID}`;
   }
