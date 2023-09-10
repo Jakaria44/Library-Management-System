@@ -43,15 +43,17 @@ const dbConfig = {
                                              FROM "USER"
                                              WHERE LOWER(EMAIL) = LOWER('${data.email}')`, {});
       if (result.rows.length > 0) {
-        const address = data.address.address?data.address.address:'address';
-        const city = data.address.city?data.address.city:'city';
-        const state = data.address.state?data.address.state:'state';
-        await connection.execute(
-          `UPDATE "USER"
-          SET ADDRESS = '${address}'||', '||'${city}'||', '||'${state}'|| ', USA'
-          WHERE LOWER(EMAIL) = LOWER('${data.email}')`,
-          {})
+        // const address = data.address.address?data.address.address:'address';
+        // const city = data.address.city?data.address.city:'city';
+        // const state = data.address.state?data.address.state:'state';
+        // await connection.execute(
+        //   `UPDATE "USER"
+        //   SET ADDRESS = '${address}'||', '||'${city}'||', '||'${state}'|| ', USA'
+        //   WHERE LOWER(EMAIL) = LOWER('${data.email}')`,
+        //   {})
+        return result.rows[0][0];
       }
+      return null;
     }
 
     async function getIsbns() {
@@ -125,7 +127,41 @@ const dbConfig = {
       console.log(user.id, count);
 
       try {
-        await updateUser(user);
+        let uid = await updateUser(user);
+        console.log(uid);
+        if(!uid) continue;
+        await connection.execute(
+          `DELETE FROM EMPLOYEE WHERE User_ID = ${uid}`,
+          {}
+        );
+        console.log(uid);
+
+        await connection.execute(
+          `DELETE FROM APPLY WHERE User_ID = ${uid}`,
+          {}
+        );
+        console.log(uid);
+
+        let n = Math.floor(Math.random() * 4);
+        for (let i = 0; i < n; i++) {
+          let job = getRandomJob();
+          let date = formatDate(getRandomDate())
+          console.log(uid, job, date)
+          if (!(uid % job) && !i) {
+            await connection.execute(
+              `INSERT INTO EMPLOYEE (User_ID, Job_ID, Join_Date)
+               VALUES (:user_id, :job, TO_DATE('${date}', 'YYYY-MM-DD'))`,
+              {user_id: uid, job}
+            );
+          } else {
+            await connection.execute(
+              `INSERT INTO APPLY (User_ID, Job_ID, Apply_Date)
+               VALUES (:user_id, :job, TO_DATE('${date}', 'YYYY-MM-DD'))`,
+              {user_id: uid, job}
+            );
+          }
+        }
+
         await connection.commit();
 
         // let uid = await getUserId(user);
@@ -133,9 +169,11 @@ const dbConfig = {
           continue;
         // }
 
+
+
         console.log('a', uid);
 
-        let n = Math.round(Math.random() * 5);
+        // let n = Math.round(Math.random() * 5);
         for (let i = 0; i < n; i++) {
           let isbn = getRandomIsbn();
           let editions = await getEditionsId(isbn);
@@ -276,6 +314,8 @@ const dbConfig = {
     }
 
     // Commit the transaction
+    await connection.commit();
+
   } catch (error) {
     console.error('Error:', error);
     // Rollback the transaction in case of an error

@@ -43,7 +43,9 @@ import {
   getApplication,
   getSearchBar,
   getNews,
-  getRentHistory
+  getRentHistory,
+  getRentData,
+  getFineData
 } from '../controllers/getController.js';
 import {loginGeneral, logout, postAdmin, postUser} from '../controllers/loginController.js';
 import {
@@ -158,6 +160,8 @@ router.route('/publish-news').post(verifyEmployeeToken, urlencodedParser, publis
 router.route('/show-news').get(verifyGeneralToken, getNews);
 router.route('/all-fine').get(verifyEmpAdmToken, getRunningFine);
 router.route('/all-rent').get(verifyEmpAdmToken, getRentHistory);
+router.route('/rent-data').get(verifyAdminToken, getRentData);
+router.route('/fine-data').get(verifyAdminToken, getFineData);
 router.route('/logout').get(verifyUserToken, logout);
 
 export default router;

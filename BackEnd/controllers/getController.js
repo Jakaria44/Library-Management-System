@@ -22,7 +22,9 @@ import {
   getRunningFineDB,
   getUserDetailsDB,
   getSearchBarDB,
-  getRentHistoryDB
+  getRentHistoryDB,
+  getRentDataDB,
+  getFineDataDB
 } from "../Database/queryFunctions.js";
 
 
@@ -163,7 +165,7 @@ export async function getSearchBar(req, res, next) {
 
     if (req.query.text?.length > 0) {
       context.text = req.query.text?.toUpperCase()?.replace(/'/g, `''`);
-    } else{
+    } else {
       res.status(404).json({message: "No text provided"});
       return;
     }
@@ -348,7 +350,7 @@ export async function getOwnRatRev(req, res, next) {
   let ratrev = {};
   ratrev.USER_ID = req.USER_ID;
   ratrev.ISBN = req.query.ISBN;
-      console.log(context)
+  console.log(context)
 
   try {
     ratrev = await getOwnRatRevDB(ratrev);
@@ -369,7 +371,7 @@ export async function getMyRequests(req, res, next) {
     context.sort = req.query.sort;
     context.order = req.query.order;
     context.ISBN = req.query.id;
-        console.log(context)
+    console.log(context)
 
     const rows = await getMyRequestsDB(context);
 
@@ -389,7 +391,7 @@ export async function getAllRequests(req, res, next) {
     // context.USER_ID = req.USER_ID;
     context.sort = req.query.sort;
     context.order = req.query.order;
-        console.log(context)
+    console.log(context)
 
     const rows = await getAllRequestsDB(context);
 
@@ -444,7 +446,7 @@ export async function getAllUsers(req, res, next) {
     context.EMPLOYEE = req.query.EMPLOYEE;
     context.ADMIN = req.query.ADMIN;
     context.USER = req.query.USER;
-        console.log(context)
+    console.log(context)
 
     const rows = await getAllUsersDB(context);
 
@@ -464,7 +466,7 @@ export async function getApplication(req, res, next) {
     context.sort = req.query.sort;
     context.order = req.query.order;
     context.JOB_ID = req.query.JOB_ID;
-        console.log(context)
+    console.log(context)
 
     const rows = await getApplicationDB(context);
 
@@ -485,7 +487,7 @@ export async function getMyRentHistory(req, res, next) {
     context.USER_ID = req.USER_ID;
     context.sort = req.query.sort;
     context.order = req.query.order;
-        console.log(context)
+    console.log(context)
 
     const rows = await getMyRentHistoryDB(context);
 
@@ -505,7 +507,7 @@ export async function getMyFineHistory(req, res, next) {
     context.USER_ID = req.USER_ID;
     context.sort = req.query.sort;
     context.order = req.query.order;
-        console.log(context)
+    console.log(context)
 
     const rows = await getMyFineHistoryDB(context);
 
@@ -525,9 +527,37 @@ export async function getRentHistory(req, res, next) {
     // context.USER_ID = req.USER_ID;
     context.sort = req.query.sort;
     context.order = req.query.order;
-        console.log(context)
+    console.log(context)
 
     const rows = await getRentHistoryDB(context);
+
+    if (rows.length > 0) {
+      res.status(200).json(rows);
+    } else {
+      res.status(404).json({message: "No Data Found"});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getRentData(req, res, next) {
+  try {
+    const rows = await getRentDataDB();
+
+    if (rows.length > 0) {
+      res.status(200).json(rows);
+    } else {
+      res.status(404).json({message: "No Data Found"});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getFineData(req, res, next) {
+  try {
+    const rows = await getFineDataDB();
 
     if (rows.length > 0) {
       res.status(200).json(rows);
@@ -545,7 +575,7 @@ export async function getRunningFine(req, res, next) {
     context.sort = req.query.sort;
     context.order = req.query.order;
     context.CHECK = req.query.CHECK === 'true';
-        console.log(context)
+    console.log(context)
 
     const rows = await getRunningFineDB(context);
 
