@@ -25,7 +25,9 @@ import {
   addEmployeeDB,
   getEmployeeDB,
   getApplicationDB,
+  getUserDetailsDB
 } from '../Database/queryFunctions.js';
+import {getUserDetails} from "./getController.js";
 
 export async function postFavBook(req, res, next) {
   let fav = {
@@ -123,8 +125,14 @@ export async function sendMessage(req, res, next) {
       res.status(402).json({message: "Can't send message to self"})
       return;
     }
+    if(req.body.MESSAGE === null||req.body.MESSAGE.length === 0){
+      res.status(402).json({message: "Message can't be empty"})
+      return;
+    }
     let request = {
       USER_ID: req.body.USER_ID,
+      SENDER_ID: req.USER_ID,
+      ROLE: req.ROLE,
       MESSAGE: req.body.MESSAGE?.replace(/'/g, `''`)
     };
     request = await sendMessageDB(request);

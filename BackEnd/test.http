@@ -24,15 +24,15 @@ Content-Type: application/json
 POST http://localhost:3000/db-api/user/login
 Content-Type: application/json
 
-# {
-#   "email": "ryangeorge@gmail.com",
-#   "password": "ryanMonster300"
-# }
-
 {
-  "email": "mdjakaria442020@gmail.com",
-  "password": "Jakaria63"
+  "email": "ryangeorge@gmail.com",
+  "password": "ryanMonster300"
 }
+
+# {
+#   "email": "mdjakaria442020@gmail.com",
+#   "password": "Jakaria63"
+# }
 
 # {
 #   "email": "a.n.swapnil2003@gmail.com",
@@ -384,12 +384,12 @@ Content-Type: application/json
 
 #### ---SEND Message---
 POST http://localhost:3000/db-api/message
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQwODQ0NCwiZXhwIjoxNjkzNDk0ODQ0fQ.cO8wITeKKR_J_IOh6dyJqa3Jz6lsKpSC6ug8A99q87g
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5NDMzMjc0NiwiZXhwIjoxNzY2MzMyNzQ2fQ.O3RDyPRsLunmbDul2SxGuqWi8NAfhN81K8_bK55sygc
 Content-Type: application/json
 
 {
   "USER_ID": "1",
-  "MESSAGE": "Hello, I want to borrow this book"
+  "MESSAGE": "Hello, You are invited to my house tomorrow"
 }
 
 ###OUTPUT
@@ -398,8 +398,8 @@ Content-Type: application/json
 }
 
 #### ---Update Message---
-PUT http://localhost:3000/db-api/edit-message
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzMzExMjEyLCJleHAiOjE2OTMzOTc2MTJ9.EnwV75NbGK3S8_M75MlMB0dCZWaEzgTUZ6RvqSGhkZA
+PUT http://localhost:3000/db-api/edit-message?mid=1
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5NDM0MDgyNCwiZXhwIjoxNzY2MzQwODI0fQ.WmldPm1WFqirkLgBeIcQ54kHxAoNb08a7s6CdvkQIsk
 
 ###OUTPUT
 {
@@ -407,8 +407,8 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUi
 }
 
 #### ---Delete Message---
-DELETE http://localhost:3000/db-api/edit-message?mid=7
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQwODQ0NCwiZXhwIjoxNjkzNDk0ODQ0fQ.cO8wITeKKR_J_IOh6dyJqa3Jz6lsKpSC6ug8A99q87g
+DELETE http://localhost:3000/db-api/edit-message?mid=46
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5NDM0NjA2NSwiZXhwIjoxNzY2MzQ2MDY1fQ.WfxRP9g3tBaq5cXnewyZBLjj0IZnbJMfonr_lvGcSDo
 
 ###OUTPUT
 {
@@ -417,8 +417,7 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 
 #### ---- GET My Messages ----
 GET http://localhost:3000/db-api/message
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQwODQ0NCwiZXhwIjoxNjkzNDk0ODQ0fQ.cO8wITeKKR_J_IOh6dyJqa3Jz6lsKpSC6ug8A99q87g
-
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5NDM0NjA2NSwiZXhwIjoxNzY2MzQ2MDY1fQ.WfxRP9g3tBaq5cXnewyZBLjj0IZnbJMfonr_lvGcSDo
 ###OUTPUT
 [
   {

@@ -650,23 +650,24 @@ export async function getRentHistoryDB(context) {
 }
 
 export async function getRentDataDB() {
-  let query =`SELECT D.YEAR,
-                     JSON_ARRAYAGG(
-                             JSON_OBJECT('MONTH' VALUE D.MONTH, 'RENT_COUNT' VALUE NVL(D.COUNT, 0), 'RETURN_COUNT' VALUE
-                                         NVL(D1.COUNT, 0))
-                             ORDER BY TO_NUMBER(D.MONTH)) AS DATA
-              FROM (SELECT TO_CHAR(R.RENT_DATE, 'YYYY') YEAR, TO_CHAR(R.RENT_DATE, 'MM') MONTH, COUNT(*) COUNT
-                    FROM RENT_HISTORY R
-                    GROUP BY TO_CHAR(R.RENT_DATE, 'YYYY'), TO_CHAR(R.RENT_DATE, 'MM')) D
-                       FULL OUTER JOIN (SELECT TO_CHAR(R.RETURN_DATE, 'YYYY') YEAR,
-                                               TO_CHAR(R.RETURN_DATE, 'MM')   MONTH,
-                                               COUNT(*)                       COUNT
-                                        FROM RENT_HISTORY R
-                                        WHERE R.STATUS = 1
-                                        GROUP BY TO_CHAR(R.RETURN_DATE, 'YYYY'), TO_CHAR(R.RETURN_DATE, 'MM')) D1
-                                       ON (D.YEAR = D1.YEAR AND D.MONTH = D1.MONTH)
-              GROUP BY D.YEAR
-              ORDER BY TO_NUMBER(D.YEAR)`
+  let query = `SELECT D.YEAR,
+                      JSON_ARRAYAGG(
+                              JSON_OBJECT('MONTH' VALUE D.MONTH, 'RENT_COUNT' VALUE NVL(D.COUNT, 0), 'RETURN_COUNT'
+                                          VALUE
+                                          NVL(D1.COUNT, 0))
+                              ORDER BY TO_NUMBER(D.MONTH)) AS DATA
+               FROM (SELECT TO_CHAR(R.RENT_DATE, 'YYYY') YEAR, TO_CHAR(R.RENT_DATE, 'MM') MONTH, COUNT(*) COUNT
+                     FROM RENT_HISTORY R
+                     GROUP BY TO_CHAR(R.RENT_DATE, 'YYYY'), TO_CHAR(R.RENT_DATE, 'MM')) D
+                        FULL OUTER JOIN (SELECT TO_CHAR(R.RETURN_DATE, 'YYYY') YEAR,
+                                                TO_CHAR(R.RETURN_DATE, 'MM')   MONTH,
+                                                COUNT(*)                       COUNT
+                                         FROM RENT_HISTORY R
+                                         WHERE R.STATUS = 1
+                                         GROUP BY TO_CHAR(R.RETURN_DATE, 'YYYY'), TO_CHAR(R.RETURN_DATE, 'MM')) D1
+                                        ON (D.YEAR = D1.YEAR AND D.MONTH = D1.MONTH)
+               GROUP BY D.YEAR
+               ORDER BY TO_NUMBER(D.YEAR)`
   let result = [];
   try {
     result = await queryExecute(query, []);
@@ -677,23 +678,23 @@ export async function getRentDataDB() {
 }
 
 export async function getFineDataDB() {
-  let query =`SELECT D.YEAR,
-                     JSON_ARRAYAGG(
-                             JSON_OBJECT('MONTH' VALUE D.MONTH, 'FINE_COUNT' VALUE NVL(D.COUNT, 0), 'PAYMENT_COUNT'
-                                         VALUE NVL(D1.COUNT, 0))
-                             ORDER BY TO_NUMBER(D.MONTH)) AS DATA
-              FROM (SELECT TO_CHAR(R.START_DATE, 'YYYY') YEAR, TO_CHAR(R.START_DATE, 'MM') MONTH, COUNT(*) COUNT
-                    FROM FINE_HISTORY R
-                    GROUP BY TO_CHAR(R.START_DATE, 'YYYY'), TO_CHAR(R.START_DATE, 'MM')) D
-                       FULL OUTER JOIN (SELECT TO_CHAR(R.PAYMENT_DATE, 'YYYY') YEAR,
-                                               TO_CHAR(R.PAYMENT_DATE, 'MM')   MONTH,
-                                               COUNT(*)                        COUNT
-                                        FROM FINE_HISTORY R
-                                        WHERE R.PAYMENT_DATE IS NOT NULL
-                                        GROUP BY TO_CHAR(R.PAYMENT_DATE, 'YYYY'), TO_CHAR(R.PAYMENT_DATE, 'MM')) D1
-                                       ON (D.YEAR = D1.YEAR AND D.MONTH = D1.MONTH)
-              GROUP BY D.YEAR
-              ORDER BY TO_NUMBER(D.YEAR)`
+  let query = `SELECT D.YEAR,
+                      JSON_ARRAYAGG(
+                              JSON_OBJECT('MONTH' VALUE D.MONTH, 'FINE_COUNT' VALUE NVL(D.COUNT, 0), 'PAYMENT_COUNT'
+                                          VALUE NVL(D1.COUNT, 0))
+                              ORDER BY TO_NUMBER(D.MONTH)) AS DATA
+               FROM (SELECT TO_CHAR(R.START_DATE, 'YYYY') YEAR, TO_CHAR(R.START_DATE, 'MM') MONTH, COUNT(*) COUNT
+                     FROM FINE_HISTORY R
+                     GROUP BY TO_CHAR(R.START_DATE, 'YYYY'), TO_CHAR(R.START_DATE, 'MM')) D
+                        FULL OUTER JOIN (SELECT TO_CHAR(R.PAYMENT_DATE, 'YYYY') YEAR,
+                                                TO_CHAR(R.PAYMENT_DATE, 'MM')   MONTH,
+                                                COUNT(*)                        COUNT
+                                         FROM FINE_HISTORY R
+                                         WHERE R.PAYMENT_DATE IS NOT NULL
+                                         GROUP BY TO_CHAR(R.PAYMENT_DATE, 'YYYY'), TO_CHAR(R.PAYMENT_DATE, 'MM')) D1
+                                        ON (D.YEAR = D1.YEAR AND D.MONTH = D1.MONTH)
+               GROUP BY D.YEAR
+               ORDER BY TO_NUMBER(D.YEAR)`
   let result = [];
   try {
     result = await queryExecute(query, []);
@@ -830,7 +831,10 @@ export async function getGenreDB(context) {
 }
 
 export async function getJobDB(context) {
-  let query = `SELECT JOB_TITLE, JOB_ID, SALARY, (SELECT COUNT(*) FROM EMPLOYEE E WHERE E.JOB_ID = J.JOB_ID) AS NUM_OF_EMPLOYEES`;
+  let query = `SELECT JOB_TITLE,
+                      JOB_ID,
+                      SALARY,
+                      (SELECT COUNT(*) FROM EMPLOYEE E WHERE E.JOB_ID = J.JOB_ID) AS NUM_OF_EMPLOYEES`;
   if (context.USER_ID) {
     query +=
       `, CASE\nWHEN JOB_ID IN (SELECT JOB_ID FROM EMPLOYEE WHERE USER_ID = ${context.USER_ID}) THEN 'working'` +
@@ -1030,7 +1034,14 @@ export async function getEditionDB(context) {
 }
 
 export async function sendMessageDB(context) {
-  let query = runProcedure(`INSERT_MESSAGE(${context.USER_ID}, '${context.MESSAGE}')`);
+  let message = context.MESSAGE;
+  if (context.SENDER_ID) {
+    let sender = await getUserDetailsDB({USER_ID: context.SENDER_ID});
+    message += `\n\nFROM...\nName: ${sender[0].FIRST_NAME} ${sender[0].LAST_NAME}\nEmail: ${sender[0].EMAIL}\nRole: ${context.ROLE}`;
+  } else {
+    message += `\n\nFROM...\nAdmin Panel of the Library`;
+  }
+  let query = runProcedure(`INSERT_MESSAGE(${context.USER_ID}, '${message}')`);
   console.log(context);
   let result;
   try {
@@ -1042,7 +1053,7 @@ export async function sendMessageDB(context) {
 }
 
 export async function updateMessageDB(context) {
-  let query = runProcedure(`UPDATE_MESSAGE(${context.USER_ID})`);
+  let query = runProcedure(`UPDATE_MESSAGE(${context.USER_ID}, ${context.MESSAGE_ID})`);
   console.log(context);
   let result = null;
   try {

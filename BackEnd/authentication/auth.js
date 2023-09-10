@@ -54,6 +54,7 @@ export function verifyEmpAdmToken(req, res, next) {
 
     if (decoded.ROLE === 'admin'||decoded.ROLE === 'employee') {
       req.USER_ID = decoded.USER_ID;
+      req.ROLE = decoded.ROLE;
       next();
     } else {
       return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
