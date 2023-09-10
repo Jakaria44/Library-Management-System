@@ -62,10 +62,27 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
   useEffect(() => {
     loadAllBooks(queries);
   }, []);
+  // useEffect(() => {
+  //   const a = Object.fromEntries(
+  //     Array.from(searchParams.entries()).filter(
+  //       ([key, value]) => value !== "null"
+  //     )
+  //   );
+
+  //   console.log(a);
+
+  //   loadAllBooks(a);
+  // }, [searchParams]);
 
   const loadAllBooks = async (queryOptions = queries) => {
     setLoading(true);
     try {
+      // const a = Array.from(searchParams.entries())
+      //   .filter(([key, value]) => value !== "null")
+      //   .map((item) => item[0] + "=" + item[1])
+      //   .join("&");
+      // console.log(a);
+      setSearchParams(queryOptions);
       const res = await server.get("/all-books-sum", { params: queryOptions });
       console.log("res");
       setTotal(res.data.totalPages);

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 // material-ui
 import {
@@ -138,6 +138,7 @@ const MobileSearch = ({ value, setValue, popupState, searchClickHandler }) => {
 const SearchSection = () => {
   const theme = useTheme();
   const [value, setValue] = useState("");
+
   const [anchorEl, setAnchorEl] = useState(null);
   const small = useMediaQuery(theme.breakpoints.down("md"));
   const [result, setResult] = useState([]);
@@ -145,6 +146,15 @@ const SearchSection = () => {
     console.log(value);
     if (value !== "") getSearchResults(value.replaceAll(/ /g, ""));
   }, [value]);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
   const handleSearchChange = (e) => {
     setValue(e.target.value);
     setAnchorEl(e.currentTarget);
@@ -239,6 +249,8 @@ const SearchSection = () => {
         <OutlineInputStyle
           id="input-search-header"
           value={value}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           onChange={handleSearchChange}
           placeholder="Search"
           startAdornment={
@@ -286,7 +298,7 @@ const SearchSection = () => {
         <Popper
           sx={{ zIndex: 1800 }}
           id={id}
-          open={searchResults.length}
+          open={value.length && isFocused}
           anchorEl={anchorEl}
           placement="bottom"
           transition
@@ -305,7 +317,7 @@ const SearchSection = () => {
                 justifyContent="left"
                 alignItems="left"
                 width={648}
-                height={small ? 300 : 400}
+                // maxHeight={small ? 300 : 400}
                 overflowY="scroll"
                 sx={{ p: 1, bgcolor: "background.default" }}
               >

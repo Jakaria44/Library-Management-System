@@ -31,7 +31,7 @@ const CardForSearchbar = ({ book }) => {
     <h1>Book not found</h1>
   ) : (
     book.map((item) => (
-      <Card sx={{ display: "flex", borderRadius: 0, height: "100%" }}>
+      <Card sx={{ display: "flex", borderRadius: 0, height: 120 }}>
         <CardActionArea component={Link} to={`/details/${item.ISBN}`}>
           <Box
             sx={{
