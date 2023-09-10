@@ -25,7 +25,7 @@ const months = [
   "Dec",
 ];
 const FineStat = () => {
-  const [year, setYear] = useState(2022);
+  const [year, setYear] = useState("2023");
   const [options, setOptions] = useState([]);
   const [dataRent, setDataRent] = useState([]); //[{year:2021, data:[]}
   const [dataReturn, setDataReturn] = useState([]); //[{year:2021, data:[]
@@ -36,22 +36,25 @@ const FineStat = () => {
     },
   ]);
   useEffect(() => {
-    // alert(year);
     load();
   }, []);
   useEffect(() => {
     extractData(year);
   }, [year]);
+  useEffect(() => {
+    if (res.length > 0) {
+      extractData(year);
+    }
+  }, [res, year]);
   const extractData = (y) => {
-    // alert(y);
     const a = res
-      .find((item) => item.year === y)
+      .find((item) => item.year == y)
       ?.data?.map((mon) => ({
         month: parseInt(mon.MONTH),
         rentCount: mon.FINE_COUNT,
         returnCount: mon.PAYMENT_COUNT,
       }));
-    console.log(a);
+
     let rent = [],
       returnC = [];
     for (let i = 1; i <= 12; i++) {
@@ -72,11 +75,11 @@ const FineStat = () => {
         };
       });
       console.log(a);
+
       setOptions(a?.map((item) => item.year));
-      setYear(a[0].year);
-      console.log(a);
+
       setRes(a);
-      extractData(a[0].year);
+      setYear(a[1].year);
     } catch (e) {
       console.log(e);
       setRes([]);

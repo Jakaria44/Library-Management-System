@@ -25,10 +25,10 @@ const months = [
   "Dec",
 ];
 const RentStat = () => {
-  const [year, setYear] = useState(2022);
+  const [year, setYear] = useState("2023");
   const [options, setOptions] = useState([]);
-  const [dataRent, setDataRent] = useState([]); //[{year:2021, data:[]}
-  const [dataReturn, setDataReturn] = useState([]); //[{year:2021, data:[]
+  const [dataRent, setDataRent] = useState(null); //[{year:2021, data:null}
+  const [dataReturn, setDataReturn] = useState(null); //[{year:2021, data:null
   const [res, setRes] = useState([
     {
       year: null,
@@ -42,16 +42,22 @@ const RentStat = () => {
   useEffect(() => {
     extractData(year);
   }, [year]);
+
+  useEffect(() => {
+    // Ensure data is loaded before extracting
+    if (res.length > 0) {
+      extractData(year);
+    }
+  }, [res, year]);
   const extractData = (y) => {
-    // alert(y);
     const a = res
-      .find((item) => item.year === y)
+      .find((item) => item.year == y)
       ?.data?.map((mon) => ({
         month: parseInt(mon.MONTH),
         rentCount: mon.RENT_COUNT,
         returnCount: mon.RETURN_COUNT,
       }));
-    console.log(a);
+
     let rent = [],
       returnC = [];
     for (let i = 1; i <= 12; i++) {
@@ -72,18 +78,21 @@ const RentStat = () => {
         };
       });
       console.log(a);
+
       setOptions(a?.map((item) => item.year));
-      setYear(a[0].year);
-      console.log(a);
+      // console.log(a);
       setRes(a);
-      extractData(a[0].year);
+      setYear(a[1]?.year || "2023");
     } catch (e) {
       console.log(e);
       setRes([]);
     }
   };
+  if (dataRent === null || dataReturn === null) {
+    return <div>Loading...</div>;
+  }
 
-  return dataRent.length ? (
+  return (
     <Paper elevation={3}>
       <Box padding={3} display="flex" flexDirection="row" alignItems="center">
         <Typography
@@ -98,14 +107,6 @@ const RentStat = () => {
       </Box>
       <Box display="flex" flexDirection="column" alignItems="center">
         <FormControl>
-          {/* <Typography
-          variant="h4"
-          textAlign="center"
-          gutterBottom
-          component="div"
-        >
-          Rent and Return Statistics
-        </Typography> */}
           <Typography variant="body1" gutterBottom>
             Select Year
           </Typography>
@@ -132,8 +133,6 @@ const RentStat = () => {
         />
       </Box>
     </Paper>
-  ) : (
-    <div>loading</div>
   );
 };
 

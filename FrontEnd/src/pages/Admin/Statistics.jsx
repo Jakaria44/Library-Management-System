@@ -9,8 +9,8 @@ const Statistics = () => {
       <Typography variant="h1" gutterBottom component="div" textAlign="center">
         Statistics
       </Typography>
-      <RentStat />
       <FineStat />
+      <RentStat />
     </Stack>
   );
 };
