@@ -350,30 +350,34 @@ const ProfileSection = () => {
                             />
                           </ListItemButton>
                         )}
-                        <ListItemButton
-                          sx={{
-                            borderRadius: "12px",
-                          }}
-                          selected={selectedIndex === 1}
-                          onClick={(event) => setShowingNewsModal(true)}
-                        >
-                          <ListItemIcon>
-                            <Feed stroke={1.5} size="1.3rem" />
-                          </ListItemIcon>
-                          <ListItemText>
-                            <Grid
-                              container
-                              spacing={1}
-                              justifyContent="space-between"
-                            >
-                              <Grid item>
-                                <Typography variant="body2">
-                                  Publish News
-                                </Typography>
+                        {["admin", "employee"].includes(
+                          localStorage.getItem("role")?.toLowerCase()
+                        ) && (
+                          <ListItemButton
+                            sx={{
+                              borderRadius: "12px",
+                            }}
+                            selected={selectedIndex === 1}
+                            onClick={(event) => setShowingNewsModal(true)}
+                          >
+                            <ListItemIcon>
+                              <Feed stroke={1.5} size="1.3rem" />
+                            </ListItemIcon>
+                            <ListItemText>
+                              <Grid
+                                container
+                                spacing={1}
+                                justifyContent="space-between"
+                              >
+                                <Grid item>
+                                  <Typography variant="body2">
+                                    Publish News
+                                  </Typography>
+                                </Grid>
                               </Grid>
-                            </Grid>
-                          </ListItemText>
-                        </ListItemButton>
+                            </ListItemText>
+                          </ListItemButton>
+                        )}
                         <ListItemButton
                           sx={{
                             borderRadius: "12px",

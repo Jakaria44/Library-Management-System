@@ -5,13 +5,19 @@ import Loadable from "./../ui-component/Loadable";
 
 const Details = Loadable(lazy(() => import("../pages/Details/Details")));
 const AllDueList = Loadable(lazy(() => import("../pages/Employee/AllDueList")));
+const AllRentHistory = Loadable(
+  lazy(() => import("../pages/Employee/AllRentHistory"))
+);
 const Users = Loadable(lazy(() => import("../pages/Employee/Users")));
 const Requests = Loadable(lazy(() => import("../pages/Employee/Requests")));
 const JobList = Loadable(lazy(() => import("../pages/Employee/JobList")));
 const ManageEmployees = Loadable(
   lazy(() => import("../pages/Employee/ManageEmployees"))
 );
-const LatestBooks = Loadable(lazy(() => import("../pages/LatestBooks")));
+const Statistics = Loadable(lazy(() => import("../pages/Admin/Statistics")));
+const JobApplications = Loadable(
+  lazy(() => import("../pages/Admin/JobApplications"))
+);
 const Categories = Loadable(lazy(() => import("../pages/Categories")));
 const AuthorList = Loadable(lazy(() => import("../pages/AuthorList")));
 const SingleCategory = Loadable(lazy(() => import("../pages/SingleCategory")));
@@ -32,11 +38,7 @@ const EditBook = Loadable(
 
 import { loader as DetailsLoader } from "../pages/Employee/addbook/EditBook";
 
-import CardForSearchbar from "../component/CardForSearchbar";
-import { loader as favouritesLoader } from "../pages/Reader/MyFavourites";
 import { loader as bookDetailsLoader } from "./../pages/Details/Details";
-import Statistics from "../pages/Admin/Statistics";
-
 // main routing
 const Structure = Loadable(lazy(() => import("../layout/Structure.jsx")));
 
@@ -76,10 +78,7 @@ const MainRoutes = {
       element: <Details />,
       loader: bookDetailsLoader,
     },
-    {
-      path: "/latestbooks",
-      element: <LatestBooks />,
-    },
+
     {
       path: "/categories",
       element: <Categories />,
@@ -117,9 +116,9 @@ const MainRoutes = {
       element: <Statistics />,
     },
     {
-      path: "/favourites",
-      element: <MyFavourites />,
-      loader: favouritesLoader,
+      path: "/jobapplications",
+
+      element: <JobApplications />,
     },
 
     {
@@ -134,10 +133,7 @@ const MainRoutes = {
       path: "/collections",
       element: <Collections />,
     },
-    {
-      path: "/reviews",
-      element: <MyReviews />,
-    },
+
     {
       path: "/duelist",
       element: <DueList />,
@@ -153,6 +149,10 @@ const MainRoutes = {
     {
       path: "/allduelists",
       element: <AllDueList />,
+    },
+    {
+      path: "/allrent",
+      element: <AllRentHistory />,
     },
     {
       path: "/joblist",

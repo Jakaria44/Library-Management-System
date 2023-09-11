@@ -162,7 +162,7 @@ export async function updateHistory(req, res, next) {
     if (history) {
       res.status(200).json({message: 'Successfully updated'});
     } else {
-      res.status(404).json({message: 'Failed to update'});
+      res.status(404).json({message: 'You have to pay fine first'});
     }
   } catch (err) {
     next(err);

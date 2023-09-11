@@ -422,6 +422,7 @@ const Filters = ({ queries, loadAllBooks }) => {
               step={0.1}
               min={0}
               max={5}
+              marks={[{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }]}
               sx={{ width: "80%" }}
             />
           </Box>

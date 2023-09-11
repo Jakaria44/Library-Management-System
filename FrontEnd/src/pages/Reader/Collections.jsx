@@ -98,6 +98,11 @@ const Collections = () => {
   const handleReturnBook = React.useCallback(
     (row) => async () => {
       if (row.STATUS === 1) return;
+      // if (row.RETURN_DATE < new Date()) {
+      //   setErrorMessage("You have to pay fine first");
+      //   setShowErrorMessage(true);
+      //   return;
+      // }
       const data = {
         RENT_HISTORY_ID: row.id,
       };

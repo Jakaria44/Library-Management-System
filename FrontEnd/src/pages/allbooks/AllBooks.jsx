@@ -24,7 +24,7 @@ export const sortOptions = [
   { query: "PUBLISH_YEAR", name: "Latest" },
 ];
 export const defaultQueryOptions = {
-  perPage: 32,
+  perPage: 20,
   page: 1,
   sort: sortOptions[0].query,
   order: "ASC",
@@ -65,7 +65,7 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
       const res = await server.get("/all-books-sum", { params: queryOptions });
       console.log("res");
       setTotal(res.data.totalPages);
-      console.log(res.data.totalPages);
+      console.log(res.data.rows);
       setData(
         res.data.rows?.map((e) => ({
           ISBN: e.ISBN,
@@ -76,7 +76,7 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
           // LANGUAGE:  ,
           // PUBLISH_YEAR:  ,
           AUTHORS: e.AUTHORS,
-          // RATING:  ,
+          RATING: e.RATING,
           // FAVOURITE:  ,
           IS_FAVOURITE: e.IS_FAVOURITE,
         }))

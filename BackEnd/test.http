@@ -1140,7 +1140,7 @@ GET http://localhost:3000/db-api/show-news?count=3
 ]
 
 #### ----GET all rent----
-GET http://localhost:3000/db-api/all-rent?sort=STATUS&order=ASC
+GET http://localhost:3000/db-api/all-rent?sort=TITLE&order=ASC
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5NDE3NDcxOSwiZXhwIjoxNzY2MTc0NzE5fQ._N0W7UHScoqEvmdjFCkIOaiXkiw1YgbCKVsDLAeKez0
 
 #### ----GET Single Book ----

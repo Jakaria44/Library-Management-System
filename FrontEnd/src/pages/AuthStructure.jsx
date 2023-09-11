@@ -1,14 +1,9 @@
-import {
-  AppBar,
-  Container,
-  Toolbar,
-  Typography,
-  useScrollTrigger,
-} from "@mui/material";
+import { AppBar, Container, Toolbar, useScrollTrigger } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 import { Outlet } from "react-router-dom";
 import DarkModeSwitch from "../component/DarkModeSwitch";
+import { useTheme } from "@emotion/react";
 
 function ElevationScroll(props) {
   const { children, window } = props;
@@ -27,15 +22,32 @@ function ElevationScroll(props) {
 }
 
 const AuthStructure = () => {
+  const theme = useTheme();
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
         <ElevationScroll>
           <AppBar enableColorOnDark position="fixed" color="inherit">
             <Toolbar>
-              <Typography variant="h3" component="div" sx={{ flexGrow: 1 }}>
-                CSE Library
-              </Typography>
+              <Box
+                component="span"
+                marginLeft="16px"
+                sx={{ display: { xs: "none", md: "block" }, flexGrow: 1 }}
+              >
+                {theme.palette.mode == "light" ? (
+                  <img
+                    src="./../../public/LibraryLogo2.png"
+                    alt="Book Breeze"
+                    width="100"
+                  />
+                ) : (
+                  <img
+                    src="./../../public/LibraryLogo.png"
+                    alt="Book Breeze"
+                    width="100"
+                  />
+                )}
+              </Box>
               <DarkModeSwitch />
             </Toolbar>
           </AppBar>

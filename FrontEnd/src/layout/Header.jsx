@@ -4,7 +4,6 @@ import { useTheme } from "@mui/material/styles";
 
 // project imports
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
-import Typography from "@mui/material/Typography";
 import DarkModeSwitch from "../component/DarkModeSwitch.jsx";
 import { useMyTheme } from "../contexts/ThemeContextProvider.jsx";
 import Notification from "./Sections/Notification.jsx";
@@ -50,11 +49,24 @@ const Header = ({ handleLeftDrawerToggle }) => {
           marginLeft="16px"
           sx={{ display: { xs: "none", md: "block" }, flexGrow: 1 }}
         >
-          <ButtonBase disableRipple>
+          {/* <ButtonBase disableRipple>
             <Typography variant="h3" component="div" my={2}>
               CSE Library
             </Typography>
-          </ButtonBase>
+          </ButtonBase> */}
+          {theme.palette.mode == "light" ? (
+            <img
+              src="./../../public/LibraryLogo2.png"
+              alt="Book Breeze"
+              width="100"
+            />
+          ) : (
+            <img
+              src="./../../public/LibraryLogo.png"
+              alt="Book Breeze"
+              width="100"
+            />
+          )}
         </Box>
       </Box>
 

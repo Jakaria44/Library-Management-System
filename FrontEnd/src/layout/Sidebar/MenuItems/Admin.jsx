@@ -1,6 +1,6 @@
 // assets
 
-import { SsidChart } from "@mui/icons-material";
+import { Feed, People, SsidChart } from "@mui/icons-material";
 
 // constant
 
@@ -17,6 +17,22 @@ const Admin = {
       type: "item",
       url: "/stat",
       icon: <SsidChart />,
+      breadcrumbs: false,
+    },
+    {
+      id: "jobapplications",
+      title: "Job Applications",
+      type: "item",
+      url: "/jobapplications",
+      icon: <Feed />,
+      breadcrumbs: false,
+    },
+    {
+      id: "manageemployees",
+      title: "Manage Employees",
+      type: "item",
+      url: "/manageemployees",
+      icon: <People />,
       breadcrumbs: false,
     },
   ],

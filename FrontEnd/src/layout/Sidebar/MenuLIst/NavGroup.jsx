@@ -4,7 +4,7 @@ import { useTheme } from "@mui/material/styles";
 
 // project imports
 import NavItem from "./NavItem";
-// import NavCollapse from '../NavCollapse';
+import NavCollapse from "./NavCollapse";
 
 // ==============================|| SIDEBAR MENU LIST GROUP ||============================== //
 
@@ -14,8 +14,8 @@ const NavGroup = ({ item }) => {
   // menu list collapse & items
   const items = item.children?.map((menu, i) => {
     switch (menu.type) {
-      //   case 'collapse':
-      //     return <NavCollapse key={menu.id} menu={menu} level={1} />;
+      case "collapse":
+        return <NavCollapse key={menu.id} menu={menu} level={1} />;
       case "item":
         return <NavItem key={i} item={menu} level={1} />;
       default:

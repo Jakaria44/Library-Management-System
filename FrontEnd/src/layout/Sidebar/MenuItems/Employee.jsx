@@ -2,6 +2,7 @@
 
 import {
   Checklist,
+  CurrencyExchange,
   NoteAdd,
   People,
   PeopleSharp,
@@ -35,10 +36,10 @@ const Employee = {
     },
     {
       id: "allduelists",
-      title: "Pending Fine List",
+      title: "Fine History",
       type: "item",
       url: "/allduelists",
-      icon: <Checklist />,
+      icon: <CurrencyExchange />,
       breadcrumbs: false,
     },
 
@@ -50,20 +51,13 @@ const Employee = {
       icon: <NoteAdd />,
       breadcrumbs: false,
     },
+
     {
-      id: "joblist",
-      title: "Job list",
+      id: "allrent",
+      title: "Complete Rent History",
       type: "item",
-      url: "/joblist",
+      url: "/allrent",
       icon: <Work />,
-      breadcrumbs: false,
-    },
-    {
-      id: "manageemployees",
-      title: "Manage Employees",
-      type: "item",
-      url: "/manageemployees",
-      icon: <People />,
       breadcrumbs: false,
     },
   ],

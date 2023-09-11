@@ -1434,16 +1434,33 @@ END;
 /
 
 
+-- CREATE OR REPLACE PROCEDURE INSERT_BOOK(A_ISBN VARCHAR2,
+--                                         A_TITLE VARCHAR2,
+--                                         A_IMAGE VARCHAR2,
+--                                         A_NUMBER_OF_PAGES NUMBER,
+--                                         A_LANGUAGE VARCHAR2,
+--                                         A_DESCRIPTION VARCHAR2,
+--                                         A_PUBLISHER_ID VARCHAR2) IS
+-- BEGIN
+--     INSERT INTO BOOK(ISBN, TITLE, IMAGE, NUMBER_OF_PAGES, LANGUAGE, DESCRIPTION, PUBLISHER_ID)
+--     VALUES (A_ISBN, A_TITLE, A_IMAGE, A_NUMBER_OF_PAGES, A_LANGUAGE, A_DESCRIPTION, A_PUBLISHER_ID);
+-- EXCEPTION
+--     WHEN OTHERS THEN
+--         raise_application_error(-20111, 'ISBN NOT UNIQUE/ SOME DATA IS WRONG');
+-- END;
+-- /
+
 CREATE OR REPLACE PROCEDURE INSERT_BOOK(A_ISBN VARCHAR2,
                                         A_TITLE VARCHAR2,
                                         A_IMAGE VARCHAR2,
                                         A_NUMBER_OF_PAGES NUMBER,
                                         A_LANGUAGE VARCHAR2,
                                         A_DESCRIPTION VARCHAR2,
-                                        A_PUBLISHER_ID VARCHAR2) IS
+                                        A_PUBLISHER_ID VARCHAR2,
+                                        A_PREVIEWLINK VARCHAR2) IS
 BEGIN
-    INSERT INTO BOOK(ISBN, TITLE, IMAGE, NUMBER_OF_PAGES, LANGUAGE, DESCRIPTION, PUBLISHER_ID)
-    VALUES (A_ISBN, A_TITLE, A_IMAGE, A_NUMBER_OF_PAGES, A_LANGUAGE, A_DESCRIPTION, A_PUBLISHER_ID);
+    INSERT INTO BOOK(ISBN, TITLE, IMAGE, NUMBER_OF_PAGES, LANGUAGE, DESCRIPTION, PUBLISHER_ID, PreviewLink)
+    VALUES (A_ISBN, A_TITLE, A_IMAGE, A_NUMBER_OF_PAGES, A_LANGUAGE, A_DESCRIPTION, A_PUBLISHER_ID, A_PREVIEWLINK);
 EXCEPTION
     WHEN OTHERS THEN
         raise_application_error(-20111, 'ISBN NOT UNIQUE/ SOME DATA IS WRONG');
@@ -1457,7 +1474,8 @@ CREATE OR REPLACE PROCEDURE UPDATE_BOOK(A_ISBN VARCHAR2,
                                         A_NUMBER_OF_PAGES NUMBER,
                                         A_LANGUAGE VARCHAR2,
                                         A_DESCRIPTION VARCHAR2,
-                                        A_PUBLISHER_ID VARCHAR2) IS
+                                        A_PUBLISHER_ID VARCHAR2,
+                                        A_PREVIEWLINK VARCHAR2) IS
     F_ISBN VARCHAR2(20);
 BEGIN
     SELECT ISBN
@@ -1470,7 +1488,8 @@ BEGIN
         NUMBER_OF_PAGES=A_NUMBER_OF_PAGES,
         LANGUAGE=A_LANGUAGE,
         DESCRIPTION=A_DESCRIPTION,
-        PUBLISHER_ID=A_PUBLISHER_ID
+        PUBLISHER_ID=A_PUBLISHER_ID,
+        PreviewLink=A_PREVIEWLINK
     WHERE ISBN = A_ISBN;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
@@ -1478,7 +1497,36 @@ EXCEPTION
     WHEN OTHERS THEN
         raise_application_error(-20111, 'SOME DATA IS WRONG');
 END;
-/
+-- /
+
+-- CREATE OR REPLACE PROCEDURE UPDATE_BOOK(A_ISBN VARCHAR2,
+--                                         A_TITLE VARCHAR2,
+--                                         A_IMAGE VARCHAR2,
+--                                         A_NUMBER_OF_PAGES NUMBER,
+--                                         A_LANGUAGE VARCHAR2,
+--                                         A_DESCRIPTION VARCHAR2,
+--                                         A_PUBLISHER_ID VARCHAR2) IS
+--     F_ISBN VARCHAR2(20);
+-- BEGIN
+--     SELECT ISBN
+--     INTO F_ISBN
+--     FROM BOOK
+--     WHERE ISBN = A_ISBN;
+--     UPDATE BOOK
+--     SET TITLE=A_TITLE,
+--         IMAGE=A_IMAGE,
+--         NUMBER_OF_PAGES=A_NUMBER_OF_PAGES,
+--         LANGUAGE=A_LANGUAGE,
+--         DESCRIPTION=A_DESCRIPTION,
+--         PUBLISHER_ID=A_PUBLISHER_ID
+--     WHERE ISBN = A_ISBN;
+-- EXCEPTION
+--     WHEN NO_DATA_FOUND THEN
+--         raise_application_error(-20111, 'DOESNOT EXISTS');
+--     WHEN OTHERS THEN
+--         raise_application_error(-20111, 'SOME DATA IS WRONG');
+-- END;
+-- /
 
 CREATE OR REPLACE FUNCTION IS_VALID_INSERT_EMPLOYEE(A_USER_ID VARCHAR2)
     RETURN BOOLEAN IS

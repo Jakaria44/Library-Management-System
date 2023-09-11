@@ -7,6 +7,7 @@ import {
   ConfirmationNumber,
   Language,
   LocalLibrary,
+  OpenInNew,
   Pageview,
   Person,
 } from "@mui/icons-material";
@@ -109,8 +110,9 @@ const TitleAndCoverPage = ({ book, editions }) => {
   };
   const handleApplyToGet = () => {
     if (
-      localStorage.getItem("role") === "user" ||
-      localStorage.getItem("role") === "employee"
+      ["admin", "employee", "user"].includes(
+        localStorage.getItem("role")?.toLowerCase()
+      )
     ) {
       apply();
     } else {
@@ -121,8 +123,9 @@ const TitleAndCoverPage = ({ book, editions }) => {
 
   const handleAddToFavourite = () => {
     if (
-      localStorage.getItem("role") === "user" ||
-      localStorage.getItem("role") === "employee"
+      ["admin", "employee", "user"].includes(
+        localStorage.getItem("role")?.toLowerCase()
+      )
     ) {
       changeFavouriteStatus();
     } else {
@@ -271,7 +274,14 @@ const TitleAndCoverPage = ({ book, editions }) => {
               ))}
             </Select>
           </Typography>
-
+          {book.FAVOURITE && (
+            <Typography
+              variant="h3"
+              style={{ marginTop: "16px", marginLeft: "16px" }}
+            >
+              {book.FAVOURITE} people have added this book to their favourite!
+            </Typography>
+          )}
           <div
             style={{
               display: "flex",
@@ -288,6 +298,7 @@ const TitleAndCoverPage = ({ book, editions }) => {
             >
               Apply to Get
             </Button>
+
             <Button
               variant="contained"
               color="secondary"
@@ -296,6 +307,18 @@ const TitleAndCoverPage = ({ book, editions }) => {
             >
               {isFavourite ? "Remove from Favourite" : "Add to Favourite"}
             </Button>
+            {book.PREVIEWLINK !== "" && (
+              <a href={book.PREVIEWLINK} target="_blank" rel="noreferrer">
+                <Button
+                  startIcon={<OpenInNew />}
+                  variant="contained"
+                  color="primary"
+                  style={{ margin: "8px" }}
+                >
+                  Preview
+                </Button>
+              </a>
+            )}
           </div>
         </Paper>
       </Grid>

@@ -36,6 +36,7 @@ let general = {
   language: null,
   description: "",
   numOfPage: 0,
+  previewLink: "",
 };
 let authorgenre = {
   authors: [],
@@ -61,7 +62,6 @@ export default function AddBook({ bookDetails }) {
 
   const [formFields, setFormFields] = React.useState(formField);
   const initialize = async () => {
-    // _isbn = "9781408855652";
     if (bookDetails) {
       const data = bookDetails;
       console.log(JSON.parse(data.EDITION));
@@ -72,6 +72,7 @@ export default function AddBook({ bookDetails }) {
         language: Languages.filter((item) => item.code === data.LANGUAGE)[0],
         description: data.DESCRIPTION,
         numOfPage: data.PAGE,
+        previewLink: data.PREVIEWLINK,
       };
       authorgenre = {
         authors: JSON.parse(data.AUTHOR).map((item) => {
@@ -154,6 +155,7 @@ export default function AddBook({ bookDetails }) {
       LANGUAGE: generalInfo.language.code,
       NUMBER_OF_PAGES: generalInfo.numOfPage,
       PUBLISHER_ID: authorGenrePublisher.publisher.PUBLISHER_ID,
+      PREVIEWLINK: generalInfo.previewLink,
       Authors: authorGenrePublisher.authors.map((item) => {
         return { AUTHOR_ID: item.AUTHOR_ID };
       }),

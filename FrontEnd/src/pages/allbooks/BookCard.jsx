@@ -14,14 +14,16 @@ import {
   Button,
   Card,
   CardContent,
-  CardMedia,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
+  ImageListItem,
+  ImageListItemBar,
   Menu,
   MenuItem,
+  Rating,
   Tooltip,
   Typography,
   alpha,
@@ -114,8 +116,9 @@ const BookCard = ({ book }) => {
   };
   const handleAddToFavourite = () => {
     if (
-      localStorage.getItem("role") === "user" ||
-      localStorage.getItem("role") === "employee"
+      ["admin", "employee", "user"].includes(
+        localStorage.getItem("role")?.toLowerCase()
+      )
     ) {
       changeFavouriteStatus();
     } else {
@@ -151,8 +154,9 @@ const BookCard = ({ book }) => {
   };
   const handleApplyToGet = () => {
     if (
-      localStorage.getItem("role") === "user" ||
-      localStorage.getItem("role") === "employee"
+      ["admin", "employee", "user"].includes(
+        localStorage.getItem("role")?.toLowerCase()
+      )
     ) {
       apply();
     } else {
@@ -226,35 +230,70 @@ const BookCard = ({ book }) => {
       <Card
         onMouseLeave={handleMouseLeave}
         raised
-        sx={{ width: { xs: "100%" }, height: 390 }}
+        sx={{ width: { xs: "100%" }, height: 380 }}
         elevation={12}
       >
-        <CardMedia
+        {/* <CardMedia
           onMouseEnter={handleMouseEnter}
           component="img"
-          sx={{ height: 240, maxWidth: 150, margin: "auto" }}
+          sx={{  }}
           image={book.IMAGE}
           alt={book.TITLE}
-        />
-
+        /> */}
+        <ImageListItem cols={1} rows={2}>
+          <img
+            style={{ height: 240, maxWidth: 150, margin: "auto" }}
+            src={book.IMAGE}
+            alt={book.TITLE}
+            loading="lazy"
+          />
+          {book.RATING && (
+            <ImageListItemBar
+              sx={{
+                background:
+                  "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, " +
+                  "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
+              }}
+              // title={book.TITLE}
+              position="top"
+              actionIcon=//   sx={{ color: "white" }} // <IconButton
+              //   aria-label={`star ${book.TITLE}`}
+              // >
+              //   <StarBorder />
+              // </IconButton>
+              {<Rating value={book.RATING} precision={0.01} readOnly />}
+              actionPosition="left"
+            />
+          )}
+        </ImageListItem>
         <CardContent marginBottom="0px">
-          <Tooltip title={book.TITLE}>
-            <Typography
-              gutterBottom
-              variant="h5"
-              component="div"
-              color="text.primary "
-              sx={{ maxHeight: 48 }}
-              maxRows={2}
-            >
-              {book.TITLE.length > 30
-                ? book.TITLE.slice(0, 30) + "..."
-                : book.TITLE}
-            </Typography>
-            <Typography variant="body1" noWrap color="text.secondary">
-              {book.AUTHORS}
-            </Typography>
-          </Tooltip>
+          <Box display="flex" flexDirection="column">
+            <Box flexGrow={2}>
+              <Tooltip title={book.TITLE}>
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                  color="text.primary "
+                  sx={{ maxHeight: 48 }}
+                >
+                  {book.TITLE.length > 30
+                    ? book.TITLE.slice(0, 30) + "..."
+                    : book.TITLE}
+                </Typography>
+              </Tooltip>
+            </Box>
+            <Box flexGrow={1}>
+              <Typography
+                flexGrow={3}
+                variant="body1"
+                noWrap
+                color="text.secondary"
+              >
+                {book.AUTHORS}
+              </Typography>
+            </Box>
+          </Box>
         </CardContent>
         <div
           style={{
