@@ -1,16 +1,20 @@
-import { DeleteForever, Edit } from "@mui/icons-material";
+import { Add, DeleteForever, Edit } from "@mui/icons-material";
 import {
   Box,
+  Button,
   Chip,
+  Dialog,
+  DialogActions,
   Input,
   InputLabel,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
 import { GridActionsCellItem, GridToolbar } from "@mui/x-data-grid";
 import { useConfirm } from "material-ui-confirm";
 // import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ErrorModal from "../../component/ErrorModal";
 import StyledDataGrid from "../../component/StyledDataGrid";
 import SuccessfullModal from "../../component/SuccessfulModal";
@@ -32,6 +36,30 @@ const JobList = () => {
     sort: "JOB_TITLE",
     order: "DESC",
   });
+  const [add, setAdd] = useState(false);
+  const [jobTitle, setJobTitle] = useState("");
+  const [salary, setSalary] = useState(0);
+
+  const addJob = useCallback(async () => {
+    try {
+      const res = await server.post("/getJob", {
+        JOB_TITLE: jobTitle,
+        SALARY: salary,
+      });
+      setSuccessMessage(res.data.message);
+      setShowSuccessMessage(true);
+      setAdd(false);
+      fetchData();
+    } catch (err) {
+      setErrorMessage(err.response.data.message);
+      setShowErrorMessage(true);
+      console.log(err);
+    }
+  });
+
+  const titleAlreadyExists = useMemo(() => {
+    return rows.some((row) => row.JOB_TITLE === jobTitle);
+  }, [jobTitle, rows]);
 
   const modifyJob = useCallback(({ JOB_TITLE, SALARY }) => async () => {
     try {
@@ -343,13 +371,34 @@ const JobList = () => {
       >
         Job List
       </Typography>
+
+      {localStorage.getItem("role")?.toLowerCase() === "admin" && (
+        <Typography
+          variant="h2"
+          textAlign="right"
+          gutterBottom
+          // p={2}
+          component="div"
+        >
+          <Tooltip title="Add New Job">
+            <Button
+              startIcon={<Add />}
+              onClick={() => setAdd(true)}
+              variant="contained"
+              color="primary"
+            >
+              Add New Job
+            </Button>
+          </Tooltip>
+        </Typography>
+      )}
       <StyledDataGrid
         rows={rows}
         columns={
-          localStorage.getItem("role") === "admin"
+          localStorage.getItem("role")?.toLowerCase() === "admin"
             ? [...tableColumns, columnForAdmin]
-            : localStorage.getItem("role") === "employee" ||
-              localStorage.getItem("role") === "user"
+            : localStorage.getItem("role")?.toLowerCase() === "employee" ||
+              localStorage.getItem("role")?.toLowerCase() === "user"
             ? [...tableColumns, columnForUser]
             : [...tableColumns]
         }
@@ -387,6 +436,66 @@ const JobList = () => {
           fetchData();
         }}
       />
+
+      <Dialog open={add} onClose={() => setAdd(false)}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          p={2}
+        >
+          <Typography variant="h3" gutterBottom>
+            Add New Job
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="space-between"
+            mt={2}
+          >
+            <TextField
+              label="Job Title"
+              id="title"
+              variant="outlined"
+              type="text"
+              onChange={(event) => {
+                setJobTitle(event.target.value);
+              }}
+              error={titleAlreadyExists}
+              helperText={
+                titleAlreadyExists && jobTitle.length
+                  ? "Title already exists"
+                  : null
+              }
+              sx={{ marginRight: 2 }}
+            />
+
+            <TextField
+              label="Salary"
+              variant="outlined"
+              type="number"
+              min={1}
+              max={10000}
+              onChange={(event) => {
+                setSalary(event.target.value);
+              }}
+            />
+          </Box>
+        </Box>
+
+        <DialogActions>
+          <Button onClick={() => setAdd(false)}>Cancel</Button>
+          <Button
+            disabled={
+              titleAlreadyExists || jobTitle.length === 0 || salary == 0
+            }
+            onClick={addJob}
+          >
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

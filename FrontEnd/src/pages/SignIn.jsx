@@ -11,6 +11,7 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import ErrorModal from "../component/ErrorModal";
 import SpinnerWithBackdrop from "../component/SpinnerWithBackdrop";
 import server from "./../HTTP/httpCommonParam";
@@ -24,7 +25,7 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="http:localhost:5173/">
+      <Link color="inherit" href="/">
         Library Management System
       </Link>{" "}
       {new Date().getFullYear()}
@@ -35,7 +36,7 @@ function Copyright(props) {
 const emailRegex =
   /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 export default function SignIn() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = React.useState(false);
   const [signingIn, setSigningIn] = React.useState(false);
   const [showErrorMessage, setShowErrorMessage] = React.useState(false);
@@ -46,6 +47,12 @@ export default function SignIn() {
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
+  React.useEffect(() => {
+    if (["admin", "employee", "user"].includes(localStorage.getItem("role"))) {
+      alert("you are already logged in");
+      navigate("/profile");
+    }
+  }, []);
   const signin = async (user) => {
     try {
       console.log(user);
@@ -144,11 +151,11 @@ export default function SignIn() {
             Sign In
           </Button>
           <Grid container>
-            <Grid item xs>
+            {/* <Grid item xs>
               <Link href="#" variant="body2">
                 Forgot password?
               </Link>
-            </Grid>
+            </Grid> */}
             <Grid item>
               <Link href="/signup" variant="body2">
                 {"Don't have an account? Sign Up"}

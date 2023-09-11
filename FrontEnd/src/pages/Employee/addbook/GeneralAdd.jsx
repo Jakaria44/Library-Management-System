@@ -145,6 +145,18 @@ export default function GeneralAdd({
           </Grid>
           <Grid item xs>
             <TextField
+              fullWidth
+              value={book.previewLink}
+              id="preview"
+              label="Preview Link of the Book"
+              name="preview"
+              onChange={(e) =>
+                setBook((prev) => ({ ...prev, previewLink: e.target.value }))
+              }
+            />
+          </Grid>
+          <Grid item xs>
+            <TextField
               required
               value={book.isbn}
               fullWidth

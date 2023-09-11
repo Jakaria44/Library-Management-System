@@ -29,6 +29,7 @@ import {
   Close,
   Comment,
   NotificationsNone,
+  WorkspacePremium,
 } from "@mui/icons-material";
 import { useConfirm } from "material-ui-confirm";
 import ErrorModal from "../../component/ErrorModal";
@@ -138,7 +139,7 @@ const Notification = () => {
 
   async function markAll() {
     try {
-      const res = await server.get("/mark-all");
+      const res = await server.put("/edit-message");
       getMyNotifications();
       setSuccessMessage(res.data.message);
       setShowSuccessMessage(true);
@@ -153,23 +154,55 @@ const Notification = () => {
       return <CheckCircleOutline color="success" />;
     } else if (msg?.includes("rejected")) {
       return <Close color="error" />;
+    } else if (msg?.includes("Congratulations")) {
+      return <WorkspacePremium color="success" />;
     }
     // else if ( )
     return <Comment />;
   }
 
+  async function updateMessage(id) {
+    try {
+      await server.put(`/edit-message?mid=${id}`);
+      await getMyNotifications();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   function SingleNotification({ id, date, msg, seen }) {
     return (
-      <ListItem divider>
+      <ListItem
+        divider
+        onClick={() => {
+          updateMessage(id);
+        }}
+        sx={{
+          bgcolor: "itemBackground",
+          "&:hover": {
+            bgcolor: "itemBackgroundHover",
+          },
+        }}
+      >
         <ListItemAvatar>
-          <Avatar
-            sx={{
-              color: "primary.main",
-              bgcolor: "primary.lighter",
+          <Badge
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "left",
             }}
+            color="primary"
+            variant="dot"
+            invisible={seen}
           >
-            <NotificationAvatar msg={msg} />
-          </Avatar>
+            <Avatar
+              sx={{
+                color: "primary.200",
+                bgcolor: "background.default",
+              }}
+            >
+              <NotificationAvatar msg={msg} />
+            </Avatar>
+          </Badge>
         </ListItemAvatar>
         <ListItemText
           sx={{ cursor: "pointer" }}
@@ -198,7 +231,11 @@ const Notification = () => {
             <Avatar
               edge="end"
               aria-label="delete"
-              sx={{ cursor: "pointer" }}
+              sx={{
+                cursor: "pointer",
+                bgcolor: "background.default",
+                color: "error.main",
+              }}
               onClick={() => {
                 deleteMessage(id);
               }}
@@ -206,6 +243,9 @@ const Notification = () => {
               <Close />
             </Avatar>
           </Tooltip>
+          {/* <Avatar edge="end" aria-label="delete" sx={{ cursor: "pointer" }}>
+              <CheckCircleOutline />
+            </Avatar> */}
         </ListItemSecondaryAction>
       </ListItem>
     );
@@ -329,7 +369,7 @@ const Notification = () => {
 
       <MessageModal
         showMessage={showMessage}
-        message={message.msg}
+        message={message.msg?.replaceAll(/\\n/g, "<br/>")}
         HandleClosed={() => {
           setShowMessage(false);
         }}

@@ -150,7 +150,7 @@ const AddPublisher = ({ onSubmit, onClose }) => {
 
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item>
+          <Grid item m="auto">
             {previewUrl && (
               <Avatar
                 variant="square"

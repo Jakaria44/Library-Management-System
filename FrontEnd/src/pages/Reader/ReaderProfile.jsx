@@ -2,9 +2,7 @@ import {
   ArrowForwardIos,
   AutoStories,
   Description,
-  Favorite,
   ReceiptLongSharp,
-  Reviews,
 } from "@mui/icons-material";
 import { Card, Grid, Typography } from "@mui/material";
 import React, { cloneElement, useEffect, useState } from "react";
@@ -27,16 +25,6 @@ const ReaderProfile = () => {
     getUserDetails();
   }, []);
   const pageList = [
-    {
-      icon: <Favorite />,
-      text: "My Favorites",
-      url: "/favourites",
-    },
-    {
-      icon: <Reviews />,
-      text: "My Reviews",
-      url: "/reviews",
-    },
     {
       icon: <Description />,
       text: "My Applications",

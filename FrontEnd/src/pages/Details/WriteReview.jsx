@@ -25,8 +25,9 @@ const WriteReview = ({ text, value, onSubmit, onCancel }) => {
     console.log("Review:", review);
     if (rating === 0) return;
     if (
-      localStorage.getItem("role") !== "user" &&
-      localStorage.getItem("role") !== "employee"
+      !["admin", "employee", "user"].includes(
+        localStorage.getItem("role")?.toLowerCase()
+      )
     ) {
       console.log("hi");
       setShowMessage(true);

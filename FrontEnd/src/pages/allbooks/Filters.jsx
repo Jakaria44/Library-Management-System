@@ -24,10 +24,8 @@ import Languages from "../../utils/Languages";
 import AuthorInput from "../VirtualisedAuthorAutoComplete";
 import server from "./../../HTTP/httpCommonParam";
 import { defaultQueryOptions } from "./AllBooks";
-const minDistance = 400;
-const maxPage = 3000;
-const maxYear = new Date().getFullYear();
-const minDistanceYear = 2;
+const minDistance = 0, minDistanceYear = 0;
+let maxPage = 5000, minYear = 1000, maxYear = new Date().getFullYear(), minPage = 0;
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -137,7 +135,13 @@ const Filters = ({ queries, loadAllBooks }) => {
   const fetchAuthorGenrePublisher = async () => {
     try {
       let PublisherList = [];
-      let res = await server.get("/getPublisher");
+      let res = await server.get("/getRanges");
+      console.log(res.data);
+      minPage = parseInt(res.data.MIN_PAGE);
+      maxPage = parseInt(res.data.MAX_PAGE);
+      minYear = parseInt(res.data.MIN_YEAR);
+      maxYear = parseInt(res.data.MAX_YEAR);
+      res = await server.get("/getPublisher");
       PublisherList = res.data;
       if (!Array.isArray(res.data)) {
         PublisherList = [res.data];
@@ -292,7 +296,7 @@ const Filters = ({ queries, loadAllBooks }) => {
               onChange={handlePageSlider}
               // onChangeCommitted={handlePageSlider}
               aria-label="pretto slider"
-              min={0}
+              min={minPage}
               max={maxPage}
               step={30}
               sx={{ width: "80%" }}
@@ -356,7 +360,7 @@ const Filters = ({ queries, loadAllBooks }) => {
               onChange={handleYearSlider}
               // onChangeCommitted={handlePageSlider}
               aria-label="pretto slider"
-              min={1900}
+              min={minYear}
               max={maxYear}
               sx={{ width: "80%" }}
             />
@@ -422,6 +426,7 @@ const Filters = ({ queries, loadAllBooks }) => {
               step={0.1}
               min={0}
               max={5}
+              marks={[{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }]}
               sx={{ width: "80%" }}
             />
           </Box>

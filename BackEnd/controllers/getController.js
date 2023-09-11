@@ -24,7 +24,8 @@ import {
   getSearchBarDB,
   getRentHistoryDB,
   getRentDataDB,
-  getFineDataDB
+  getFineDataDB,
+  getRangesDB
 } from "../Database/queryFunctions.js";
 
 
@@ -90,6 +91,7 @@ export async function getAllBookSum(req, res, next) {
     if (req.USER_ID) {
       context.USER_ID = req.USER_ID;
     }
+    console.log(req.USER_ID);
     if (req.query.MY_FAV) {
       context.MY_FAV = req.query.MY_FAV === 'true';
     }
@@ -198,6 +200,20 @@ export async function getAllLanguages(req, res, next) {
 
     if (rows.length > 0) {
       res.status(200).json(rows);
+    } else {
+      res.status(404).json({message: "No Data Found"});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getRanges(req, res, next) {
+  try {
+    const rows = await getRangesDB();
+
+    if (rows.length > 0) {
+      res.status(200).json(rows[0]);
     } else {
       res.status(404).json({message: "No Data Found"});
     }
@@ -525,7 +541,7 @@ export async function getMyFineHistory(req, res, next) {
 export async function getRentHistory(req, res, next) {
   try {
     const context = {};
-    // context.USER_ID = req.USER_ID;
+    // context.USER_ID = req.USER_ID;j
     context.sort = req.query.sort;
     context.order = req.query.order;
     console.log(context)

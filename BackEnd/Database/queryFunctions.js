@@ -1,4 +1,4 @@
-import {queryExecute} from "./database.js";
+import { queryExecute } from "./database.js";
 
 function baseQuery(tableName) {
   return `Select *
@@ -153,7 +153,7 @@ export async function getAllBookSumDB(context) {
   let query =
     "SELECT B.ISBN, B.TITLE, B.IMAGE, B.NUMBER_OF_PAGES AS PAGE, B.LANGUAGE, " +
     "(SELECT MAX(E.PUBLISH_YEAR) FROM EDITION E WHERE E.ISBN = B.ISBN) AS PUBLISH_YEAR, " +
-    "(SELECT EDITION_ID FROM EDITION E WHERE E.ISBN = B.ISBN AND PUBLISH_YEAR >= ALL (SELECT PUBLISH_YEAR FROM EDITION E2 WHERE E2.ISBN = B.ISBN)) AS EDITION_ID, " +
+    "(SELECT EDITION_ID FROM EDITION E WHERE E.ISBN = B.ISBN AND EDITION_NUM >= ALL (SELECT EDITION_NUM FROM EDITION E2 WHERE E2.ISBN = B.ISBN)) AS EDITION_ID, " +
     "(SELECT LISTAGG(A.NAME, ', ') FROM WRITTEN_BY WB JOIN AUTHOR A ON WB.AUTHOR_ID = A.AUTHOR_ID WHERE WB.ISBN = B.ISBN) AS AUTHORS, " +
     "NVL(ROUND(AVG(R.RATING), 2), 0) AS RATING, NVL(COUNT(DISTINCT F.USER_ID),0) AS FAVOURITE";
   if (context.USER_ID) {
@@ -221,6 +221,9 @@ export async function getAllBookSumDB(context) {
 
     // if (validColumns.includes(context.sort) && validOrders.includes(context.order)) {
     query += `\nORDER BY ${context.sort} ${context.order}`;
+    if(context.sort === "RATING") {
+      query += `, SUM(NVL(R.RATING,0)) ${context.order}`
+    }
     if (context.sort !== "TITLE") {
       query += ", B.TITLE ASC";
     }
@@ -289,6 +292,18 @@ export async function getAvgRatingDB(context) {
 
 export async function getAllLanguagesDB() {
   let query = "SELECT LANGUAGE FROM BOOK GROUP BY LANGUAGE";
+  query += "\nORDER BY LANGUAGE ASC";
+  let result = null;
+  try {
+    result = await queryExecute(query);
+  } catch (e) {
+    return [];
+  }
+  return result.rows;
+}
+
+export async function getRangesDB() {
+  let query = "SELECT MIN(B.NUMBER_OF_PAGES) AS MIN_PAGE, MAX(B.NUMBER_OF_PAGES) AS MAX_PAGE, MIN(E.PUBLISH_YEAR) AS MIN_YEAR, MAX(E.PUBLISH_YEAR) AS MAX_YEAR FROM BOOK B JOIN EDITION E ON (B.ISBN = E.ISBN)";
   query += "\nORDER BY LANGUAGE ASC";
   let result = null;
   try {
@@ -930,7 +945,6 @@ export async function postFavouriteDB(review) {
   }
   return reviewDB;
 }
-
 export async function createBookDB(book) {
   let query = `BEGIN
     SAVEPOINT book_savepoint;
@@ -1111,7 +1125,6 @@ export async function addBookGenreDB(bookGenre) {
   }
   return bookGenre;
 }
-
 export async function updateBookDB(book) {
   let query = `BEGIN
     SAVEPOINT book_savepoint2;

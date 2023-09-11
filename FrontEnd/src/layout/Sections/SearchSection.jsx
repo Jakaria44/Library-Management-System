@@ -281,14 +281,14 @@ const SearchSection = () => {
                   </Avatar>
                 </ButtonBase>
               </Box>
-              <ButtonBase
+              {/* <ButtonBase
                 onClick={searchClickHandler}
                 sx={{ borderRadius: "12px" }}
               >
                 <HeaderAvatarStyle variant="rounded">
                   <SearchOutlinedIcon />
                 </HeaderAvatarStyle>
-              </ButtonBase>
+              </ButtonBase> */}
             </InputAdornment>
           }
           aria-describedby="search-helper-text"

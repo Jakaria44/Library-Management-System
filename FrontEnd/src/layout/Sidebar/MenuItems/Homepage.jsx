@@ -1,13 +1,11 @@
 // assets
 
 import {
-  AccessTime,
   Category,
   DensityMedium,
   Home,
   LocalLibrary,
   PeopleAlt,
-  Person2Outlined,
 } from "@mui/icons-material";
 
 // constant
@@ -35,14 +33,7 @@ const Homepage = {
       icon: <DensityMedium />,
       breadcrumbs: false,
     },
-    {
-      id: "latestbooks",
-      title: "Latest Books",
-      type: "item",
-      url: "/latestbooks",
-      icon: <AccessTime />,
-      breadcrumbs: false,
-    },
+
     {
       id: "categories",
       title: "Categories",

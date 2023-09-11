@@ -225,7 +225,6 @@ export async function acceptApplication(req, res, next) {
   }
 }
 
-
 export async function postBook(req, res, next) {
   try {
     let book = {
@@ -260,7 +259,6 @@ export async function postBook(req, res, next) {
     next(err);
   }
 }
-
 
 export async function addAuthor(req, res, next) {
   try {

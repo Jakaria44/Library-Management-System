@@ -1,81 +1,82 @@
 import bodyParser from 'body-parser';
 import Express from 'express';
-import {verifyAdminToken, verifyGeneralToken, verifyUserToken, verifyEmployeeToken, verifyEmpAdmToken} from '../authentication/auth.js';
+import { verifyAdminToken, verifyEmpAdmToken, verifyGeneralToken, verifyUserToken, verifyEmployeeToken } from '../authentication/auth.js';
 import {
+  deleteApplication,
+  deleteApply,
   deleteAuthor,
   deleteBook,
+  deleteEdition,
+  deleteEmployee,
   deleteGenre,
+  deleteJob,
+  deleteMessage,
   deletePublisher,
   deleteRatRevBook,
-  deleteRequests,
   deleteRequest,
-  deleteMessage,
-  deleteEdition,
+  deleteRequests,
   resignAdmin,
-  deleteEmployee,
-  resignEmployee,
-  deleteJob,
-  deleteApply,
-  deleteApplication
+  resignEmployee
 } from '../controllers/deleteController.js';
 import {
+  getAllBook,
   getAllBookSum,
   getAllLanguages,
+  getAllNews,
   getAllRatRevOfBook,
+  getAllRequests,
+  getAllUsers,
+  getApplication,
   getAuthor,
   getBookDetailsByID,
+  getEdition,
+  getEmployee,
+  getFineData,
   getGenre,
+  getJob,
+  getMyFineHistory,
+  getMyMessages,
+  getMyRentHistory,
+  getMyRequests,
+  getNews,
   getOwnRatRev,
   getPublisher,
-  getUserDetails,
-  getMyRequests,
-  getMyRentHistory,
-  getMyFineHistory,
-  getAllRequests,
-  getRunningFine,
-  getMyMessages,
-  getAllNews,
-  getAllUsers,
-  getEdition,
-  getAllBook,
-  getEmployee,
-  getJob,
-  getApplication,
-  getSearchBar,
-  getNews,
-  getRentHistory,
   getRentData,
-  getFineData
+  getRentHistory,
+  getRunningFine,
+  getSearchBar,
+  getUserDetails,
+  getRanges
 } from '../controllers/getController.js';
-import {loginGeneral, logout, postAdmin, postUser} from '../controllers/loginController.js';
+import { loginGeneral, logout, postAdmin, postUser } from '../controllers/loginController.js';
 import {
-  addAuthor,
-  addGenre,
-  addPublisher,
-  ratrevBook,
-  postFavBook,
-  addRequest,
+  acceptApplication,
   acceptRequest,
-  sendMessage,
-  publishNews,
-  postBook,
-  addEdition,
-  addWrittenBy,
+  addAuthor,
   addBookGenre,
+  addEdition,
+  addGenre,
   addJob,
+  addPublisher,
+  addRequest,
+  addWrittenBy,
   applyForJob,
-  acceptApplication
+  postBook,
+  postFavBook,
+  publishNews,
+  ratrevBook,
+  sendMessage
 } from '../controllers/postController.js';
 import {
   updateAuthor,
   updateBook,
-  updateGenre,
-  updatePublisher,
-  updateUser,
-  updateHistory,
-  updateMessage,
   updateEdition,
-  updateJob
+  updateGenre,
+  updateHistory,
+  updateJob,
+  updateMessage,
+  updatePublisher,
+  updateUser
 } from '../controllers/putController.js';
 
 const router = Express.Router();
@@ -84,34 +85,34 @@ let urlencodedParser = bodyParser.urlencoded({extended: true});
 
 router.route('/book')
   .get(verifyGeneralToken, getBookDetailsByID)
-  .post(verifyEmployeeToken, urlencodedParser, postBook)
-  .put(verifyEmployeeToken, urlencodedParser, updateBook)
-  .delete(verifyEmployeeToken, deleteBook);
+  .post(verifyEmpAdmToken, urlencodedParser, postBook)
+  .put(verifyEmpAdmToken, urlencodedParser, updateBook)
+  .delete(verifyEmpAdmToken, deleteBook);
 router.route('/getEdition')
   .get(verifyGeneralToken, getEdition)
-  .post(verifyEmployeeToken, urlencodedParser, addEdition)
-  .put(verifyEmployeeToken, urlencodedParser, updateEdition)
-  .delete(verifyEmployeeToken, deleteEdition)
+  .post(verifyEmpAdmToken, urlencodedParser, addEdition)
+  .put(verifyEmpAdmToken, urlencodedParser, updateEdition)
+  .delete(verifyEmpAdmToken, deleteEdition)
 router.route('/writtenBy')
-  .post(verifyEmployeeToken, urlencodedParser, addWrittenBy)
+  .post(verifyEmpAdmToken, urlencodedParser, addWrittenBy)
 router.route('/book-genre')
-  .post(verifyEmployeeToken, urlencodedParser, addBookGenre)
+  .post(verifyEmpAdmToken, urlencodedParser, addBookGenre)
 
 router.route('/getPublisher')
   .get(verifyGeneralToken, getPublisher)
-  .post(verifyEmployeeToken, urlencodedParser, addPublisher)
-  .put(verifyEmployeeToken, urlencodedParser, updatePublisher)
-  .delete(verifyEmployeeToken, deletePublisher)
+  .post(verifyEmpAdmToken, urlencodedParser, addPublisher)
+  .put(verifyEmpAdmToken, urlencodedParser, updatePublisher)
+  .delete(verifyEmpAdmToken, deletePublisher)
 router.route('/getAuthor')
   .get(verifyGeneralToken, getAuthor)
-  .post(verifyEmployeeToken, urlencodedParser, addAuthor)
-  .put(verifyEmployeeToken, urlencodedParser, updateAuthor)
-  .delete(verifyEmployeeToken, deleteAuthor)
+  .post(verifyEmpAdmToken, urlencodedParser, addAuthor)
+  .put(verifyEmpAdmToken, urlencodedParser, updateAuthor)
+  .delete(verifyEmpAdmToken, deleteAuthor)
 router.route('/getGenre')
   .get(verifyGeneralToken, getGenre)
-  .post(verifyEmployeeToken, urlencodedParser, addGenre)
-  .put(verifyEmployeeToken, urlencodedParser, updateGenre)
-  .delete(verifyEmployeeToken, deleteGenre)
+  .post(verifyEmpAdmToken, urlencodedParser, addGenre)
+  .put(verifyEmpAdmToken, urlencodedParser, updateGenre)
+  .delete(verifyEmpAdmToken, deleteGenre)
 router.route('/getLanguage').get(verifyGeneralToken, getAllLanguages);
 
 router.route('/user/signup').post(urlencodedParser, postUser);
@@ -139,6 +140,7 @@ router.route('/getJob')
   .put(verifyAdminToken, urlencodedParser, updateJob)
   .delete(verifyAdminToken, deleteJob);
 
+router.route('/getRanges').get(verifyGeneralToken, getRanges);
 router.route('/all-book').get(verifyGeneralToken, getAllBook);
 router.route('/all-books-sum').get(verifyGeneralToken, urlencodedParser, getAllBookSum);
 router.route('/search-bar').get(verifyGeneralToken, urlencodedParser, getSearchBar);
@@ -153,10 +155,10 @@ router.route('/my-rent-history').get(verifyUserToken, getMyRentHistory);
 router.route('/my-fine-history').get(verifyUserToken, getMyFineHistory);
 router.route('/return-book').put(verifyUserToken, urlencodedParser, updateHistory);
 router.route('/all-requests').get(verifyEmpAdmToken, getAllRequests);
-router.route('/handle-request').post(verifyEmployeeToken, urlencodedParser, acceptRequest).delete(verifyEmployeeToken, deleteRequest);
+router.route('/handle-request').post(verifyEmpAdmToken, urlencodedParser, acceptRequest).delete(verifyEmpAdmToken, deleteRequest);
 router.route('/message').post(verifyEmpAdmToken, urlencodedParser, sendMessage).get(verifyUserToken, getMyMessages)
 router.route('/edit-message').put(verifyUserToken, updateMessage).delete(verifyUserToken, deleteMessage);
-router.route('/publish-news').post(verifyEmployeeToken, urlencodedParser, publishNews).get(verifyUserToken, getAllNews)
+router.route('/publish-news').post(verifyEmpAdmToken, urlencodedParser, publishNews).get(verifyUserToken, getAllNews)
 router.route('/show-news').get(verifyGeneralToken, getNews);
 router.route('/all-fine').get(verifyEmpAdmToken, getRunningFine);
 router.route('/all-rent').get(verifyEmpAdmToken, getRentHistory);

@@ -60,7 +60,7 @@ const DueList = () => {
         START_DATE: TimeFormat(item.START_DATE),
         PAYMENT_DATE: item.PAYMENT_DATE ? TimeFormat(item.PAYMENT_DATE) : "-",
         STATUS: item.PAYMENT_DATE ? 1 : 0,
-        FEE_AMOUNT: item.FEE_AMOUNT.toFixed(3),
+        FEE_AMOUNT: '$ '+item.FEE_AMOUNT.toFixed(3),
       }));
       console.log(data);
       setRows(data);
@@ -148,7 +148,7 @@ const DueList = () => {
             headerName: "Payment Date",
             width: 200,
           },
-          { field: "FEE_AMOUNT", headerName: "Amount (Tk)", width: 150 },
+          { field: "FEE_AMOUNT", headerName: "Amount", width: 150 },
           {
             field: "STATUS",
             headerName: "Status",

@@ -74,7 +74,7 @@ const Structure = () => {
         enableColorOnDark
         position="fixed"
         color="inherit"
-        elevation={0}
+        elevation={10}
         sx={{
           bgcolor: theme.palette.background.default,
           transition: menuOpened.opened
