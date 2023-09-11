@@ -5,6 +5,7 @@ import {
   CalendarMonth,
   Category,
   ConfirmationNumber,
+  Edit,
   Language,
   LocalLibrary,
   OpenInNew,
@@ -274,7 +275,7 @@ const TitleAndCoverPage = ({ book, editions }) => {
               ))}
             </Select>
           </Typography>
-          {book.FAVOURITE && (
+          {book.FAVOURITE != 0 && (
             <Typography
               variant="h3"
               style={{ marginTop: "16px", marginLeft: "16px" }}
@@ -318,6 +319,19 @@ const TitleAndCoverPage = ({ book, editions }) => {
                   Preview
                 </Button>
               </a>
+            )}
+            {(localStorage.getItem("role") == "admin" ||
+              localStorage.getItem("role") == "employee") && (
+              <Link to={"/editbook/" + book.ISBN}>
+                <Button
+                  startIcon={<Edit />}
+                  variant="contained"
+                  color="primary"
+                  style={{ margin: "8px" }}
+                >
+                  Edit Book
+                </Button>
+              </Link>
             )}
           </div>
         </Paper>
