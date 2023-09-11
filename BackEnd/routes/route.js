@@ -1,6 +1,6 @@
 import bodyParser from 'body-parser';
 import Express from 'express';
-import { verifyAdminToken, verifyEmpAdmToken, verifyEmployeeToken, verifyGeneralToken, verifyUserToken } from '../authentication/auth.js';
+import { verifyAdminToken, verifyEmpAdmToken, verifyGeneralToken, verifyUserToken, verifyEmployeeToken } from '../authentication/auth.js';
 import {
   deleteApplication,
   deleteApply,
@@ -45,7 +45,8 @@ import {
   getRentHistory,
   getRunningFine,
   getSearchBar,
-  getUserDetails
+  getUserDetails,
+  getRanges
 } from '../controllers/getController.js';
 import { loginGeneral, logout, postAdmin, postUser } from '../controllers/loginController.js';
 import {
@@ -139,6 +140,7 @@ router.route('/getJob')
   .put(verifyAdminToken, urlencodedParser, updateJob)
   .delete(verifyAdminToken, deleteJob);
 
+router.route('/getRanges').get(verifyGeneralToken, getRanges);
 router.route('/all-book').get(verifyGeneralToken, getAllBook);
 router.route('/all-books-sum').get(verifyGeneralToken, urlencodedParser, getAllBookSum);
 router.route('/search-bar').get(verifyGeneralToken, urlencodedParser, getSearchBar);

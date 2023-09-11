@@ -1,4 +1,4 @@
-import { ChevronRight } from "@mui/icons-material";
+import {ChevronRight} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -8,29 +8,50 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import {useEffect, useState} from "react";
+import {Link} from "react-router-dom";
 import server from "./../HTTP/httpCommonParam";
 import BookCard from "./../pages/allbooks/BookCard.jsx";
 import TimeFormat from "./../utils/TimeFormat";
+
 const Home = () => {
   return (
     <>
-      <Welcome />
-      <NewsList />
+      <Welcome/>
+      <NewsList/>
       {/* <TopRated /> */}
-      <About />
+      <About/>
 
-      <Paper sx={{ padding: 3, marginY: 3 }}>
+      <Paper sx={{padding: 3, marginY: 3}}>
+        <Typography textAlign="center" variant="h3" gutterBottom>
+          Contributed By
+        </Typography>
         <Grid container direction="row" alignItems="center">
           <Grid item xs>
-            <Typography textAlign="center" variant="body1" gutterBottom>
-              Contributed by:
-              <br />
-              Ahmmad Nur Swapnil
-              <br />
-              Md. Jakaria Hossain
+            <Typography textAlign="left" variant="body2" gutterBottom>
+              <b>FRONTEND</b><br/>Name: Md. Jakaria Hossain<br/>Student ID: 2005026<br/>Email: mdjakaria442020@gmail.com
             </Typography>
+            <Grid container direction="row" justifyContent="flex-start">
+              <img src="https://avatars.githubusercontent.com/Jakaria44" alt="GitHub Avatar" width="20" height="20"
+                   style={{marginRight: '8px'}}/>
+              <Typography textAlign="left" variant="body2" gutterBottom
+                          onMouseOver={() => window.open("https://github.com/Jakaria44")} style={{cursor: "pointer"}}>
+                <b>GitHub Link</b>
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid item xs>
+            <Typography textAlign="right" variant="body2" gutterBottom>
+              <b>BACKEND</b><br/>Name: Ahmmad Nur Swapnil<br/>Student ID: 2005009<br/>Email: a.n.swapnil2003@gmail.com
+            </Typography>
+            <Grid container direction="row" justifyContent="flex-end">
+              <img src="https://avatars.githubusercontent.com/AN-SWAPNIL" alt="GitHub Avatar" width="20" height="20"
+                   style={{marginRight: '8px'}}/>
+              <Typography textAlign="right" variant="body2" gutterBottom
+                          onMouseOver={() => window.open("https://github.com/AN-SWAPNIL")} style={{cursor: "pointer"}}>
+                <b>GitHub Link</b>
+              </Typography>
+            </Grid>
           </Grid>
         </Grid>
       </Paper>
@@ -46,7 +67,7 @@ const About = () => {
       <Typography variant="h2" textAlign="center" gutterBottom>
         About This Library
       </Typography>
-      <Paper sx={{ padding: 3, marginY: 3 }}>
+      <Paper sx={{padding: 3, marginY: 3}}>
         <Box>
           <Typography variant="h3" gutterBottom>
             For Readers
@@ -66,7 +87,7 @@ const About = () => {
           </Typography>
         </Box>
       </Paper>
-      <Paper sx={{ padding: 3, marginY: 3 }}>
+      <Paper sx={{padding: 3, marginY: 3}}>
         <Box>
           <Typography variant="h3" gutterBottom>
             For Employees
@@ -86,10 +107,10 @@ const About = () => {
           </Typography>
         </Box>
       </Paper>
-      <Paper sx={{ padding: 3, marginY: 3 }}>
+      <Paper sx={{padding: 3, marginY: 3}}>
         <Box>
           <Typography variant="h3" gutterBottom>
-            For Admins:
+            For Admins
           </Typography>
           <Typography ml={2} variant="subtitle1">
             Admins play a pivotal role in BookBreeze, overseeing all aspects of
@@ -147,7 +168,7 @@ const TopRated = () => {
         <Grid container spacing={2}>
           {topRated?.map((book, index) => (
             <Grid item key={index}>
-              <BookCard book={book} />
+              <BookCard book={book}/>
             </Grid>
           ))}
           <Grid margin="auto" item xs>
@@ -227,7 +248,7 @@ const Welcome = () => {
           </Box>
         </Box>
 
-        <Box style={{ marginTop: 80, marginBottom: 40 }}>
+        <Box style={{marginTop: 80, marginBottom: 40}}>
           <div
             style={{
               display: "flex",
@@ -238,9 +259,9 @@ const Welcome = () => {
           >
             <Button
               component={Link}
-              to="/signin"
+              to="/allbooks"
               variant="outlined"
-              endIcon={<ChevronRight />}
+              endIcon={<ChevronRight/>}
             >
               Get Started
             </Button>
@@ -268,7 +289,7 @@ const NewsList = () => {
   }, []);
 
   return (
-    <Paper sx={{ padding: 3, marginY: 3 }}>
+    <Paper sx={{padding: 3, marginY: 3}}>
       <h1>Latest News</h1>
       <div className="container">
         {allnews.slice(0, 2).map((news) => (

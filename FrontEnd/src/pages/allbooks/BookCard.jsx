@@ -242,6 +242,7 @@ const BookCard = ({ book }) => {
         /> */}
         <ImageListItem cols={1} rows={2}>
           <img
+            onMouseEnter={handleMouseEnter}
             style={{ height: 240, maxWidth: 150, margin: "auto" }}
             src={book.IMAGE}
             alt={book.TITLE}

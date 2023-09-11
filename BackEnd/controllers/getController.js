@@ -24,7 +24,8 @@ import {
   getSearchBarDB,
   getRentHistoryDB,
   getRentDataDB,
-  getFineDataDB
+  getFineDataDB,
+  getRangesDB
 } from "../Database/queryFunctions.js";
 
 
@@ -199,6 +200,20 @@ export async function getAllLanguages(req, res, next) {
 
     if (rows.length > 0) {
       res.status(200).json(rows);
+    } else {
+      res.status(404).json({message: "No Data Found"});
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getRanges(req, res, next) {
+  try {
+    const rows = await getRangesDB();
+
+    if (rows.length > 0) {
+      res.status(200).json(rows[0]);
     } else {
       res.status(404).json({message: "No Data Found"});
     }

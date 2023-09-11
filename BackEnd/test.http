@@ -24,15 +24,15 @@ Content-Type: application/json
 POST http://localhost:3000/db-api/user/login
 Content-Type: application/json
 
-{
-  "email": "ryangeorge@gmail.com",
-  "password": "ryanMonster300"
-}
-
 # {
-#   "email": "mdjakaria442020@gmail.com",
-#   "password": "Jakaria63"
+#   "email": "ryangeorge@gmail.com",
+#   "password": "ryanMonster300"
 # }
+
+{
+  "email": "mdjakaria442020@gmail.com",
+  "password": "Jakaria63"
+}
 
 # {
 #   "email": "a.n.swapnil2003@gmail.com",
@@ -1194,3 +1194,7 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEU
     "DATA": "[{\"MONTH\":\"01\",\"FINE_COUNT\":19,\"PAYMENT_COUNT\":1},{\"MONTH\":\"02\",\"FINE_COUNT\":11,\"PAYMENT_COUNT\":2},{\"MONTH\":\"03\",\"FINE_COUNT\":23,\"PAYMENT_COUNT\":1},{\"MONTH\":\"04\",\"FINE_COUNT\":24,\"PAYMENT_COUNT\":0},{\"MONTH\":\"05\",\"FINE_COUNT\":18,\"PAYMENT_COUNT\":2},{\"MONTH\":\"06\",\"FINE_COUNT\":26,\"PAYMENT_COUNT\":0},{\"MONTH\":\"07\",\"FINE_COUNT\":13,\"PAYMENT_COUNT\":1},{\"MONTH\":\"08\",\"FINE_COUNT\":25,\"PAYMENT_COUNT\":1},{\"MONTH\":\"09\",\"FINE_COUNT\":9,\"PAYMENT_COUNT\":2}]"
   }
 ]
+
+
+#### ----GET RANGES ----
+GET http://localhost:3000/db-api/getRanges

@@ -184,7 +184,7 @@ const JobApplications = () => {
             headerName: "Action",
             type: "actions",
             getActions: (params) => [
-              <Tooltip title="Promote to Admin">
+              <Tooltip title="Accept Application">
                 <GridActionsCellItem
                   icon={<ArrowUpwardRounded />}
                   label="Approve"
@@ -192,7 +192,7 @@ const JobApplications = () => {
                   onClick={handlePromoteRequest(params.row)}
                 />
               </Tooltip>,
-              <Tooltip title="Delete Employee">
+              <Tooltip title="Delete Application">
                 <GridActionsCellItem
                   icon={<DeleteForever />}
                   label="Delete"

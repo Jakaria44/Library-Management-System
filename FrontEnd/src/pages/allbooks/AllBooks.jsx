@@ -1,4 +1,4 @@
-import { ArrowCircleDown, ArrowCircleUp } from "@mui/icons-material";
+import {ArrowCircleDown, ArrowCircleUp} from "@mui/icons-material";
 import {
   Box,
   FormControl,
@@ -12,17 +12,28 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import {useEffect, useMemo, useState} from "react";
 import server from "./../../HTTP/httpCommonParam";
 import BooksList from "./BooksList";
 import Filters from "./Filters";
+
 export const sortOptions = [
-  { query: "TITLE", name: "Title" },
-  { query: "PAGE", name: "Number of Page" },
-  { query: "RATING", name: "Rating" },
-  { query: "FAVOURITE", name: "Most Favourite" },
-  { query: "PUBLISH_YEAR", name: "Latest" },
+  {query: "TITLE", name: "Title"},
+  {query: "PAGE", name: "Number of Page"},
+  {query: "RATING", name: "Rating"},
+  {query: "FAVOURITE", name: "Most Favourite"},
+  {query: "PUBLISH_YEAR", name: "Latest"},
 ];
+
+
+let maxPage = 5000, minYear = 1000, maxYear = new Date().getFullYear(), minPage = 0;
+let res = await server.get("/getRanges");
+console.log(res.data);
+minPage = parseInt(res.data.MIN_PAGE);
+maxPage = parseInt(res.data.MAX_PAGE);
+minYear = parseInt(res.data.MIN_YEAR);
+maxYear = parseInt(res.data.MAX_YEAR);
+
 export const defaultQueryOptions = {
   perPage: 20,
   page: 1,
@@ -35,14 +46,14 @@ export const defaultQueryOptions = {
   PUBLISHER_ID: null,
   AUTHOR_ID: null,
   GENRE_ID: null,
-  PAGE_START: 0,
-  PAGE_END: 2040,
-  YEAR_START: 1970,
-  YEAR_END: 2023,
+  PAGE_START: minPage,
+  PAGE_END: maxPage,
+  YEAR_START: minYear,
+  YEAR_END: maxYear,
   RATING_START: 0,
   RATING_END: 5,
 };
-const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
+const AllBooks = ({queries = defaultQueryOptions, title = "All Books"}) => {
   const theme = useTheme();
   const matchesXs = useMediaQuery(theme.breakpoints.down("sm"));
   const [queryOptions, setQueryOptions] = useState(defaultQueryOptions);
@@ -53,8 +64,8 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
   // const count = Math.ceil(total / queryOptions.perPage);
   const count = useMemo(() => total, [total]);
   const handleChange = (e, p) => {
-    setQueryOptions({ queries, page: p });
-    loadAllBooks({ queries, page: p });
+    setQueryOptions({queries, page: p});
+    loadAllBooks({queries, page: p});
   };
   useEffect(() => {
     loadAllBooks(queries);
@@ -62,7 +73,7 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
   const loadAllBooks = async (queryOptions = queries) => {
     setLoading(true);
     try {
-      const res = await server.get("/all-books-sum", { params: queryOptions });
+      const res = await server.get("/all-books-sum", {params: queryOptions});
       console.log("res");
       setTotal(res.data.totalPages);
       console.log(res.data.rows);
@@ -96,7 +107,7 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
         justifyContent="space-between"
         alignItems={matchesXs ? "center" : "center"} // Align items differently on small devices
       >
-        <Box flexGrow={1} />
+        <Box flexGrow={1}/>
         <Box>
           <Typography
             variant="h2"
@@ -118,7 +129,7 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
             justifyContent: "flex-end",
           }}
         >
-          <Box flexGrow={10} />
+          <Box flexGrow={10}/>
           <Box paddingRight={1}>
             <Typography variant="subtitle1">Sort by</Typography>
           </Box>
@@ -128,8 +139,8 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
                 id="demo-simple-select"
                 value={queryOptions.sort}
                 onChange={(e) => {
-                  setQueryOptions({ ...queryOptions, sort: e.target.value });
-                  loadAllBooks({ ...queryOptions, sort: e.target.value });
+                  setQueryOptions({...queryOptions, sort: e.target.value});
+                  loadAllBooks({...queryOptions, sort: e.target.value});
                 }}
               >
                 {sortOptions.map((item, index) => (
@@ -144,8 +155,8 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
             <Tooltip title="Ascending">
               <IconButton
                 onClick={() => {
-                  setQueryOptions({ ...queryOptions, order: "ASC" });
-                  loadAllBooks({ ...queryOptions, order: "ASC" });
+                  setQueryOptions({...queryOptions, order: "ASC"});
+                  loadAllBooks({...queryOptions, order: "ASC"});
                 }}
                 color={queryOptions.order === "ASC" ? "success" : "inherit"}
               >
@@ -157,8 +168,8 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
             <Tooltip title="Descending">
               <IconButton
                 onClick={() => {
-                  setQueryOptions({ ...queryOptions, order: "DESC" });
-                  loadAllBooks({ ...queryOptions, order: "DESC" });
+                  setQueryOptions({...queryOptions, order: "DESC"});
+                  loadAllBooks({...queryOptions, order: "DESC"});
                 }}
                 color={queryOptions.order === "DESC" ? "success" : "inherit"}
               >
@@ -171,9 +182,9 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
         </Box>
       </Box>
       <Grid container spacing={2}>
-        <Filters queries={queries} loadAllBooks={loadAllBooks} />
+        <Filters queries={queries} loadAllBooks={loadAllBooks}/>
         {/* <React.Suspense fallback={<SpinnerWithBackdrop backdropOpen={true} helperText='Loading books. Plase wait'/>}> */}
-        <BooksList data={data.map((e) => e)} loading={loading} />
+        <BooksList data={data.map((e) => e)} loading={loading}/>
         {/* </React.Suspense> */}
         {/* <SignupDialog /> */}
         {/* <SignupDialog
@@ -193,7 +204,7 @@ const AllBooks = ({ queries = defaultQueryOptions, title = "All Books" }) => {
         }}
       >
         <Pagination
-          sx={{ margin: "auto" }}
+          sx={{margin: "auto"}}
           // showFirstButton
           // showLastButton
           count={count}

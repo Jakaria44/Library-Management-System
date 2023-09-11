@@ -1,73 +1,73 @@
 DECLARE
-    st NUMBER;
+  st NUMBER;
 BEGIN
-    SELECT MAX(TO_NUMBER(user_id)) + 1 INTO st FROM "USER";
-    EXECUTE IMMEDIATE 'drop sequence user_seq';
-    EXECUTE IMMEDIATE 'CREATE SEQUENCE user_seq START WITH ' || st || ' INCREMENT BY 1';
+  SELECT MAX(TO_NUMBER(user_id)) + 1 INTO st FROM "USER";
+	EXECUTE IMMEDIATE 'drop sequence user_seq';
+  EXECUTE IMMEDIATE 'CREATE SEQUENCE user_seq START WITH ' || st || ' INCREMENT BY 1';
 END;
 /
 DECLARE
-    st NUMBER;
+  st NUMBER;
 BEGIN
-    SELECT MAX(TO_NUMBER(rent_history_id)) + 1 INTO st FROM rent_history;
-    EXECUTE IMMEDIATE 'drop sequence history_seq';
-    EXECUTE IMMEDIATE 'CREATE SEQUENCE history_seq START WITH ' || st || ' INCREMENT BY 1';
+  SELECT MAX(TO_NUMBER(rent_history_id)) + 1 INTO st FROM rent_history;
+	EXECUTE IMMEDIATE 'drop sequence history_seq';
+  EXECUTE IMMEDIATE 'CREATE SEQUENCE history_seq START WITH ' || st || ' INCREMENT BY 1';
 END;
 /
 DECLARE
-    st NUMBER;
+  st NUMBER;
 BEGIN
-    SELECT MAX(TO_NUMBER(message_id)) + 1 INTO st FROM message;
-    EXECUTE IMMEDIATE 'drop sequence msg_seq';
-    EXECUTE IMMEDIATE 'CREATE SEQUENCE msg_seq START WITH ' || st || ' INCREMENT BY 1';
+  SELECT MAX(TO_NUMBER(message_id)) + 1 INTO st FROM message;
+	EXECUTE IMMEDIATE 'drop sequence msg_seq';
+  EXECUTE IMMEDIATE 'CREATE SEQUENCE msg_seq START WITH ' || st || ' INCREMENT BY 1';
 END;
 /
 DECLARE
-    st NUMBER;
+  st NUMBER;
 BEGIN
-    SELECT MAX(TO_NUMBER(news_id)) + 1 INTO st FROM news;
-    EXECUTE IMMEDIATE 'drop sequence news_seq';
-    EXECUTE IMMEDIATE 'CREATE SEQUENCE news_seq START WITH ' || st || ' INCREMENT BY 1';
+  SELECT MAX(TO_NUMBER(news_id)) + 1 INTO st FROM news;
+	EXECUTE IMMEDIATE 'drop sequence news_seq';
+  EXECUTE IMMEDIATE 'CREATE SEQUENCE news_seq START WITH ' || st || ' INCREMENT BY 1';
 END;
 /
 DECLARE
-    st NUMBER;
+  st NUMBER;
 BEGIN
-    SELECT MAX(TO_NUMBER(genre_id)) + 1 INTO st FROM genre;
-    EXECUTE IMMEDIATE 'drop sequence genre_seq';
-    EXECUTE IMMEDIATE 'CREATE SEQUENCE genre_seq START WITH ' || st || ' INCREMENT BY 1';
+  SELECT MAX(TO_NUMBER(genre_id)) + 1 INTO st FROM genre;
+	EXECUTE IMMEDIATE 'drop sequence genre_seq';
+  EXECUTE IMMEDIATE 'CREATE SEQUENCE genre_seq START WITH ' || st || ' INCREMENT BY 1';
 END;
 /
 DECLARE
-    st NUMBER;
+  st NUMBER;
 BEGIN
-    SELECT MAX(TO_NUMBER(author_id)) + 1 INTO st FROM author;
-    EXECUTE IMMEDIATE 'drop sequence author_seq';
-    EXECUTE IMMEDIATE 'CREATE SEQUENCE author_seq START WITH ' || st || ' INCREMENT BY 1';
+  SELECT MAX(TO_NUMBER(author_id)) + 1 INTO st FROM author;
+	EXECUTE IMMEDIATE 'drop sequence author_seq';
+  EXECUTE IMMEDIATE 'CREATE SEQUENCE author_seq START WITH ' || st || ' INCREMENT BY 1';
 END;
 /
 DECLARE
-    st NUMBER;
+  st NUMBER;
 BEGIN
-    SELECT MAX(TO_NUMBER(publisher_id)) + 1 INTO st FROM publisher;
-    EXECUTE IMMEDIATE 'drop sequence publisher_seq';
-    EXECUTE IMMEDIATE 'CREATE SEQUENCE publisher_seq START WITH ' || st || ' INCREMENT BY 1';
+  SELECT MAX(TO_NUMBER(publisher_id)) + 1 INTO st FROM publisher;
+	EXECUTE IMMEDIATE 'drop sequence publisher_seq';
+  EXECUTE IMMEDIATE 'CREATE SEQUENCE publisher_seq START WITH ' || st || ' INCREMENT BY 1';
 END;
 /
 DECLARE
-    st NUMBER;
+  st NUMBER;
 BEGIN
-    SELECT MAX(TO_NUMBER(edition_id)) + 1 INTO st FROM edition;
-    EXECUTE IMMEDIATE 'drop sequence edition_seq';
-    EXECUTE IMMEDIATE 'CREATE SEQUENCE edition_seq START WITH ' || st || ' INCREMENT BY 1';
+  SELECT MAX(TO_NUMBER(edition_id)) + 1 INTO st FROM edition;
+	EXECUTE IMMEDIATE 'drop sequence edition_seq';
+  EXECUTE IMMEDIATE 'CREATE SEQUENCE edition_seq START WITH ' || st || ' INCREMENT BY 1';
 END;
 /
 DECLARE
-    st NUMBER;
+  st NUMBER;
 BEGIN
-    SELECT MAX(TO_NUMBER(job_id)) + 1 INTO st FROM job;
-    EXECUTE IMMEDIATE 'drop sequence job_seq';
-    EXECUTE IMMEDIATE 'CREATE SEQUENCE job_seq START WITH ' || st || ' INCREMENT BY 1';
+  SELECT MAX(TO_NUMBER(job_id)) + 1 INTO st FROM job;
+	EXECUTE IMMEDIATE 'drop sequence job_seq';
+  EXECUTE IMMEDIATE 'CREATE SEQUENCE job_seq START WITH ' || st || ' INCREMENT BY 1';
 END;
 /
 
@@ -130,9 +130,8 @@ END ;
 /
 
 CREATE OR REPLACE TRIGGER trg_publisher_default_image
-    BEFORE INSERT
-    ON PUBLISHER
-    FOR EACH ROW
+BEFORE INSERT ON PUBLISHER
+FOR EACH ROW
 BEGIN
     IF :NEW.Image IS NULL THEN
         :NEW.Image := 'https://ds.rokomari.store/rokomari110/company/publisher.png';
@@ -141,22 +140,19 @@ END;
 /
 
 CREATE OR REPLACE TRIGGER trg_author_default_image
-    BEFORE INSERT
-    ON AUTHOR
-    FOR EACH ROW
+BEFORE INSERT ON AUTHOR
+FOR EACH ROW
 BEGIN
     IF :NEW.Image IS NULL THEN
-        :NEW.Image :=
-                'https://previews.123rf.com/images/anatolir/anatolir1712/anatolir171201476/91832679-man-avatar-icon-flat-illustration-of-man-avatar-vector-icon-isolated-on-white-background.jpg';
+        :NEW.Image := 'https://previews.123rf.com/images/anatolir/anatolir1712/anatolir171201476/91832679-man-avatar-icon-flat-illustration-of-man-avatar-vector-icon-isolated-on-white-background.jpg';
     END IF;
 END;
 /
 
 
 CREATE OR REPLACE TRIGGER trg_user_default_image
-    BEFORE INSERT
-    ON "USER"
-    FOR EACH ROW
+BEFORE INSERT ON "USER"
+FOR EACH ROW
 BEGIN
     IF :NEW.Image IS NULL THEN
         :NEW.Image := 'https://img.freepik.com/free-icon/user_318-159711.jpg';
@@ -165,13 +161,11 @@ END;
 /
 
 CREATE OR REPLACE TRIGGER trg_book_default_image
-    BEFORE INSERT
-    ON BOOK
-    FOR EACH ROW
+BEFORE INSERT ON BOOK
+FOR EACH ROW
 BEGIN
     IF :NEW.Image IS NULL THEN
-        :NEW.Image :=
-                'https://st2.depositphotos.com/5703046/12114/i/950/depositphotos_121142344-stock-photo-white-book-on-white-background.jpg';
+        :NEW.Image := 'https://st2.depositphotos.com/5703046/12114/i/950/depositphotos_121142344-stock-photo-white-book-on-white-background.jpg';
     END IF;
 END;
 /
@@ -180,7 +174,7 @@ END;
 CREATE OR REPLACE FUNCTION IS_VALID_UPDATE_USER(
     P_USER_ID IN VARCHAR2,
     P_EMAIL IN VARCHAR2) RETURN BOOLEAN IS
-    COUNTER  NUMBER;
+    COUNTER NUMBER;
     COUNTER2 NUMBER;
 BEGIN
     SELECT COUNT(*) INTO COUNTER FROM "USER" WHERE USER_ID = P_USER_ID;
@@ -213,13 +207,13 @@ BEGIN
     IF (IS_VALID_UPDATE_USER(A_USER_ID, A_EMAIL)) THEN
         UPDATE "USER"
         SET FIRST_NAME = A_FIRST_NAME,
-            LAST_NAME  = A_LAST_NAME,
-            ADDRESS    = A_ADDRESS,
-            EMAIL      = A_EMAIL,
+            LAST_NAME = A_LAST_NAME,
+            ADDRESS = A_ADDRESS,
+            EMAIL = A_EMAIL,
             CONTACT_NO = A_CONTACT_NO,
-            IMAGE      = A_IMAGE,
-            GENDER     = A_GENDER,
-            PASSWORD   = A_PASSWORD
+            IMAGE = A_IMAGE,
+            GENDER = A_GENDER,
+            PASSWORD = A_PASSWORD
         WHERE USER_ID = A_USER_ID;
     ELSE
         raise_application_error(-20111, 'USER CANNOT BE UPDATED');
@@ -307,7 +301,7 @@ BEGIN
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
         INSERT INTO REQUEST(USER_ID, EDITION_ID, REQUEST_DATE) VALUES (U_ID, E_ID, SYSDATE);
-    WHEN OTHERS THEN
+		WHEN OTHERS THEN
         RAISE_APPLICATION_ERROR(-20002, 'An error occurred.');
 END;
 /
@@ -349,15 +343,15 @@ END;
 /
 
 BEGIN
-    DBMS_SCHEDULER.DROP_JOB('UPDATE_FINE_HISTORY_JOB');
-    DBMS_SCHEDULER.create_job(
-            job_name => 'UPDATE_FINE_HISTORY_JOB',
-            job_type => 'PLSQL_BLOCK',
-            job_action => 'BEGIN update_fine_history; END;',
-            start_date => SYSTIMESTAMP,
-            repeat_interval => 'FREQ=HOURLY; INTERVAL=24', -- Run every 24 hours
-            enabled => TRUE
-        );
+		DBMS_SCHEDULER.DROP_JOB('UPDATE_FINE_HISTORY_JOB');
+    DBMS_SCHEDULER.create_job (
+        job_name        => 'UPDATE_FINE_HISTORY_JOB',
+        job_type        => 'PLSQL_BLOCK',
+        job_action      => 'BEGIN update_fine_history; END;',
+        start_date      => SYSTIMESTAMP,
+        repeat_interval => 'FREQ=HOURLY; INTERVAL=24', -- Run every 24 hours
+        enabled         => TRUE
+    );
 END;
 /
 
@@ -425,8 +419,7 @@ BEGIN
     INTO ID
     FROM RENT_HISTORY
     WHERE Rent_History_ID = A_ID
-      AND USER_ID = U_ID
-      AND STATUS = 0;
+      AND USER_ID = U_ID AND STATUS = 0;
     SELECT COUNT(*)
     INTO COUNTER
     FROM FINE_HISTORY
@@ -442,8 +435,8 @@ BEGIN
         END IF;
     END IF;
     UPDATE RENT_HISTORY
-    SET Status      = 1,
-        RETURN_DATE = SYSDATE
+    SET Status = 1,
+			RETURN_DATE = SYSDATE
     WHERE Rent_History_ID = A_ID;
     UPDATE EDITION
     SET NUM_OF_COPIES = NUM_OF_COPIES + 1
@@ -484,12 +477,21 @@ end;
 CREATE OR REPLACE PROCEDURE UPDATE_MESSAGE(U_ID IN VARCHAR2, M_ID IN VARCHAR2) IS
 ID VARCHAR2(100);
 BEGIN
-	SELECT MESSAGE_ID INTO ID
-	FROM MESSAGE
-	WHERE MESSAGE_ID = M_ID AND USER_ID = U_ID;
-	UPDATE MESSAGE
-	SET Seen = 1
-	WHERE MESSAGE_ID = M_ID;
+	IF M_ID IS NOT NULL THEN
+		SELECT MESSAGE_ID INTO ID
+		FROM MESSAGE
+		WHERE MESSAGE_ID = M_ID AND USER_ID = U_ID;
+		UPDATE MESSAGE
+		SET Seen = 1
+		WHERE MESSAGE_ID = M_ID;
+	ELSE
+		FOR R IN (SELECT MESSAGE_ID FROM MESSAGE WHERE USER_ID = U_ID)
+        LOOP
+            UPDATE MESSAGE
+            SET Seen = 1
+            WHERE MESSAGE_ID = R.MESSAGE_ID;
+        END LOOP;
+	END IF;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
         RAISE_APPLICATION_ERROR(-20002, 'DOES NOT EXIST');
@@ -523,7 +525,7 @@ end;
 /
 
 CREATE OR REPLACE PROCEDURE DELETE_MESSAGE(U_ID IN VARCHAR2, M_ID IN VARCHAR2) IS
-    ID VARCHAR2(20);
+ID VARCHAR2(20);
 BEGIN
     SELECT MESSAGE_ID
     INTO ID
@@ -843,14 +845,14 @@ END;
 /
 
 CREATE OR REPLACE FUNCTION IS_VALID_DELETE_AUTHOR(A_ID IN VARCHAR2) RETURN BOOLEAN IS
-    COUNTER  NUMBER;
-    COUNTER2 NUMBER;
+    COUNTER NUMBER;
+		COUNTER2 NUMBER;
 BEGIN
     SELECT COUNT(*)
     INTO COUNTER
     FROM WRITTEN_BY
     WHERE AUTHOR_ID = A_ID;
-    SELECT COUNT(*)
+		SELECT COUNT(*)
     INTO COUNTER2
     FROM AUTHOR
     WHERE AUTHOR_ID = A_ID;
@@ -878,19 +880,19 @@ END;
 /
 
 CREATE OR REPLACE FUNCTION IS_VALID_DELETE_PUBLISHER(P_ID IN VARCHAR2) RETURN BOOLEAN IS
-    COUNTER  NUMBER;
-    COUNTER2 NUMBER;
+    COUNTER NUMBER;
+		COUNTER2 NUMBER;
 BEGIN
     SELECT COUNT(*)
     INTO COUNTER
     FROM BOOK
     WHERE PUBLISHER_ID = P_ID;
-    SELECT COUNT(*)
+		SELECT COUNT(*)
     INTO COUNTER2
     FROM PUBLISHER
     WHERE PUBLISHER_ID = P_ID;
     IF
-        (COUNTER = 0 AND COUNTER2 > 0) THEN
+        (COUNTER = 0 AND COUNTER2>0) THEN
         RETURN TRUE;
     ELSE
         RETURN FALSE;
@@ -912,14 +914,14 @@ END;
 /
 
 CREATE OR REPLACE FUNCTION IS_VALID_DELETE_GENRE(G_ID IN VARCHAR2) RETURN BOOLEAN IS
-    COUNTER  NUMBER;
-    COUNTER2 NUMBER;
+    COUNTER NUMBER;
+		COUNTER2 NUMBER;
 BEGIN
     SELECT COUNT(*)
     INTO COUNTER
     FROM BOOK_GENRE
     WHERE GENRE_ID = G_ID;
-    SELECT COUNT(*)
+		SELECT COUNT(*)
     INTO COUNTER2
     FROM GENRE
     WHERE GENRE_ID = G_ID;
@@ -1021,24 +1023,19 @@ CREATE OR REPLACE FUNCTION IS_VALID_EDITION(A_EDITION_ID VARCHAR2, A_EDITION_NUM
     COUNTER2 NUMBER;
     A_ISBN   VARCHAR2(20);
 BEGIN
-    SELECT ISBN
-    INTO A_ISBN
-    FROM EDITION
+    SELECT ISBN INTO A_ISBN FROM EDITION
     WHERE EDITION_ID = A_EDITION_ID;
-    SELECT COUNT(*)
-    INTO COUNTER
-    FROM EDITION
-    WHERE ISBN = A_ISBN
-      AND EDITION_ID <> A_EDITION_ID
+    SELECT COUNT(*) INTO COUNTER FROM EDITION
+    WHERE ISBN = A_ISBN AND EDITION_ID <> A_EDITION_ID
       AND EDITION_NUM = A_EDITION_NUM;
     IF
         COUNTER = 0 THEN
         SELECT COUNT(*)
         INTO COUNTER2
         FROM EDITION
-        WHERE ISBN = A_ISBN
-          AND ((EDITION_NUM < A_EDITION_NUM AND PUBLISH_YEAR > A_PUBLISH_YEAR) OR
-               (EDITION_NUM > A_EDITION_NUM AND PUBLISH_YEAR < A_PUBLISH_YEAR));
+        WHERE ISBN = A_ISBN AND
+				((EDITION_NUM < A_EDITION_NUM AND PUBLISH_YEAR > A_PUBLISH_YEAR) OR
+				(EDITION_NUM > A_EDITION_NUM AND PUBLISH_YEAR < A_PUBLISH_YEAR));
         IF COUNTER2 = 0 THEN
             RETURN TRUE;
         ELSE
@@ -1054,7 +1051,7 @@ CREATE OR REPLACE PROCEDURE UPDATE_EDITION(A_EDITION_ID VARCHAR2,
                                            A_EDITION_NUM NUMBER,
                                            A_NUM_OF_COPIES NUMBER,
                                            A_PUBLISH_YEAR NUMBER) IS
-    YEAR NUMBER(4);
+    YEAR   NUMBER(4);
 BEGIN
     SELECT PUBLISH_YEAR
     INTO YEAR
@@ -1088,7 +1085,7 @@ END ;
 
 
 CREATE OR REPLACE PROCEDURE DELETE_EDITION(E_ID IN VARCHAR2) IS
-    ID      VARCHAR2(100);
+    ID VARCHAR2(100);
     COUNTER NUMBER;
 BEGIN
     SELECT ISBN
@@ -1188,23 +1185,23 @@ END;
 
 CREATE OR REPLACE PROCEDURE DELETE_WRITTEN_BY(B_ISBN IN VARCHAR2) IS
 BEGIN
-    DELETE
-    FROM WRITTEN_BY
-    WHERE ISBN = B_ISBN;
+		DELETE
+		FROM WRITTEN_BY
+		WHERE ISBN = B_ISBN;
 EXCEPTION
     WHEN OTHERS THEN
-        RAISE_APPLICATION_ERROR(-20001, 'SOME ERROR OCCURRED');
+        RAISE_APPLICATION_ERROR(-20001,'SOME ERROR OCCURRED');
 END;
 /
 
 CREATE OR REPLACE PROCEDURE DELETE_BOOK_GENRE(B_ISBN IN VARCHAR2) IS
 BEGIN
-    DELETE
-    FROM BOOK_GENRE
-    WHERE ISBN = B_ISBN;
+   	DELETE
+		FROM BOOK_GENRE
+		WHERE ISBN = B_ISBN;
 EXCEPTION
     WHEN OTHERS THEN
-        RAISE_APPLICATION_ERROR(-20001, 'SOME ERROR OCCURRED');
+        RAISE_APPLICATION_ERROR(-20001,'SOME ERROR OCCURRED');
 END;
 /
 
@@ -1286,9 +1283,9 @@ BEGIN
     IF
         IS_VALID_ADMIN_INSERT(A_ID) THEN
         INSERT INTO ADMIN (USER_ID) VALUES (A_ID);
-        DELETE
-        FROM APPLY
-        WHERE USER_ID = A_ID;
+				DELETE
+				FROM APPLY
+				WHERE USER_ID = A_ID;
     ELSE
         raise_application_error(-20111, 'USER DOES NOT EXIST');
     END IF;
@@ -1335,7 +1332,7 @@ CREATE OR REPLACE PROCEDURE INSERT_JOB(A_JOB_TITLE VARCHAR2, A_SALARY NUMBER) IS
 BEGIN
     IF
         (IS_VALID_INSERT_JOB(A_JOB_TITLE)) THEN
-        IF A_SALARY < 0 THEN
+				IF A_SALARY < 0 THEN
             RAISE_APPLICATION_ERROR(-20001, 'Salary must be positive');
         end if;
         INSERT INTO JOB(JOB_TITLE, SALARY)
@@ -1434,22 +1431,6 @@ END;
 /
 
 
--- CREATE OR REPLACE PROCEDURE INSERT_BOOK(A_ISBN VARCHAR2,
---                                         A_TITLE VARCHAR2,
---                                         A_IMAGE VARCHAR2,
---                                         A_NUMBER_OF_PAGES NUMBER,
---                                         A_LANGUAGE VARCHAR2,
---                                         A_DESCRIPTION VARCHAR2,
---                                         A_PUBLISHER_ID VARCHAR2) IS
--- BEGIN
---     INSERT INTO BOOK(ISBN, TITLE, IMAGE, NUMBER_OF_PAGES, LANGUAGE, DESCRIPTION, PUBLISHER_ID)
---     VALUES (A_ISBN, A_TITLE, A_IMAGE, A_NUMBER_OF_PAGES, A_LANGUAGE, A_DESCRIPTION, A_PUBLISHER_ID);
--- EXCEPTION
---     WHEN OTHERS THEN
---         raise_application_error(-20111, 'ISBN NOT UNIQUE/ SOME DATA IS WRONG');
--- END;
--- /
-
 CREATE OR REPLACE PROCEDURE INSERT_BOOK(A_ISBN VARCHAR2,
                                         A_TITLE VARCHAR2,
                                         A_IMAGE VARCHAR2,
@@ -1497,36 +1478,7 @@ EXCEPTION
     WHEN OTHERS THEN
         raise_application_error(-20111, 'SOME DATA IS WRONG');
 END;
--- /
-
--- CREATE OR REPLACE PROCEDURE UPDATE_BOOK(A_ISBN VARCHAR2,
---                                         A_TITLE VARCHAR2,
---                                         A_IMAGE VARCHAR2,
---                                         A_NUMBER_OF_PAGES NUMBER,
---                                         A_LANGUAGE VARCHAR2,
---                                         A_DESCRIPTION VARCHAR2,
---                                         A_PUBLISHER_ID VARCHAR2) IS
---     F_ISBN VARCHAR2(20);
--- BEGIN
---     SELECT ISBN
---     INTO F_ISBN
---     FROM BOOK
---     WHERE ISBN = A_ISBN;
---     UPDATE BOOK
---     SET TITLE=A_TITLE,
---         IMAGE=A_IMAGE,
---         NUMBER_OF_PAGES=A_NUMBER_OF_PAGES,
---         LANGUAGE=A_LANGUAGE,
---         DESCRIPTION=A_DESCRIPTION,
---         PUBLISHER_ID=A_PUBLISHER_ID
---     WHERE ISBN = A_ISBN;
--- EXCEPTION
---     WHEN NO_DATA_FOUND THEN
---         raise_application_error(-20111, 'DOESNOT EXISTS');
---     WHEN OTHERS THEN
---         raise_application_error(-20111, 'SOME DATA IS WRONG');
--- END;
--- /
+/
 
 CREATE OR REPLACE FUNCTION IS_VALID_INSERT_EMPLOYEE(A_USER_ID VARCHAR2)
     RETURN BOOLEAN IS
@@ -1548,7 +1500,7 @@ END;
 /
 
 CREATE OR REPLACE PROCEDURE INSERT_EMPLOYEE(A_USER_ID VARCHAR2, A_JOB_ID VARCHAR2) IS
-    ID VARCHAR2(50);
+ID VARCHAR2(50);
 BEGIN
     SELECT USER_ID
     INTO ID
