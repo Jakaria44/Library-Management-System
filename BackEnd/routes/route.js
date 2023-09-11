@@ -1,69 +1,80 @@
 import bodyParser from 'body-parser';
 import Express from 'express';
-import { verifyAdminToken, verifyGeneralToken, verifyUserToken } from '../authentication/auth.js';
+import { verifyAdminToken, verifyEmpAdmToken, verifyGeneralToken, verifyUserToken, verifyEmployeeToken } from '../authentication/auth.js';
 import {
-  deleteAllBooksBookshelf,
+  deleteApplication,
+  deleteApply,
   deleteAuthor,
   deleteBook,
-  deleteBookOfBookshelf,
-  deleteBookshelf,
+  deleteEdition,
+  deleteEmployee,
   deleteGenre,
+  deleteJob,
+  deleteMessage,
   deletePublisher,
   deleteRatRevBook,
-  deleteRequests
+  deleteRequest,
+  deleteRequests,
+  resignAdmin,
+  resignEmployee
 } from '../controllers/deleteController.js';
 import {
-  getAllAuthors,
-  getAllAwards,
-  getAllBinds,
+  getAllBook,
   getAllBookSum,
-  getAllGenre,
   getAllLanguages,
-  getAllPublishers,
+  getAllNews,
   getAllRatRevOfBook,
+  getAllRequests,
+  getAllUsers,
+  getApplication,
   getAuthor,
-  getAuthorBooks,
-  getAvgRating,
-  getBookByTitle,
   getBookDetailsByID,
-  getBooksFromBookshelf,
-  getBookshelves,
-  getCompleteBook,
+  getEdition,
+  getEmployee,
+  getFineData,
   getGenre,
-  getGenreBook,
+  getJob,
+  getMyFineHistory,
+  getMyMessages,
+  getMyRentHistory,
+  getMyRequests,
+  getNews,
   getOwnRatRev,
   getPublisher,
-  getPublisherBooks,
-  getRating,
-  getRecentBook,
-  getTopBook,
+  getRentData,
+  getRentHistory,
+  getRunningFine,
+  getSearchBar,
   getUserDetails,
-  getUserRatedBooks,
-  getUserReviewedBooks,
-  getMyRequests,
-  getMyRentHistory,
-  getMyFineHistory
+  getRanges
 } from '../controllers/getController.js';
-import { decodeToken, loginGeneral, logout, postAdmin, postUser } from '../controllers/loginController.js';
+import { loginGeneral, logout, postAdmin, postUser } from '../controllers/loginController.js';
 import {
+  acceptApplication,
+  acceptRequest,
   addAuthor,
-  addBook,
+  addBookGenre,
+  addEdition,
   addGenre,
+  addJob,
   addPublisher,
-  advanceSearch,
-  bookToBookshelf,
-  rateBook,
-  ratrevBook,
-  searchedBook,
+  addRequest,
+  addWrittenBy,
+  applyForJob,
+  postBook,
   postFavBook,
-  updateUserDetails,
-  addRequest
+  publishNews,
+  ratrevBook,
+  sendMessage
 } from '../controllers/postController.js';
 import {
-  updateAdmin,
   updateAuthor,
   updateBook,
+  updateEdition,
   updateGenre,
+  updateHistory,
+  updateJob,
+  updateMessage,
   updatePublisher,
   updateUser
 } from '../controllers/putController.js';
@@ -72,93 +83,87 @@ const router = Express.Router();
 router.use(Express.json());
 let urlencodedParser = bodyParser.urlencoded({extended: true});
 
+router.route('/book')
+  .get(verifyGeneralToken, getBookDetailsByID)
+  .post(verifyEmpAdmToken, urlencodedParser, postBook)
+  .put(verifyEmpAdmToken, urlencodedParser, updateBook)
+  .delete(verifyEmpAdmToken, deleteBook);
+router.route('/getEdition')
+  .get(verifyGeneralToken, getEdition)
+  .post(verifyEmpAdmToken, urlencodedParser, addEdition)
+  .put(verifyEmpAdmToken, urlencodedParser, updateEdition)
+  .delete(verifyEmpAdmToken, deleteEdition)
+router.route('/writtenBy')
+  .post(verifyEmpAdmToken, urlencodedParser, addWrittenBy)
+router.route('/book-genre')
+  .post(verifyEmpAdmToken, urlencodedParser, addBookGenre)
 
-router.route('/book').get(verifyGeneralToken,getBookDetailsByID);
-router.route('/all-books-sum').get(verifyGeneralToken,getAllBookSum);
-router.route('/user/signup').post(urlencodedParser,postUser);
+router.route('/getPublisher')
+  .get(verifyGeneralToken, getPublisher)
+  .post(verifyEmpAdmToken, urlencodedParser, addPublisher)
+  .put(verifyEmpAdmToken, urlencodedParser, updatePublisher)
+  .delete(verifyEmpAdmToken, deletePublisher)
+router.route('/getAuthor')
+  .get(verifyGeneralToken, getAuthor)
+  .post(verifyEmpAdmToken, urlencodedParser, addAuthor)
+  .put(verifyEmpAdmToken, urlencodedParser, updateAuthor)
+  .delete(verifyEmpAdmToken, deleteAuthor)
+router.route('/getGenre')
+  .get(verifyGeneralToken, getGenre)
+  .post(verifyEmpAdmToken, urlencodedParser, addGenre)
+  .put(verifyEmpAdmToken, urlencodedParser, updateGenre)
+  .delete(verifyEmpAdmToken, deleteGenre)
+router.route('/getLanguage').get(verifyGeneralToken, getAllLanguages);
+
+router.route('/user/signup').post(urlencodedParser, postUser);
 router.route('/user/login').post(urlencodedParser, loginGeneral);
 router.route('/user/update').put(verifyUserToken, urlencodedParser, updateUser);
+router.route('/user/details').get(verifyUserToken, getUserDetails);
+router.route('/all-users').get(verifyEmpAdmToken, getAllUsers);
+router.route('/admin/signup').post(verifyAdminToken, urlencodedParser, postAdmin);
+router.route('/admin/resign').delete(verifyAdminToken, resignAdmin);
 
-router.route('/admin/signup').post(urlencodedParser, postAdmin);
+router.route('/employee/resign').delete(verifyEmployeeToken, resignEmployee);
+router.route('/employee')
+  .get(verifyAdminToken, getEmployee)
+  .delete(verifyAdminToken, deleteEmployee);
+router.route('/apply')
+  .post(verifyUserToken, urlencodedParser, applyForJob)
+  .delete(verifyUserToken, deleteApply);
+router.route('/application')
+  .get(verifyAdminToken, getApplication)
+  .post(verifyAdminToken, urlencodedParser, acceptApplication)
+  .delete(verifyAdminToken, deleteApplication);
+router.route('/getJob')
+  .get(verifyUserToken, getJob)
+  .post(verifyAdminToken, urlencodedParser, addJob)
+  .put(verifyAdminToken, urlencodedParser, updateJob)
+  .delete(verifyAdminToken, deleteJob);
+
+router.route('/getRanges').get(verifyGeneralToken, getRanges);
+router.route('/all-book').get(verifyGeneralToken, getAllBook);
+router.route('/all-books-sum').get(verifyGeneralToken, urlencodedParser, getAllBookSum);
+router.route('/search-bar').get(verifyGeneralToken, urlencodedParser, getSearchBar);
 router.route('/all-rat-rev').get(verifyGeneralToken, getAllRatRevOfBook);
-router.route('/edit-favourite').post(verifyGeneralToken, urlencodedParser, postFavBook);
-router.route('/getPublisher').get(getPublisher);
-router.route('/getAuthor').get(getAuthor);
-router.route('/rate-review').post(verifyGeneralToken, urlencodedParser, ratrevBook).get(verifyGeneralToken, getOwnRatRev);
-router.route('/del-rate-review').delete(verifyGeneralToken, deleteRatRevBook)
-router.route('/my-requests').get(verifyGeneralToken, getMyRequests);
-router.route('/request').post(verifyGeneralToken, urlencodedParser, addRequest);
-router.route('/del-requests').delete(verifyGeneralToken, deleteRequests);
-router.route('/my-rent-history').get(verifyGeneralToken, getMyRentHistory);
-router.route('/my-fine-history').get(verifyGeneralToken, getMyFineHistory);
-
-router.route('/book/title').get(getBookByTitle);
-router.route('/topBooks').get(getTopBook);
-router.route('/recentBooks').get(getRecentBook);
-router.route('/avg-rating').get(getAvgRating);
-
-
-router.route('/user/details').get(verifyUserToken, getUserDetails).post(verifyUserToken, urlencodedParser, updateUserDetails);
-
-// router.route('/book').get(verifyGeneralToken, getBook).post(verifyAdminToken, urlencodedParser, postBook);
-router.route('/all-authors').get(getAllAuthors);
-router.route('/all-publishers').get(getAllPublishers);
-router.route('/get-all-genre').get(getAllGenre);
-
-///////////////////////
-router.route('/getGenre').get(verifyGeneralToken, getGenre);
-router.route('/complete-book').get(verifyGeneralToken, getCompleteBook);
-router.route('/search-book').post(verifyUserToken, urlencodedParser, searchedBook);
-router.route('/getGenreBook/:name?').get(verifyUserToken, getGenreBook);
-// router.route('/user/signup').post(urlencodedParser, postUser);
-// router.route('/employee/signup').post(urlencodedParser, postEmployee);
-// router.route('/general/login').post(urlencodedParser, loginGeneral);
-// router.route('/user/login').post(urlencodedParser, loginUser);
-// router.route('/admin/login').post(urlencodedParser, loginAdmin);
-// router.route('/employee/login').post(urlencodedParser, loginEmployee);
-
-router.route('/decode').get(verifyGeneralToken, decodeToken);
-router.route('/logout').get(verifyGeneralToken, logout);
-router.route('/bookshelves').get(verifyUserToken, getBookshelves);
-router.route('/book-bookshelf').post(verifyUserToken, urlencodedParser, bookToBookshelf).get(verifyUserToken, getBooksFromBookshelf);
-// router.route('/create-bookshelf').post(verifyUserToken, urlencodedParser, createBookshelf);
-router.route('/rate').post(verifyUserToken, urlencodedParser, rateBook).get(verifyUserToken, getRating);
-// router.route('/review').post(verifyUserToken, urlencodedParser, reviewBook).get(verifyUserToken, getOwnReview);
-router.route('/get-all-awards').get(verifyGeneralToken, getAllAwards);
-router.route('/get-all-languages').get(verifyUserToken, getAllLanguages);
-router.route('/get-all-binds').get(verifyUserToken, getAllBinds);
-router.route('/advance-search').post(verifyUserToken, urlencodedParser, advanceSearch);
-router.route('/del-book-bookshelf').delete(verifyUserToken, deleteBookOfBookshelf);
-router.route('/del-all-books-bookshelf').delete(verifyUserToken, deleteAllBooksBookshelf);
-router.route('/del-bookshelf').delete(verifyUserToken, deleteBookshelf);
-// router.route('/rename-bookshelf').put(verifyUserToken, urlencodedParser, renameBookshelf);
-
-router.route('/addBook').post(verifyAdminToken, urlencodedParser, addBook);
-router.route('/updateBook').put(verifyAdminToken, urlencodedParser, updateBook);
-router.route('/deleteBook').delete(verifyAdminToken, deleteBook);
-
-
-router.route('/addAuthor').post(verifyAdminToken, urlencodedParser, addAuthor);
-router.route('/addPublisher').post(verifyAdminToken, urlencodedParser, addPublisher);
-router.route('/addGenre').post(verifyAdminToken, urlencodedParser, addGenre);
-
-router.route('/updatePublisher').put(verifyAdminToken, urlencodedParser, updatePublisher);
-router.route('/updateAuthor').put(verifyAdminToken, urlencodedParser, updateAuthor);
-router.route('/updateGenre').put(verifyAdminToken, urlencodedParser, updateGenre);
-
-router.route('/deleteGenre').delete(verifyAdminToken, deleteGenre);
-router.route('/deletePublisher').delete(verifyAdminToken, deletePublisher);
-router.route('/deleteAuthor').delete(verifyAdminToken, deleteAuthor);
-
-router.route('/getAuthorBooks').get(verifyGeneralToken, getAuthorBooks);
-router.route('/getPublisherBooks').get(verifyGeneralToken, getPublisherBooks);
-router.route('/getUserRatedBooks').get(verifyUserToken, getUserRatedBooks);
-router.route('/getUserReviewedBooks').get(verifyUserToken, getUserReviewedBooks);
-
-
-router.route('/updateUser').put(verifyUserToken, urlencodedParser, updateUser);
-
-router.route('/updateAdmin').put(verifyAdminToken, urlencodedParser, updateAdmin);
-
+router.route('/edit-favourite').post(verifyUserToken, urlencodedParser, postFavBook);
+router.route('/rate-review').post(verifyUserToken, urlencodedParser, ratrevBook).get(verifyUserToken, getOwnRatRev);
+router.route('/del-rate-review').delete(verifyUserToken, deleteRatRevBook)
+router.route('/my-requests').get(verifyUserToken, getMyRequests);
+router.route('/request').post(verifyUserToken, urlencodedParser, addRequest);
+router.route('/del-requests').delete(verifyUserToken, deleteRequests);
+router.route('/my-rent-history').get(verifyUserToken, getMyRentHistory);
+router.route('/my-fine-history').get(verifyUserToken, getMyFineHistory);
+router.route('/return-book').put(verifyUserToken, urlencodedParser, updateHistory);
+router.route('/all-requests').get(verifyEmpAdmToken, getAllRequests);
+router.route('/handle-request').post(verifyEmpAdmToken, urlencodedParser, acceptRequest).delete(verifyEmpAdmToken, deleteRequest);
+router.route('/message').post(verifyEmpAdmToken, urlencodedParser, sendMessage).get(verifyUserToken, getMyMessages)
+router.route('/edit-message').put(verifyUserToken, updateMessage).delete(verifyUserToken, deleteMessage);
+router.route('/publish-news').post(verifyEmpAdmToken, urlencodedParser, publishNews).get(verifyUserToken, getAllNews)
+router.route('/show-news').get(verifyGeneralToken, getNews);
+router.route('/all-fine').get(verifyEmpAdmToken, getRunningFine);
+router.route('/all-rent').get(verifyEmpAdmToken, getRentHistory);
+router.route('/rent-data').get(verifyAdminToken, getRentData);
+router.route('/fine-data').get(verifyAdminToken, getFineData);
+router.route('/logout').get(verifyUserToken, logout);
 
 export default router;

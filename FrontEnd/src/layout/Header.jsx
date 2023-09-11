@@ -6,7 +6,7 @@ import { useTheme } from "@mui/material/styles";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import DarkModeSwitch from "../component/DarkModeSwitch.jsx";
 import { useMyTheme } from "../contexts/ThemeContextProvider.jsx";
-import LogoSection from "./Sections/LogoSection.jsx";
+import Notification from "./Sections/Notification.jsx";
 import ProfileSection from "./Sections/ProfileSection.jsx";
 import SearchSection from "./Sections/SearchSection.jsx";
 
@@ -29,16 +29,19 @@ const Header = ({ handleLeftDrawerToggle }) => {
           },
         }}
       >
-        <ButtonBase sx={{ borderRadius: "12px", overflow: "hidden" }}>
+        <ButtonBase disableRipple>
           <Avatar
-            variant="rounded"
-            sx={{
-              ...theme.typography.commonAvatar,
-              ...theme.typography.mediumAvatar,
-            }}
             onClick={handleLeftDrawerToggle}
+            variant="circular"
+            // sx={{
+            //   ...theme.typography.commonAvatar,
+            //   ...theme.typography.mediumAvatar,
+            // }}
           >
-            <MenuRoundedIcon fontSize="medium" />
+            <MenuRoundedIcon
+              // onClick={handleLeftDrawerToggle}
+              fontSize="medium"
+            />
           </Avatar>
         </ButtonBase>
         <Box
@@ -46,7 +49,24 @@ const Header = ({ handleLeftDrawerToggle }) => {
           marginLeft="16px"
           sx={{ display: { xs: "none", md: "block" }, flexGrow: 1 }}
         >
-          <LogoSection />
+          {/* <ButtonBase disableRipple>
+            <Typography variant="h3" component="div" my={2}>
+              CSE Library
+            </Typography>
+          </ButtonBase> */}
+          {theme.palette.mode == "light" ? (
+            <img
+              src="./../../public/LibraryLogo2.png"
+              alt="Book Breeze"
+              width="100"
+            />
+          ) : (
+            <img
+              src="./../../public/LibraryLogo.png"
+              alt="Book Breeze"
+              width="100"
+            />
+          )}
         </Box>
       </Box>
 
@@ -73,6 +93,8 @@ const Header = ({ handleLeftDrawerToggle }) => {
         </Avatar> */}
         <DarkModeSwitch />
       </Box>
+      <Box sx={{ flexGrow: 1 }} />
+      <Notification />
       <Box sx={{ flexGrow: 1 }} />
 
       <ProfileSection />

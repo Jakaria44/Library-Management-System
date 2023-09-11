@@ -12,7 +12,7 @@ import { Stack } from "@mui/system";
 import LogoSection from "../Sections/LogoSection";
 import MenuList from "./MenuList/MenuList";
 
-const drawerWidth = 280;
+import { drawerWidth } from "./../../store/constants";
 // ==============================|| SIDEBAR DRAWER ||============================== //
 
 const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
@@ -59,6 +59,7 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
 
   return (
     <Box
+      elevation={4}
       component="nav"
       sx={{ flexShrink: { md: 0 }, width: matchUpMd ? drawerWidth : "auto" }}
       aria-label="mailbox folders"

@@ -12,6 +12,12 @@ export default function themePalette(theme, mode) {
         },
         ...(mode === 'light'
             ? {
+                success: {
+                    light: theme.colors?.successLight,
+                    200: theme.colors?.success200,
+                    main: theme.colors?.successDarker,
+                    dark: theme.colors?.successDark,
+                },
                   primary: {
                       light: theme.colors?.primaryLight,
                       main: theme.colors?.primaryMain,
@@ -42,10 +48,16 @@ export default function themePalette(theme, mode) {
                   itemHover: theme.colors?.primaryLight,
               }
             : {
+                success: {
+                    light: theme.colors?.successLight,
+                    200: theme.colors?.success200,
+                    main: theme.colors?.successMain,
+                    dark: theme.colors?.successDark,
+                },
                   primary: {
                       light: theme.colors?.primaryLight,
-                      main: theme.colors?.primaryLight,
-                      dark: theme.colors?.primaryDark,
+                      dark: theme.colors?.primaryLight,
+                      main: theme.colors?.primaryDark,
                       200: theme.colors?.primary200,
                       800: theme.colors?.primary800,
                   },
@@ -92,12 +104,7 @@ export default function themePalette(theme, mode) {
             main: theme.colors?.warningMain,
             dark: theme.colors?.warningDark,
         },
-        success: {
-            light: theme.colors?.successLight,
-            200: theme.colors?.success200,
-            main: theme.colors?.successMain,
-            dark: theme.colors?.successDark,
-        },
+        
         error: {
             light: theme.colors?.errorLight,
             main: theme.colors?.errorMain,

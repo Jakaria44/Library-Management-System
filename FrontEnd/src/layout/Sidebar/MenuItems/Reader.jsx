@@ -7,6 +7,7 @@ import {
   Favorite,
   ReceiptLongSharp,
   Reviews,
+  Work,
 } from "@mui/icons-material";
 
 // constant
@@ -26,22 +27,7 @@ const Reader = {
       icon: <AccountCircle />,
       breadcrumbs: false,
     },
-    {
-      id: "favourites",
-      title: "Favourites",
-      type: "item",
-      url: "/favourites",
-      icon: <Favorite />,
-      breadcrumbs: false,
-    },
-    {
-      id: "reviews",
-      title: "My Reviews",
-      type: "item",
-      url: "/reviews",
-      icon: <Reviews />,
-      breadcrumbs: false,
-    },
+
     {
       id: "applications",
       title: "My Applications",
@@ -64,6 +50,14 @@ const Reader = {
       type: "item",
       url: "/duelist",
       icon: <ReceiptLongSharp />,
+      breadcrumbs: false,
+    },
+    {
+      id: "joblist",
+      title: "Job list",
+      type: "item",
+      url: "/joblist",
+      icon: <Work />,
       breadcrumbs: false,
     },
   ],

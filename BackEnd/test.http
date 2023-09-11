@@ -1,69 +1,14 @@
-##### ----GET All Books (sorted) ----
-GET http://localhost:3000/db-api/all-books-sum?sort=TITLE&order=DESC
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
-###OUTPUT
-[
-  {
-    "ISBN": "9781408894743",
-    "TITLE": "Harry Potter and the Deathly Hallows",
-    "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/Harry_Potter_and_the_Deathly_Hallows_(Se-J.K_Rowling-699a7-122325.jpg",
-    "PUBLISH_YEAR": 2007,
-    "PAGE": 608,
-    "LANGUAGE": "English",
-    "AUTHORS": "J. K. Rowling",
-    "RATING": 5,
-    "PUBLISHER": "Bloomsbury Publishing",
-    "FAVOURITE": 1,
-    "IS_FAVOURITE": 1
-  },
-  {
-    "ISBN": "9781408855652",
-    "TITLE": "Harry Potter and the Philosophers Stone",
-    "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/4cf25a33d8a4_86392.gif",
-    "PUBLISH_YEAR": 1997,
-    "PAGE": 352,
-    "LANGUAGE": "English",
-    "AUTHORS": "J. K. Rowling",
-    "RATING": 5,
-    "PUBLISHER": "Bloomsbury Publishing",
-    "FAVOURITE": 1,
-    "IS_FAVOURITE": 1
-  }
-]
-
-#### ----GET Single Book ----
-GET http://localhost:3000/db-api/book?id=9781408894743
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzMTY5Nzk2LCJleHAiOjE2OTMyNTYxOTZ9.Fql8neO8fVLw7dsjh-0aWrkzqBTPzkFK1_Rh8eCMuSE
-###OUTPUT
-{
-  "ISBN": "9781408855652",
-  "AUTHOR": "[{\"NAME\":\"J. K. Rowling\",\"ID\":\"1\"}]",
-  "GENRE": "[{\"NAME\":\"Fantasy\",\"ID\":\"1\"}]",
-  "EDITION": "[{\"ID\":\"1\",\"NUM\":1,\"COUNT\":3,\"YEAR\":1997},{\"ID\":\"2\",\"NUM\":2,\"COUNT\":3,\"YEAR\":1999}]",
-  "PUBLISHER_ID": "1",
-  "PUBLISHER_NAME": "Bloomsbury Publishing",
-  "TITLE": "Harry Potter and the Philosophers Stone",
-  "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/4cf25a33d8a4_86392.gif",
-  "PUBLISH_YEAR": 1997,
-  "PAGE": 352,
-  "LANGUAGE": "English",
-  "RATING": 4.5,
-  "FAVOURITE": 0,
-  "DESCRIPTION": "Harry Potter discovers he's a wizard on his eleventh birthday and is invited to attend Hogwarts School of Witchcraft and Wizardry. There, he makes friends, learns magic, and uncovers the mystery of the Sorcerer's Stone.",
-  "IS_FAVOURITE": 0
-}
-
 #### ----POST user ----
 POST http://localhost:3000/db-api/user/signup
 Content-Type: application/json
 
 {
-  "firstName": "jake",
-  "lastName": "paul",
+  "firstName": "Ahmmad Nur",
+  "lastName": "Swapnil",
   "image": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
   "address": "Ney York, USA",
-  "email": "abcd@gmail.com",
-  "password": "abcd",
+  "email": "a.n.swapnil2003@gmail.com",
+  "password": "Ans2003",
   "contactNo": "01712345678",
   "gender": "M"
 }
@@ -80,24 +25,19 @@ POST http://localhost:3000/db-api/user/login
 Content-Type: application/json
 
 # {
-#   "email": "abcd@gmail.com",
-#   "password": "abcd"
-# }
-
-# {
 #   "email": "ryangeorge@gmail.com",
 #   "password": "ryanMonster300"
 # }
 
-# {
-#   "email": "mdjakaria442020@gmail.com",
-#   "password": "Jakaria63"
-# }
-
 {
-  "email": "a.n.swapnil2003@gmail.com",
-  "password": "Ans2003"
+  "email": "mdjakaria442020@gmail.com",
+  "password": "Jakaria63"
 }
+
+# {
+#   "email": "a.n.swapnil2003@gmail.com",
+#   "password": "Ans2003"
+# }
 
 ###OUTPUT
 {
@@ -106,32 +46,8 @@ Content-Type: application/json
   "role": "user"
 }
 
-#### ----POST admin ----
-POST http://localhost:3000/db-api/admin/signup
-Content-Type: application/json
-
-{
-  "firstName": "jake",
-  "lastName": "paul",
-  "image": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
-  "address": "Ney York, USA",
-  "email": "abcd@gmail.com",
-  "password": "abcd",
-  "contactNo": "01712345678",
-  "gender": "M"
-}
-
-###OUTPUT
-{
-  "auth": true,
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMjMiLCJST0xFIjoiYWRtaW4iLCJpYXQiOjE2OTMxNDc3ODIsImV4cCI6MTY5MzIzNDE4Mn0.ukuIJVJYITXw5m7JRuiI2mVc5S66qdCYFAR8Srn_mq4",
-  "role": "admin"
-}
-
 #### ----GET ALL-RAT-REV of BOOK----
-GET http://localhost:3000/db-api/all-rat-rev?id=9781408855652
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
-
+GET http://localhost:3000/db-api/all-rat-rev?id=9780521256032
 ###output
 {
   "allRatRev": [
@@ -158,18 +74,19 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 
 #### --- Edit Favourite -----
 POST http://localhost:3000/db-api/edit-favourite?id=9781408855652
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
-
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzMjM2MjQxLCJleHAiOjE2OTMzMjI2NDF9.QMslOdWoHKW7Ldw_E1d2Dj4L1aQ9J_34BNoj-0UW8yY
 ###OUTPUT
 {
   "IS_FAVOURITE": false
 }
 
-#### --- GET AUTHOR ---
+#for all, don't give any parameter
+#### --- GET one/all AUTHOR ---
 GET http://localhost:3000/db-api/getAuthor?aid=1
 
 ###OUTPUT
 {
+  "AUTHOR_ID": "1",
   "NAME": "J. K. Rowling",
   "DOB": "1965-07-30T18:00:00.000Z",
   "DOD": "1990-12-29T18:00:00.000Z",
@@ -178,18 +95,28 @@ GET http://localhost:3000/db-api/getAuthor?aid=1
   "IMAGE": "https://ds.rokomari.store/rokomari110/people/6ed601ea2b54_2559.png"
 }
 
-#### --- GET PUBLISHER ---
-GET http://localhost:3000/db-api/getPublisher?pid=1
+#### --- GET one/all PUBLISHER ---
+GET http://localhost:3000/db-api/getPublisher
 
 ###OUTPUT
 {
+  "PUBLISHER_ID": "1",
   "NAME": "Bloomsbury Publishing",
-  "POSTAL_CODE": "WC1B 3DP",
+  "IMAGE": "https://media-exp1.licdn.com/dms/image/C4E0BAQEDkPybVXr47Q/company-logo_200_200/0/1544531682586?e=2159024400&v=beta&t=JjAs9ok_PwgXA9CFsXKm3bt6fjbFI4N7SZRn4ajOUVg",
   "CITY": "London",
   "COUNTRY": "England",
+  "POSTAL_CODE": "WC1B 3DP",
   "CONTACT_NO": "+44 (0)20 7631 5600",
-  "EMAIL": "contact@bloomsbury.com",
-  "IMAGE": "https://media-exp1.licdn.com/dms/image/C4E0BAQEDkPybVXr47Q/company-logo_200_200/0/1544531682586?e=2159024400&v=beta&t=JjAs9ok_PwgXA9CFsXKm3bt6fjbFI4N7SZRn4ajOUVg"
+  "EMAIL": "contact@bloomsbury.com"
+}
+
+#### --- GET one/all GENRE ---
+GET http://localhost:3000/db-api/getGenre?gid=1
+
+###OUTPUT
+{
+  "GENRE_ID": "1",
+  "GENRE_NAME": "Fantasy"
 }
 
 #### --- Update User ---
@@ -273,7 +200,8 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUi
 
 #### ----GET ALL MY REQUESTS----
 GET http://localhost:3000/db-api/my-requests?sort=EDITION_NUM&order=ASC
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5NDA4ODQ2NywiZXhwIjoxNzY2MDg4NDY3fQ.zo8ezxZJzh_aKFTuVGlg7tSxt59hVHQTTWSrXSekUWA
+
 ###OUTPUT
 [
   {
@@ -294,11 +222,11 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 
 #### ---ADD REQUEST----
 POST http://localhost:3000/db-api/request
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzMjE3NzM1LCJleHAiOjE2OTMzMDQxMzV9.D2yRA5ju45IT1ikJhsKKvN8n_lTfE7Rd7anXIBbzmUc
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzMjU1NDQxLCJleHAiOjE2OTMzNDE4NDF9.Kt_ry0BAfQ_Fk7VIFKf4ssyrUq7tmLnPptp4oMt4M70
 Content-Type: application/json
 
 {
-  "EDITION_ID": "1"
+  "EDITION_ID": "7"
   
 }
 
@@ -309,20 +237,20 @@ Content-Type: application/json
 
 #### ---DELETE REQUEST----
 DELETE http://localhost:3000/db-api/del-requests
-x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzMjU1NDQxLCJleHAiOjE2OTMzNDE4NDF9.Kt_ry0BAfQ_Fk7VIFKf4ssyrUq7tmLnPptp4oMt4M70
 Content-Type: application/json
 
 {
-  "Editions" : ["5", "8", "11"]
+  "Editions" : ["5", "6", "7"]
 }
 
 ###OUTPUT
-# 5 and 11 exist. 8 does not exist. only 5 deleted
+# ALL WIILL BE DELETED, EXCEPT WHICH IS NOT IN THE TABLE
 {
   "message": "Does not Exist"
 }
 
-#### ----GET RENT_HISTORY----
+#### ----GET my RENT_HISTORY----
 GET http://localhost:3000/db-api/my-rent-history?sort=STATUS&order=DESC
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzE0Njc3NiwiZXhwIjoxNjkzMjMzMTc2fQ.wdH5OLx2W3H6i1K86o4dMs16p4hP4XkGY0FDeccxYbg
 
@@ -361,7 +289,7 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 ]
 
 
-#### ----GET FINE_HISTORY----
+#### ----GET my FINE_HISTORY----
 GET http://localhost:3000/db-api/my-fine-history
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzIxNTgzOCwiZXhwIjoxNjkzMzAyMjM4fQ.rFEEmdv_2ranW11_QfAo4MZiR9W5ms15aUL3HHJADL8
 
@@ -378,3 +306,895 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
     "FEE_AMOUNT": -0.7028923611111111
   }
 ]
+
+#### ----GET ALL REQUESTS----
+GET http://localhost:3000/db-api/all-requests?sort=NUM_OF_COPIES&order=DESC
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQwODQ0NCwiZXhwIjoxNjkzNDk0ODQ0fQ.cO8wITeKKR_J_IOh6dyJqa3Jz6lsKpSC6ug8A99q87g
+###OUTPUT
+[
+  {
+    "NAME": "Ahmmad Nur Swapnil",
+    "USER_ID": "3",
+    "EMAIL": "a.n.swapnil2003@gmail.com",
+    "ISBN": "9781408855652",
+    "TITLE": "Harry Potter and the Philosophers Stone",
+    "EDITION_ID": "1",
+    "EDITION_NUM": 1,
+    "NUM_OF_COPIES": 99,
+    "REQUEST_DATE": "1900-12-31T18:06:40.000Z"
+  },
+  {
+    "NAME": "Ryan George",
+    "USER_ID": "1",
+    "EMAIL": "ryangeorge@gmail.com",
+    "ISBN": "9780439785969",
+    "TITLE": "Harry Potter and the Half-Blood Prince",
+    "EDITION_ID": "9",
+    "EDITION_NUM": 1,
+    "NUM_OF_COPIES": 2,
+    "REQUEST_DATE": "2023-08-27T20:38:14.000Z"
+  }
+]
+
+#### ----GET ACCEPT REQUESTS----
+POST http://localhost:3000/db-api/handle-request
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzI0ODM2NCwiZXhwIjoxNjkzMzM0NzY0fQ.1NLxSdD2LmjL7g38xSLSWn3jSmXys0K4XXwPJK8rNmA
+Content-Type: application/json
+
+{
+  "USER_ID": "3",
+  "EDITION_ID": "1",
+  "RETURN_DATE": "2023-09-10"
+}
+
+###OUTPUT
+{
+  "message": "Successful"
+}
+
+#### ---DELETE REQUESTS----
+DELETE http://localhost:3000/db-api/handle-request
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzI0ODM2NCwiZXhwIjoxNjkzMzM0NzY0fQ.1NLxSdD2LmjL7g38xSLSWn3jSmXys0K4XXwPJK8rNmA
+Content-Type: application/json
+
+{
+  "USER_ID": "3",
+  "EDITION_ID": "1"
+}
+
+###OUTPUT
+{
+  "message": "Successful"
+}
+
+#### ----RETURN BOOK----
+PUT http://localhost:3000/db-api/return-book
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzNDA5MDQ3LCJleHAiOjE3NjU0MDkwNDd9.hKy8COHQJepf0B8Y6-DwDiHUqEhBDWeaV0IfhHWppUs
+Content-Type: application/json
+
+{
+  "RENT_HISTORY_ID": "16",
+  "PAY": false
+}
+
+###OUTPUT
+{
+  "message": "Successfully updated"
+}
+
+#### ---SEND Message---
+POST http://localhost:3000/db-api/message
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5NDMzMjc0NiwiZXhwIjoxNzY2MzMyNzQ2fQ.O3RDyPRsLunmbDul2SxGuqWi8NAfhN81K8_bK55sygc
+Content-Type: application/json
+
+{
+  "USER_ID": "1",
+  "MESSAGE": "Hello, You are invited to my house tomorrow"
+}
+
+###OUTPUT
+{
+  "message": "Successful"
+}
+
+#### ---Update Message---
+PUT http://localhost:3000/db-api/edit-message?mid=1
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5NDM0MDgyNCwiZXhwIjoxNzY2MzQwODI0fQ.WmldPm1WFqirkLgBeIcQ54kHxAoNb08a7s6CdvkQIsk
+
+###OUTPUT
+{
+  "message": "Successfully updated"
+}
+
+#### ---Delete Message---
+DELETE http://localhost:3000/db-api/edit-message?mid=46
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5NDM0NjA2NSwiZXhwIjoxNzY2MzQ2MDY1fQ.WfxRP9g3tBaq5cXnewyZBLjj0IZnbJMfonr_lvGcSDo
+
+###OUTPUT
+{
+  "message": "Successfully deleted"
+}
+
+#### ---- GET My Messages ----
+GET http://localhost:3000/db-api/message
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5NDM0NjA2NSwiZXhwIjoxNzY2MzQ2MDY1fQ.WfxRP9g3tBaq5cXnewyZBLjj0IZnbJMfonr_lvGcSDo
+###OUTPUT
+[
+  {
+    "MESSAGE_ID": "1",
+    "USER_ID": "1",
+    "MESSAGE_DATE": "2023-09-07T08:03:13.000Z",
+    "MESSAGE": "Please, return the book as soon as possible or you will be fined.",
+    "SEEN": 1
+  }
+]
+
+#### ---publish News---
+POST http://localhost:3000/db-api/publish-news
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzI0ODM2NCwiZXhwIjoxNjkzMzM0NzY0fQ.1NLxSdD2LmjL7g38xSLSWn3jSmXys0K4XXwPJK8rNmA
+Content-Type: application/json
+
+{
+  "NEWS": "New book has been added"
+}
+
+###OUTPUT
+{
+  "message": "Successful"
+}
+
+#### ---- GET ALL FINE ----
+GET http://localhost:3000/db-api/all-fine?sort=PAYMENT_DATE&order=ASC
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQwODQ0NCwiZXhwIjoxNjkzNDk0ODQ0fQ.cO8wITeKKR_J_IOh6dyJqa3Jz6lsKpSC6ug8A99q87g
+
+Content-Type: application/json
+
+{
+  "CHECK": true
+}
+
+#true for running
+
+###OUTPUT
+[
+  {
+    "RENT_HISTORY_ID": "3",
+    "ISBN": "9780747591269",
+    "TITLE": "Harry Potter and the Order of the Phoenix",
+    "EDITION_ID": "8",
+    "EDITION_NUM": 1,
+    "START_DATE": "2023-09-04T10:08:33.000Z",
+    "PAYMENT_DATE": null,
+    "FEE_AMOUNT": -0.5028935185185185
+  }
+]
+
+#### ---- GET ALL NEWS ----
+GET http://localhost:3000/db-api/publish-news
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQwODQ0NCwiZXhwIjoxNjkzNDk0ODQ0fQ.cO8wITeKKR_J_IOh6dyJqa3Jz6lsKpSC6ug8A99q87g
+
+###OUTPUT
+[
+  {
+    "NEWS_ID": "2",
+    "NEWS_TEXT": "New book has been added",
+    "NEWS_DATE": "2023-08-29T12:21:56.000Z"
+  },
+  {
+    "NEWS_ID": "1",
+    "NEWS_TEXT": "WELCOME TO THE LIBRARY",
+    "NEWS_DATE": "2023-08-24T10:08:33.000Z"
+  }
+]
+
+#### --- POST one AUTHOR ---
+POST http://localhost:3000/db-api/getAuthor
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "NAME": "A",
+  "IMAGE": null,
+  "DoB": "2023-01-01",
+  "DoD": null,
+  "BIO": "a",
+  "NATIONALITY": "Bangladesh"
+}
+###OUTPUT
+{
+  "message": "Successful",
+  "author": {
+    "AUTHOR_ID": "24",
+    "NAME": "A",
+    "DOB": "2023-01-01T00:00:00.000Z",
+    "DOD": null,
+    "NATIONALITY": "Bangladesh",
+    "BIO": "a",
+    "IMAGE": "https://previews.123rf.com/images/anatolir/anatolir1712/anatolir171201476/91832679-man-avatar-icon-flat-illustration-of-man-avatar-vector-icon-isolated-on-white-background.jpg"
+  }
+}
+
+#### --- POST one PUBLISHER ---
+POST http://localhost:3000/db-api/getPublisher
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzU1NzMyOCwiZXhwIjoxNzY1NTU3MzI4fQ.OWzBW1GTgnYmm8q49j_mcge89WXpLG6KHK6I_jLqWaM
+Content-Type: application/json
+
+
+{
+"CONTACT_NO"
+: 
+"242423424",
+"COUNTRY"
+: 
+"Bangladesh",
+"EMAIL"
+: 
+"a@gmail.com",
+"IMAGE"
+: 
+"https://ds.rokomari.store/rokomari110/company/publisher.png",
+"NAME"
+: 
+"abcd",
+"POSTAL_CODE"
+: 
+"23"}
+###OUTPUT
+{
+  "message": "Successful",
+  "publisher": {
+    "PUBLISHER_ID": "22",
+    "NAME": "A",
+    "IMAGE": "https://ds.rokomari.store/rokomari110/company/publisher.png",
+    "CITY": "a",
+    "COUNTRY": "a",
+    "POSTAL_CODE": "M",
+    "CONTACT_NO": "01",
+    "EMAIL": "a@gmail.com"
+  }
+}
+
+#### --- POST one GENRE ---
+POST http://localhost:3000/db-api/getGenre
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "GENRE_NAME": "dummy"
+}
+###OUTPUT
+{
+  "message": "Successful",
+  "genre": {
+    "GENRE_ID": "14",
+    "GENRE_NAME": "A"
+  }
+}
+
+#### --- PUT one AUTHOR ---
+PUT http://localhost:3000/db-api/getAuthor
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "AUTHOR_ID": "23",
+  "NAME": "A",
+  "IMAGE": null,
+  "DoB": "2023-01-01",
+  "DoD": "2023-01-01",
+  "BIO": "a",
+  "NATIONALITY": "Bangladesh"
+}
+###OUTPUT
+{
+  "message": "Successful",
+  "author": {
+    "AUTHOR_ID": "23",
+    "NAME": "A",
+    "DoB": "2023-01-01T00:00:00.000Z",
+    "DoD": "2023-01-01T00:00:00.000Z",
+    "NATIONALITY": "Bangladesh",
+    "BIO": "a",
+    "IMAGE": null
+  }
+}
+
+#### --- PUT one PUBLISHER ---
+PUT http://localhost:3000/db-api/getPublisher
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "PUBLISHER_ID": "21",
+  "NAME": "A",
+  "IMAGE": null,
+  "CITY": "a",
+  "COUNTRY": "a",
+  "EMAIL": "abc@gmail.com",
+  "PASSWORD": "$2b$10$tlCyz5LiC8FkOIXAFwlfhORBQGTo8zYGin5eZ1V2skvr2C.vtcMca",
+  "CONTACT_NO": "01",
+  "POSTAL_CODE": "M"
+}
+###OUTPUT
+{
+  "message": "Successful",
+  "publisher": {
+    "PUBLISHER_ID": "21",
+    "NAME": "A",
+    "IMAGE": null,
+    "CITY": "a",
+    "COUNTRY": "a",
+    "POSTAL_CODE": "M",
+    "CONTACT_NO": "01",
+    "EMAIL": "abc@gmail.com"
+  }
+}
+
+#### --- PUT one GENRE ---
+PUT http://localhost:3000/db-api/getGenre
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "GENRE_ID": "13",
+  "GENRE_NAME": "B"
+}
+###OUTPUT
+{
+  "message": "Successful",
+  "genre": {
+    "GENRE_ID": "13",
+    "GENRE_NAME": "B"
+  }
+}
+
+
+#### --- DELETE one AUTHOR ---
+DELETE http://localhost:3000/db-api/getAuthor?aid=23
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+
+###OUTDELETE
+
+{
+  "message": "Successfully deleted"
+}
+
+#### --- DELETE one PUBLISHER ---
+DELETE http://localhost:3000/db-api/getPublisher?pid=21
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+
+###OUTDELETE
+
+{
+  "message": "Successfully deleted"
+}
+
+#### --- DELETE one GENRE ---
+DELETE http://localhost:3000/db-api/getGenre?gid=13
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+
+###OUTDELETE
+
+{
+  "message": "Successfully deleted"
+}
+
+
+#### --- GET EDITION BY EID/ID/BOTH ---
+GET http://localhost:3000/db-api/getEdition?id=9781408855652
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+
+###OUTPUT
+[
+  {
+    "EDITION_ID": "1",
+    "ISBN": "9781408855652",
+    "EDITION_NUM": 1,
+    "NUM_OF_COPIES": 99,
+    "PUBLISH_YEAR": 1997
+  },
+  {
+    "EDITION_ID": "2",
+    "ISBN": "9781408855652",
+    "EDITION_NUM": 2,
+    "NUM_OF_COPIES": 100,
+    "PUBLISH_YEAR": 1999
+  }
+]
+
+#### --- ADD EDITION ---
+POST http://localhost:3000/db-api/getEdition
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzU0MTI5MCwiZXhwIjoxNzY1NTQxMjkwfQ.fk6dqRDtlpVC2KRvBxFOFN_gdnM3cQpLxid2cew6hzQ
+Content-Type: application/json
+
+{
+  "ISBN": "1111111111111",
+  "Editions":[
+    {
+      "EDITION_NUM": 1,
+      "NUM_OF_COPIES": 10,
+      "PUBLISH_YEAR": 2022
+    },
+    {
+      "EDITION_NUM": 2,
+      "NUM_OF_COPIES": 10,
+      "PUBLISH_YEAR": 2023
+    }
+  ]
+}
+###OUTPUT
+{
+  "message": "All Successful"
+}
+
+#### --- UPDATE EDITION ---
+PUT http://localhost:3000/db-api/getEdition?eid=10
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "EDITION_NUM": 0,
+  "NUM_OF_COPIES": 10,
+  "PUBLISH_YEAR": 2007
+}
+
+###OUTPUT
+{
+  "message": "Successful",
+  "edition": {
+    "EDITION_ID": "12",
+    "ISBN": "9781408894743",
+    "EDITION_NUM": 8,
+    "NUM_OF_COPIES": 60,
+    "PUBLISH_YEAR": 2010
+  }
+}
+
+#### --- DELETE Edition ---
+DELETE http://localhost:3000/db-api/getEdition?eid=14
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+
+###OUTDELETE
+
+{
+  "message": "Successfully deleted"
+}
+
+#### --- GET ALL LANGUAGE ---
+GET http://localhost:3000/db-api/getLanguage
+
+###OUTPUT
+[
+  {
+    "LANGUAGE": "Bangla"
+  },
+  {
+    "LANGUAGE": "English"
+  }
+]
+
+#### --- WRITTER ADD ---
+POST http://localhost:3000/db-api/writtenBy
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "ISBN": "1111111111111",
+  "Authors": [
+    {
+      "AUTHOR_ID": "1"
+    },
+    {
+      "AUTHOR_ID": "24"
+    }
+  ]
+}
+
+###OUTPUT
+{
+  "message": "All Successful"
+}
+
+#### --- BOOK GENRE ADD ---
+POST http://localhost:3000/db-api/book-genre
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "ISBN": "1111111111111",
+  "Genres": [
+    {
+      "GENRE_ID": "1"
+    },
+    {
+      "GENRE_ID": "14"
+    }
+  ]
+}
+
+###OUTPUT
+{
+  "message": "All Successful"
+}
+
+##### ----GET All Books (sorted AND advanced searched) ----
+GET http://localhost:3000/db-api/all-books-sum?sort=RATING&order=DESC
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+
+###OUTPUT
+{
+  [
+    {
+      "ISBN": "9781408894743",
+      "TITLE": "Harry Potter and the Deathly Hallows",
+      "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/Harry_Potter_and_the_Deathly_Hallows_(Se-J.K_Rowling-699a7-122325.jpg",
+      "PAGE": 608,
+      "LANGUAGE": "en",
+      "PUBLISH_YEAR": 2010,
+      "EDITION_ID": "11",
+      "AUTHORS": "J. K. Rowling",
+      "RATING": 5,
+      "FAVOURITE": 1,
+      "IS_FAVOURITE": 1
+    }
+  ]
+  "totalPages": 117
+}
+
+##### ----GET All Books (sorted AND advanced searched) ----
+GET http://localhost:3000/db-api/all-book
+
+###OUTPUT
+[
+  {
+    "ISBN":,
+    "TITLE":,
+    "IMAGE":
+  }
+]
+
+#### ------ GET ALL USERS ----
+GET http://localhost:3000/db-api/all-users?sort=EMAIL&order=ASC
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "USER": false,
+  "EMPLOYEE" : true,
+  "ADMIN": true
+}
+
+###OUTPUT
+[
+  {
+    "USER_ID": "3",
+    "NAME": "jakaria hossain",
+    "IMAGE": "https://drive.google.com/file/d/1hKQvVs_HB15yfH6wj_Ca08iPeUSCEsw2/view?usp=sharing",
+    "ADDRESS": "Ney York, USA",
+    "EMAIL": "mdjakaria442020@gmail.com",
+    "CONTACT_NO": "01712345678",
+    "GENDER": "M",
+    "ROLE": "admin"
+  },
+  {
+    "USER_ID": "1",
+    "NAME": "Ryan George",
+    "IMAGE": "https://img.freepik.com/free-icon/user_318-159711.jpg",
+    "ADDRESS": "England",
+    "EMAIL": "ryangeorge@gmail.com",
+    "CONTACT_NO": "854 526 8852",
+    "GENDER": "M",
+    "ROLE": "employee"
+  }
+]
+
+
+#### --- POST one BOOK ---
+POST http://localhost:3000/db-api/book
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "ISBN": "1111111111115",
+  "TITLE": "NEW BOOK4",
+  "IMAGE": null,
+  "NUMBER_OF_PAGES": 0,
+  "LANGUAGE": "Bangla",
+  "DESCRIPTION": "Most easy book",
+  "PUBLISHER_ID": "1",
+  "Authors": [
+    {
+      "AUTHOR_ID": "1"
+    }
+  ],
+  "Genres": [
+    {
+      "GENRE_ID": "1"
+    }
+  ],
+  "Editions":[
+    {
+      "EDITION_NUM": 1,
+      "NUM_OF_COPIES": 10,
+      "PUBLISH_YEAR": 2022
+    },
+    {
+      "EDITION_NUM": 2,
+      "NUM_OF_COPIES": 10,
+      "PUBLISH_YEAR": 2023
+    }
+  ]
+}
+###OUTPUT
+{
+  "message": "Successful"
+}
+
+#### --- PUT one BOOK ---
+PUT http://localhost:3000/db-api/book
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+Content-Type: application/json
+
+{
+  "ISBN": "1111111111115",
+  "TITLE": "new book5",
+  "IMAGE": "https://img.freepik.com/premium-photo/book-library-with-old-open-textbook-stack-piles-literature-text-archive-reading-desk_779468-5822.jpg?w=2000",
+  "NUMBER_OF_PAGES": 0,
+  "LANGUAGE": "Bangla",
+  "DESCRIPTION": "Most easy book",
+  "PUBLISHER_ID": "1",
+  "Authors": [
+    {
+      "AUTHOR_ID": "1"
+    }
+  ],
+  "Genres": [
+    {
+      "GENRE_ID": "1"
+    },
+    {
+      "GENRE_ID": "2"
+    }
+  ],
+  "Editions":[
+    {
+      "EDITION_NUM": 3,
+      "NUM_OF_COPIES": 10,
+      "PUBLISH_YEAR": 2024
+    }
+  ]
+}
+
+#only added edition
+###OUTPUT
+{
+  "message": "Successful"
+}
+
+#### --- DELETE one BOOK ---
+DELETE http://localhost:3000/db-api/book?id=101766692X
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5MzQ5NTI0OSwiZXhwIjoxNzY1NDk1MjQ5fQ.8SOnzxZsPpMjOe_s4k1mQniTcHnkVrfiWjIPdhuBpkE
+
+###OUTDELETE
+{
+  "message": "Successfully deleted"
+}
+
+#### ----POST admin ----
+POST http://localhost:3000/db-api/admin/signup?uid=1
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+
+
+#### ----RESIGN admin ----
+DELETE http://localhost:3000/db-api/admin/resign
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3Nzg2MiwiZXhwIjoxNzY1OTc3ODYyfQ.F524sgjyfSoNb9LyDnLqv2fCdh8baoFSEtHuy9zZKYY
+
+#### ----- APPLY FOR JOB ----
+POST http://localhost:3000/db-api/apply?jid=1
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzOTc4OTMyLCJleHAiOjE3NjU5Nzg5MzJ9.QyucubclHSu2hlHThnfDP9b9zW9r4282DJA0koxKvk8
+
+#### -----  delete APPLY FOR JOB ----
+DELETE http://localhost:3000/db-api/apply?jid=1
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzOTc4OTMyLCJleHAiOjE3NjU5Nzg5MzJ9.QyucubclHSu2hlHThnfDP9b9zW9r4282DJA0koxKvk8
+
+#### -----  GET ALL APPLY FOR JOB ----
+GET http://localhost:3000/db-api/application?order=DESC&sort=APPLY_DATE
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+
+###OUTPUT
+[
+  {
+    "USER_ID": "1",
+    "NAME": "Ryan George",
+    "IMAGE": "https://img.freepik.com/free-icon/user_318-159711.jpg",
+    "EMAIL": "ryangeorge@gmail.com",
+    "JOB_ID": "1",
+    "JOB_TITLE": "Librarian",
+    "APPLY_DATE": "2023-09-06T05:45:22.000Z"
+  }
+]
+
+#### ---- Acceept Application ----
+POST http://localhost:3000/db-api/application
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+Content-Type: application/json
+
+{
+  "USER_ID": "1",
+  "JOB_ID": "1"
+}
+
+#### ---- Reject Application ----
+DELETE http://localhost:3000/db-api/application?uid=1&jid=1
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+Content-Type: application/json
+
+{
+  "USER_ID": "1",
+  "JOB_ID": "1"
+}
+
+#### ---- GET one/ALL JOB ---
+GET http://localhost:3000/db-api/getJob?sort=STATUS&order=ASC
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJ1c2VyIiwiaWF0IjoxNjkzOTc4OTMyLCJleHAiOjE3NjU5Nzg5MzJ9.QyucubclHSu2hlHThnfDP9b9zW9r4282DJA0koxKvk8
+
+###OUTPUT
+[
+  {
+    "JOB_TITLE": "Librarian",
+    "JOB_ID": "1",
+    "SALARY": 200,
+    "STATUS": "applied"
+  },
+  {
+    "JOB_TITLE": "Cleaner",
+    "JOB_ID": "2",
+    "SALARY": 150,
+    "STATUS": "working"
+  }
+]
+
+#### ---- POST one JOB ---
+POST http://localhost:3000/db-api/getJob
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+Content-Type: application/json
+
+{
+  "JOB_TITLE": "Dancer",
+  "SALARY": "100"
+}
+
+###OUTPUT
+{
+  "message": "Successful",
+  "job": {
+    "JOB_TITLE": "Dancer",
+    "SALARY": "100"
+  }
+}
+
+#### ---- UPDATE one JOB ---
+PUT http://localhost:3000/db-api/getJob?jid=3
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+Content-Type: application/json
+
+{
+  "JOB_TITLE": "Musician",
+  "SALARY": "10"
+}
+
+#### ---- DELETE one JOB ---
+DELETE http://localhost:3000/db-api/getJob?jid=4
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+
+#### ---- GET ONE/ALL EMPLOYEE ----
+GET http://localhost:3000/db-api/employee?sort=NAME&order=DESC
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+
+###OUTPUT
+[
+  {
+    "USER_ID": "1",
+    "NAME": "Ryan George",
+    "EMAIL": "ryangeorge@gmail.com",
+    "IMAGE": "https://img.freepik.com/free-icon/user_318-159711.jpg",
+    "JOIN_DATE": "2023-09-06T06:46:26.000Z",
+    "JOB_ID": "2",
+    "JOB_TITLE": "Cleaner"
+  }
+]
+
+#### ---- DELETE one EMPLOYEE ----
+DELETE http://localhost:3000/db-api/employee?uid=1
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5Mzk3NzYyNSwiZXhwIjoxNzY1OTc3NjI1fQ.K5RVpqEnUsbHOL9wXNiTz1O-YWdF9_HqFca5ucXHDTM
+
+#### ----- resign employee ----
+DELETE http://localhost:3000/db-api/employee/resign
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5NDA1ODMzNSwiZXhwIjoxNzY2MDU4MzM1fQ.y6nQKzajOs33K-s7xBiYc06F5rqxopBRXUpUWlJRkMk
+
+#### ---- SEARCH BAR ----
+GET http://localhost:3000/db-api/search-bar?text=Saul&count=10&sort=TITLE&order=ASC
+
+
+### output
+[
+  {
+    "ISBN": "9781402081163",
+    "TITLE": "An Annotated Timeline of Operations Research",
+    "IMAGE": "http://books.google.com/books/content?id=kTqAjaXEBGUC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+    "LANGUAGE": "en",
+    "AUTHORS": "Saul I. Gass, Arjang A. Assad"
+  }
+]
+
+#### --- Show latest news ----
+GET http://localhost:3000/db-api/show-news?count=3
+
+###OUTPUT
+[
+  {
+    "NEWS_ID": "1",
+    "NEWS_TEXT": "WELCOME TO THE LIBRARY",
+    "NEWS_DATE": "2023-09-02T08:43:02.000Z"
+  }
+]
+
+#### ----GET all rent----
+GET http://localhost:3000/db-api/all-rent?sort=TITLE&order=ASC
+x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5NDE3NDcxOSwiZXhwIjoxNzY2MTc0NzE5fQ._N0W7UHScoqEvmdjFCkIOaiXkiw1YgbCKVsDLAeKez0
+
+#### ----GET Single Book ----
+GET http://localhost:3000/db-api/book?id=1111111111115
+###OUTPUT
+{
+  "ISBN": "9781408855652",
+  "PUBLISHER_ID": "1",
+  "PUBLISHER_NAME": "Bloomsbury Publishing",
+  "TITLE": "Harry Potter and the Philosophers Stone",
+  "IMAGE": "https://ds.rokomari.store/rokomari110/ProductNew20190903/130X186/4cf25a33d8a4_86392.gif",
+  "PAGE": 352,
+  "LANGUAGE": "en",
+  "AUTHOR": "[{\"NAME\":\"J. K. Rowling\",\"ID\":\"1\"}]",
+  "GENRE": "[{\"NAME\":\"Fantasy\",\"ID\":\"1\"}]",
+  "EDITION": "[{\"ID\":\"1\",\"NUM\":1,\"COUNT\":0,\"YEAR\":1997},{\"ID\":\"2\",\"NUM\":2,\"COUNT\":9,\"YEAR\":1999}]",
+  "PUBLISH_YEAR": 1997,
+  "PREVIEWLINK": "https://canonburyprimaryschool.co.uk/wp-content/uploads/2016/01/Joanne-K.-Rowling-Harry-Potter-Book-1-Harry-Potter-and-the-Philosophers-Stone-EnglishOnlineClub.com_.pdf",
+  "RATING": 3.5,
+  "FAVOURITE": 1,
+  "DESCRIPTION": "Harry Potter discovers he's a wizard on his eleventh birthday and is invited to attend Hogwarts School of Witchcraft and Wizardry. There, he makes friends, learns magic, and uncovers the mystery of the Sorcerer's Stone."
+}
+
+#### ----GET rent data ----
+GET http://localhost:3000/db-api/rent-data
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5NDMzMjc0NiwiZXhwIjoxNzY2MzMyNzQ2fQ.O3RDyPRsLunmbDul2SxGuqWi8NAfhN81K8_bK55sygc
+###OUTPUT
+[
+  {
+    "YEAR": "2022",
+    "DATA": "[{\"MONTH\":\"09\",\"RENT_COUNT\":33,\"RETURN_COUNT\":9},{\"MONTH\":\"10\",\"RENT_COUNT\":46,\"RETURN_COUNT\":26},{\"MONTH\":\"11\",\"RENT_COUNT\":35,\"RETURN_COUNT\":17},{\"MONTH\":\"12\",\"RENT_COUNT\":33,\"RETURN_COUNT\":22}]"
+  },
+  {
+    "YEAR": "2023",
+    "DATA": "[{\"MONTH\":\"01\",\"RENT_COUNT\":33,\"RETURN_COUNT\":18},{\"MONTH\":\"02\",\"RENT_COUNT\":39,\"RETURN_COUNT\":21},{\"MONTH\":\"03\",\"RENT_COUNT\":50,\"RETURN_COUNT\":25},{\"MONTH\":\"04\",\"RENT_COUNT\":40,\"RETURN_COUNT\":23},{\"MONTH\":\"05\",\"RENT_COUNT\":43,\"RETURN_COUNT\":21},{\"MONTH\":\"06\",\"RENT_COUNT\":42,\"RETURN_COUNT\":22},{\"MONTH\":\"07\",\"RENT_COUNT\":34,\"RETURN_COUNT\":20},{\"MONTH\":\"08\",\"RENT_COUNT\":52,\"RETURN_COUNT\":28},{\"MONTH\":\"09\",\"RENT_COUNT\":12,\"RETURN_COUNT\":14}]"
+  }
+]
+
+
+#### ----GET fine data ----
+GET http://localhost:3000/db-api/fine-data
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMyIsIlJPTEUiOiJhZG1pbiIsImlhdCI6MTY5NDMzMjc0NiwiZXhwIjoxNzY2MzMyNzQ2fQ.O3RDyPRsLunmbDul2SxGuqWi8NAfhN81K8_bK55sygc
+###OUTPUT
+[
+  {
+    "YEAR": "2022",
+    "DATA": "[{\"MONTH\":\"09\",\"FINE_COUNT\":19,\"PAYMENT_COUNT\":0},{\"MONTH\":\"10\",\"FINE_COUNT\":19,\"PAYMENT_COUNT\":1},{\"MONTH\":\"11\",\"FINE_COUNT\":19,\"PAYMENT_COUNT\":2},{\"MONTH\":\"12\",\"FINE_COUNT\":15,\"PAYMENT_COUNT\":3}]"
+  },
+  {
+    "YEAR": "2023",
+    "DATA": "[{\"MONTH\":\"01\",\"FINE_COUNT\":19,\"PAYMENT_COUNT\":1},{\"MONTH\":\"02\",\"FINE_COUNT\":11,\"PAYMENT_COUNT\":2},{\"MONTH\":\"03\",\"FINE_COUNT\":23,\"PAYMENT_COUNT\":1},{\"MONTH\":\"04\",\"FINE_COUNT\":24,\"PAYMENT_COUNT\":0},{\"MONTH\":\"05\",\"FINE_COUNT\":18,\"PAYMENT_COUNT\":2},{\"MONTH\":\"06\",\"FINE_COUNT\":26,\"PAYMENT_COUNT\":0},{\"MONTH\":\"07\",\"FINE_COUNT\":13,\"PAYMENT_COUNT\":1},{\"MONTH\":\"08\",\"FINE_COUNT\":25,\"PAYMENT_COUNT\":1},{\"MONTH\":\"09\",\"FINE_COUNT\":9,\"PAYMENT_COUNT\":2}]"
+  }
+]
+
+
+#### ----GET RANGES ----
+GET http://localhost:3000/db-api/getRanges

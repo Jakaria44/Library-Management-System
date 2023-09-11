@@ -44,23 +44,14 @@ const BookDetails = () => {
   const [myReview, setMyReview] = useState({});
   const [ratings, setRatings] = useState([]);
   const [reviewEditing, setReviewEditing] = useState(false);
+
+  console.log(data);
   const deleteReview = async () => {
     try {
       const response = await server.delete(`/del-rate-review?id=${data.ISBN}`);
       console.log(response);
 
-      // Call the confirm function and handle its promise
-      // const userConfirmed = await confirm({
-      //   title: <Typography variant="h4">Delete Review</Typography>,
-      //   description: "Are you sure you want to delete review?",
-      // });
-
-      // if (userConfirmed) {
-      //   console.log("Review deletion confirmed");
       getAllReviews({ id: data.ISBN });
-      // } else {
-      //   console.log("Review deletion canceled");
-      // }
     } catch (err) {
       console.log("something went wrong");
     }
@@ -113,8 +104,8 @@ const BookDetails = () => {
       console.log(err);
       if (err.response.status === 404) {
         setMyRating(null);
-        setRatings([]);
       }
+      setRatings([]);
     }
   };
 
@@ -127,7 +118,6 @@ const BookDetails = () => {
   }));
   useEffect(() => {
     getAllReviews({ id: data.ISBN });
-    console.log(data);
   }, []);
   return (
     <>

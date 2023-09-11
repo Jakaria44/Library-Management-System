@@ -1,6 +1,13 @@
 // assets
 
-import { ManageAccounts } from "@mui/icons-material";
+import {
+  Checklist,
+  CurrencyExchange,
+  NoteAdd,
+  People,
+  PeopleSharp,
+  Work,
+} from "@mui/icons-material";
 
 // constant
 
@@ -12,11 +19,45 @@ const Employee = {
   type: "group",
   children: [
     {
-      id: "employee",
-      title: "Employee",
+      id: "allusers",
+      title: "All Users",
       type: "item",
-      url: "/",
-      icon: <ManageAccounts />,
+      url: "/allusers",
+      icon: <PeopleSharp />,
+      breadcrumbs: false,
+    },
+    {
+      id: "allrequests",
+      title: "All Requests",
+      type: "item",
+      url: "/allrequests",
+      icon: <Checklist />,
+      breadcrumbs: false,
+    },
+    {
+      id: "allduelists",
+      title: "Fine History",
+      type: "item",
+      url: "/allduelists",
+      icon: <CurrencyExchange />,
+      breadcrumbs: false,
+    },
+
+    {
+      id: "addbook",
+      title: "Add Book",
+      type: "item",
+      url: "/addbook",
+      icon: <NoteAdd />,
+      breadcrumbs: false,
+    },
+
+    {
+      id: "allrent",
+      title: "Complete Rent History",
+      type: "item",
+      url: "/allrent",
+      icon: <Work />,
       breadcrumbs: false,
     },
   ],

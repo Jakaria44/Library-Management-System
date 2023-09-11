@@ -18,17 +18,14 @@ import { actions } from "../../../contexts/actions";
 
 // assets
 // import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import {
-  useMenu,
-  useMenuDispatch,
-} from "../../../contexts/MenuContextProvider";
+import { useMenu } from "../../../contexts/MenuContextProvider";
 
 // ==============================|| SIDEBAR MENU LIST ITEMS ||============================== //
 
 const NavItem = ({ item, level }) => {
   const theme = useTheme();
-  const menu = useMenu();
-  const dispatch = useMenuDispatch();
+  const { menuOpened, dispatch } = useMenu();
+  const menu = menuOpened;
   const { pathname } = useLocation();
   const matchesSM = useMediaQuery(theme.breakpoints.down("md"));
 

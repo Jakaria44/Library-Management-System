@@ -1,14 +1,44 @@
 import { lazy } from "react";
 
 // project imports
-
-import Details from "../pages/Details/Details";
-import LatestBooks from "../pages/LatestBooks";
-import { loader as favouritesLoader } from "../pages/Reader/MyFavourites";
-import MyReviews from "../pages/Reader/MyReviews";
-import { loader as bookDetailsLoader } from "./../pages/Details/Details";
-import { loader as allBooksLoader } from "./../pages/allbooks/AllBooks";
 import Loadable from "./../ui-component/Loadable";
+
+const Details = Loadable(lazy(() => import("../pages/Details/Details")));
+const AllDueList = Loadable(lazy(() => import("../pages/Employee/AllDueList")));
+const AllRentHistory = Loadable(
+  lazy(() => import("../pages/Employee/AllRentHistory"))
+);
+const Users = Loadable(lazy(() => import("../pages/Employee/Users")));
+const Requests = Loadable(lazy(() => import("../pages/Employee/Requests")));
+const JobList = Loadable(lazy(() => import("../pages/Employee/JobList")));
+const ManageEmployees = Loadable(
+  lazy(() => import("../pages/Employee/ManageEmployees"))
+);
+const Statistics = Loadable(lazy(() => import("../pages/Admin/Statistics")));
+const JobApplications = Loadable(
+  lazy(() => import("../pages/Admin/JobApplications"))
+);
+const Categories = Loadable(lazy(() => import("../pages/Categories")));
+const AuthorList = Loadable(lazy(() => import("../pages/AuthorList")));
+const SingleCategory = Loadable(lazy(() => import("../pages/SingleCategory")));
+const PublisherList = Loadable(lazy(() => import("../pages/PublisherList")));
+const SinglePublisher = Loadable(
+  lazy(() => import("../pages/SinglePublisher"))
+);
+const SingleAuthor = Loadable(lazy(() => import("../pages/SingleAuthor")));
+const Collections = Loadable(lazy(() => import("../pages/Reader/Collections")));
+const DueList = Loadable(lazy(() => import("../pages/Reader/DueList")));
+const MyReviews = Loadable(lazy(() => import("../pages/Reader/MyReviews")));
+const AddBook = Loadable(
+  lazy(() => import("../pages/Employee/addbook/AddBook"))
+);
+const EditBook = Loadable(
+  lazy(() => import("../pages/Employee/addbook/EditBook"))
+);
+
+import { loader as DetailsLoader } from "../pages/Employee/addbook/EditBook";
+
+import { loader as bookDetailsLoader } from "./../pages/Details/Details";
 // main routing
 const Structure = Loadable(lazy(() => import("../layout/Structure.jsx")));
 
@@ -16,16 +46,10 @@ const MyFavourites = Loadable(
   lazy(() => import("../pages/Reader/MyFavourites"))
 );
 
-const MyDueList = Loadable(lazy(() => import("../pages/Reader/MyDueList")));
-const MyCollections = Loadable(
-  lazy(() => import("../pages/Reader/MyCollections"))
-);
-const MyApplications = Loadable(
-  lazy(() => import("../pages/Reader/MyApplications"))
-);
+const HomePage = Loadable(lazy(() => import("./../pages/Home")));
+const Application = Loadable(lazy(() => import("../pages/Reader/Application")));
 
 const AllBooks = Loadable(lazy(() => import("./../pages/allbooks/AllBooks")));
-const HomePage = Loadable(lazy(() => import("./../pages/Home")));
 const ErrorPage = Loadable(lazy(() => import("./../pages/ErrorPage")));
 const ReaderProfile = Loadable(
   lazy(() => import("./../pages/Reader/ReaderProfile"))
@@ -44,16 +68,40 @@ const MainRoutes = {
     {
       path: "/allbooks",
       element: <AllBooks />,
-      loader: allBooksLoader,
+    },
+    {
+      path: "/allbooks/search",
+      element: <AllBooks />,
     },
     {
       path: "/details/:id",
       element: <Details />,
       loader: bookDetailsLoader,
     },
+
     {
-      path: "/latestbooks",
-      element: <LatestBooks />,
+      path: "/categories",
+      element: <Categories />,
+    },
+    {
+      path: "/categories/:id/:name",
+      element: <SingleCategory />,
+    },
+    {
+      path: "/authors",
+      element: <AuthorList />,
+    },
+    {
+      path: "/authors/:id/:name",
+      element: <SingleAuthor />,
+    },
+    {
+      path: "/publishers",
+      element: <PublisherList />,
+    },
+    {
+      path: "/publishers/:id/:name",
+      element: <SinglePublisher />,
     },
     {
       path: "/profile",
@@ -63,26 +111,66 @@ const MainRoutes = {
       ),
     },
     {
-      path: "/favourites",
-      element: <MyFavourites />,
-      loader: favouritesLoader,
+      path: "/stat",
+      // element: <VirtualizedAutocomplete />,
+      element: <Statistics />,
+    },
+    {
+      path: "/jobapplications",
+
+      element: <JobApplications />,
     },
 
     {
       path: "/applications",
-      element: <MyApplications />,
+      element: <Application />,
     },
+    // {
+    //   path: "/applications",
+    //   element: <MyApplications />,
+    // },
     {
       path: "/collections",
-      element: <MyCollections />,
+      element: <Collections />,
     },
-    {
-      path: "/reviews",
-      element: <MyReviews />,
-    },
+
     {
       path: "/duelist",
-      element: <MyDueList />,
+      element: <DueList />,
+    },
+    {
+      path: "/allusers",
+      element: <Users />,
+    },
+    {
+      path: "/allrequests",
+      element: <Requests />,
+    },
+    {
+      path: "/allduelists",
+      element: <AllDueList />,
+    },
+    {
+      path: "/allrent",
+      element: <AllRentHistory />,
+    },
+    {
+      path: "/joblist",
+      element: <JobList />,
+    },
+    {
+      path: "/manageemployees",
+      element: <ManageEmployees />,
+    },
+
+    {
+      path: "/addbook",
+      element: <AddBook />,
+    },
+    {
+      path: "/editbook/:id",
+      loader: DetailsLoader,
+      element: <EditBook />,
     },
   ],
 };

@@ -1,6 +1,5 @@
 import { Divider, Grid, Typography } from "@mui/material";
 import React from "react";
-import TimeFormat from "../../utils/TimeFormat";
 import RatingList from "./RatingList";
 import ReviewCard from "./ReviewCard";
 import WriteReview from "./WriteReview";
@@ -29,7 +28,7 @@ const GiveReview = ({
         <ReviewCard
           profilePicture={myReview.IMAGE}
           fullName={myReview.NAME}
-          date={TimeFormat(myReview.EDIT_DATE)}
+          date={myReview.EDIT_DATE}
           isEditable={true}
           reviewID={myReview.REVIEW_ID}
           rating={myRating}

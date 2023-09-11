@@ -129,12 +129,7 @@ const EditProfile = ({ profile, setProfile, setSelectedImage }) => {
             </FormControl>
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              label="Email"
-              fullWidth
-              value={profile.EMAIL}
-              onChange={(e) => handleChange("EMAIL", e.target.value)}
-            />
+            <TextField label="Email" fullWidth value={profile.EMAIL} disabled />
           </Grid>
 
           <Grid item xs={12}>

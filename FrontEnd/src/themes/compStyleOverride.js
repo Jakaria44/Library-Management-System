@@ -41,7 +41,7 @@ export default function componentStyleOverrides(theme) {
                     borderRadius: '4px',
                     color: theme.textDark,
                     transition: 'all .2s ease-in-out',
-                    background: theme.itemBackground,
+                    background: theme.buttonBackground,
                     '&:hover': {
                         color: theme.background,
                         background: theme.heading,
@@ -215,6 +215,13 @@ export default function componentStyleOverrides(theme) {
                 },
             },
         },
+        MuiPaper: {
+            styleOverrides: {
+                root: {
+                    background: theme.backgroundDefault,
+                },
+            },
+        },
         MuiSlider: {
             styleOverrides: {
                 root: {
@@ -246,7 +253,11 @@ export default function componentStyleOverrides(theme) {
                     '&.MuiChip-deletable .MuiChip-deleteIcon': {
                         color: 'inherit',
                     },
+                    '&.MuiChip-colorError':{
+                        color: '#000'
+                    }
                 },
+                
             },
         },
         // MuiTooltip: {

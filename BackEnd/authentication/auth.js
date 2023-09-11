@@ -9,7 +9,7 @@ export function verifyUserToken(req, res, next) {
 
   jwt.verify(token, secret, (err, decoded) => {
     if (err) {
-      return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+      return res.status(404).send({ auth: false, message: 'Failed to authenticate token.' });
     }
     console.log(decoded.ROLE)
     if (["user", 'employee' , 'admin'].includes( decoded.ROLE)) {
@@ -17,7 +17,7 @@ export function verifyUserToken(req, res, next) {
       console.log(req.USER_ID);
       next();
     } else {
-      return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+      return res.status(404).send({ auth: false, message: 'Failed to authenticate token.' });
     }
   });
 }
@@ -30,17 +30,38 @@ export function verifyAdminToken(req, res, next) {
 
   jwt.verify(token, secret, (err, decoded) => {
     if (err) {
-      return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+      return res.status(404).send({ auth: false, message: 'Failed to authenticate token.' });
     }
 
     if (decoded.ROLE === 'admin') {
       req.USER_ID = decoded.USER_ID;
       next();
     } else {
-      return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+      return res.status(404).send({ auth: false, message: 'Failed to authenticate token.' });
     }
   });
 }
+export function verifyEmpAdmToken(req, res, next) {
+  const token = req.headers['x-access-token'];
+  if (!token) {
+    return res.status(403).send({ auth: false, message: 'No token provided.' });
+  }
+
+  jwt.verify(token, secret, (err, decoded) => {
+    if (err) {
+      return res.status(404).send({ auth: false, message: 'Failed to authenticate token.' });
+    }
+
+    if (decoded.ROLE === 'admin'||decoded.ROLE === 'employee') {
+      req.USER_ID = decoded.USER_ID;
+      req.ROLE = decoded.ROLE;
+      next();
+    } else {
+      return res.status(404).send({ auth: false, message: 'Failed to authenticate token.' });
+    }
+  });
+}
+
 
 export function verifyEmployeeToken(req, res, next) {
   const token = req.headers['x-access-token'];
@@ -50,33 +71,34 @@ export function verifyEmployeeToken(req, res, next) {
 
   jwt.verify(token, secret, (err, decoded) => {
     if (err) {
-      return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+      return res.status(404).send({ auth: false, message: 'Failed to authenticate token.' });
     }
 
     if (decoded.ROLE === 'employee') {
       req.USER_ID = decoded.USER_ID;
       next();
     } else {
-      return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+      return res.status(404).send({ auth: false, message: 'Failed to authenticate token.' });
     }
   });
 }
 
 export function verifyGeneralToken(req, res, next) {
   const token = req.headers['x-access-token'];
+  // console.log(token);
   if (token) {
     jwt.verify(token, secret, (err, decoded) => {
       if (err) {
-        return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+        return res.status(404).send({ auth: false, message: 'Failed to authenticate token.' });
       }
 
-      if (decoded.ROLE === 'user' || decoded.ROLE === 'employee') {
+      console.log(decoded);
+      if (decoded.ROLE === 'user' || decoded.ROLE === 'employee'|| decoded.ROLE === 'admin') {
         req.USER_ID = decoded.USER_ID;
-        next();
-      } else if (decoded.ROLE === 'admin') {
+
         next();
       } else {
-        return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+        return res.status(404).send({ auth: false, message: 'Failed to authenticate token.' });
       }
     });
   }

@@ -1,28 +1,21 @@
-import { Book, Business, Person } from "@mui/icons-material";
-import { Grid, Tab, Tabs, Typography } from "@mui/material";
+import { ArrowBack, Book, Business, Person } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  List,
+  ListItem,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import server from "./../../HTTP/httpCommonParam";
 import AuthorComponent from "./AuthorComponent";
 import PublicationComponent from "./PublicationComponent";
 const Description = ({ book }) => {
   const [tabValue, setTabValue] = useState(0);
-
-  const [publisher, setPublisher] = useState();
-  useEffect(() => {
-    getPublisherDetails();
-  }, []);
-
-  const getPublisherDetails = async () => {
-    try {
-      const response = await server.get(
-        `/getPublisher?pid=${book.PUBLISHER_ID}`
-      );
-      console.log(response.data);
-      setPublisher(response.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
@@ -40,17 +33,12 @@ const Description = ({ book }) => {
       >
         <Tabs value={tabValue} onChange={handleChange} centered>
           <Tab icon={<Book />} label="Book Details" />
+          <Tab icon={<Person />} label={`Author`} />
           <Tab icon={<Business />} label="Publication" />
-
-          {JSON.parse(book.AUTHOR).map((author, i) => (
-            <Tab key={i} icon={<Person />} label={`Author ${i}`} />
-          ))}
         </Tabs>
         {tabValue === 0 && <BookDescription book={book} />}
-        {tabValue === 1 && <PublicationDetails publisher={publisher} />}
-        {tabValue > 1 && (
-          <AuthorDetails id={JSON.parse(book.AUTHOR)[tabValue - 2]} />
-        )}
+        {tabValue === 2 && <PublicationDetails id={book.PUBLISHER_ID} />}
+        {tabValue === 1 && <AuthorList authors={JSON.parse(book.AUTHOR)} />}
       </Grid>
     </Grid>
   );
@@ -67,7 +55,80 @@ const BookDescription = ({ book }) => {
   );
 };
 
-const AuthorDetails = ({ id }) => {
+const AuthorList = ({ authors }) => {
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [authorList, setAuthorList] = useState([]);
+  const assignAuthors = () => {
+    const data = authors.map((author) => ({
+      id: author.ID,
+      name: author.NAME,
+    }));
+    console.log(data);
+    setAuthorList(data);
+  };
+  useEffect(() => {
+    assignAuthors();
+  }, []);
+
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
+  };
+
+  const handleBackClick = () => {
+    setSelectedItem(null);
+  };
+
+  // if (selectedItem) {
+  //   return (
+  //     <Grid container direction="column" item xs={12} padding={2}>
+  //       <Box>
+  //         <IconButton onClick={handleBackClick}>
+  //           <ArrowBack />
+  //         </IconButton>
+
+  //         <AuthorDetails id={selectedItem.id} />
+  //       </Box>
+  //     </Grid>
+  //   );
+  // }
+
+  return (
+    <Grid container justifyContent="center" alignItems="center" padding={2}>
+      <Grid item xs={12} textAlign="left">
+        {/* Title */}
+        <Typography variant="h3" gutterBottom>
+          {selectedItem ? "Author Details" : "Author List"}
+        </Typography>
+      </Grid>
+
+      <Grid item xs={12}>
+        {selectedItem ? (
+          <Box>
+            <IconButton onClick={handleBackClick}>
+              <ArrowBack />
+            </IconButton>
+            <AuthorDetails id={selectedItem.id} />
+          </Box>
+        ) : (
+          <List>
+            {authorList?.map((item) => (
+              <ListItem
+                key={item.id}
+                sx={{ textAlign: "center", width: "100%" }}
+              >
+                <Button onClick={() => handleItemClick(item)}>
+                  {item.name}
+                </Button>
+              </ListItem>
+            ))}
+          </List>
+        )}
+      </Grid>
+    </Grid>
+  );
+};
+
+export const AuthorDetails = ({ id }) => {
   const [author, setAuthor] = useState();
 
   const getAuthorDetails = async (id) => {
@@ -80,15 +141,15 @@ const AuthorDetails = ({ id }) => {
     }
   };
   useEffect(() => {
-    console.log(id.ID);
-    getAuthorDetails(id.ID);
+    console.log(id);
+    getAuthorDetails(id);
     // setAuthor()
   }, []);
 
   return (
     <Grid container direction="column" item xs={12} padding={2}>
       {author ? (
-        <AuthorComponent author={author} />
+        <AuthorComponent author={author[0]} />
       ) : (
         <p>Couldn't Find any Author</p>
       )}
@@ -96,10 +157,10 @@ const AuthorDetails = ({ id }) => {
   );
 };
 
-const PublicationDetails = ({ publisher }) => {
+export const PublicationDetails = ({ id }) => {
   return (
     <Grid container direction="column" item xs={12} padding={2}>
-      <PublicationComponent publication={publisher} />
+      <PublicationComponent id={id} />
     </Grid>
   );
 };
