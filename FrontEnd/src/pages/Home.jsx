@@ -1,6 +1,5 @@
 import { ChevronRight } from "@mui/icons-material";
 import {
-  Backdrop,
   Box,
   Button,
   Card,
@@ -9,7 +8,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import server from "./../HTTP/httpCommonParam";
 import BookCard from "./../pages/allbooks/BookCard.jsx";
@@ -52,7 +51,7 @@ const About = () => {
           <Typography variant="h3" gutterBottom>
             For Readers
           </Typography>
-          <Typography ml={2} variant="body2">
+          <Typography ml={2} variant="subtitle1">
             BookBreeze is designed with readers in mind. As a reader, you can
             easily search for books, apply filters to find your preferred
             genres, authors, and publishers. You have the opportunity to rate
@@ -72,7 +71,7 @@ const About = () => {
           <Typography variant="h3" gutterBottom>
             For Employees
           </Typography>
-          <Typography ml={2} variant="body2">
+          <Typography ml={2} variant="subtitle1">
             BookBreeze offers a user-friendly platform for library employees.
             You can efficiently manage book data by inserting, updating, or
             removing books, editions, genres, authors, and publishers. You have
@@ -92,7 +91,7 @@ const About = () => {
           <Typography variant="h3" gutterBottom>
             For Admins:
           </Typography>
-          <Typography ml={2} variant="body2">
+          <Typography ml={2} variant="subtitle1">
             Admins play a pivotal role in BookBreeze, overseeing all aspects of
             library management. They have access to valuable statistics on
             rentals and fines, broken down by month. Admins can accept job
@@ -104,12 +103,6 @@ const About = () => {
             users or promote employees to the admin panel. In essence, an admin
             is the key figure responsible for the library's smooth operation and
             success.
-          </Typography>
-        </Box>
-        <Box marginTop={2}>
-          <Typography mt={5} variant="button">
-            BookBreeze offers a comprehensive solution for both readers and
-            library staff, ensuring a seamless and efficient library experience.
           </Typography>
         </Box>
       </Paper>
@@ -181,8 +174,20 @@ const Welcome = () => {
         backgroundRepeat: "no-repeat",
         elevation: 3,
         padding: "20px",
+        filter: "brightness(10%);",
       }}
     >
+      {/* <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundColor: "rgba(0, 0, 0, 0.5)", // Adjust the opacity (0.5 is 50% darkness)
+          zIndex: 1, // Ensure the overlay is on top of the image
+        }}
+      ></div> */}
       <Box
         sx={{
           width: "100%",
@@ -192,16 +197,37 @@ const Welcome = () => {
           justifyContent: "space-between",
         }}
       >
-        <Box flexGrow={3}>
-          <Typography textAlign="center" variant="h1" color="#fff">
+        <Box flexGrow={3} mt={8}>
+          <Typography
+            fontFamily={"sans-serif"}
+            textAlign="center"
+            fontSize={50}
+            fontStyle="bold"
+            color="#fff"
+            gutterBottom
+          >
             Welcome to Book Breeze
           </Typography>
-          <Typography textAlign="center" variant="h2" color="#fff">
+          <Typography gutterBottom textAlign="center" variant="h2" color="#fff">
             The Best Library Management System
           </Typography>
+          <Box mt={15}>
+            <Typography
+              gutterBottom
+              fontStyle={"italic"}
+              fontSize={25}
+              textAlign={"center"}
+              marginX={20}
+              color="#fff"
+            >
+              BookBreeze offers a comprehensive solution for both readers and
+              library staff, ensuring a seamless and efficient library
+              experience.
+            </Typography>
+          </Box>
         </Box>
 
-        <Box style={{ marginTop: 300 }}>
+        <Box style={{ marginTop: 80, marginBottom: 40 }}>
           <div
             style={{
               display: "flex",

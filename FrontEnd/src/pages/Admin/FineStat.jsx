@@ -99,9 +99,10 @@ const FineStat = () => {
           Fine and Payment Statistics
         </Typography>
       </Box>
-      <Box display="flex" flexDirection="column" alignItems="center">
-        <FormControl>
-          {/* <Typography
+      <Box display="flex" flexDirection="row" alignItems="center">
+        <Box sx={{ marginLeft: 10 }}>
+          <FormControl sx={{ marginBottom: 10 }}>
+            {/* <Typography
           variant="h4"
           textAlign="center"
           gutterBottom
@@ -109,21 +110,37 @@ const FineStat = () => {
         >
           Rent and Return Statistics
         </Typography> */}
-          <Typography variant="body1" gutterBottom>
-            Select Year
+            <Typography variant="body1" gutterBottom>
+              Select Year
+            </Typography>
+            <Select
+              id="demo-simple-select"
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+            >
+              {options.map((item, index) => (
+                <MenuItem key={index} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Typography variant="h3" gutterBottom>
+            {" "}
+            Fine Count
           </Typography>
-          <Select
-            id="demo-simple-select"
-            value={year}
-            onChange={(e) => setYear(e.target.value)}
-          >
-            {options.map((item, index) => (
-              <MenuItem key={index} value={item}>
-                {item}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+          <Typography variant="body2" maxWidth={400} gutterBottom>
+            This graph tracks the number of cases where readers have not
+            returned their books on time and have been added to the fine list.
+          </Typography>
+          <Typography variant="h3" mt={2} gutterBottom>
+            Payment Count
+          </Typography>
+          <Typography variant="body2" maxWidth={400} gutterBottom>
+            This graph tracks the number of cases in which readers, who were
+            added to the fine list, returned their books with the assigned fine
+          </Typography>
+        </Box>
         <LineChart
           width={700}
           height={500}

@@ -38,7 +38,7 @@ export const defaultQueryOptions = {
   PAGE_START: 0,
   PAGE_END: 2040,
   YEAR_START: 1970,
-  YEAR_END: 2022,
+  YEAR_END: 2023,
   RATING_START: 0,
   RATING_END: 5,
 };

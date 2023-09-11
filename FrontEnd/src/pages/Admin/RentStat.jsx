@@ -105,23 +105,39 @@ const RentStat = () => {
           Rent and Return Statistics
         </Typography>
       </Box>
-      <Box display="flex" flexDirection="column" alignItems="center">
-        <FormControl>
-          <Typography variant="body1" gutterBottom>
-            Select Year
+      <Box display="flex" flexDirection="row" alignItems="center">
+        <Box sx={{ marginLeft: 10 }}>
+          <FormControl sx={{ marginBottom: 10 }}>
+            <Typography variant="body1" gutterBottom>
+              Select Year
+            </Typography>
+            <Select
+              id="demo-simple-select"
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+            >
+              {options.map((item, index) => (
+                <MenuItem key={index} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Typography variant="h3" gutterBottom>
+            Rent Count
           </Typography>
-          <Select
-            id="demo-simple-select"
-            value={year}
-            onChange={(e) => setYear(e.target.value)}
-          >
-            {options.map((item, index) => (
-              <MenuItem key={index} value={item}>
-                {item}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+          <Typography variant="body2" maxWidth={400} gutterBottom>
+            This graph shows the monthly number of books successfully borrowed
+            by the user throughout the year
+          </Typography>
+          <Typography variant="h3" gutterBottom>
+            Return Count
+          </Typography>
+          <Typography variant="body2" maxWidth={400} gutterBottom>
+            This graph displays the monthly number of books returned by users,
+            both before and after the expected due date
+          </Typography>
+        </Box>
         <LineChart
           width={700}
           height={500}
