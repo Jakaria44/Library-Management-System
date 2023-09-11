@@ -151,8 +151,6 @@ export default function AuthorGenrePublisherAdd({
                   placeholder="Add Category"
                 />
               )}
-              loading
-              loadingText={<CircularProgress />}
             />
           </Grid>
           <Grid item xs={12} sm={3} m="auto">
@@ -242,7 +240,6 @@ export default function AuthorGenrePublisherAdd({
               isOptionEqualToValue={(option, value) =>
                 option.AUTHOR_ID === value.AUTHOR_ID
               }
-              loading
               renderOption={(props, option, state) => [
                 props,
                 option.NAME,
@@ -318,7 +315,7 @@ export default function AuthorGenrePublisherAdd({
                 option.PUBLISHER_ID === value.PUBLISHER_ID
               }
               noOptionsText="No Publisher Found"
-              loading
+              // loading
               // loadingText={<CircularProgress />}
             />
           </Grid>

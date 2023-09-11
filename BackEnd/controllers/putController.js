@@ -12,7 +12,6 @@ import {
   updateUserDB
 } from '../Database/queryFunctions.js';
 
-
 export async function updateBook(req, res, next) {
   try {
     let book = {
@@ -23,6 +22,7 @@ export async function updateBook(req, res, next) {
       LANGUAGE: req.body.LANGUAGE?.replace(/'/g, `''`),
       DESCRIPTION: req.body.DESCRIPTION?.replace(/'/g, `''`),
       PUBLISHER_ID: req.body.PUBLISHER_ID,
+      PREVIEWLINK: req.body.PREVIEWLINK?.replace(/'/g, `''`),
       AUTHORS: req.body.Authors,
       GENRES: req.body.Genres,
       EDITIONS: req.body.Editions

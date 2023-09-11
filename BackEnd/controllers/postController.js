@@ -225,7 +225,6 @@ export async function acceptApplication(req, res, next) {
   }
 }
 
-
 export async function postBook(req, res, next) {
   try {
     let book = {
@@ -236,6 +235,7 @@ export async function postBook(req, res, next) {
       LANGUAGE: req.body.LANGUAGE?.replace(/'/g, `''`),
       DESCRIPTION: req.body.DESCRIPTION?.replace(/'/g, `''`),
       PUBLISHER_ID: req.body.PUBLISHER_ID,
+      PREVIEWLINK: req.body.PREVIEWLINK?.replace(/'/g, `''`),
       AUTHORS: req.body.Authors,
       GENRES: req.body.Genres,
       EDITIONS: req.body.Editions
@@ -259,7 +259,6 @@ export async function postBook(req, res, next) {
     next(err);
   }
 }
-
 
 export async function addAuthor(req, res, next) {
   try {

@@ -560,7 +560,7 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 Content-Type: application/json
 
 {
-  "GENRE_NAME": "B"
+  "GENRE_NAME": "dummy"
 }
 ###OUTPUT
 {

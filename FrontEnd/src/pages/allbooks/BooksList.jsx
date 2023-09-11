@@ -15,6 +15,7 @@ const BooksList = ({ data, loading }) => {
 
   // const opened = useMenu().menuOpened.opened;
   // console.log(opened);
+  console.log(data);
   return (
     <Grid item xs={12} md={8} lg={9} container direction="row" spacing={2}>
       {data.length === 0 && !loading && (

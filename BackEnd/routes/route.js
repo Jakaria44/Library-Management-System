@@ -109,7 +109,7 @@ router.route('/getAuthor')
   .delete(verifyEmployeeToken, deleteAuthor)
 router.route('/getGenre')
   .get(verifyGeneralToken, getGenre)
-  .post(verifyEmployeeToken, urlencodedParser, addGenre)
+  .post(verifyEmpAdmToken, urlencodedParser, addGenre)
   .put(verifyEmployeeToken, urlencodedParser, updateGenre)
   .delete(verifyEmployeeToken, deleteGenre)
 router.route('/getLanguage').get(verifyGeneralToken, getAllLanguages);

@@ -90,6 +90,7 @@ export async function getAllBookSum(req, res, next) {
     if (req.USER_ID) {
       context.USER_ID = req.USER_ID;
     }
+    console.log(req.USER_ID);
     if (req.query.MY_FAV) {
       context.MY_FAV = req.query.MY_FAV === 'true';
     }
@@ -525,7 +526,7 @@ export async function getMyFineHistory(req, res, next) {
 export async function getRentHistory(req, res, next) {
   try {
     const context = {};
-    // context.USER_ID = req.USER_ID;
+    // context.USER_ID = req.USER_ID;j
     context.sort = req.query.sort;
     context.order = req.query.order;
     console.log(context)
