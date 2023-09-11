@@ -1,6 +1,6 @@
 import bodyParser from 'body-parser';
 import Express from 'express';
-import { verifyAdminToken, verifyEmpAdmToken, verifyGeneralToken, verifyUserToken } from '../authentication/auth.js';
+import { verifyAdminToken, verifyEmpAdmToken, verifyEmployeeToken, verifyGeneralToken, verifyUserToken } from '../authentication/auth.js';
 import {
   deleteApplication,
   deleteApply,
