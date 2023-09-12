@@ -165,7 +165,11 @@ export default function componentStyleOverrides(theme) {
         MuiListItemText: {
             styleOverrides: {
                 primary: {
-                    color: theme.textDark,
+                    color: theme.darkTextPrimary,
+                    '&:hover': {
+                        color: theme.textDark
+
+                    }
                 },
             },
         },

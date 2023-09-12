@@ -14,7 +14,7 @@ const Home = () => {
             {/* <TopRated /> */}
             <About />
 
-            <Paper sx={{ padding: 3, marginY: 3 }}>
+            <Paper elevation={24} sx={{ padding: 3, marginY: 3 }}>
                 <Typography textAlign="center" variant="h3" gutterBottom>
                     Contributed By
                 </Typography>
@@ -91,7 +91,7 @@ const About = () => {
             <Typography variant="h2" textAlign="center" gutterBottom>
                 About This Library
             </Typography>
-            <Paper elevation={20} sx={{ marginY: 3 }}>
+            <Paper elevation={24} sx={{ marginY: 3 }}>
                 <Grid container p={0} justifyContent="space-between">
                     <Grid item xs={6} margin={3} padding={3}>
                         <Typography variant="h3" gutterBottom pb={2}>
@@ -114,7 +114,7 @@ const About = () => {
                     </Grid>
                 </Grid>
             </Paper>
-            <Paper elevation={20} sx={{ marginY: 3 }}>
+            <Paper elevation={24} sx={{ marginY: 3 }}>
                 <Grid container p={0}>
                     <Grid item xs={5}>
                         <img src="/pic22.png" alt="About" width="100%" height="100%" />
@@ -136,7 +136,7 @@ const About = () => {
                     </Grid>
                 </Grid>
             </Paper>
-            <Paper elevation={20} sx={{ marginY: 3 }}>
+            <Paper elevation={24} sx={{ marginY: 3 }}>
                 <Grid container p={0} justifyContent="space-between">
                     <Grid item xs={6} margin={3} padding={3}>
                         <Typography variant="h3" gutterBottom pb={2}>
@@ -218,7 +218,7 @@ const TopRated = () => {
 const Welcome = () => {
     return (
         <Paper
-            elevation={20}
+            elevation={24}
             style={{
                 backgroundImage: `url(./../../public/Main.png)`,
                 backgroundSize: "cover",
@@ -316,22 +316,23 @@ const NewsList = () => {
     }, []);
 
     return (
-        <Paper elevation={20} sx={{ padding: 3, marginY: 3 }}>
+        <Paper elevation={24} sx={{ padding: 3, marginY: 3 }}>
             <Typography variant="h2" pb={3}>
                 Latest News
             </Typography>
-            <div className="container">
-                {allnews.slice(0, 2).map((news) => (
-                    <div className="card" key={news.NEWS_ID}>
+            <Grid container direction="row" alignItems="center" justifyContent="space-between">
+                {allnews.slice(0, 2).map((news, i) => (
+                    <Grid item xs={5} key={news.NEWS_ID}>
                         <Typography variant="subtitle2" gutterBottom>
                             {TimeFormat(news.NEWS_DATE)}
                         </Typography>
+
                         <Typography variant="subtitle1" mb={3} gutterBottom>
                             {news.NEWS_TEXT}
                         </Typography>
-                    </div>
+                    </Grid>
                 ))}
-            </div>
+            </Grid>
         </Paper>
     );
 };
