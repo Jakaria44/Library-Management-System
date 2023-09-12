@@ -298,6 +298,20 @@ const Welcome = () => {
         </Paper>
     );
 };
+const customScrollbarStyle = {
+    scrollbarWidth: "thin",
+    "-webkit-scrollbar": {
+        width: "2px", // Adjust the width of the scrollbar
+    },
+    "-webkit-scrollbar-thumb": {
+        backgroundColor: "rgba(0, 0, 0, 0.2)", // Customize the thumb color
+    },
+    "-webkit-scrollbar-track": {
+        backgroundColor: "rgba(0, 0, 0, 0.1)", // Customize the track color
+    },
+    // Show the scrollbar when there's overflow
+    overflowY: "auto",
+};
 const NewsList = () => {
     const [allnews, setAllNews] = useState([]);
 
@@ -322,7 +336,15 @@ const NewsList = () => {
             </Typography>
             <Grid container direction="row" alignItems="center" justifyContent="space-between">
                 {allnews.slice(0, 2).map((news, i) => (
-                    <Grid item xs={5} key={news.NEWS_ID}>
+                      <Grid
+                          maxHeight={270}
+                          overflowY="scroll"
+                          style={{ ...customScrollbarStyle, scrollbarWidth: "none" }}
+                        
+                          item
+                          xs={5}
+                          key={news.NEWS_ID}
+                      >
                         <Typography variant="subtitle2" gutterBottom>
                             {TimeFormat(news.NEWS_DATE)}
                         </Typography>
