@@ -26,6 +26,7 @@ export function queryExecute(statement, binds = [], opts = {}) {
       console.error(err);
       reject(err);
     } finally {
+
         if (conn) {
             try {
             await conn.close();

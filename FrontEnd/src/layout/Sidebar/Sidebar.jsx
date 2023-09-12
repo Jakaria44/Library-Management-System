@@ -41,7 +41,8 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
               label="Made With ❤️"
               chipcolor="primary"
               size="medium"
-              sx={{ cursor: "pointer" }}
+              variant="outlined"
+              // sx={{ cursor: "pointer" }}
             />
           </Stack>
         </PerfectScrollbar>

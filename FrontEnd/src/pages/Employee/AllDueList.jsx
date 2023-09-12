@@ -56,7 +56,7 @@ const Application = () => {
         EDITION_NUM: item.EDITION_NUM,
         PAYMENT_DATE: item.PAYMENT_DATE ? TimeFormat(item.PAYMENT_DATE) : "-",
         START_DATE: TimeFormat(item.START_DATE),
-        FEE_AMOUNT: item.FEE_AMOUNT.toFixed(3),
+        FEE_AMOUNT: '$ '+item.FEE_AMOUNT.toFixed(3),
         STATUS: item.PAYMENT_DATE ? 1 : 0,
       }));
       console.log(data);
@@ -129,7 +129,7 @@ const Application = () => {
           },
           {
             field: "FEE_AMOUNT",
-            headerName: "Amount ($)",
+            headerName: "Amount",
             width: 130,
             align: "center",
             renderCell: (params) => (

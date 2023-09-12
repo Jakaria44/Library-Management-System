@@ -165,7 +165,11 @@ export default function componentStyleOverrides(theme) {
         MuiListItemText: {
             styleOverrides: {
                 primary: {
-                    color: theme.textDark,
+                    color: theme.darkTextPrimary,
+                    '&:hover': {
+                        color: theme.textDark
+
+                    }
                 },
             },
         },
@@ -247,19 +251,19 @@ export default function componentStyleOverrides(theme) {
             },
         },
 
-        MuiChip: {
-            styleOverrides: {
-                root: {
-                    '&.MuiChip-deletable .MuiChip-deleteIcon': {
-                        color: 'inherit',
-                    },
-                    '&.MuiChip-colorError':{
-                        color: '#000'
-                    }
-                },
+        // MuiChip: {
+        //     styleOverrides: {
+        //         root: {
+        //             '&.MuiChip-deletable .MuiChip-deleteIcon': {
+        //                 color: 'inherit',
+        //             },
+        //             '&.MuiChip-colorError':{
+        //                 color: '#000'
+        //             }
+        //         },
                 
-            },
-        },
+        //     },
+        // },
         // MuiTooltip: {
         //     styleOverrides: {
         //         tooltip: {

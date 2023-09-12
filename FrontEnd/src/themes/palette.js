@@ -10,14 +10,14 @@ export default function themePalette(theme, mode) {
         common: {
             black: theme.colors?.darkPaper,
         },
-        ...(mode === 'light'
+        ...(mode === "light"
             ? {
-                success: {
-                    light: theme.colors?.successLight,
-                    200: theme.colors?.success200,
-                    main: theme.colors?.successDarker,
-                    dark: theme.colors?.successDark,
-                },
+                  success: {
+                      light: theme.colors?.successLight,
+                      200: theme.colors?.success200,
+                      main: theme.colors?.successDarker,
+                      dark: theme.colors?.successDark,
+                  },
                   primary: {
                       light: theme.colors?.primaryLight,
                       main: theme.colors?.primaryMain,
@@ -48,12 +48,12 @@ export default function themePalette(theme, mode) {
                   itemHover: theme.colors?.primaryLight,
               }
             : {
-                success: {
-                    light: theme.colors?.successLight,
-                    200: theme.colors?.success200,
-                    main: theme.colors?.successMain,
-                    dark: theme.colors?.successDark,
-                },
+                  success: {
+                      light: theme.colors?.successLight,
+                      200: theme.colors?.success200,
+                      main: theme.colors?.successMain,
+                      dark: theme.colors?.successDark,
+                  },
                   primary: {
                       light: theme.colors?.primaryLight,
                       dark: theme.colors?.primaryLight,
@@ -73,12 +73,12 @@ export default function themePalette(theme, mode) {
                       main: theme.colors?.errorDark,
                       dark: theme.colors?.errorDark,
                   },
-                  text: {
-                      primary: theme.colors?.primaryLight,
-                      secondary: theme.colors?.grey500,
-                      dark: theme.colors?.primaryLight,
-                      hint: theme.colors?.primaryLight,
-                  },
+                    text: {
+                        primary: theme.colors?.primaryLight,
+                        secondary: theme.colors?.grey500,
+                        dark: theme.colors?.primaryLight,
+                        hint: theme.colors?.primaryLight,
+                    },
                   background: {
                       paper: theme.background,
                       default: theme.backgroundDefault,
@@ -93,6 +93,7 @@ export default function themePalette(theme, mode) {
             secondary: theme.darkTextSecondary,
             dark: theme.textDark,
             hint: theme.colors?.grey100,
+            link: theme.colors?.darkPrimaryMain,
         },
         orange: {
             light: theme.colors?.orangeLight,
@@ -104,7 +105,7 @@ export default function themePalette(theme, mode) {
             main: theme.colors?.warningMain,
             dark: theme.colors?.warningDark,
         },
-        
+
         error: {
             light: theme.colors?.errorLight,
             main: theme.colors?.errorMain,
