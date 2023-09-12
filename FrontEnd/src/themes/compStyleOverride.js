@@ -247,19 +247,19 @@ export default function componentStyleOverrides(theme) {
             },
         },
 
-        MuiChip: {
-            styleOverrides: {
-                root: {
-                    '&.MuiChip-deletable .MuiChip-deleteIcon': {
-                        color: 'inherit',
-                    },
-                    '&.MuiChip-colorError':{
-                        color: '#000'
-                    }
-                },
+        // MuiChip: {
+        //     styleOverrides: {
+        //         root: {
+        //             '&.MuiChip-deletable .MuiChip-deleteIcon': {
+        //                 color: 'inherit',
+        //             },
+        //             '&.MuiChip-colorError':{
+        //                 color: '#000'
+        //             }
+        //         },
                 
-            },
-        },
+        //     },
+        // },
         // MuiTooltip: {
         //     styleOverrides: {
         //         tooltip: {

@@ -92,7 +92,7 @@ const About = () => {
                 About This Library
             </Typography>
             <Paper elevation={20} sx={{ marginY: 3 }}>
-                <Grid container p={0} justifyContent='space-between'>
+                <Grid container p={0} justifyContent="space-between">
                     <Grid item xs={6} margin={3} padding={3}>
                         <Typography variant="h3" gutterBottom pb={2}>
                             For Readers
@@ -137,7 +137,7 @@ const About = () => {
                 </Grid>
             </Paper>
             <Paper elevation={20} sx={{ marginY: 3 }}>
-                <Grid container p={0}  justifyContent='space-between'>
+                <Grid container p={0} justifyContent="space-between">
                     <Grid item xs={6} margin={3} padding={3}>
                         <Typography variant="h3" gutterBottom pb={2}>
                             For Admins
@@ -287,9 +287,11 @@ const Welcome = () => {
                             marginTop: "16px",
                         }}
                     >
-                        <Button component={Link} to="/allbooks" variant="outlined" endIcon={<ChevronRight />}>
-                            Get Started
-                        </Button>
+                        <Link to="/allbooks">
+                            <Button variant="outlined" endIcon={<ChevronRight fontSize="large" />}>
+                                Get Started
+                            </Button>
+                        </Link>
                     </div>
                 </Box>
             </Box>
