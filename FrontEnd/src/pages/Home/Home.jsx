@@ -10,11 +10,11 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import server from "./../HTTP/httpCommonParam";
-import BookCard from "./../pages/allbooks/BookCard.jsx";
-import TimeFormat from "./../utils/TimeFormat";
+import server from "../../HTTP/httpCommonParam";
+import BookCard from "../allbooks/BookCard.jsx";
+import TimeFormat from "../../utils/TimeFormat";
 import Contribution from "./Contribution";
-import { about } from "./Home/info";
+import { about } from "./info";
 
 const Home = () => {
   return (
