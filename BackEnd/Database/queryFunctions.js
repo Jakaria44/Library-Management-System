@@ -1192,12 +1192,16 @@ export async function deleteWittenByDB(context) {
 
 export async function updateAuthorDB(author) {
   const query = runProcedure(
-    `UPDATE_AUTHOR(${author.AUTHOR_ID}, '${author.NAME}', ${author.DoB}, ${author.DoD}, '${author.NATIONALITY}', '${author.BIO}', '${author.IMAGE}')`
+    `UPDATE_AUTHOR(${author.AUTHOR_ID}, '${author.NAME}', :DoB, :DoD, '${author.NATIONALITY}', '${author.BIO}', '${author.IMAGE}')`
   );
+  const binds ={
+    DoD: author.DoD,
+    DoB: author.DoB
+  }
 
   let result = null;
   try {
-    result = await queryExecute(query, []);
+    result = await queryExecute(query, binds);
   } catch (e) {
     return null;
   }

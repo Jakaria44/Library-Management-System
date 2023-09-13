@@ -147,7 +147,7 @@ const SearchSection = () => {
   const [result, setResult] = useState([]);
   useEffect(() => {
     console.log(value);
-    if (value !== "") getSearchResults(value.replaceAll(/ /g, ""));
+    if (value !== "") getSearchResults(value.replaceAll(/ /g, "%"));
   }, [value]);
   const [isFocused, setIsFocused] = useState(false);
 

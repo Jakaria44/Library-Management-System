@@ -127,6 +127,13 @@ const JobList = () => {
     }
   });
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+
+    window.location.reload();
+  };
+
   const handleDeleteRequest = useCallback((row) => async () => {
     try {
       await confirm({
@@ -242,6 +249,8 @@ const JobList = () => {
         const res = await server.delete("/employee/resign");
         setSuccessMessage(res.data.message);
         setShowSuccessMessage(true);
+        handleLogout();
+
       } catch (err) {
         setErrorMessage(err.response.data.message);
         setShowErrorMessage(true);

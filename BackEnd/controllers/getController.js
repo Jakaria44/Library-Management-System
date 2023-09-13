@@ -163,9 +163,10 @@ export async function getSearchBar(req, res, next) {
         let context = {};
 
         const count = req.query.count || 5;
+        console.log(req.query)
 
         if (req.query.text?.length > 0) {
-            context.text = req.query.text?.toUpperCase()?.replace(/'/g, `''`);
+            context.text = req.query.text?.toUpperCase()?.replace(/'/g, `''`).replace(/%/g, " ");
         } else {
             res.status(404).json({ message: "No text provided" });
             return;

@@ -54,7 +54,7 @@ export default function AddBook({ bookDetails }) {
   const navigate = useNavigate();
   const [direction, setDirection] = React.useState("left");
   const containerRef = React.useRef(null);
-  const [activeStep, setActiveStep] = React.useState(1);
+  const [activeStep, setActiveStep] = React.useState(0);
   const [uploading, setUploading] = React.useState(false);
   const [generalInfo, setGeneralInfo] = React.useState(general);
   const [authorGenrePublisher, setAuthorGenrePublisher] =
