@@ -54,7 +54,7 @@ export default function AddBook({ bookDetails }) {
   const navigate = useNavigate();
   const [direction, setDirection] = React.useState("left");
   const containerRef = React.useRef(null);
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = React.useState(1);
   const [uploading, setUploading] = React.useState(false);
   const [generalInfo, setGeneralInfo] = React.useState(general);
   const [authorGenrePublisher, setAuthorGenrePublisher] =
@@ -131,6 +131,9 @@ export default function AddBook({ bookDetails }) {
   }
   const handleNext = (e) => {
     e.preventDefault();
+    if (activeStep === 1) {
+      console.log(authorGenrePublisher);
+    }
     console.log("next");
     // const data = new FormData(e.currentTarget);
     // console.log(data);
