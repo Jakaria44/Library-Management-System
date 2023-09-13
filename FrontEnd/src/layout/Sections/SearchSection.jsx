@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // material-ui
 import {
@@ -90,6 +90,9 @@ const MobileSearch = ({ value, setValue, popupState, searchClickHandler }) => {
       onChange={(e) => setValue(e.target.value)}
       placeholder="Search"
       sx={{ color: theme.palette.background }}
+      data-words="Search by books(ex. Harry Potter),Search by Authors(ex. JK Rowling),Search by Publishers(ex. Bloomsburry)"
+      data-delay="100"
+      data-deleteDelay="1000"
       startAdornment={
         <InputAdornment position="start">
           <SearchOutlinedIcon color="theme.palette.heading" />

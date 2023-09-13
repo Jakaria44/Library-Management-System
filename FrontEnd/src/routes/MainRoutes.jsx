@@ -46,7 +46,7 @@ const MyFavourites = Loadable(
   lazy(() => import("../pages/Reader/MyFavourites"))
 );
 
-const HomePage = Loadable(lazy(() => import("./../pages/Home")));
+const HomePage = Loadable(lazy(() => import("./../pages/Home/Home")));
 const Application = Loadable(lazy(() => import("../pages/Reader/Application")));
 
 const AllBooks = Loadable(lazy(() => import("./../pages/allbooks/AllBooks")));

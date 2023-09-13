@@ -1,9 +1,14 @@
-import { AppBar, Container, Toolbar, useScrollTrigger } from "@mui/material";
-import { Box } from "@mui/system";
+import {
+  AppBar,
+  Box,
+  Container,
+  Toolbar,
+  useScrollTrigger,
+  useTheme,
+} from "@mui/material";
 import React from "react";
 import { Outlet } from "react-router-dom";
 import DarkModeSwitch from "../component/DarkModeSwitch";
-import { useTheme } from "@emotion/react";
 
 function ElevationScroll(props) {
   const { children, window } = props;
@@ -28,10 +33,11 @@ const AuthStructure = () => {
       <Box sx={{ flexGrow: 1 }}>
         <ElevationScroll>
           <AppBar enableColorOnDark position="fixed" color="inherit">
-            <Toolbar>
+            <Toolbar sx={{ paddingY: "6px" }} disableGutters>
               <Box
-                component="span"
-                marginLeft="16px"
+                // component="span"
+                // marginLeft="16px"
+                marginY="0px"
                 sx={{ display: { xs: "none", md: "block" }, flexGrow: 1 }}
               >
                 {theme.palette.mode == "light" ? (
