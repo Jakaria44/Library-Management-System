@@ -29,7 +29,7 @@ const Employee = {
         },
         {
             id: "allrequests",
-            title: "All Requests",
+            title: "Book Requests",
             type: "item",
             url: "/allrequests",
             icon: <Checklist />,

@@ -191,7 +191,7 @@ const Application = () => {
         // p={2}
         component="div"
       >
-        All Requests
+        Requests for Books
       </Typography>
       <StyledDataGrid
         rows={rows}
