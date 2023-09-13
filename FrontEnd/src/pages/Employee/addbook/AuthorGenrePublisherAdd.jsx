@@ -3,7 +3,6 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import {
   Button,
   Chip,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -223,12 +222,12 @@ export default function AuthorGenrePublisherAdd({
               getOptionLabel={(option) => option.NAME}
               PopperComponent={StyledPopper}
               ListboxComponent={ListboxComponent}
-              onChange={(e, value) => {
+              onChange={(e, value) =>
                 setAuthorGenrePublisher((prev) => ({
                   ...prev,
                   authors: value.map((v) => v),
-                }));
-              }}
+                }))
+              }
               // groupBy={(option) => option[0].NAME.toUpperCase()}
               renderInput={(params) => (
                 <TextField
