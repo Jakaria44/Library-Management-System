@@ -5,7 +5,7 @@ export default function Contribution() {
   return (
     <Paper elevation={24} sx={{ padding: 3, marginY: 3 }}>
       <Typography textAlign="center" variant="body1" fontSize={30} gutterBottom>
-        Contribution
+        Developed by
       </Typography>
       <Grid
         container

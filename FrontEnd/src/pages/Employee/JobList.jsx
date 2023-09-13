@@ -211,6 +211,7 @@ const JobList = () => {
         ),
       });
       try {
+        console.log(id);
         const res = await server.post("/apply?jid=" + id);
         setSuccessMessage(res.data.message);
         setShowSuccessMessage(true);
@@ -369,7 +370,7 @@ const JobList = () => {
         // p={2}
         component="div"
       >
-        Job List
+        All Jobs
       </Typography>
 
       {localStorage.getItem("role")?.toLowerCase() === "admin" && (

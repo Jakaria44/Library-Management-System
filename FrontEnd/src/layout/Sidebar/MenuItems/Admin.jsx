@@ -29,7 +29,7 @@ const Admin = {
     },
     {
       id: "manageemployees",
-      title: "Manage Employees",
+      title: "All Employees",
       type: "item",
       url: "/manageemployees",
       icon: <People />,

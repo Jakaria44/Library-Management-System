@@ -89,7 +89,7 @@ const Application = () => {
         // p={2}
         component="div"
       >
-        Complete Rent History
+        Rent History
       </Typography>
       <StyledDataGrid
         rows={rows}

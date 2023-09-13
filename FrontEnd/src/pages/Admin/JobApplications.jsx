@@ -141,7 +141,7 @@ const JobApplications = () => {
         // p={2}
         component="div"
       >
-        Job Applications
+        Applications for Jobs
       </Typography>
       <StyledDataGrid
         rows={rows}

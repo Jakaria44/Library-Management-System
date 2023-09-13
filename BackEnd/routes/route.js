@@ -1,6 +1,6 @@
 import bodyParser from 'body-parser';
 import Express from 'express';
-import { verifyAdminToken, verifyEmpAdmToken, verifyGeneralToken, verifyUserToken, verifyEmployeeToken } from '../authentication/auth.js';
+import { verifyAdminToken, verifyEmpAdmToken, verifyEmployeeToken, verifyGeneralToken, verifyUserToken } from '../authentication/auth.js';
 import {
   deleteApplication,
   deleteApply,
@@ -41,12 +41,12 @@ import {
   getNews,
   getOwnRatRev,
   getPublisher,
+  getRanges,
   getRentData,
   getRentHistory,
   getRunningFine,
   getSearchBar,
-  getUserDetails,
-  getRanges
+  getUserDetails
 } from '../controllers/getController.js';
 import { loginGeneral, logout, postAdmin, postUser } from '../controllers/loginController.js';
 import {
@@ -158,7 +158,7 @@ router.route('/all-requests').get(verifyEmpAdmToken, getAllRequests);
 router.route('/handle-request').post(verifyEmpAdmToken, urlencodedParser, acceptRequest).delete(verifyEmpAdmToken, deleteRequest);
 router.route('/message').post(verifyEmpAdmToken, urlencodedParser, sendMessage).get(verifyUserToken, getMyMessages)
 router.route('/edit-message').put(verifyUserToken, updateMessage).delete(verifyUserToken, deleteMessage);
-router.route('/publish-news').post(verifyEmpAdmToken, urlencodedParser, publishNews).get(verifyUserToken, getAllNews)
+router.route('/publish-news').post(verifyEmpAdmToken, urlencodedParser, publishNews).get(verifyGeneralToken, getAllNews)
 router.route('/show-news').get(verifyGeneralToken, getNews);
 router.route('/all-fine').get(verifyEmpAdmToken, getRunningFine);
 router.route('/all-rent').get(verifyEmpAdmToken, getRentHistory);

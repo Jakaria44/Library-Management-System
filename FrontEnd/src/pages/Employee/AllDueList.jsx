@@ -78,7 +78,7 @@ const Application = () => {
         // p={2}
         component="div"
       >
-        All Fine List
+        Fine History
       </Typography>
       <StyledDataGrid
         rows={rows}
