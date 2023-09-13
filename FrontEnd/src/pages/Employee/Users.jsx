@@ -85,7 +85,7 @@ const Users = () => {
         // p={2}
         component="div"
       >
-        ALL Users
+        Users Info
       </Typography>
       <StyledDataGrid
         rows={rows}

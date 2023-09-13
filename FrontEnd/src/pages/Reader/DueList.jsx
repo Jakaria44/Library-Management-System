@@ -117,7 +117,7 @@ const DueList = () => {
         // p={2}
         component="div"
       >
-        My Fine History
+        My Fines
       </Typography>
       <StyledDataGrid
         rows={rows}

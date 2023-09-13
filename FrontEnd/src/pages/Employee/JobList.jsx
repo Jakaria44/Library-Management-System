@@ -369,7 +369,7 @@ const JobList = () => {
         // p={2}
         component="div"
       >
-        Job List
+        All Jobs
       </Typography>
 
       {localStorage.getItem("role")?.toLowerCase() === "admin" && (

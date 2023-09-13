@@ -30,7 +30,7 @@ const Reader = {
 
     {
       id: "applications",
-      title: "My Applications",
+      title: "My Requests",
       type: "item",
       url: "/applications",
       icon: <Description />,
@@ -46,7 +46,7 @@ const Reader = {
     },
     {
       id: "duelist",
-      title: "My Fine History",
+      title: "My Fines",
       type: "item",
       url: "/duelist",
       icon: <ReceiptLongSharp />,
@@ -54,7 +54,7 @@ const Reader = {
     },
     {
       id: "joblist",
-      title: "Job list",
+      title: "All Jobs",
       type: "item",
       url: "/joblist",
       icon: <Work />,

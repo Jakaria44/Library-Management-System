@@ -19,7 +19,7 @@ const Homepage = {
   children: [
     {
       id: "",
-      title: "Homepage",
+      title: "Home",
       type: "item",
       url: "/",
       icon: <Home />,
