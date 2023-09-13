@@ -134,7 +134,7 @@ const ManageEmployees = () => {
         // p={2}
         component="div"
       >
-        Employees
+        All Employees
       </Typography>
       <StyledDataGrid
         rows={rows}

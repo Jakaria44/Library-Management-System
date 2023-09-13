@@ -191,7 +191,7 @@ const Application = () => {
         // p={2}
         component="div"
       >
-        ALL Requests
+        All Requests
       </Typography>
       <StyledDataGrid
         rows={rows}

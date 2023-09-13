@@ -16,12 +16,14 @@ const Home = () => {
 
             <Paper elevation={24} sx={{ padding: 3, marginY: 3 }}>
                 <Typography textAlign="center" variant="h3" gutterBottom>
-                    Contributed By
+                    Developed By
                 </Typography>
                 <Grid container direction="row" alignItems="center">
                     <Grid item xs>
                         <Typography textAlign="left" variant="body2" gutterBottom>
-                            <b>FRONTEND</b>
+                            <b>
+                                <u>FRONT END</u>
+                            </b>
                             <br />
                             Name: Md. Jakaria Hossain
                             <br />
@@ -44,13 +46,19 @@ const Home = () => {
                                 onMouseOver={() => window.open("https://github.com/Jakaria44")}
                                 style={{ cursor: "pointer" }}
                             >
-                                <b>GitHub Link</b>
+                                <b>
+                                    <u>
+                                        <i>GitHub Link</i>
+                                    </u>
+                                </b>
                             </Typography>
                         </Grid>
                     </Grid>
                     <Grid item xs>
                         <Typography textAlign="right" variant="body2" gutterBottom>
-                            <b>BACKEND</b>
+                            <b>
+                                <u>BACK END</u>
+                            </b>
                             <br />
                             Name: Ahmmad Nur Swapnil
                             <br />
@@ -73,7 +81,11 @@ const Home = () => {
                                 onMouseOver={() => window.open("https://github.com/AN-SWAPNIL")}
                                 style={{ cursor: "pointer" }}
                             >
-                                <b>GitHub Link</b>
+                                <b>
+                                    <u>
+                                        <i>GitHub Link</i>
+                                    </u>
+                                </b>
                             </Typography>
                         </Grid>
                     </Grid>
@@ -336,15 +348,14 @@ const NewsList = () => {
             </Typography>
             <Grid container direction="row" alignItems="center" justifyContent="space-between">
                 {allnews.slice(0, 2).map((news, i) => (
-                      <Grid
-                          maxHeight={270}
-                          overflowY="scroll"
-                          style={{ ...customScrollbarStyle, scrollbarWidth: "none" }}
-                        
-                          item
-                          xs={5}
-                          key={news.NEWS_ID}
-                      >
+                    <Grid
+                        maxHeight={270}
+                        overflowY="scroll"
+                        style={{ ...customScrollbarStyle, scrollbarWidth: "none" }}
+                        item
+                        xs={5}
+                        key={news.NEWS_ID}
+                    >
                         <Typography variant="subtitle2" gutterBottom>
                             {TimeFormat(news.NEWS_DATE)}
                         </Typography>

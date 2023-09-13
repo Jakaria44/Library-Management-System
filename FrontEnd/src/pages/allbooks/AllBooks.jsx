@@ -39,7 +39,7 @@ export const defaultQueryOptions = {
     perPage: 20,
     page: 1,
     sort: sortOptions[0].query,
-    order: "ASC",
+    order: sortOptions[0].order,
     MY_RAT: false,
     MY_FAV: false,
     TITLE: null,

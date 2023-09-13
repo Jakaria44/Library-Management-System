@@ -21,7 +21,7 @@ const Admin = {
     },
     {
       id: "jobapplications",
-      title: "Job Applications",
+      title: "Applications",
       type: "item",
       url: "/jobapplications",
       icon: <Feed />,
@@ -29,7 +29,7 @@ const Admin = {
     },
     {
       id: "manageemployees",
-      title: "Manage Employees",
+      title: "All Employees",
       type: "item",
       url: "/manageemployees",
       icon: <People />,

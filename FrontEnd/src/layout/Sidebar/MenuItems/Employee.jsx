@@ -12,8 +12,16 @@ const Employee = {
     type: "group",
     children: [
         {
+            id: "addbook",
+            title: "Add Book",
+            type: "item",
+            url: "/addbook",
+            icon: <NoteAdd />,
+            breadcrumbs: false,
+        },
+        {
             id: "allusers",
-            title: "All Users",
+            title: "Users Info",
             type: "item",
             url: "/allusers",
             icon: <PeopleSharp />,
@@ -33,15 +41,6 @@ const Employee = {
             type: "item",
             url: "/allduelists",
             icon: <CurrencyExchange />,
-            breadcrumbs: false,
-        },
-
-        {
-            id: "addbook",
-            title: "Add Book",
-            type: "item",
-            url: "/addbook",
-            icon: <NoteAdd />,
             breadcrumbs: false,
         },
 

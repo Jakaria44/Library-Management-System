@@ -37,7 +37,7 @@ const ReaderProfile = () => {
     },
     {
       icon: <ReceiptLongSharp />,
-      text: "My Due List",
+      text: "My Fine History",
       url: "/duelist",
     },
   ];
