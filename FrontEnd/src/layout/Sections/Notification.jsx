@@ -25,6 +25,7 @@ import { useTheme } from "@mui/material/styles";
 
 // project import
 import {
+  Announcement,
   CheckCircleOutline,
   Close,
   Comment,
@@ -56,6 +57,20 @@ const actionSX = {
 
 // ==============================|| HEADER CONTENT - NOTIFICATION ||============================== //
 
+const customScrollbarStyle = {
+  scrollbarWidth: "thin",
+  "-webkit-scrollbar": {
+    width: "2px", // Adjust the width of the scrollbar
+  },
+  "-webkit-scrollbar-thumb": {
+    backgroundColor: "rgba(0, 0, 0, 0.2)", // Customize the thumb color
+  },
+  "-webkit-scrollbar-track": {
+    backgroundColor: "rgba(0, 0, 0, 0.1)", // Customize the track color
+  },
+  // Show the scrollbar when there's overflow
+  overflowY: "auto",
+};
 const Notification = () => {
   const theme = useTheme();
   const confirm = useConfirm();
@@ -141,11 +156,9 @@ const Notification = () => {
     try {
       const res = await server.put("/edit-message");
       getMyNotifications();
-      setSuccessMessage(res.data.message);
-      setShowSuccessMessage(true);
     } catch (err) {
-      setErrorMessage(err.response.data.message);
-      setShowErrorMessage(true);
+      // setErrorMessage(err.response.data.message);
+      // setShowErrorMessage(true);
       console.log(err);
     }
   }
@@ -153,7 +166,7 @@ const Notification = () => {
     if (msg?.includes("accepted")) {
       return <CheckCircleOutline color="success" />;
     } else if (msg?.includes("rejected")) {
-      return <Close color="error" />;
+      return <Announcement color="error" />;
     } else if (msg?.includes("Congratulations")) {
       return <WorkspacePremium color="success" />;
     }
@@ -318,13 +331,15 @@ const Notification = () => {
                         label="Mark All As Read"
                         size="small"
                         onClick={markAll}
-                      ></Chip>
+                      />
                     </Box>
                   </Box>
                   <List
+                    style={{ ...customScrollbarStyle, scrollbarWidth: "none" }}
                     sx={{
                       height: { xs: 300, sm: 450 },
                       overflowY: "scroll",
+
                       bgcolor: "theme.background.default",
                       borderRadius: "8px",
                       p: 0,

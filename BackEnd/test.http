@@ -895,13 +895,14 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 Content-Type: application/json
 
 {
-  "ISBN": "1111111111115",
-  "TITLE": "NEW BOOK4",
+  "ISBN": "1111111111111",
+  "TITLE": "NEW BOOK",
   "IMAGE": null,
   "NUMBER_OF_PAGES": 0,
-  "LANGUAGE": "Bangla",
+  "LANGUAGE": "bn",
   "DESCRIPTION": "Most easy book",
   "PUBLISHER_ID": "1",
+  "PREVIEWLINK": "http://algorithmics.lsi.upc.edu/docs/Dasgupta-Papadimitriou-Vazirani.pdf",
   "Authors": [
     {
       "AUTHOR_ID": "1"
@@ -936,13 +937,14 @@ x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUi
 Content-Type: application/json
 
 {
-  "ISBN": "1111111111115",
-  "TITLE": "new book5",
+  "ISBN": "1111111111111",
+  "TITLE": "new book",
   "IMAGE": "https://img.freepik.com/premium-photo/book-library-with-old-open-textbook-stack-piles-literature-text-archive-reading-desk_779468-5822.jpg?w=2000",
   "NUMBER_OF_PAGES": 0,
   "LANGUAGE": "Bangla",
   "DESCRIPTION": "Most easy book",
   "PUBLISHER_ID": "1",
+  "PREVIEWLINK": "http://algorithmics.lsi.upc.edu/docs/Dasgupta-Papadimitriou-Vazirani.pdf",
   "Authors": [
     {
       "AUTHOR_ID": "1"
@@ -958,7 +960,7 @@ Content-Type: application/json
   ],
   "Editions":[
     {
-      "EDITION_NUM": 3,
+      "EDITION_NUM": 4,
       "NUM_OF_COPIES": 10,
       "PUBLISH_YEAR": 2024
     }
@@ -1144,7 +1146,7 @@ GET http://localhost:3000/db-api/all-rent?sort=TITLE&order=ASC
 x-access-token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVU0VSX0lEIjoiMSIsIlJPTEUiOiJlbXBsb3llZSIsImlhdCI6MTY5NDE3NDcxOSwiZXhwIjoxNzY2MTc0NzE5fQ._N0W7UHScoqEvmdjFCkIOaiXkiw1YgbCKVsDLAeKez0
 
 #### ----GET Single Book ----
-GET http://localhost:3000/db-api/book?id=1111111111115
+GET http://localhost:3000/db-api/book?id=1111111111111
 ###OUTPUT
 {
   "ISBN": "9781408855652",

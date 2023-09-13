@@ -21,13 +21,14 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
 
   const drawer = (
     <>
-      <Box sx={{ display: { xs: "block", md: "none" } }}>
+      {/* <Box sx={{ display: { xs: "block", md: "none" } }}>
         <Box sx={{ display: "flex", p: 2, mx: "auto" }}>
           <LogoSection />
         </Box>
-      </Box>
+      </Box> */}
       <BrowserView>
         <PerfectScrollbar
+          marginTop={8}
           component="div"
           style={{
             height: !matchUpMd ? "calc(100vh - 56px)" : "calc(100vh - 88px)",
@@ -41,7 +42,8 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
               label="Made With ❤️"
               chipcolor="primary"
               size="medium"
-              sx={{ cursor: "pointer" }}
+              variant="outlined"
+              // sx={{ cursor: "pointer" }}
             />
           </Stack>
         </PerfectScrollbar>
