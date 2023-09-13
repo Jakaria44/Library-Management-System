@@ -22,7 +22,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
     ...theme.typography.mainContent,
     borderRadius: 12,
-
+    marginTop: "64px",
     transition: theme.transitions.create(
       "margin",
       open
@@ -74,7 +74,7 @@ const Structure = () => {
         enableColorOnDark
         position="fixed"
         color="inherit"
-        elevation={5}
+        elevation={0}
         sx={{
           bgcolor: theme.palette.background.default,
           transition: menuOpened.opened
@@ -82,7 +82,8 @@ const Structure = () => {
             : "none",
         }}
       >
-        <Toolbar>
+        {/* paddingY is responsible for appbar height */}
+        <Toolbar sx={{ paddingY: "6px" }} disableGutters>
           <Header handleLeftDrawerToggle={handleLeftDrawerToggle} />
         </Toolbar>
       </AppBar>
