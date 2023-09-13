@@ -11,8 +11,8 @@ import {
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import server from "../../HTTP/httpCommonParam";
-import BookCard from "../allbooks/BookCard.jsx";
 import TimeFormat from "../../utils/TimeFormat";
+import BookCard from "../allbooks/BookCard.jsx";
 import Contribution from "./Contribution";
 import { about } from "./info";
 
@@ -257,7 +257,13 @@ const NewsList = () => {
               {TimeFormat(news.NEWS_DATE)}
             </Typography>
 
-            <Typography variant="body2" fontSize={16} mb={3} gutterBottom>
+            <Typography
+              variant="body2"
+              fontSize={16}
+              mb={3}
+              textAlign="justify"
+              gutterBottom
+            >
               {news.NEWS_TEXT}
             </Typography>
           </Grid>

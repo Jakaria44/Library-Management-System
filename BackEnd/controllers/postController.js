@@ -1,33 +1,31 @@
 import {
   addAuthorDB,
   addBookGenreDB,
-  addGenreDB,
-  addPublisherDB,
-  addWrittenByDB,
-  postFavouriteDB,
-  createBookDB,
-  getFavouriteDB,
-  ratrevBookDB,
-  getAvgRatingDB,
-  addRequestDB,
-  getOwnRatRevDB,
-  getMyFineHistoryDB,
-  getMyRequestsDB,
-  addRentHistoryDB,
-  getEditionDB,
-  sendMessageDB,
-  publishNewsDB,
   addEditionDB,
+  addEmployeeDB,
+  addGenreDB,
+  addJobDB,
+  addPublisherDB,
+  addRentHistoryDB,
+  addRequestDB,
+  addWrittenByDB,
+  applyForJobDB,
+  createBookDB,
   deleteBookGenreDB,
   deleteWittenByDB,
-  addJobDB,
-  applyForJobDB,
-  addEmployeeDB,
-  getEmployeeDB,
   getApplicationDB,
-  getUserDetailsDB
+  getAvgRatingDB,
+  getEditionDB,
+  getEmployeeDB,
+  getFavouriteDB,
+  getMyFineHistoryDB,
+  getMyRequestsDB,
+  getOwnRatRevDB,
+  postFavouriteDB,
+  publishNewsDB,
+  ratrevBookDB,
+  sendMessageDB
 } from '../Database/queryFunctions.js';
-import {getUserDetails} from "./getController.js";
 
 export async function postFavBook(req, res, next) {
   let fav = {
@@ -103,7 +101,8 @@ export async function applyForJob(req, res, next) {
       USER_ID: req.USER_ID,
       JOB_ID: req.query.jid
     };
-    let result = await getApplicationDB(request);
+    console.log("in post",  request);
+    let result = await getApplicationDB({USER_ID: req.USER_ID});
     if (result.length >= 3) {
       res.status(403).json({message: "Maximum Limit Reached"});
       return;
