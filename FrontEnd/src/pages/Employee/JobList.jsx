@@ -211,6 +211,7 @@ const JobList = () => {
         ),
       });
       try {
+        console.log(id);
         const res = await server.post("/apply?jid=" + id);
         setSuccessMessage(res.data.message);
         setShowSuccessMessage(true);

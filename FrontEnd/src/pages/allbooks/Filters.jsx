@@ -19,13 +19,15 @@ import {
   styled,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useMenu } from "../../contexts/MenuContextProvider";
 import Languages from "../../utils/Languages";
 import AuthorInput from "../VirtualisedAuthorAutoComplete";
 import server from "./../../HTTP/httpCommonParam";
-import { defaultQueryOptions } from "./AllBooks";
-const minDistance = 0, minDistanceYear = 0;
-let maxPage = 5000, minYear = 1000, maxYear = new Date().getFullYear(), minPage = 0;
+const minDistance = 0,
+  minDistanceYear = 0;
+let maxPage = 5000,
+  minYear = 1000,
+  maxYear = new Date().getFullYear(),
+  minPage = 0;
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -141,6 +143,13 @@ const Filters = ({ queries, loadAllBooks }) => {
       maxPage = parseInt(res.data.MAX_PAGE);
       minYear = parseInt(res.data.MIN_YEAR);
       maxYear = parseInt(res.data.MAX_YEAR);
+      setQueryOptions({
+        ...queryOptions,
+        PAGE_START: minPage,
+        PAGE_END: maxPage,
+        YEAR_START: minYear,
+        YEAR_END: maxYear,
+      });
       res = await server.get("/getPublisher");
       PublisherList = res.data;
       if (!Array.isArray(res.data)) {
@@ -319,8 +328,8 @@ const Filters = ({ queries, loadAllBooks }) => {
               onBlur={blurPage}
               inputProps={{
                 step: 50,
-                min: 0,
-                max: 3000,
+                min: minPage,
+                max: maxPage,
                 type: "number",
                 "aria-labelledby": "input-slider",
               }}
@@ -335,8 +344,8 @@ const Filters = ({ queries, loadAllBooks }) => {
               onBlur={blurPage}
               inputProps={{
                 step: 50,
-                min: 0,
-                max: 3000,
+                min: minPage,
+                max: maxPage,
                 type: "number",
                 "aria-labelledby": "input-slider",
               }}
