@@ -77,7 +77,7 @@ const JobApplications = () => {
 
       try {
         const res = await server.delete(
-          "/employee?uid=" + row.USER_ID + "&jid=" + row.JOB_ID
+          "/application?uid=" + row.USER_ID + "&jid=" + row.JOB_ID
         );
         setSuccessMessage(res.data.message);
         setShowSuccessMessage(true);

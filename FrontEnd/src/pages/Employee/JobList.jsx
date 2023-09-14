@@ -61,7 +61,7 @@ const JobList = () => {
     return rows.some((row) => row.JOB_TITLE === jobTitle);
   }, [jobTitle, rows]);
 
-  const modifyJob = useCallback(({ JOB_TITLE, SALARY }) => async () => {
+  const modifyJob = useCallback(({id, JOB_TITLE, SALARY }) => async () => {
     try {
       let salary = SALARY;
       let title = JOB_TITLE;
@@ -108,9 +108,9 @@ const JobList = () => {
           </Box>
         ),
       });
-      console.log(title, salary);
+      console.log(id, title, salary);
       try {
-        const res = await server.put("/getJob", {
+        const res = await server.put("/getJob?jid=" + id, {
           JOB_TITLE: title,
           SALARY: salary,
         });
@@ -350,7 +350,7 @@ const JobList = () => {
     headerName: "Modify Job",
     type: "actions",
     getActions: (params) => [
-      <Tooltip title="Delete Request">
+      <Tooltip title="Delete Job">
         <GridActionsCellItem
           icon={<DeleteForever />}
           label="Delete"
@@ -358,7 +358,7 @@ const JobList = () => {
           onClick={handleDeleteRequest(params.row)}
         />
       </Tooltip>,
-      <Tooltip title="Accept Request">
+      <Tooltip title="Update Job">
         <GridActionsCellItem
           icon={<Edit />}
           label="Accept"

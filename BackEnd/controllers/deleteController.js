@@ -282,9 +282,9 @@ export async function deleteApplication(req, res, next) {
   try {
     let deleted = {};
 
-    deleted.USER_ID = req.body.USER_ID;
-    deleted.JOB_ID = req.body.JOB_ID;
-
+    deleted.USER_ID = req.query.uid;
+    deleted.JOB_ID = req.query.jid;
+    console.log(deleted);
     deleted = await deleteApplyDB(deleted);
     if (deleted) {
       const result = await getJobDB(deleted);
