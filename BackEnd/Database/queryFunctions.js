@@ -1192,36 +1192,46 @@ export async function deleteWittenByDB(context) {
 
 export async function updateAuthorDB(author) {
   const query = runProcedure(
-    `UPDATE_AUTHOR(${author.AUTHOR_ID}, '${author.NAME}', ${author.DoB}, ${author.DoD}, '${author.NATIONALITY}', '${author.BIO}', '${author.IMAGE}')`
+    `UPDATE_AUTHOR(${author.AUTHOR_ID}, '${author.NAME}', :DoB, :DoD, '${author.NATIONALITY}', '${author.BIO}', '${author.IMAGE}')`
   );
+  const binds ={
+    DoD: author.DoD,
+    DoB: author.DoB
+  }
 
   let result = null;
   try {
-    result = await queryExecute(query, []);
+    result = await queryExecute(query, binds);
   } catch (e) {
     return null;
   }
 
   return author;
 }
-
 export async function addAuthorDB(author) {
   console.log(author);
   const binds = {
     NAME: author.NAME,
-    DoB: author.DoB,
+    DoB: author.DoB
   };
+  const abind = {
+    DoD: author.DoD,
+    DoB: author.DoB
+  };
+
   const query = runProcedure(
-    `INSERT_AUTHOR('${author.NAME}', ${author.DoB}, ${author.DoD}, '${author.NATIONALITY}', '${author.BIO}', '${author.IMAGE}')`
+    `INSERT_AUTHOR('${author.NAME}', :DoB, :DoD, '${author.NATIONALITY}', '${author.BIO}', '${author.IMAGE}')`
   );
   const query1 = baseQuery("AUTHOR") + `\nWHERE (UPPER(NAME) = UPPER(:NAME) AND DoB = :DoB)`;
+  console.log(binds);
   let result = null;
   try {
     console.log(author);
     console.log(query);
+
+    await queryExecute(query, abind);
     console.log(query1);
 
-    await queryExecute(query, []);
     result = await queryExecute(query1, binds);
   } catch (e) {
     return null;

@@ -23,7 +23,7 @@ const JobApplications = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [queryOptions, setQueryOptions] = useState({
-    sort: "NAME",
+    sort: "APPLY_DATE",
     order: "DESC",
   });
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -77,7 +77,7 @@ const JobApplications = () => {
 
       try {
         const res = await server.delete(
-          "/employee?uid=" + row.USER_ID + "&jid=" + row.JOB_ID
+          "/application?uid=" + row.USER_ID + "&jid=" + row.JOB_ID
         );
         setSuccessMessage(res.data.message);
         setShowSuccessMessage(true);
@@ -98,7 +98,7 @@ const JobApplications = () => {
     // Here you save the data you need from the sort model
     console.log(sortModel);
     const query = {
-      sort: sortModel[0]?.field || "NAME",
+      sort: sortModel[0]?.field || "APPLY_DATE",
       order: sortModel[0]?.sort === "asc" ? "ASC" : "DESC",
     };
     setQueryOptions(query);

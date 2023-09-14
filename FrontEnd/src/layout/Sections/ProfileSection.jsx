@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 // import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { useConfirm } from "material-ui-confirm";
 
 // material-ui
 import {
@@ -29,7 +30,7 @@ import MainCard from "./../../ui-component/cards/MainCard";
 
 // assets
 
-import { Feed, Login, Logout, PersonAddAlt } from "@mui/icons-material";
+import { CrisisAlert, Feed, Login, Logout, PersonAddAlt } from "@mui/icons-material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ErrorModal from "../../component/ErrorModal";
 import SuccessfulModal from "../../component/SuccessfulModal";
@@ -38,11 +39,13 @@ import TextArea from "../../component/TextArea";
 // ==============================|| PROFILE MENU ||============================== //
 const ProfileSection = () => {
   const theme = useTheme();
+  const confirm = useConfirm();
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showingNewsModal, setShowingNewsModal] = useState(false);
+  // const [showingResignModal, setShowingResignModal] = useState(false);
   const [news, setNews] = useState("");
   const navigate = useNavigate();
   //   const customization = useSelector((state) => state.customization);
@@ -74,7 +77,7 @@ const ProfileSection = () => {
    * anchorRef is used on different componets and specifying one type leads to other components throwing an error
    * */
   const anchorRef = useRef(null);
-  const handleLogout = () => {
+  const handleLogout =  () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
 
@@ -123,6 +126,64 @@ const ProfileSection = () => {
     } catch (err) {
       setErrorMessage(err.response.data.message);
       setShowErrorMessage(true);
+      console.log(err);
+    }
+  };
+
+  const resignFromAdmin = async () => {
+    try {
+      await confirm({
+        title: (
+          <Typography variant="h3" gutterBottom>
+            Resign From Admin?
+          </Typography>
+        ),
+        content: (
+          <Typography variant="body1">
+            Are you sure you want to resign from Admin?
+          </Typography>
+        ),
+      });
+      try {
+        const res = await server.delete("/admin/resign");
+        setSuccessMessage(res.data.message);
+        setShowSuccessMessage(true);
+        handleLogout();
+      } catch (err) {
+        setErrorMessage(err.response.data.message);
+        setShowErrorMessage(true);
+        console.log(err);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const resignFromJob = async () => {
+    try {
+      await confirm({
+        title: (
+          <Typography variant="h3" gutterBottom>
+            Resign From Employee?
+          </Typography>
+        ),
+        content: (
+          <Typography variant="body1">
+            Are you sure you want to resign from Employee?
+          </Typography>
+        ),
+      });
+      try {
+        const res = await server.delete("/employee/resign");
+        setSuccessMessage(res.data.message);
+        setShowSuccessMessage(true);
+        handleLogout();
+      } catch (err) {
+        setErrorMessage(err.response.data.message);
+        setShowErrorMessage(true);
+        console.log(err);
+      }
+    } catch (err) {
       console.log(err);
     }
   };
@@ -406,6 +467,68 @@ const ProfileSection = () => {
                           }
                         />
                       </ListItemButton>
+                      
+                      {["admin"].includes(
+                        localStorage.getItem("role")?.toLowerCase()
+                      ) && (
+                        <ListItemButton
+                          sx={{
+                            borderRadius: "12px",
+                          }}
+                          selected={selectedIndex === 5}
+                          onClick={() => resignFromAdmin()}
+                        >
+                          <ListItemIcon>
+                            <CrisisAlert stroke={1.5} size="1.3rem" />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={
+                              <Typography variant="body2" color="inherit">
+                                Resign From Admin
+                              </Typography>
+                            }
+                          />
+                          {/* <Grid container spacing={1} justifyContent="space-between">
+                                                                <Grid item>
+                                                                    <Typography variant="body2" color="inherit">
+                                                                        Publish News
+                                                                    </Typography>
+                                                                </Grid>
+                                                            </Grid>
+                                                        </ListItemText> */}
+                        </ListItemButton>
+                      )}
+                       {["employee"].includes(
+                        localStorage.getItem("role")?.toLowerCase()
+                      ) && (
+                        <ListItemButton
+                          sx={{
+                            borderRadius: "12px",
+                          }}
+                          selected={selectedIndex === 6}
+                          onClick={() => resignFromJob()}
+                        >
+                          <ListItemIcon>
+                            <CrisisAlert stroke={1.5} size="1.3rem" />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={
+                              <Typography variant="body2" color="inherit">
+                                Resign From Employee
+                              </Typography>
+                            }
+                          />
+                          {/* <Grid container spacing={1} justifyContent="space-between">
+                                                                <Grid item>
+                                                                    <Typography variant="body2" color="inherit">
+                                                                        Publish News
+                                                                    </Typography>
+                                                                </Grid>
+                                                            </Grid>
+                                                        </ListItemText> */}
+                        </ListItemButton>
+                      )}
+                      
                     </List>
                   </Box>
                 </MainCard>
@@ -435,6 +558,7 @@ const ProfileSection = () => {
         HandleModalClosed={() => {
           setShowSuccessMessage(false);
           setShowingNewsModal(false);
+          // setShowingResignModal(false);
         }}
       />
       <ErrorModal
@@ -443,6 +567,7 @@ const ProfileSection = () => {
         HandleModalClosed={() => {
           setShowErrorMessage(false);
           setShowingNewsModal(false);
+          // setShowingResignModal(false);
         }}
       />
     </>

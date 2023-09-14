@@ -131,6 +131,9 @@ export default function AddBook({ bookDetails }) {
   }
   const handleNext = (e) => {
     e.preventDefault();
+    if (activeStep === 1) {
+      console.log(authorGenrePublisher);
+    }
     console.log("next");
     // const data = new FormData(e.currentTarget);
     // console.log(data);
