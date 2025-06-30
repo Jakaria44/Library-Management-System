@@ -4,11 +4,11 @@ This is a dbms (database management system) Library management System project na
 
 ## Developed by:
 ### Frontend:
-  Language: React and material ui <br />
+  Language and Framework: JavaScript React and material ui <br />
   Developer: Jakaria Hossain <br />
   GitHub: [Jakaria's Github](https://github.com/Jakaria44)
 ### Backend:
-  Language: Oracle and NodeJS <br />
+  Language and Framework: Oracle and NodeJS <br />
   Developer: Ahmmad Nur Swapnil <br />
   GitHub: [Swapnil's Github](https://github.com/AN-SWAPNIL)
 
